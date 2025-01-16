@@ -5,19 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Completion extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'email',
-        'password',
-        'name',
-        'phone_number',
-        'profile_picture',
-        'bio',
-        'google_id',
+        'student_id',
+        'course_id',
+        'lesson_id',
+        'status',
+        'completed_at',
     ];
-
-    
 }

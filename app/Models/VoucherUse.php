@@ -5,19 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class VoucherUse extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'email',
-        'password',
-        'name',
-        'phone_number',
-        'profile_picture',
-        'bio',
-        'google_id',
+        'voucher_id',
+        'user_id',
+        'applied_at',
+        'expired_at',
+        'is_used',
     ];
-
-    
 }

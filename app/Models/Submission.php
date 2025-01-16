@@ -5,19 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Submission extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'email',
-        'password',
-        'name',
-        'phone_number',
-        'profile_picture',
-        'bio',
-        'google_id',
+        'quiz_id',
+        'student_id',
+        'score',
+        'total_questions',
+        'correct_answers',
     ];
-
-    
 }
