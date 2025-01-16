@@ -11,14 +11,19 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id(); 
-            $table->string('email', 50)->unique();
-            $table->string('password', 255);
-            $table->string('name', 50);
+            $table->id();
+
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+
             $table->string('phone_number', 20)->nullable();
-            $table->string('profile_picture', 255)->nullable();
+            $table->string('profile_picture')->nullable();
             $table->text('bio')->nullable();
-            $table->unsignedBigInteger('google_id')->nullable();
+            $table->integer('google_id')->nullable();
+
             $table->timestamps();
         });
     }
