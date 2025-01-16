@@ -26,4 +26,7 @@ foreach ($objects as $object => $controller) {
     Route::put($object . '/export', [$controller, 'export'])->name($object . '.' . 'export');
 }
 
+use App\Http\Controllers\MailController;
+
+Route::get('/send-email', [MailController::class, 'sendEmail']);
 

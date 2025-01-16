@@ -25,8 +25,8 @@ class AdminBaseController extends Controller
     public function __construct()
     {
         $this->model = app()->make($this->model);
-        session()->put('columns',$this->columns);
-        session()->put('urlbase',$this->urlbase);
+        session()->put('columns', $this->columns);
+        session()->put('urlbase', $this->urlbase);
     }
     public function index()
     {
@@ -127,25 +127,13 @@ class AdminBaseController extends Controller
         }
     }
 
-    public function import()
-    {
-
-    }
+    public function import() {}
 
 
-    public function export()
-    {
+    public function export() {}
 
-    }
-
-    public function validateStore(Request $request)
-    {
-
-    }
+    public function validateStore(Request $request) {}
 
 
-    public function validateUpdate(Request $request)
-    {
-
-    }
+    public function validateUpdate(Request $request) {}
 }
