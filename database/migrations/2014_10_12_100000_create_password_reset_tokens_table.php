@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Course;
-use App\Models\Tag;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('course_tags', function (Blueprint $table) {
-            
-            $table->foreignIdFor(Course::class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(Tag::class)->constrained()->onDelete('cascade');
-
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
         });
     }
 
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('course_tags');
+        Schema::dropIfExists('password_reset_tokens');
     }
 };
