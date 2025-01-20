@@ -22,9 +22,9 @@ return new class extends Migration
             $table->text('certifications')->nullable()->default(NULL);
             $table->string('linkedin_url')->nullable()->default(NULL);
             $table->string('website_url')->nullable()->default(NULL);
-            $table->integer('total_reviews');
-            $table->integer('total_courses');
-            $table->integer('total_students');
+            $table->integer('total_reviews')->default(0);
+            $table->integer('total_courses')->default(0);
+            $table->integer('total_students')->default(0);
         });
     }
 

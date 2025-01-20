@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('amount',10, 2);
             $table->enum('type', ['purchase','refund']);
             $table->enum('status', ['pending','completed','failed','refunded']);
-            $table->enum('payment_method', ['credit_card','paypal','bank_transfer']);
+            $table->enum('payment_method', ['credit_card','paypal','bank_transfer','wallet']);
             $table->datetime('transaction_date');
             $table->string('reference_id')->nullable()->default(NULL);
         
