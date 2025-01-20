@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
-            $table->integer('balance');
+            $table->integer('balance')->comment('Số dư trong ví của người dùng');
             $table->timestamp('updated_at')->nullable()->default(NULL);
         });
     }
