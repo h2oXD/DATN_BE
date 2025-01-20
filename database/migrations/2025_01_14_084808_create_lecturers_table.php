@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('lecturers', function (Blueprint $table) {
             $table->id();
             
-            $table->foreignIdFor('user_id')->constrained()->onDelete('cascade');
+            $table->foreignIdFor(\App\Models\User::class)->constrained()->onDelete('cascade');
             $table->string('expertise')->nullable()->default(NULL);
             $table->decimal('rating', 2, 1)->default(0);
             $table->text('achievements')->nullable()->default(NULL);
