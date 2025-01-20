@@ -17,13 +17,13 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(),[
-            'name' =>['required', 'string','max:255'],
-            'email' => ['required','string','email','max:255', Rule::unique(User::class)],
-            'password' => ['required','confirmed', Password::min(8)->letters()->symbols()]
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)],
+            'password' => ['required', 'confirmed', Password::min(8)->letters()->symbols()]
         ]);
 
-        if($validator->failed()){
+        if ($validator->failed()) {
             return response($validator->errors(), Response::HTTP_BAD_REQUEST);
         }
 
@@ -35,7 +35,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
-        $role = Role::select('id','name')->where('name', 'student')->first();
+        $role = Role::select('id', 'name')->where('name', 'student')->first();
         UserRole::create([
             'user_id' => $user->id,
             'role_id' => $role->id
@@ -48,8 +48,32 @@ class AuthController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function login()
+    public function login(Request $request)
     {
-        
+        $validator = Validator::make($request->all(), [
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)],
+            'password' => ['required', 'string', 'min:8'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Invalid login credentials.'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $token = $user->createToken(__CLASS__)->plainTextToken;
+
+        $role = UserRole::where('user_id', $user->id)->first();
+        $roleName = Role::where('id', $role->role_id)->first()->name;
+
+        return response()->json([
+            'user' => $user,
+            'role' => $roleName,
+            'token' => $token
+        ], Response::HTTP_OK);
     }
 }
