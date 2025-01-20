@@ -17,7 +17,7 @@ return new class extends Migration
             
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->decimal('amount', 10,2);
-            $table->enum('type', ['deposit','withdrawal','refund']);
+            $table->enum('type', ['deposit','withdrawal','refund'])->comment('Loại giao dịch: deposit->nạp tiền vào ví, withdrawal->rút tiền, refund->hoàn trả tiền vào ví');
             $table->integer('reference_id');
             $table->integer('description')->nullable()->default(NULL);
         });

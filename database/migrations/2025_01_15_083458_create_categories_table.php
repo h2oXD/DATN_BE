@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
 
-            $table->string('name', 50);
+            $table->string('name', 50)->comment('Tên danh mục');
+            $table->string('image')->nullable()->comment('Ảnh của danh mục');
+
+            $table->integer('parent_id')->nullable()->comment('id danh mục cha');
             
             $table->timestamps();
         });
