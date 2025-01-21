@@ -48,7 +48,7 @@ class AuthController extends Controller
             $token = $user->createToken(__CLASS__)->plainTextToken;
             
             DB::commit();
-            
+
             return response()->json([
                 'user' => $user,
                 'role' => $role,
@@ -67,7 +67,7 @@ class AuthController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)],
+            'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'string', 'min:8'],
         ]);
 
@@ -78,7 +78,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid login credentials.'], Response::HTTP_UNAUTHORIZED);
+            return response()->json(['message' => 'Thông tin đăng nhập không chính xác'], Response::HTTP_UNAUTHORIZED);
         }
 
         $token = $user->createToken(__CLASS__)->plainTextToken;
