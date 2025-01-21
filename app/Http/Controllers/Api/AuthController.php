@@ -21,7 +21,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')],
-            'password' => ['required','min:8', 'confirmed' ]
+            'password' => ['required', 'min:8', 'confirmed']
         ]);
 
         if ($validator->fails()) {
@@ -46,9 +46,9 @@ class AuthController extends Controller
                 'role_id' => $role->id
             ]);
             $token = $user->createToken(__CLASS__)->plainTextToken;
-            
+
             DB::commit();
-            
+
             return response()->json([
                 'user' => $user,
                 'role' => $role,
