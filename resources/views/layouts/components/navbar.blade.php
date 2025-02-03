@@ -28,22 +28,20 @@
                 <a class="nav-link  collapsed " href="#" data-bs-toggle="collapse"
                     data-bs-target="#navCourses" aria-expanded="false" aria-controls="navCourses">
                     <i class="nav-icon fe fe-book me-2"></i>
-                    Courses
+                    Tags
                 </a>
                 <div id="navCourses" class="collapse " data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link " href="admin-course-overview.html">All Courses</a>
+                            <a class="nav-link " href="{{ route('tags.index')}}">danh sách nhãn dán</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " href="admin-course-category.html">Courses Category</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link " href="admin-course-category-single.html">Category Single</a>
+                            <a class="nav-link " href="{{ route('tags.create')}}">thêm mới nhãn dán</a>
                         </li>
                     </ul>
                 </div>
             </li>
+            
             <!-- Nav item -->
             <li class="nav-item">
                 <a class="nav-link  collapsed " href="#" data-bs-toggle="collapse"
