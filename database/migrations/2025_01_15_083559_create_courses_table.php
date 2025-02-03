@@ -21,21 +21,23 @@ return new class extends Migration {
             $table->integer('price_sale');
 
             $table->string('title');
-            $table->text('description')->nullable();
-            $table->text('target_students')->nullable();
-            $table->json('learning_outcomes')->nullable();
-            $table->text('prerequisites')->nullable();
-            $table->text('who_is_this_for')->nullable();
-
-            $table->decimal('admin_commission_rate', 5, 2)->default(0);
-            $table->enum('status', ['draft', 'published', 'archived']);
+            $table->string('thumbnail')->nullable();
+            $table->text('description')->nullable()->comment("Mô tả");
+            $table->string('primary_content')->nullable()->comment("Nội dung chính trong khoá học này là");
+            
+            $table->enum('status', ['draft', 'published']);
             $table->tinyInteger('is_show_home')->nullable();
 
-            $table->string('thumbnail')->nullable();
-            $table->string('language')->nullable();
-            $table->string('level')->nullable();
-            $table->string('primary_content')->nullable();
+            $table->text('target_students')->nullable();
+            $table->json('learning_outcomes')->nullable()->comment("Học viên sẽ học được gì trong khóa học của bạn?");
+            $table->text('prerequisites')->nullable()->comment("Yêu cầu hoặc điều kiện tiên quyết để tham gia khóa học của bạn là gì?");
+            $table->text('who_is_this_for')->nullable()->comment("Khóa học này dành cho đối tượng nào?");
 
+            $table->string('language')->nullable()->comment("Ngôn ngữ trong khoá học");
+            $table->string('level')->nullable()->comment("Trình độ");
+
+            $table->decimal('admin_commission_rate', 5, 2)->default(0);
+            
             $table->timestamps();
 
             $table->timestamp('submited_at')->nullable();
