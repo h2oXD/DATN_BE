@@ -36,42 +36,49 @@ class DatabaseSeeder extends Seeder
         $admin = User::create([
             'name' => 'Nguyễn Hữu Hào',
             'email' => 'haonhph45336@fpt.edu.vn',
-            'password' => Hash::make('123123'),
+            'password' => Hash::make('123123123'),
         ]);
-        $role = Role::select('id')->where('name', 'admin')->first();
+        $roleAdmin = Role::select('id')->where('name', 'admin')->first();
         UserRole::create([
             'user_id' => $admin->id,
-            'role_id' => $role->id,
+            'role_id' => $roleAdmin->id,
         ]);
 
         //Tạo Học viên
         $student = User::create([
             'name' => 'Học viên 1',
             'email' => 'hocvien1@gmail.com',
-            'password' => Hash::make('123123'),
+            'password' => Hash::make('123123123'),
         ]);
         Student::create([
             'user_id' => $student->id,
         ]);
-        $role = Role::select('id')->where('name', 'student')->first();
+        $roleStudent = Role::select('id')->where('name', 'student')->first();
         UserRole::create([
             'user_id' => $student->id,
-            'role_id' => $role->id,
+            'role_id' => $roleStudent->id,
         ]);
 
         //Tạo giảng viên
         $lecturer = User::create([
             'name' => 'Giảng viên A',
             'email' => 'giangviena@gmail.com',
-            'password' => Hash::make('123123'),
+            'password' => Hash::make('123123123'),
+        ]);
+        Student::create([
+            'user_id' => $lecturer->id,
         ]);
         Lecturer::create([
             'user_id' => $lecturer->id,
         ]);
-        $role = Role::select('id')->where('name', 'lecturer')->first();
+        $roleLecturer = Role::select('id')->where('name', 'lecturer')->first();
         UserRole::create([
             'user_id' => $lecturer->id,
-            'role_id' => $role->id,
+            'role_id' => $roleStudent->id,
+        ]);
+        UserRole::create([
+            'user_id' => $lecturer->id,
+            'role_id' => $roleLecturer->id,
         ]);
     }
 }

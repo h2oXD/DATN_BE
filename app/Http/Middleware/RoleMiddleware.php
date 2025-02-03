@@ -15,8 +15,8 @@ class RoleMiddleware
      */
     public function handle($request, Closure $next, $role)
     {
-        if (!$request->user() || $request->user()->role !== $role) {
-            return response()->json(['message' => 'Forbidden'], 403);
+        if (!$request->user() || !$request->user()->roles->contains('name', $role)) {
+            return response()->json(['message' => 'Bạn không có quyền truy cập'], 403);
         }
         return $next($request);
     }
