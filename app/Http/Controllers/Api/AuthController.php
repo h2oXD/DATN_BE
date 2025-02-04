@@ -16,6 +16,16 @@ use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
+    public function getUser(Request $request)
+    {
+        $user = User::with('roles')->find($request->user()->id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Người dùng không tồn tại'], 404);
+        }
+
+        return response()->json($user);
+    }
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -50,7 +60,7 @@ class AuthController extends Controller
             DB::commit();
 
             return response()->json([
-                'user' => $user,
+                'user' => $user->id,
                 'role' => $role,
                 'token' => $token
             ], Response::HTTP_OK);
@@ -87,10 +97,19 @@ class AuthController extends Controller
         $roleName = Role::where('id', $role->role_id)->first()->name;
 
         return response()->json([
-            'user' => $user,
+            'user' => $user->id,
             'role' => $roleName,
             'token' => $token
         ], Response::HTTP_OK);
 
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Đăng xuất thành công'
+        ]);
     }
 }

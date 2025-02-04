@@ -53,9 +53,7 @@
                         <td>{{ $user->phone_number }}</td>
                         <td>{{ $user->roles->pluck('name')->join(', ') }}</td>
                         <td>
-                            @if ($user->profile_pictures)
-                                <img src="{{ Storage::url($user->profile_pictures) }}" width="100px">
-                            @endif
+                            <img src="{{ Storage::url($user->profile_picture) }}" width="100px">
                         </td>
                         <td>
                             <a href="{{ route('users.show', $user->id) }}" class="btn btn-info">Xem</a>
@@ -64,14 +62,14 @@
                                 style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger" 
-                                onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</button>
+                                <button type="submit" class="btn btn-danger"
+                                    onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</button>
                             </form>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
-        {{ $users->links() }}
+        {{-- {{ $users->links() }} --}}
     </div>
 @endsection

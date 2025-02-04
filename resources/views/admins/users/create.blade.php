@@ -53,7 +53,7 @@
             <div class="mb-3 row">
                 <label for="role" class="col-4 col-form-label">Vai trò</label>
                 <div class="col-8">
-                    <select name="role" class="form-control" required>
+                    <select name="role" class="form-select text-dark" required>
                         <option value="lecturer">Giảng viên</option>
                         <option value="student">Học viên</option>
                     </select>
