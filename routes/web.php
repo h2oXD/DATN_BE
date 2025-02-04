@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\TagController;
+use App\Http\Controllers\Admin\TagController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,20 +17,20 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('admins.dashboards.dash-board');
 });
-Route::get('/login', function () {
-    return view('auths.login');
-});
+// Route::get('/login', function () {
+//     return view('auths.login');
+// });
 
 Route::resource('tags', TagController::class);
 
-$objects = [
-    'users' => UserController::class
-];
-foreach ($objects as $object => $controller) {
-    Route::resource($object, $controller);
-    Route::post($object . '/import', [$controller, 'import'])->name($object . '.' . 'import');
-    Route::put($object . '/export', [$controller, 'export'])->name($object . '.' . 'export');
-}
+// $objects = [
+//     'users' => UserController::class
+// ];
+// foreach ($objects as $object => $controller) {
+//     Route::resource($object, $controller);
+//     Route::post($object . '/import', [$controller, 'import'])->name($object . '.' . 'import');
+//     Route::put($object . '/export', [$controller, 'export'])->name($object . '.' . 'export');
+// }
 
 use App\Http\Controllers\MailController;
 
