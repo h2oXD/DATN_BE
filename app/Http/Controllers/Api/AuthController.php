@@ -103,4 +103,13 @@ class AuthController extends Controller
         ], Response::HTTP_OK);
 
     }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Đăng xuất thành công'
+        ]);
+    }
 }
