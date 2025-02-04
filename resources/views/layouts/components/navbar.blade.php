@@ -46,22 +46,22 @@
             </li>
             <!-- Nav item -->
             <li class="nav-item">
-                <a class="nav-link  collapsed " href="#" data-bs-toggle="collapse"
-                    data-bs-target="#navProfile" aria-expanded="false" aria-controls="navProfile">
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#navProfile" aria-expanded="false" aria-controls="navProfile">
                     <i class="nav-icon fe fe-user me-2"></i>
-                    User
+                    Quản lí người dùng
                 </a>
-                <div id="navProfile" class="collapse " data-bs-parent="#sideNavbar">
+                <div id="navProfile" class="collapse" data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link " href="admin-instructor.html">Instructor</a>
+                            <a class="nav-link" href="{{ route('users.index') }}">Danh sách người dùng</a> 
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " href="admin-students.html">Students</a>
+                            <a class="nav-link" href="{{ route('users.create') }}">Thêm mới người dùng</a> 
                         </li>
                     </ul>
                 </div>
             </li>
+            
 
             <!-- Nav item -->
             <li class="nav-item">
