@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->foreignIdFor(Category::class)->constrained()->onDelete('cascade');
 
             $table->integer('price');
-            $table->integer('price_sale');
+            $table->integer('price_sale')->nullable();
 
             $table->string('title');
             $table->string('thumbnail')->nullable();

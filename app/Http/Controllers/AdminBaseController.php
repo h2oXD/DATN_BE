@@ -17,19 +17,19 @@ class AdminBaseController extends Controller
         // Định nghĩa các thuộc tính trong controller con
         // Ví dụ: 
         // $this->model = Product::class;
-        // $this->viewPath = 'admin.products';
+        // $this->viewPath = 'admin.products.';
         // $this->uploadPath = 'images/products'; 
     }
 
     public function index()
     {
         $items = $this->model::paginate(15);
-        return view($this->viewPath . '.' . __FUNCTION__, compact('items'));
+        return view($this->viewPath . __FUNCTION__, compact('items'));
     }
 
     public function create()
     {
-        return view($this->viewPath . '.' . __FUNCTION__);
+        return view($this->viewPath . __FUNCTION__);
     }
 
     public function store(Request $request)
@@ -48,13 +48,13 @@ class AdminBaseController extends Controller
     public function show($id)
     {
         $item = $this->model::findOrFail($id);
-        return view($this->viewPath . '.' . __FUNCTION__, compact('item'));
+        return view($this->viewPath . __FUNCTION__, compact('item'));
     }
 
     public function edit($id)
     {
         $item = $this->model::findOrFail($id);
-        return view($this->viewPath . '.' . __FUNCTION__, compact('item'));
+        return view($this->viewPath . __FUNCTION__, compact('item'));
     }
 
     public function update(Request $request, $id)

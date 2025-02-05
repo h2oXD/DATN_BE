@@ -56,4 +56,16 @@ class User extends Authenticatable
     {
         return $this->roles->contains('name', $role);
     }
+    public function lecturer()
+    {
+        return $this->hasOne(Lecturer::class);
+    }
+
+    /**
+     * Get the student associated with the user.
+     */
+    public function student()
+    {
+        return $this->hasOne(Student::class);
+    }
 }
