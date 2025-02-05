@@ -4,6 +4,7 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TagController;
+use App\Http\Controllers\Admin\VoucherController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -25,7 +26,9 @@ Route::get('/login', function () {
     return view('auths.login');
 });
 
+Route::resource('tags', TagController::class);
+
+Route::resource('vouchers', VoucherController::class);
 Route::resource('categories', CategoryController::class);
 Route::resource('users', UserController::class);
 Route::resource('tags', TagController::class);
-
