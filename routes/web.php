@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,3 +22,5 @@ Route::get('/login', function () {
     return view('auths.login');
 });
 Route::resource('users', UserController::class);
+
+Route::resource('tags', TagController::class);
