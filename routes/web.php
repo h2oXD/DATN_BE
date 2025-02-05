@@ -1,7 +1,10 @@
 <?php
 
+
+use App\Http\Controllers\Admin\UserController;
+
 use App\Http\Controllers\Admin\TagController;
-use App\Http\Controllers\UserController;
+
 use Illuminate\Support\Facades\Route;
 
 /*

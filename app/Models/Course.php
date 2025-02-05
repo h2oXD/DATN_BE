@@ -10,22 +10,28 @@ class Course extends Model
     use HasFactory;
 
     protected $fillable = [
+        'lecturer_id',
+        'category_id',
         'title',
         'description',
+        'price',
+        'price_sale',
+        'status',
+
         'target_students',
         'learning_outcomes',
         'prerequisites',
         'who_is_this_for',
-        'price',
-        'price_sale',
+
         'admin_commission_rate',
-        'status',
         'is_show_home',
-        'lecturer_id',
-        'category_id',
         'thumbnail',
         'language',
         'level',
         'primary_content',
+        
+        'created_at',
+        'updated_at',
+        'submited_at'
     ];
 }
