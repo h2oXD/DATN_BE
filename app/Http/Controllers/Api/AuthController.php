@@ -18,13 +18,7 @@ class AuthController extends Controller
 {
     public function getUser(Request $request)
     {
-        $user = User::with('roles')->find($request->user()->id);
-
-        if (!$user) {
-            return response()->json(['message' => 'Người dùng không tồn tại'], 404);
-        }
-
-        return response()->json($user);
+        return response()->json($request->user());
     }
     public function register(Request $request)
     {
@@ -93,12 +87,17 @@ class AuthController extends Controller
 
         $token = $user->createToken(__CLASS__)->plainTextToken;
 
-        $role = UserRole::where('user_id', $user->id)->first();
-        $roleName = Role::where('id', $role->role_id)->first()->name;
-
+        if ($user->lecturer->id) {
+            return response()->json([
+                'user_id' => $user->id,
+                'student_id' => $user->student->id,
+                'lecturer_id' => $user->lecturer->id,
+                'token' => $token
+            ], Response::HTTP_OK);
+        }
         return response()->json([
-            'user' => $user->id,
-            'role' => $roleName,
+            'user_id' => $user->id,
+            'student_id' => $user->student->id,
             'token' => $token
         ], Response::HTTP_OK);
 
