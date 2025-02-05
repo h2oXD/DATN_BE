@@ -16,10 +16,34 @@ class UserController extends Controller
 {
     const PATH_VIEW = 'admins.users.';
 
-    public function index()
+    // public function index()
+    // {
+    //     $users = User::with('roles')->latest('id')->paginate(5);
+    //     // dd($users);
+    //     return view(self::PATH_VIEW . 'index', compact('users'));
+    // }
+
+    public function index(Request $request)
     {
-        $users = User::with('roles')->latest('id')->paginate(5);
-        // dd($users);
+        $search = $request->get('search');
+        $role = $request->get('role');
+        $users = User::with('roles')
+            ->when($search, function ($query, $search) {
+                return $query->where('name', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%");
+            })
+            ->when($role, function ($query, $role) {
+                return $query->whereHas('roles', function ($query) use ($role) {
+                    if ($role == 1) {
+                        $query->where('role_id', 1);
+                    } elseif ($role == 2) {
+                        $query->where('role_id', 2);
+                    }
+                });
+            })
+            ->latest('id')
+            ->paginate(5);
+
         return view(self::PATH_VIEW . 'index', compact('users'));
     }
 
