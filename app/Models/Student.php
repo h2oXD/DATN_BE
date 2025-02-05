@@ -14,4 +14,8 @@ class Student extends Model
         'total_courses_enrolled',
         'total_certificates',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

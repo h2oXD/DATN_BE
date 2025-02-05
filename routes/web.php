@@ -4,7 +4,7 @@
 use App\Http\Controllers\Admin\UserController;
 
 use App\Http\Controllers\Admin\TagController;
-
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function () {;
     return view('admins.dashboards.dash-board');
 });
 Route::get('/login', function () {

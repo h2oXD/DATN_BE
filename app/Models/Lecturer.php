@@ -21,4 +21,8 @@ class Lecturer extends Model
         'total_courses',
         'total_students',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -27,7 +27,7 @@ class CourseController extends Controller
         ]);
 
         return response()->json([
-            'data' => $course,
+            'data' => $course->id,
         ]);
     }
 }

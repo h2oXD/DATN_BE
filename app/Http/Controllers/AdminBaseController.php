@@ -34,7 +34,7 @@ class AdminBaseController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate($this->model::rules());
+        $data = $request->validate($this->validateStore());
 
         if ($request->hasFile($this->fieldImage)) {
             $data[$this->fieldImage] = $this->uploadFile($request->file($this->fieldImage));
@@ -60,7 +60,7 @@ class AdminBaseController extends Controller
     public function update(Request $request, $id)
     {
         $item = $this->model::findOrFail($id);
-        $data = $request->validate($this->model::rules());
+        $data = $request->validate($this->validateUpdate());
 
         if ($request->hasFile($this->fieldImage)) {
             $data[$this->fieldImage] = $this->uploadFile($request->file($this->fieldImage));
@@ -95,5 +95,18 @@ class AdminBaseController extends Controller
     {
         $fileName = time() . '_' . $file->getClientOriginalName();
         return $file->storeAs($this->uploadPath, $fileName, 'public');
+    }
+
+    public function validateStore()
+    {
+        return([
+
+        ]);
+    }
+    public function validateUpdate()
+    {
+        return([
+
+        ]);
     }
 }
