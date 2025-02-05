@@ -9,7 +9,13 @@ class Tag extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'name',
     ];
+
+    public static function rules($id = null) {
+        return['name' => 'required|max:255|unique:tags,name, ' . $id];
+    }
 }
