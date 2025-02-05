@@ -92,47 +92,16 @@
                 <a class="nav-link  collapsed " href="#" data-bs-toggle="collapse"
                     data-bs-target="#navProject" aria-expanded="false" aria-controls="navProject">
                     <i class="nav-icon fe fe-file me-2"></i>
-                    Project
+                    Quản lí danh mục
                 </a>
                 <div id="navProject" class="collapse " data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link " href="project-grid.html">Grid</a>
+                            <a class="nav-link " href="{{ route('categories.index')}}">Danh sách danh mục</a>
+                            
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " href="project-list.html">List</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link  collapsed " href="#" data-bs-toggle="collapse"
-                                data-bs-target="#navprojectSingle" aria-expanded="false"
-                                aria-controls="navprojectSingle">
-                                Single
-                            </a>
-                            <div id="navprojectSingle" class="collapse " data-bs-parent="#navProject">
-                                <ul class="nav flex-column">
-                                    <li class="nav-item">
-                                        <a class="nav-link  active " href="project-overview.html">Overview</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="project-task.html">Task</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="project-budget.html">Budget</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="project-team.html">Team</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="project-files.html">Files</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="project-summary.html">Summary</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link " href="add-project.html">Create Project</a>
+                            <a class="nav-link " href="{{ route('categories.create')}}">Thêm mới danh mục</a>
                         </li>
                     </ul>
                 </div>

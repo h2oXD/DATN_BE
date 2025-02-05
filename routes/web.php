@@ -1,8 +1,8 @@
 <?php
 
 
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\UserController;
-
 use App\Http\Controllers\Admin\TagController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +24,8 @@ Route::get('/', function () {;
 Route::get('/login', function () {
     return view('auths.login');
 });
-Route::resource('users', UserController::class);
 
+Route::resource('categories', CategoryController::class);
+Route::resource('users', UserController::class);
 Route::resource('tags', TagController::class);
+
