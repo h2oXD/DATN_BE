@@ -34,7 +34,7 @@
                     </div>
                 @endif
                 <div class="table-responsive">
-                    <table class="table mb-0 text-nowrap table-hover table-centered">
+                    <table class="table mb-3 text-nowrap table-hover table-centered">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">Tên</th>
