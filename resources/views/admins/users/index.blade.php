@@ -8,8 +8,20 @@
     <div class="container my-5">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-content-center">
-                <h2>Danh sách người dùng</h2>
-                <a href="{{ route('users.create') }}" class="btn btn-primary">Thêm mới người dùng</a>
+                <h2 class="m-0">Danh sách người dùng</h2>
+                <form method="GET" action="{{ route('users.index') }}" class="d-flex">
+                    <input type="text" name="search" class="form-control" placeholder="Tìm kiếm"
+                        value="{{ request('search') }}">
+                    <select name="role" class="form-select ms-2 text-dark">
+                        <option value="">Chọn vai trò</option>
+                        <option value="1" {{ request('role') == '1' ? 'selected' : '' }}>
+                            Học viên</option>
+                        <option value="2" {{ request('role') == '2' ? 'selected' : '' }}>
+                            Giảng viên</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary ms-2">Tìm kiếm</button>
+                </form>
+                {{-- <a href="{{ route('users.create') }}" class="btn btn-primary">Thêm mới người dùng</a> --}}
             </div>
             <div class="card-body p-0">
                 @if (session()->has('success') && !session()->get('success'))
