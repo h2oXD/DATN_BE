@@ -13,7 +13,7 @@ class TagController extends AdminBaseController
         // Định nghĩa các thuộc tính trong controller con
         // Ví dụ: 
         $this->model = Tag::class;
-        $this->viewPath = 'admins.tags';
+        $this->viewPath = 'admins.tags.';
         // $this->uploadPath = 'images/products'; 
     }
 }
