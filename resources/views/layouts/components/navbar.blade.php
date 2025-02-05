@@ -92,47 +92,16 @@
                 <a class="nav-link  collapsed " href="#" data-bs-toggle="collapse"
                     data-bs-target="#navProject" aria-expanded="false" aria-controls="navProject">
                     <i class="nav-icon fe fe-file me-2"></i>
-                    Project
+                    Quản lí danh mục
                 </a>
                 <div id="navProject" class="collapse " data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link " href="project-grid.html">Grid</a>
+                            <a class="nav-link " href="{{ route('categories.index')}}">Danh sách danh mục</a>
+                            
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " href="project-list.html">List</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link  collapsed " href="#" data-bs-toggle="collapse"
-                                data-bs-target="#navprojectSingle" aria-expanded="false"
-                                aria-controls="navprojectSingle">
-                                Single
-                            </a>
-                            <div id="navprojectSingle" class="collapse " data-bs-parent="#navProject">
-                                <ul class="nav flex-column">
-                                    <li class="nav-item">
-                                        <a class="nav-link  active " href="project-overview.html">Overview</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="project-task.html">Task</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="project-budget.html">Budget</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="project-team.html">Team</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="project-files.html">Files</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="project-summary.html">Summary</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link " href="add-project.html">Create Project</a>
+                            <a class="nav-link " href="{{ route('categories.create')}}">Thêm mới danh mục</a>
                         </li>
                     </ul>
                 </div>
@@ -170,69 +139,15 @@
                 <a class="nav-link  collapsed " href="#" data-bs-toggle="collapse"
                     data-bs-target="#navecommerce" aria-expanded="false" aria-controls="navecommerce">
                     <i class="nav-icon fe fe-shopping-bag me-2"></i>
-                    Ecommerce
+                    Phiếu giảm giá
                 </a>
                 <div id="navecommerce" class="collapse " data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link  collapsed " href="#" data-bs-toggle="collapse"
-                                data-bs-target="#navproduct" aria-expanded="false"
-                                aria-controls="navproduct">
-                                Product
-                            </a>
-                            <div id="navproduct" class="collapse " data-bs-parent="#navProduct">
-                                <ul class="nav flex-column">
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="ecommerce/product-grid.html">Grid</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link "
-                                            href="ecommerce/product-grid-with-sidebar.html">Grid Sidebar</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="ecommerce/products.html">Products</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="ecommerce/product-single.html">Product
-                                            Single</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="ecommerce/product-single-v2.html">Product
-                                            Single v2</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="ecommerce/add-product.html">Add Product</a>
-                                    </li>
-                                </ul>
-                            </div>
+                            <a class="nav-link " href="{{ route('vouchers.index') }}">Danh sách</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " href="ecommerce/shopping-cart.html">Shopping Cart</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link " href="ecommerce/checkout.html">Checkout</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link " href="ecommerce/order.html">Order</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link " href="ecommerce/order-single.html">Order Single</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link " href="ecommerce/order-history.html">Order History</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link " href="ecommerce/order-summary.html">Order Summary</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link " href="ecommerce/customers.html">Customers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link " href="ecommerce/customer-single.html">Customer Single</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link " href="ecommerce/add-customer.html">Add Customer</a>
+                            <a class="nav-link " href="{{ route('vouchers.create') }}">Thêm mới</a>
                         </li>
                     </ul>
                 </div>
