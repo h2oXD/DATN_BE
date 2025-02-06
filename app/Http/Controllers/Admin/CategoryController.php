@@ -9,19 +9,19 @@ use Illuminate\Http\Request;
 class CategoryController extends Controller
 {
     //
-    protected const VIEW_PATH = 'admins.categories';
+    protected const VIEW_PATH = 'admins.categories.';
 
     public function index()
     {
         $categories = Category::with('children')->whereNull('parent_id')->get();
-        return view(self::VIEW_PATH . '.' . __FUNCTION__, compact('categories'));
+        return view(self::VIEW_PATH  . __FUNCTION__, compact('categories'));
     }
 
     // Form thêm danh mục
     public function create()
     {
-        $categories = Category::whereNull('parent_id')->get();
-        return view(self::VIEW_PATH . '.' . __FUNCTION__, compact('categories'));
+        $categories = Category::whereNull('parent_id')->get();;
+        return view(self::VIEW_PATH  . __FUNCTION__, compact('categories'));
     }
 
     // Xử lý thêm danh mục
@@ -31,8 +31,6 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
         ]);
-
-        
 
         if ($validated['parent_id']) {
             $parentCategory = Category::find($validated['parent_id']);
@@ -49,7 +47,7 @@ class CategoryController extends Controller
     public function show($id)
     {
         $category = Category::with('children')->findOrFail($id);
-        return view(self::VIEW_PATH . '.' . __FUNCTION__, compact('category'));
+        return view(self::VIEW_PATH  . __FUNCTION__, compact('category'));
     }
 
     // Form cập nhật danh mục
@@ -57,7 +55,7 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail($id);
         $categories = Category::whereNull('parent_id')->where('id', '!=', $id)->get();
-        return view(self::VIEW_PATH . '.' . __FUNCTION__, compact('category', 'categories'));
+        return view(self::VIEW_PATH  . __FUNCTION__, compact('category', 'categories'));
     }
 
     // Xử lý cập nhật danh mục
