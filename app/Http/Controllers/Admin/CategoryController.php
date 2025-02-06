@@ -20,7 +20,7 @@ class CategoryController extends Controller
     // Form thêm danh mục
     public function create()
     {
-        $categories = Category::whereNull('parent_id')->get();;
+        $categories = Category::whereNull('parent_id')->get();
         return view(self::VIEW_PATH . '.' . __FUNCTION__, compact('categories'));
     }
 

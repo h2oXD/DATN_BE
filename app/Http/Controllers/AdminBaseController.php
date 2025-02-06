@@ -9,6 +9,7 @@ class AdminBaseController extends Controller
 {
     protected $model;
     protected $viewPath;
+    protected $routePath;
     protected $uploadPath;
     protected $fieldImage = 'image'; // Biến dùng chung cho tên trường ảnh
 
@@ -18,6 +19,7 @@ class AdminBaseController extends Controller
         // Ví dụ: 
         // $this->model = Product::class;
         // $this->viewPath = 'admin.products.';
+        // $this->routePath = 'products.index'; cái này dùng để đường dẫn về trang danh sách
         // $this->uploadPath = 'images/products'; 
     }
 
@@ -34,7 +36,7 @@ class AdminBaseController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate($this->validateStore());
+        $data = $request->validate($this->model::rules());
 
         if ($request->hasFile($this->fieldImage)) {
             $data[$this->fieldImage] = $this->uploadFile($request->file($this->fieldImage));
@@ -42,7 +44,7 @@ class AdminBaseController extends Controller
 
         $this->model::create($data);
 
-        return back()->with('success', 'Thêm mới thành công!');
+        return redirect()->route($this->routePath)->with('success', 'Thêm mới thành công!');
     }
 
     public function show($id)
@@ -60,7 +62,7 @@ class AdminBaseController extends Controller
     public function update(Request $request, $id)
     {
         $item = $this->model::findOrFail($id);
-        $data = $request->validate($this->validateUpdate());
+        $data = $request->validate($this->model::rules());
 
         if ($request->hasFile($this->fieldImage)) {
             $data[$this->fieldImage] = $this->uploadFile($request->file($this->fieldImage));
@@ -73,7 +75,7 @@ class AdminBaseController extends Controller
             Storage::delete($item->{$this->fieldImage});
         }
 
-        return back()->with('success', 'Cập nhật thành công!');
+        return redirect()->route($this->routePath)->with('success', 'Cập nhật thành công!');
     }
 
     public function destroy($id)
@@ -88,25 +90,12 @@ class AdminBaseController extends Controller
             Storage::delete($imagePath);
         }
 
-        return back()->with('success', 'Xóa thành công!');
+        return redirect()->route($this->routePath)->with('success', 'Xóa thành công!');
     }
 
     protected function uploadFile($file)
     {
         $fileName = time() . '_' . $file->getClientOriginalName();
         return $file->storeAs($this->uploadPath, $fileName, 'public');
-    }
-
-    public function validateStore()
-    {
-        return([
-
-        ]);
-    }
-    public function validateUpdate()
-    {
-        return([
-
-        ]);
     }
 }
