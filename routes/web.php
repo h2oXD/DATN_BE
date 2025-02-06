@@ -1,10 +1,9 @@
 <?php
 
-
+use App\Http\Controllers\Admin\StatisticsController;
 use App\Http\Controllers\Admin\UserController;
 
 use App\Http\Controllers\Admin\TagController;
-
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,3 +26,11 @@ Route::get('/login', function () {
 Route::resource('users', UserController::class);
 
 Route::resource('tags', TagController::class);
+
+Route::get('/admin/statistics/total-revenue', [StatisticsController::class, 'totalRevenue']);
+Route::get('/admin/statistics/revenue-by-course', [StatisticsController::class, 'revenueByCourse']);
+Route::get('/admin/statistics/revenue-by-lecturer', [StatisticsController::class, 'revenueByLecturer']);
+Route::get('/admin/statistics/revenue-by-time', [StatisticsController::class, 'revenueByTime']);
+Route::get('/admin/statistics/count-stats', [StatisticsController::class, 'countStats']);
+
+Route::get('/admin/dashboards/statistics', [StatisticsController::class, 'index']);

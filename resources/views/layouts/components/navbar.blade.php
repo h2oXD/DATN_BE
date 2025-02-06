@@ -15,12 +15,12 @@
                 <div id="navDashboard" class="collapse  show " data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ url('/admin/dashboards/statistics') }}">Analytics</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link  active " href="admin-dashboard.html">Overview</a>
                         </li>
                         <!-- Nav item -->
-                        <li class="nav-item">
-                            <a class="nav-link " href="dashboard-analytics.html">Analytics</a>
-                        </li>
                     </ul>
                 </div>
             </li>
@@ -57,6 +57,23 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('users.create') }}">Thêm mới người dùng</a> 
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <!-- Nav item -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#navCardManagement" aria-expanded="false" aria-controls="navCardManagement">
+                    <i class="nav-icon fe fe-user me-2"></i>
+                    Quản lí thẻ
+                </a>
+                <div id="navCardManagement" class="collapse" data-bs-parent="#sideNavbar">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('tags.index') }}">Danh sách thẻ</a> 
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('tags.create') }}">Thêm mới thẻ</a> 
                         </li>
                     </ul>
                 </div>

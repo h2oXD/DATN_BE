@@ -21,4 +21,14 @@ class Lecturer extends Model
         'total_courses',
         'total_students',
     ];
+
+    public function courses()
+    {
+        return $this->hasMany(Course::class, 'lecturer_id');
+    }
+
+    public function transactions()
+    {
+        return $this->hasManyThrough(Transaction::class, Course::class, 'lecturer_id', 'course_id');
+    }
 }

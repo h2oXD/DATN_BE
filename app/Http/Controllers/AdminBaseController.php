@@ -23,7 +23,7 @@ class AdminBaseController extends Controller
 
     public function index()
     {
-        $items = $this->model::paginate(15);
+        $items = $this->model::paginate(5);
         return view($this->viewPath . __FUNCTION__, compact('items'));
     }
 
