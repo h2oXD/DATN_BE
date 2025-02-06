@@ -25,6 +25,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::get('/lecturer/dashboard', [LecturerController::class ,'dashboard']);
+    Route::get('/lecturer/{lecturer_id}', [LecturerController::class ,'getLecturerInfo']);
     Route::get('/lecturer/{lecturer_id}/courses', [LecturerController::class ,'getCourse']);
     Route::post('/lecturer/course/create', [CourseController::class ,'lecturerCreateCourse']);
 });
