@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\StatisticsController;
-use App\Http\Controllers\Admin\UserController;
 
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TagController;
+use App\Http\Controllers\Admin\VoucherController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,13 +20,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function () {;
     return view('admins.dashboards.dash-board');
 });
 Route::get('/login', function () {
     return view('auths.login');
 });
-Route::resource('users', UserController::class);
 
 Route::resource('tags', TagController::class);
 
@@ -34,3 +36,8 @@ Route::get('/admin/statistics/revenue-by-time', [StatisticsController::class, 'r
 Route::get('/admin/statistics/count-stats', [StatisticsController::class, 'countStats']);
 
 Route::get('/admin/dashboards/statistics', [StatisticsController::class, 'index']);
+
+Route::resource('vouchers', VoucherController::class);
+Route::resource('categories', CategoryController::class);
+Route::resource('users', UserController::class);
+Route::resource('tags', TagController::class);

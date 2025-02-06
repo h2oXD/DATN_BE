@@ -16,10 +16,34 @@ class UserController extends Controller
 {
     const PATH_VIEW = 'admins.users.';
 
-    public function index()
+    // public function index()
+    // {
+    //     $users = User::with('roles')->latest('id')->paginate(5);
+    //     // dd($users);
+    //     return view(self::PATH_VIEW . 'index', compact('users'));
+    // }
+
+    public function index(Request $request)
     {
-        $users = User::with('roles')->latest('id')->paginate(5);
-        // dd($users);
+        $search = $request->get('search');
+        $role = $request->get('role');
+        $users = User::with('roles')
+            ->when($search, function ($query, $search) {
+                return $query->where('name', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%");
+            })
+            ->when($role, function ($query, $role) {
+                return $query->whereHas('roles', function ($query) use ($role) {
+                    if ($role == 1) {
+                        $query->where('role_id', 1);
+                    } elseif ($role == 2) {
+                        $query->where('role_id', 2);
+                    }
+                });
+            })
+            ->latest('id')
+            ->paginate(5);
+
         return view(self::PATH_VIEW . 'index', compact('users'));
     }
 
@@ -39,8 +63,26 @@ class UserController extends Controller
             'profile_picture' => 'nullable|image|max:2048',
             'role' => 'required|in:lecturer,student',
             'password' => 'required|min:8|confirmed',
-        ]);
+        ], [
+            'name.required' => 'Vui lòng nhập họ và tên.',
+            'name.max' => 'Họ và tên không được vượt quá 255 ký tự.',
 
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không đúng định dạng.',
+            'email.unique' => 'Email này đã được sử dụng.',
+
+            'phone_number.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
+
+            'profile_picture.image' => 'Ảnh đại diện phải là một tệp hình ảnh.',
+            'profile_picture.max' => 'Ảnh đại diện không được lớn hơn 2MB.',
+
+            'role.required' => 'Vui lòng chọn vai trò.',
+            'role.in' => 'Vai trò không hợp lệ, chỉ chấp nhận lecturer hoặc student.',
+
+            'password.required' => 'Vui lòng nhập mật khẩu.',
+            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
+            'password.confirmed' => 'Mật khẩu xác nhận không khớp.',
+        ]);
         try {
             if ($request->hasFile('profile_picture')) {
                 $data['profile_picture'] = Storage::put('profile_pictures', $request->file('profile_picture'));
@@ -89,6 +131,21 @@ class UserController extends Controller
             'phone_number' => 'nullable|max:20',
             'profile_picture' => 'nullable|image|max:2048',
             'role' => 'required|in:lecturer,student',
+        ], [
+            'name.required' => 'Vui lòng nhập họ và tên.',
+            'name.max' => 'Họ và tên không được vượt quá 255 ký tự.',
+
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không đúng định dạng.',
+            'email.unique' => 'Email này đã được sử dụng.',
+
+            'phone_number.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
+
+            'profile_picture.image' => 'Ảnh đại diện phải là một tệp hình ảnh.',
+            'profile_picture.max' => 'Ảnh đại diện không được lớn hơn 2MB.',
+
+            'role.required' => 'Vui lòng chọn vai trò.',
+            'role.in' => 'Vai trò không hợp lệ, chỉ chấp nhận lecturer hoặc student.',
         ]);
 
         try {

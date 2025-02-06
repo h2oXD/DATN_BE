@@ -1,11 +1,11 @@
 @extends('layouts.master')
 
 @section('content')
-    <div class="container my-5">
+
         <div class="card">
             <div class="card-header d-flex justify-content-between align-content-center">
-                <h2>Danh sách Tags</h2>
-                <a href="{{ route('tags.create') }}" class="btn btn-primary">Thêm Tag</a>
+                <h2 class="m-0">Danh sách Tags</h2>
+                <a href="{{ route('tags.create') }}" class="btn btn-primary">Thêm mới</a>
             </div>
             <div class="card-body">
                 @if (session('success'))
@@ -41,5 +41,5 @@
                 {{ $items->links() }}
             </div>
         </div>
-    </div>
+
 @endsection

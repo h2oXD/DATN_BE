@@ -31,4 +31,8 @@ class Lecturer extends Model
     {
         return $this->hasManyThrough(Transaction::class, Course::class, 'lecturer_id', 'course_id');
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
