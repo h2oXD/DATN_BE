@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->foreignIdFor(Lecturer::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Category::class)->constrained()->onDelete('cascade');
 
-            $table->integer('price');
+            $table->integer('price')->nullable();
             $table->integer('price_sale')->nullable();
 
             $table->string('title');

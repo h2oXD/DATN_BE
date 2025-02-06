@@ -20,8 +20,6 @@ class CourseController extends Controller
             'category_id' => $request->category_id,
             'status' => 'draft',
             'admin_commission_rate' => 30,
-            'price' => 1,
-            'price_sale' => 0,
             'created_at' => Carbon::now(),
             'updated_at' => null
         ]);
