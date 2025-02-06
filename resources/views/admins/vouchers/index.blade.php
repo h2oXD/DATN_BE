@@ -43,8 +43,7 @@
                                 <th scope="col">Tên</th>
                                 <th scope="col">Mã giảm giá</th>
                                 <th scope="col">Loại giảm giá</th>
-                                <th scope="col">Giảm %</th>
-                                <th scope="col">Giảm giá tiền</th>
+                                <th scope="col">Giảm %/giá</th>
                                 <th scope="col">Số lượng</th>
                                 <th scope="col">Trạng thái</th>
                                 <th scope="col"></th>
@@ -64,15 +63,10 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if ($vouchers->discount_percent)
+                                        @if ($vouchers->type === 'percent' && $vouchers->discount_percent)
                                             <span class="">{{ $vouchers->discount_percent }}%</span>
-                                        @else
-                                            <span class="badge bg-warning">Không có</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($vouchers->discount_amount)
-                                            <span class="">{{ $vouchers->discount_amount }} VND</span>
+                                        @elseif ($vouchers->type === 'fix_amount' && $vouchers->discount_amount)
+                                            <span class="">{{ number_format($vouchers->discount_amount) }} VND</span>
                                         @else
                                             <span class="badge bg-warning">Không có</span>
                                         @endif

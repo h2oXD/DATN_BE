@@ -28,83 +28,104 @@
         </div>
     @endif
 
-    <div class="container my-3">
-        <h1 class="mb-5">Sửa phiếu giảm giá</h1>
-        <form method="POST" action="{{ route('vouchers.update', $item->id) }}" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
-            <div class="mb-3 row">
-                <label for="name" class="col-4 col-form-label">Tên</label>
-                <div class="col-8">
-                    <input type="text" class="form-control" name="name" id="name" value="{{ old('name', $item->name) }}" required />
+    <div class="card">
+        <div class="card-header">
+            <h2 class="m-0">Cập nhật phiếu giảm giá</h2>
+        </div>
+        <div class="card-body">
+            <form method="POST" class="row" action="{{ route('vouchers.update', $item->id) }}" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="col-lg-6 mb-2 col-12">
+                    <label for="name" class="form-label">Tên</label>
+                    <input type="text" class="form-control" name="name" id="name" value="{{ old('name', $item->name) }}"
+                        required />
                 </div>
-            </div>
-            <div class="mb-3 row">
-                <label for="code" class="col-4 col-form-label">Mã giảm giá</label>
-                <div class="col-8">
-                    <input type="text" class="form-control" name="code" id="code" value="{{ old('code', $item->code) }}" required />
+                <div class="col-lg-6 mb-2 col-12">
+                    <label for="code" class="form-label">Mã giảm giá</label>
+                    <input type="text" class="form-control" name="code" id="code" value="{{ old('code', $item->code) }}"
+                        required />
                 </div>
-            </div>
-            <div class="mb-3 row">
-                <label for="description" class="col-4 col-form-label">Nội dung</label>
-                <div class="col-8">
-                    <input type="text" class="form-control" name="description" id="description" value="{{ old('description', $item->description) }}" />
+
+                <div class="col-lg-6 mb-2 col-12">
+                    <label for="description" class="form-label">Nội dung</label>
+                    <input type="text" class="form-control" name="description" id="description"
+                    value="{{ old('description', $item->description) }}" />
                 </div>
-            </div>
-            <div class="mb-3 row">
-                <label for="type" class="col-4 col-form-label">Loại giảm giá</label>
-                <div class="col-8">
+
+                <div class="col-lg-6 mb-2 col-12">
+                    <label for="type" class="form-label">Loại giảm giá</label>
                     <select name="type" class="form-select text-dark" required>
                         <option value="percent" {{ $item->type === 'percent' ? 'selected' : '' }}>Phần trăm</option>
                         <option value="fix_amount" {{ $item->type === 'fix_amount' ? 'selected' : '' }}>Giá tiền</option>
                     </select>
                 </div>
-            </div>
-            <div class="mb-3 row">
-                <label for="discount_percent" class="col-4 col-form-label">Số % giảm</label>
-                <div class="col-8">
-                    <input type="number" class="form-control" name="discount_percent" id="discount_percent" min="0" value="{{ old('discount_percent', $item->discount_percent) }}"/>
+
+                <div class="col-lg-6 mb-2 col-12">
+                    <label for="discount_percent" class="form-label">Số % giảm</label>
+                    <input type="number" class="form-control" name="discount_percent" id="discount_percent"
+                        min="0" value="{{ old('discount_percent', $item->discount_percent) }}"/>
                 </div>
-            </div>
-            <div class="mb-3 row">
-                <label for="discount_amount" class="col-4 col-form-label">Số tiền giảm</label>
-                <div class="col-8">
-                    <input type="number" class="form-control" name="discount_amount" id="discount_amount" min="0" value="{{ old('discount_amount', $item->discount_amount) }}"/>
+
+                <div class="col-lg-6 mb-2 col-12">
+                    <label for="discount_amount" class="form-label">Số tiền giảm</label>
+                    <input type="number" class="form-control" name="discount_amount" id="discount_amount" min="0" 
+                    value="{{ old('discount_amount', $item->discount_amount) }}"/>
                 </div>
-            </div>
-            <div class="mb-3 row">
-                <label for="start_time" class="col-4 col-form-label">Ngày bắt đầu</label>
-                <div class="col-8">
+
+                <div class="col-lg-6 mb-2 col-12">
+                    <label for="start_time" class="form-label">Ngày bắt đầu</label>
                     <input type="datetime-local" class="form-control" name="start_time" id="start_time" required value="{{ old('start_time', $item->start_time) }}"/>
                 </div>
-            </div>
-            <div class="mb-3 row">
-                <label for="end_time" class="col-4 col-form-label">Ngày kết thúc</label>
-                <div class="col-8">
+
+                <div class="col-lg-6 mb-2 col-12">
+                    <label for="end_time" class="form-label">Ngày kết thúc</label>
                     <input type="datetime-local" class="form-control" name="end_time" id="end_time" required value="{{ old('end_time', $item->end_time) }}"/>
                 </div>
-            </div>
-            <div class="mb-3 row">
-                <label for="count" class="col-4 col-form-label">Số lượng</label>
-                <div class="col-8">
+
+                <div class="col-lg-6 mb-2 col-12">
+                    <label for="count" class="form-label">Số lượng</label>
                     <input type="number" class="form-control" name="count" id="count" required min="0" value="{{ old('count', $item->count) }}"/>
                 </div>
-            </div>
-            <div class="mb-3 row">
-                <label for="is_active" class="col-4 col-form-label">Trạng thái</label>
-                <div class="col-8">
+
+                <div class="col-lg-6 mb-2 col-12">
+                    <label for="is_active" class="form-label">Trạng thái</label>
                     <select name="is_active" class="form-select text-dark" required>
                         <option value="1" {{ $item->is_active == '1' ? 'selected' : '' }}>Hoạt động</option>
                         <option value="0" {{ $item->is_active == '0' ? 'selected' : '' }}>Khóa</option>
                     </select>
                 </div>
-            </div>
-            <div class="mb-5 row">
-                <div class="offset-sm-4 col-sm-8">
+                <div class="col-12">
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                     <a href="{{ route('vouchers.index') }}" class="btn btn-secondary">Quay lại</a>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const typeSelect = document.querySelector('select[name="type"]');
+            const discountPercentInput = document.querySelector('input[name="discount_percent"]');
+            const discountAmountInput = document.querySelector('input[name="discount_amount"]');
+
+            function toggleDiscountFields() {
+                if (typeSelect.value === "percent") {
+                    discountPercentInput.removeAttribute("disabled");
+                    discountAmountInput.setAttribute("disabled", "disabled");
+                    discountAmountInput.value = "";
+                } else {
+                    discountAmountInput.removeAttribute("disabled");
+                    discountPercentInput.setAttribute("disabled", "disabled");
+                    discountPercentInput.value = "";
+                }
+            }
+
+            // Gọi hàm khi trang tải xong để đảm bảo đúng trạng thái ban đầu
+            toggleDiscountFields();
+
+            // Gán sự kiện thay đổi giá trị
+            typeSelect.addEventListener("change", toggleDiscountFields);
+        });
+    </script>
 @endsection
