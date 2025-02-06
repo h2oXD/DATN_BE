@@ -24,7 +24,10 @@
 
             <!-- Page Header -->
             <!-- Container fluid -->
-            @yield('content')
+            <div class="container my-5">
+                @yield('content')
+            </div>
+
         </main>
     </div>
     @yield('script')
