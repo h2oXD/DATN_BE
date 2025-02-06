@@ -5,7 +5,6 @@
 @endsection
 
 @section('content')
-    <h1>Thêm mới phiếu giảm giá</h1>
 
     @if (session()->has('success') && !session()->get('success'))
         <div class="alert alert-danger">
@@ -29,7 +28,8 @@
         </div>
     @endif
 
-    <div class="container">
+    <div class="container my-3">
+        <h1 class="mb-5">Thêm mới phiếu giảm giá</h1>
         <form method="POST" action="{{ route('vouchers.store') }}" enctype="multipart/form-data">
             @csrf
             <div class="mb-3 row">
@@ -98,11 +98,39 @@
                     </select>
                 </div>
             </div>
-            <div class="mb-3 row">
+            <div class="mb-5 row">
                 <div class="offset-sm-4 col-sm-8">
                     <button type="submit" class="btn btn-primary">Thêm mới</button>
+                    <a href="{{ route('vouchers.index') }}" class="btn btn-secondary">Quay lại</a>
                 </div>
             </div>
         </form>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const typeSelect = document.querySelector('select[name="type"]');
+            const discountPercentInput = document.querySelector('input[name="discount_percent"]');
+            const discountAmountInput = document.querySelector('input[name="discount_amount"]');
+    
+            function toggleDiscountFields() {
+                if (typeSelect.value === "percent") {
+                    discountPercentInput.removeAttribute("disabled");
+                    discountAmountInput.setAttribute("disabled", "disabled");
+                    discountAmountInput.value = "";
+                } else {
+                    discountAmountInput.removeAttribute("disabled");
+                    discountPercentInput.setAttribute("disabled", "disabled");
+                    discountPercentInput.value = "";
+                }
+            }
+    
+            // Gọi hàm khi trang tải xong để đảm bảo đúng trạng thái ban đầu
+            toggleDiscountFields();
+    
+            // Gán sự kiện thay đổi giá trị
+            typeSelect.addEventListener("change", toggleDiscountFields);
+        });
+    </script>
+    
 @endsection

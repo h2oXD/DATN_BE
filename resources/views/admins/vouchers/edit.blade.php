@@ -5,7 +5,6 @@
 @endsection
 
 @section('content')
-    <h1>Sửa phiếu giảm giá</h1>
 
     @if (session()->has('success') && !session()->get('success'))
         <div class="alert alert-danger">
@@ -29,7 +28,8 @@
         </div>
     @endif
 
-    <div class="container">
+    <div class="container my-3">
+        <h1 class="mb-5">Sửa phiếu giảm giá</h1>
         <form method="POST" action="{{ route('vouchers.update', $item->id) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -99,9 +99,10 @@
                     </select>
                 </div>
             </div>
-            <div class="mb-3 row">
+            <div class="mb-5 row">
                 <div class="offset-sm-4 col-sm-8">
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
+                    <a href="{{ route('vouchers.index') }}" class="btn btn-secondary">Quay lại</a>
                 </div>
             </div>
         </form>
