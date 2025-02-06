@@ -5,6 +5,28 @@
 @endsection
 
 @section('content')
+    @if (session()->has('success') && !session()->get('success'))
+        <div class="alert alert-danger">
+            {{ session()->get('error') }}
+        </div>
+    @endif
+
+    @if (session()->has('success') && session()->get('success'))
+        <div class="alert alert-info">
+            Thao tác thành công!
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="card">
         <div class="card-header">
             <h2 class="m-0">Thêm mới phiếu giảm giá</h2>
@@ -14,19 +36,16 @@
                 @csrf
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="name" class="form-label">Tên</label>
-                    <input type="text" class="form-control" name="name" id="name" value="{{ old('name') }}"
-                        required />
+                    <input type="text" class="form-control" name="name" id="name" required />
                 </div>
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="code" class="form-label">Mã giảm giá</label>
-                    <input type="text" class="form-control" name="code" id="code" value="{{ old('code') }}"
-                        required />
+                    <input type="text" class="form-control" name="code" id="code" required />
                 </div>
 
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="description" class="form-label">Nội dung</label>
-                    <input type="text" class="form-control" name="description" id="description"
-                        value="{{ old('description') }}" />
+                    <input type="text" class="form-control" name="description" id="description" />
                 </div>
 
                 <div class="col-lg-6 mb-2 col-12">
@@ -72,31 +91,35 @@
                 </div>
                 <div class="col-12">
                     <button type="submit" class="btn btn-primary">Thêm mới</button>
+                    <a href="{{ route('vouchers.index') }}" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>
     </div>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const typeSelect = document.querySelector('select[name="type"]');
+            const discountPercentInput = document.querySelector('input[name="discount_percent"]');
+            const discountAmountInput = document.querySelector('input[name="discount_amount"]');
 
-    @if (session()->has('success') && !session()->get('success'))
-        <div class="alert alert-danger">
-            {{ session()->get('error') }}
-        </div>
-    @endif
+            function toggleDiscountFields() {
+                if (typeSelect.value === "percent") {
+                    discountPercentInput.removeAttribute("disabled");
+                    discountAmountInput.setAttribute("disabled", "disabled");
+                    discountAmountInput.value = "";
+                } else {
+                    discountAmountInput.removeAttribute("disabled");
+                    discountPercentInput.setAttribute("disabled", "disabled");
+                    discountPercentInput.value = "";
+                }
+            }
 
-    @if (session()->has('success') && session()->get('success'))
-        <div class="alert alert-info">
-            Thao tác thành công!
-        </div>
-    @endif
+            // Gọi hàm khi trang tải xong để đảm bảo đúng trạng thái ban đầu
+            toggleDiscountFields();
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+            // Gán sự kiện thay đổi giá trị
+            typeSelect.addEventListener("change", toggleDiscountFields);
+        });
+    </script>
 @endsection
