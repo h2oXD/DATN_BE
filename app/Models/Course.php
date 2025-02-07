@@ -34,4 +34,9 @@ class Course extends Model
         'updated_at',
         'submited_at'
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
 }

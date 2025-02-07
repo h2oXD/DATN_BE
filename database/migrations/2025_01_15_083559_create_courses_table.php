@@ -15,7 +15,7 @@ return new class extends Migration {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Lecturer::class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(Category::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Category::class)->nullable()->constrained()->onDelete('cascade');
 
             $table->integer('price')->nullable();
             $table->integer('price_sale')->nullable();
@@ -25,7 +25,7 @@ return new class extends Migration {
             $table->text('description')->nullable()->comment("Mô tả");
             $table->string('primary_content')->nullable()->comment("Nội dung chính trong khoá học này là");
             
-            $table->enum('status', ['draft', 'published']);
+            $table->enum('status', ['draft', 'pending', 'published']);
             $table->tinyInteger('is_show_home')->nullable();
 
             $table->text('target_students')->nullable();
