@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {;
     return view('admins.dashboards.dash-board');
 });
-Route::get('/login', function () {
+Route::get('login', function () {
     return view('auths.login');
 });
 
