@@ -34,7 +34,7 @@ class LecturerController extends Controller
             // ->where('lecturer_id', request()->user()->lecturer_id)
             // ->get();
             $courses = Course::where('lecturer_id', request()->user()->lecturer_id)
-            ->paginate(3);
+            ->paginate(4);
             return response()->json([
                 'message' => 'Lấy dữ liệu thành công',
                 'courses' => $courses
