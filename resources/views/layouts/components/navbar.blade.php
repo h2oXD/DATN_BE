@@ -14,7 +14,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link text-light " href="{{ url('/admin/dashboards/statistics') }}">
-                    <i class="nav-icon text-light fe fe-home me-2"></i>
+                    <i class="fe fe-trending-up mr-2 me-2"></i>
                     Thống kê 
                 </a>
             </li>
@@ -82,7 +82,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link text-light collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#navCardManagement" aria-expanded="false" aria-controls="navCardManagement">
-                    <i class="nav-icon fe fe-user me-2"></i>
+                    <i class=" nav-icon text-light fe fe-tag me-2"></i>
                     Quản lí thẻ
                 </a>
                 <div id="navCardManagement" class="collapse" data-bs-parent="#sideNavbar">

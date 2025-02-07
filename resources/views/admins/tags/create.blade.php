@@ -11,6 +11,9 @@
                 <div class="mb-3">
                     <label for="name" class="form-label">Tên Tag</label>
                     <input type="text" name="name" class="form-control" required>
+                    @error('name')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
                 <button type="submit" class="btn btn-success">Lưu</button>
                 <a href="{{ route('tags.index') }}" class="btn btn-secondary">Quay lại</a>
