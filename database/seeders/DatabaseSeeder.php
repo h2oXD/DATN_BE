@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Course;
 use App\Models\Lecturer;
 use App\Models\Role;
 use App\Models\Student;

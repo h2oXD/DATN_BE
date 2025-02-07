@@ -34,4 +34,19 @@ class Course extends Model
         'updated_at',
         'submited_at'
     ];
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
+    public function lecturer()
+    {
+        return $this->belongsTo(Lecturer::class);
+    }
 }

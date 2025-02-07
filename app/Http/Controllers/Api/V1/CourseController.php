@@ -12,20 +12,25 @@ class CourseController extends Controller
 {
     public function lecturerCreateCourse(Request $request)
     {
-        $userID = $request->user()->id;
-        $lecturer = Lecturer::where('user_id',$userID)->first();
-        $course = Course::create([
-            'title' => $request->title,
-            'lecturer_id' => $lecturer->id,
-            'category_id' => $request->category_id,
-            'status' => 'draft',
-            'admin_commission_rate' => 30,
-            'created_at' => Carbon::now(),
-            'updated_at' => null
-        ]);
+        try {
+            $course = Course::create([
+                'title' => $request->title,
+                'lecturer_id' => $request->user()->lecturer->id,
+                'category_id' => $request->category_id,
+                'status' => 'draft',
+                'admin_commission_rate' => 30,
+                'created_at' => Carbon::now(),
+                'updated_at' => null
+            ]);
 
-        return response()->json([
-            'data' => $course->id,
-        ]);
+            return response()->json([
+                'data' => $course->id,
+            ]);
+        }
+        catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th,
+            ]);
+        }
     }
 }
