@@ -25,7 +25,7 @@ class AdminBaseController extends Controller
 
     public function index()
     {
-        $items = $this->model::paginate(15);
+        $items = $this->model::paginate(5);
         return view($this->viewPath . __FUNCTION__, compact('items'));
     }
 
@@ -62,7 +62,7 @@ class AdminBaseController extends Controller
     public function update(Request $request, $id)
     {
         $item = $this->model::findOrFail($id);
-        $data = $request->validate($this->model::rules());
+        $data = $request->validate($this->model::rules($id));
 
         if ($request->hasFile($this->fieldImage)) {
             $data[$this->fieldImage] = $this->uploadFile($request->file($this->fieldImage));

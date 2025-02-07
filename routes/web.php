@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\StatisticsController;
 
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\UserController;
@@ -22,11 +23,19 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {;
     return view('admins.dashboards.dash-board');
 });
-Route::get('/login', function () {
+Route::get('login', function () {
     return view('auths.login');
 });
 
 Route::resource('tags', TagController::class);
+
+Route::get('/admin/statistics/total-revenue', [StatisticsController::class, 'totalRevenue']);
+Route::get('/admin/statistics/revenue-by-course', [StatisticsController::class, 'revenueByCourse']);
+Route::get('/admin/statistics/revenue-by-lecturer', [StatisticsController::class, 'revenueByLecturer']);
+Route::get('/admin/statistics/revenue-by-time', [StatisticsController::class, 'revenueByTime']);
+Route::get('/admin/statistics/count-stats', [StatisticsController::class, 'countStats']);
+
+Route::get('/admin/dashboards/statistics', [StatisticsController::class, 'index']);
 
 Route::resource('vouchers', VoucherController::class);
 Route::resource('categories', CategoryController::class);
