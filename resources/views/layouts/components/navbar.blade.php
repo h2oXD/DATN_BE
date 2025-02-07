@@ -27,14 +27,7 @@
                 <div id="navCourses" class="collapse " data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-light " href="admin-course-overview.html">All Courses</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light " href="admin-course-category.html">Courses Category</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light " href="admin-course-category-single.html">Category
-                                Single</a>
+                            <a class="nav-link text-light " href="{{ route(name: 'courses.index') }}">Danh sách khóa học</a>
                         </li>
                     </ul>
                 </div>
