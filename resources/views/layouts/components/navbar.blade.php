@@ -13,6 +13,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link text-light " href="{{ url('/admin/dashboards/statistics') }}">
+                    <i class="nav-icon text-light fe fe-home me-2"></i>
+                    Thống kê 
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link text-light  collapsed " href="#" data-bs-toggle="collapse"
                     data-bs-target="#navCourses" aria-expanded="false" aria-controls="navCourses">
                     <i class="nav-icon text-light fe fe-book me-2"></i>
@@ -70,6 +76,22 @@
                         <li class="nav-item">
                             <a class="nav-link text-light " href="{{ route('categories.create') }}">Thêm mới danh
                                 mục</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-light collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#navCardManagement" aria-expanded="false" aria-controls="navCardManagement">
+                    <i class="nav-icon fe fe-user me-2"></i>
+                    Quản lí thẻ
+                </a>
+                <div id="navCardManagement" class="collapse" data-bs-parent="#sideNavbar">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="{{ route('tags.index') }}">Danh sách thẻ</a> 
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="{{ route('tags.create') }}">Thêm mới thẻ</a> 
                         </li>
                     </ul>
                 </div>
