@@ -34,19 +34,25 @@ class Course extends Model
         'updated_at',
         'submited_at'
     ];
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
 
-
-    public function tags()
-    {
-        return $this->belongsToMany(Tag::class);
-    }
 
     public function lecturer()
     {
-        return $this->belongsTo(Lecturer::class);
+        return $this->belongsTo(Lecturer::class, 'lecturer_id');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'course_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+
+    }
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'course_tag', 'course_id', 'tag_id');
     }
 }

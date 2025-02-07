@@ -13,6 +13,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link text-light " href="{{ url('/admin/dashboards/statistics') }}">
+                    <i class="nav-icon text-light fe fe-home me-2"></i>
+                    Thống kê 
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link text-light  collapsed " href="#" data-bs-toggle="collapse"
                     data-bs-target="#navCourses" aria-expanded="false" aria-controls="navCourses">
                     <i class="nav-icon text-light fe fe-book me-2"></i>
@@ -21,14 +27,7 @@
                 <div id="navCourses" class="collapse " data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-light " href="admin-course-overview.html">All Courses</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light " href="admin-course-category.html">Courses Category</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light " href="admin-course-category-single.html">Category
-                                Single</a>
+                            <a class="nav-link text-light " href="{{ route(name: 'courses.index') }}">Danh sách khóa học</a>
                         </li>
                     </ul>
                 </div>
@@ -70,6 +69,22 @@
                         <li class="nav-item">
                             <a class="nav-link text-light " href="{{ route('categories.create') }}">Thêm mới danh
                                 mục</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-light collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#navCardManagement" aria-expanded="false" aria-controls="navCardManagement">
+                    <i class="nav-icon fe fe-user me-2"></i>
+                    Quản lí thẻ
+                </a>
+                <div id="navCardManagement" class="collapse" data-bs-parent="#sideNavbar">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="{{ route('tags.index') }}">Danh sách thẻ</a> 
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="{{ route('tags.create') }}">Thêm mới thẻ</a> 
                         </li>
                     </ul>
                 </div>

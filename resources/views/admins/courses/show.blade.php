@@ -38,7 +38,7 @@
                 </div>
                 <div class="mb-3">
                     <strong>Ảnh:</strong>
-                    <img src="{{ Storage::url($course->thumbnail) }}" alt="thumbnail" class="img-fluid">
+                    <img src="{{ Storage::url($course->thumbnail) }}" alt="thumbnail" height="100" width="100">
                 </div>
                 <a href="{{ route('courses.index') }}" class="btn btn-secondary">Quay lại danh sách khóa học</a>
             </div>

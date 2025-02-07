@@ -18,7 +18,7 @@
                     </div>
                     <div class="col-lg-2 col-12 mb-2">
                         <select name="category" class="form-select ms-2 text-dark">
-                            <option value="">Chọn danh mục</option>
+                            <option value="">Tất cả danh mục</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                             @endforeach
@@ -36,8 +36,8 @@
                                 <th scope="col">Danh mục</th>
                                 <th scope="col">Giảng viên</th>
                                 <th scope="col">Trạng thái</th>
-                                <th scope="col">Ngày tạo</th>
-                                <th scope="col">Hành động</th>
+                                <th scope="col">Thao tác</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -59,19 +59,52 @@
                                             <span class="badge bg-danger">Đã từ chối</span>
                                         @endif
                                     </td>
-                                    <td>{{ $course->created_at }}</td>
+                                    
                                     <td>
-                                        <a href="{{ route('courses.show', $course->id) }}" class="btn btn-info btn-sm">Xem</a>
                                         @if ($course->status == 'draft')
-                                            <form action="{{ route('courses.approve', $course->id) }}" method="POST" style="display:inline-block;">
-                                                @csrf
-                                                <button type="submit" class="btn btn-success btn-sm">Phê duyệt</button>
-                                            </form>
-                                            <form action="{{ route('courses.reject', $course->id) }}" method="POST" style="display:inline-block;">
-                                                @csrf
-                                                <button type="submit" class="btn btn-danger btn-sm">Từ chối</button>
-                                            </form>
-                                        @endif
+                                        <form action="{{ route('courses.approve', $course->id) }}" method="POST" style="display:inline-block;">
+                                            @csrf
+                                            <button type="submit" class="btn btn-success btn-sm">Phê duyệt</button>
+                                        </form>
+                                        <form action="{{ route('courses.reject', $course->id) }}" method="POST" style="display:inline-block;">
+                                            @csrf
+                                            <button type="submit" class="btn btn-danger btn-sm">Từ chối</button>
+                                        </form>
+                                    @endif
+
+                                    </td>
+                                    <td>
+                                        <span class="dropdown dropstart">
+                                            <a class="btn-icon btn btn-ghost btn-sm rounded-circle" href="#"
+                                                role="button" data-bs-toggle="dropdown" data-bs-offset="-20,20"
+                                                aria-expanded="false">
+                                                <i class="fe fe-more-vertical"></i>
+                                            </a>
+                                            <span class="dropdown-menu">
+                                                <span class="dropdown-header">Settings</span>
+                                                <a href="{{ route('courses.show', $course->id) }}" class="dropdown-item">
+                                                    <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="size-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                                    </svg>
+                                                    Xem
+                                                </a>
+
+                                                <a href="{{ route('courses.edit', $course->id) }}" class="dropdown-item">
+                                                    <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="size-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                                    </svg>
+                                                    Sửa
+                                                </a>
+                                            </span>
+                                        </span>
                                     </td>
                                 </tr>
                             @endforeach

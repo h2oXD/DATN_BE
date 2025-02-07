@@ -12,9 +12,8 @@ use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
-    const PATH_VIEW = 'admins.courses.';  // Đường dẫn đến view quản lý khóa học
+    const PATH_VIEW = 'admins.courses.';  
 
-    // Xem danh sách khóa học (chờ duyệt, đã phê duyệt, đã từ chối)
     public function index(Request $request)
     {
         $search = $request->get('search');
@@ -22,7 +21,6 @@ class CourseController extends Controller
         $tag = $request->get('tag');
         $status = $request->get('status');
     
-        // Lấy danh sách danh mục
         $categories = Category::all();
     
         $courses = Course::with('category', 'tags', 'lecturer')
@@ -43,46 +41,32 @@ class CourseController extends Controller
             })
             ->latest('id')
             ->paginate(10);
-    
         return view(self::PATH_VIEW . 'index', compact('courses', 'categories'));
     }
     
-
-    // Xem chi tiết khóa học
     public function show($id)
     {
         $course = Course::with(['category', 'tags', 'lecturer'])->findOrFail($id);
         return view(self::PATH_VIEW . 'show', compact('course'));
     }
 
-    // Phê duyệt khóa học
     public function approve(Request $request, $id)
     {
         $course = Course::findOrFail($id);
-        $course->status = 'published';  // Đã phê duyệt
-        $course->submited_at = now();  // Thời gian phê duyệt
+        $course->status = 'published'; 
+        $course->submited_at = now();  
         $course->save();
 
         return redirect()->route('courses.index')->with('success', 'Khóa học đã được phê duyệt');
     }
+public function reject(Request $request, $id)
+{
+    $course = Course::findOrFail($id);
+    $course->status = 'draft';  
+    $course->save();
+    return redirect()->route('courses.index')->with('success', 'Khóa học đã bị từ chối');
+}
 
-    // Từ chối khóa học
-    public function reject(Request $request, $id)
-    {
-        $course = Course::findOrFail($id);
-        $course->status = 'draft';  // Đặt lại trạng thái là chờ duyệt
-        $course->save();
-
-        // Gửi lý do từ chối cho giảng viên qua email (nếu có)
-        // $instructor = Lecturer::find($course->lecturer_id);
-        // if ($instructor) {
-        //     \Mail::to($instructor->user->email)->send(new \App\Mail\CourseRejectionMail($course, $request->input('comment')));
-        // }
-
-        return redirect()->route('courses.index')->with('success', 'Khóa học đã bị từ chối');
-    }
-
-    // Chỉnh sửa khóa học
     public function edit($id)
     {
         $course = Course::findOrFail($id);
@@ -91,7 +75,6 @@ class CourseController extends Controller
         return view(self::PATH_VIEW . 'edit', compact('course', 'categories', 'tags'));
     }
 
-    // Cập nhật khóa học
     public function update(Request $request, $id)
     {
         $course = Course::findOrFail($id);
@@ -108,9 +91,7 @@ class CourseController extends Controller
         ]);
 
         try {
-            // Upload ảnh đại diện mới nếu có
             if ($request->hasFile('thumbnail')) {
-                // Xóa ảnh cũ nếu có
                 if ($course->thumbnail) {
                     Storage::delete($course->thumbnail);
                 }
@@ -118,8 +99,6 @@ class CourseController extends Controller
             }
 
             $course->update($data);
-
-            // Cập nhật tags cho khóa học
             if ($request->has('tags')) {
                 $course->tags()->sync($request->input('tags'));
             }
