@@ -42,12 +42,6 @@
                     <label for="code" class="form-label">Mã giảm giá</label>
                     <input type="text" class="form-control" name="code" id="code" required />
                 </div>
-
-                <div class="col-lg-6 mb-2 col-12">
-                    <label for="description" class="form-label">Nội dung</label>
-                    <input type="text" class="form-control" name="description" id="description" />
-                </div>
-
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="type" class="form-label">Loại giảm giá</label>
                     <select name="type" class="form-select text-dark" required>
@@ -89,6 +83,10 @@
                         <option value="0">Khóa</option>
                     </select>
                 </div>
+                <div class="col-12 my-2">
+                    <label for="description" class="form-label">Nội dung</label>
+                    <textarea name="description" id="description"></textarea>
+                </div>
                 <div class="col-12">
                     <button type="submit" class="btn btn-primary">Thêm mới</button>
                     <a href="{{ route('vouchers.index') }}" class="btn btn-secondary">Quay lại</a>
@@ -120,6 +118,17 @@
 
             // Gán sự kiện thay đổi giá trị
             typeSelect.addEventListener("change", toggleDiscountFields);
+        });
+    </script>
+@endsection
+@section('script')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.6.0/tinymce.min.js"
+        integrity="sha512-/4EpSbZW47rO/cUIb0AMRs/xWwE8pyOLf8eiDWQ6sQash5RP1Cl8Zi2aqa4QEufjeqnzTK8CLZWX7J5ZjLcc1Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        tinymce.init({
+            selector: 'textarea#description'
         });
     </script>
 @endsection
