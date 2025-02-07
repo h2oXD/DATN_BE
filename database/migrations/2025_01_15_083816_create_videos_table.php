@@ -17,7 +17,7 @@ return new class extends Migration
 
             $table->foreignIdFor(Lesson::class)->constrained()->onDelete('cascade');
             $table->string('video_url');
-            $table->integer('duration');
+            $table->integer('duration')->nullable()->comment('Thời lượng video');
 
             $table->timestamps();
         });
