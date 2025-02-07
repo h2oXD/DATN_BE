@@ -15,11 +15,13 @@ return new class extends Migration
             $table->id();
 
             $table->string('name', 50)->comment('Tên danh mục');
+            $table->string('slug', 100)->nullable()->unique()->comment('Slug của danh mục');
             $table->string('image')->nullable()->comment('Ảnh của danh mục');
 
             $table->foreignId('parent_id')->nullable()->constrained('categories')->onDelete('cascade')->comment('id danh mục cha'); 
             
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
