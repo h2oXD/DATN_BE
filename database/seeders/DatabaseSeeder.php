@@ -145,7 +145,7 @@ class DatabaseSeeder extends Seeder
 
         $courseID = Course::create([
             'lecturer_id' => 1,
-            'category_id' => 1,
+            'category_id' => 3,
             'title' => 'Khoá học Laravel',
             'status' => 'draft',
             'admin_commission_rate' => 30
@@ -159,7 +159,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Course::create([
             'lecturer_id' => 1,
-            'category_id' => 1,
+            'category_id' => 4,
             'title' => 'Khoá học PHP cơ bản',
             'status' => 'draft',
             'admin_commission_rate' => 30
