@@ -23,18 +23,4 @@ class Voucher extends Model
         'is_active',
     ];
 
-    // public static function rules($id = null) {
-    //     return[
-    //         'name'                  => 'required|max:255',
-    //         'code'                  => 'required|max:255|unique:vouchers,code,'.$id,
-    //         'description'           => 'required|max:255',
-    //         'type'                  => 'required',
-    //         'discount_percent'      => 'nullable',
-    //         'discount_amount'       => 'nullable',
-    //         'start_time'            => 'required',
-    //         'end_time'              => 'required',
-    //         'count'                 => 'required',
-    //         'is_active'             => 'required',
-    //     ];
-    // }
 }
