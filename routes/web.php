@@ -40,6 +40,11 @@ Route::get('/admin/dashboards/statistics', [StatisticsController::class, 'index'
 
 Route::resource('vouchers', VoucherController::class);
 Route::resource('categories', CategoryController::class);
+Route::get('categories/trashed', [CategoryController::class, 'trashed'])->name('categories.trashed');
+Route::delete('categories/{id}/force-delete', [CategoryController::class, 'forceDestroy'])
+    ->name('categories.forceDelete');
+Route::post('categories/{id}/restore', [CategoryController::class, 'restore'])->name('categories.restore');    
+
 Route::resource('users', UserController::class);
 Route::resource('tags', TagController::class);
 
