@@ -2,7 +2,7 @@
     <div class="vh-100" data-simplebar>
         <!-- Brand logo -->
         <a class="navbar-brand d-flex justify-content-center" href="/">
-            <img src="{{ env('APP_URL') . 'logo.png' }}" alt="Geeks" />
+            <img src="{{ env('APP_URL') . '/logo.png' }}" alt="Geeks" />
         </a>
         <!-- Navbar nav -->
         <ul class="navbar-nav flex-column " id="sideNavbar">
