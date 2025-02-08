@@ -33,11 +33,18 @@ class CategoryController extends Controller
     // Xử lý thêm danh mục
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'parent_id' => ['nullable', Rule::exists('categories', 'id')],
-        ]);
-    
+        $validated = $request->validate(
+            [
+                'name' => ['required', 'string', 'max:255'],
+                'parent_id' => ['nullable', Rule::exists('categories', 'id')],
+            ],
+
+    [
+                'name.required' => 'Phải điền tên cho danh mục',
+                'name.max'      => 'Tối đa là 255 kí tự'
+            ]
+        );
+
 
         // Đảm bảo parent_id luôn hợp lệ
         $validated['parent_id'] = $validated['parent_id'] ?? null;
@@ -164,7 +171,7 @@ class CategoryController extends Controller
     public function trashed()
     {
         $categories = Category::onlyTrashed()->get();
-        
+
         return view(self::VIEW_PATH . __FUNCTION__, compact('categories'));
     }
 
@@ -186,7 +193,7 @@ class CategoryController extends Controller
         }
     }
 
-   
+
 
     public function restore($id)
     {
