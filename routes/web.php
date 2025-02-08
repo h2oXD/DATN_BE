@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\StatisticsController;
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\VoucherController;
@@ -46,3 +47,7 @@ Route::post('categories/{id}/restore', [CategoryController::class, 'restore'])->
 
 Route::resource('users', UserController::class);
 Route::resource('tags', TagController::class);
+
+Route::resource('courses', CourseController::class);
+Route::post('courses/{id}/approve', [CourseController::class, 'approve'])->name('courses.approve');
+Route::post('courses/{id}/reject', [CourseController::class, 'reject'])->name('courses.reject');

@@ -36,13 +36,15 @@ class AdminBaseController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate($this->model::rules());
+        $request->validate($this->storeValidate(),$this->storeMessage());
+        $data = $request->all();
 
         if ($request->hasFile($this->fieldImage)) {
             $data[$this->fieldImage] = $this->uploadFile($request->file($this->fieldImage));
         }
 
         $this->model::create($data);
+
 
         return redirect()->route($this->routePath)->with('success', 'Thêm mới thành công!');
     }
@@ -62,7 +64,8 @@ class AdminBaseController extends Controller
     public function update(Request $request, $id)
     {
         $item = $this->model::findOrFail($id);
-        $data = $request->validate($this->model::rules($id));
+        $request->validate($this->updateValidate($id),$this->updateMessage());
+        $data = $request->all();
 
         if ($request->hasFile($this->fieldImage)) {
             $data[$this->fieldImage] = $this->uploadFile($request->file($this->fieldImage));
@@ -97,5 +100,21 @@ class AdminBaseController extends Controller
     {
         $fileName = time() . '_' . $file->getClientOriginalName();
         return $file->storeAs($this->uploadPath, $fileName, 'public');
+    }
+    protected function storeValidate(){
+
+    }
+    protected function updateValidate($id){
+
+    }
+    public function storeMessage()
+    {
+        return [];
+    }
+    public function updateMessage()
+    {
+        return [
+            
+        ];
     }
 }
