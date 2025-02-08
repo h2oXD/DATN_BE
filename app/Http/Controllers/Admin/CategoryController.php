@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 
 class CategoryController extends Controller
@@ -33,9 +34,10 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'parent_id' => 'nullable|exists:categories,id',
+            'name' => ['required', 'string', 'max:255'],
+            'parent_id' => ['nullable', Rule::exists('categories', 'id')],
         ]);
+    
 
         // Đảm bảo parent_id luôn hợp lệ
         $validated['parent_id'] = $validated['parent_id'] ?? null;
@@ -157,11 +159,12 @@ class CategoryController extends Controller
             return back()->withErrors(['error' => 'Xoá danh mục thất bại!']);
         }
     }
-    
+
 
     public function trashed()
     {
         $categories = Category::onlyTrashed()->get();
+        
         return view(self::VIEW_PATH . __FUNCTION__, compact('categories'));
     }
 
