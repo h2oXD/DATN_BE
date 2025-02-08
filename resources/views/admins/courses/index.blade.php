@@ -28,6 +28,27 @@
                         <button type="submit" class="btn btn-info ms-2">Tìm kiếm</button>
                     </div>
                 </form>
+                @if (session()->has('success') && !session()->get('success'))
+                <div class="alert alert-danger">
+                    {{ session()->get('error') }}
+                </div>
+            @endif
+
+            @if (session()->has('success') && session()->get('success'))
+                <div class="alert alert-info">
+                    Thao tác thành công!
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
                 <div class="table-responsive">
                     <table class="table mb-3 text-nowrap table-hover table-centered">
                         <thead class="table-light">
