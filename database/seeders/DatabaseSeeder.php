@@ -149,21 +149,21 @@ class DatabaseSeeder extends Seeder
             'lecturer_id' => 1,
             'category_id' => 3,
             'title' => 'Khoá học Laravel',
-            'status' => 'draft',
+            'status' => 'pending',
             'admin_commission_rate' => 30
         ]);
         Course::create([
             'lecturer_id' => 1,
             'category_id' => 1,
             'title' => 'Khoá học React',
-            'status' => 'draft',
+            'status' => 'pending',
             'admin_commission_rate' => 30
         ]);
         Course::create([
             'lecturer_id' => 1,
             'category_id' => 4,
             'title' => 'Khoá học PHP cơ bản',
-            'status' => 'draft',
+            'status' => 'pending',
             'admin_commission_rate' => 30
         ]);
 
