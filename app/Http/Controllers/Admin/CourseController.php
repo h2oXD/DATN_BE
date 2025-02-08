@@ -59,13 +59,13 @@ class CourseController extends Controller
 
         return redirect()->route('courses.index')->with('success', 'Khóa học đã được phê duyệt');
     }
-public function reject(Request $request, $id)
-{
-    $course = Course::findOrFail($id);
-    $course->status = 'draft';  
-    $course->save();
-    return redirect()->route('courses.index')->with('success', 'Khóa học đã bị từ chối');
-}
+    public function reject(Request $request, $id)
+    {
+        $course = Course::findOrFail($id);
+        $course->status = 'draft';  
+        $course->save();
+        return redirect()->route('courses.index')->with('success', 'Khóa học đã bị từ chối');
+    }
 
     public function edit($id)
     {

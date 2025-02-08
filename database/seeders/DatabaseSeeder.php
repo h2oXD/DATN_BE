@@ -237,5 +237,13 @@ class DatabaseSeeder extends Seeder
         foreach ($vouchers as $voucher) {
             Voucher::create($voucher);
         }
+
+        // Tạo lịch sử sử dụng voucher
+        $voucherUse = [
+            'voucher_id'    => 1,
+            'user_id'       => $student->id,
+            'course_id'     ,
+            'time_used'     ,
+        ];
     }
 }
