@@ -15,6 +15,8 @@ use App\Models\Tag;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Models\Video;
+use App\Models\Voucher;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -192,5 +194,48 @@ class DatabaseSeeder extends Seeder
             'title' => 'Biến và Kiểu dữ liệu (Variables and Data types)',
             'order' => 2
         ]);
+
+        // Tạo phiếu giảm giá
+        $vouchers = [
+            [
+                'name'                  => 'Giảm phí vận chuyển',
+                'code'                  => 'DVC10',
+                'description'           => 'Giảm giá phí vận chuyển 10k VND',
+                'type'                  => 'fix_amount',
+                'discount_percent'      => null,
+                'discount_amount'       => '10000',
+                'start_time'            => Carbon::now(),
+                'end_time'              => Carbon::now()->addDays(30),
+                'count'                 => '100',
+                'is_active'             => '1',
+            ],
+            [
+                'name'                  => 'Giảm giá sản phẩm',
+                'code'                  => 'DSP10',
+                'description'           => 'Giảm giá sản phẩm 10%',
+                'type'                  => 'percent',
+                'discount_percent'      => '10',
+                'discount_amount'       => null,
+                'start_time'            => Carbon::now(),
+                'end_time'              => Carbon::now()->addDays(30),
+                'count'                 => '99',
+                'is_active'             => '1',
+            ],
+            [
+                'name'                  => 'Tặng khóa học đầu tiên',
+                'code'                  => 'FREE100',
+                'description'           => 'Miễn phí thanh toán khi tham gia khóa học đầu tiên',
+                'type'                  => 'percent',
+                'discount_percent'      => '100',
+                'discount_amount'       => null,
+                'start_time'            => Carbon::now(),
+                'end_time'              => Carbon::now()->addDays(30),
+                'count'                 => '9999',
+                'is_active'             => '0',
+            ],
+        ];
+        foreach ($vouchers as $voucher) {
+            Voucher::create($voucher);
+        }
     }
 }

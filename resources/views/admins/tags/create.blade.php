@@ -10,7 +10,7 @@
                 @csrf
                 <div class="mb-3">
                     <label for="name" class="form-label">Tên Tag</label>
-                    <input type="text" name="name" class="form-control" required>
+                    <input type="text" name="name" class="form-control">
                     @error('name')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
