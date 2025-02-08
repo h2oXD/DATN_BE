@@ -25,7 +25,7 @@
                 </div>
                 <div class="mb-3">
                     <strong>Trạng thái:</strong>
-                    @if ($course->status == 'draft')
+                    @if ($course->status == 'pending')
                         Chờ duyệt
                     @elseif($course->status == 'published')
                         Đã phê duyệt
