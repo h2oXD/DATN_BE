@@ -41,7 +41,9 @@ Route::get('/admin/dashboards/statistics', [StatisticsController::class, 'index'
 
 Route::resource('vouchers', VoucherController::class);
 
+
 Route::get('categories/trashed',[CategoryController::class,'trashed'])->name('categories.trashed');
+
 Route::resource('categories', CategoryController::class);
 Route::delete('categories/{id}/force-delete', [CategoryController::class, 'forceDelete'])
     ->name('categories.forceDelete');

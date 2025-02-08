@@ -182,6 +182,8 @@ class CategoryController extends Controller
         return view('admins.categories.trashed', compact('categories'));
     }
 
+    
+
     public function forceDelete($id)
     {
         $category = Category::withTrashed()->findOrFail($id);
