@@ -122,4 +122,10 @@ class CourseController extends Controller
             return back()->with('error', $th->getMessage());
         }
     }
+
+    public function censorCourseList()
+    {
+        $courses = Course::where('status','pending')->get();
+        return view('admins.courses.censor-course-list',compact('courses'));
+    }
 }

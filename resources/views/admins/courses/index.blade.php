@@ -7,7 +7,7 @@
 @section('content')
     <div class="card">
         <div class="card-header d-flex justify-content-between align-content-center">
-            <h2 class="m-0">Kiểm duyệt khoá học</h2>
+            <h2 class="m-0">Danh sách khoá học</h2>
         </div>
         <div class="card-body p-0">
             <form method="GET" action="{{ route('courses.index') }}" class="row gx-3 m-2">
