@@ -24,16 +24,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><img src="https://files.fullstack.edu.vn/f8-prod/courses/7.png" width="100px" alt=""></td>
-                        <td>Khoá học Laravel A-Z</td>
-                        <td>Lập trình Website</td>
-                        <td>Tôn Nghệ Không</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td ><a href="" class="btn btn-info btn-sm">Kiểm tra</a></td>
-                    </tr>
+                    @foreach ($courses as $course)
+                        <tr>
+                            <td><img src="https://files.fullstack.edu.vn/f8-prod/courses/7.png" width="100px" alt="">
+                            </td>
+                            <td>{{ $course->title }}</td>
+                            <td>Lập trình Website</td>
+                            <td>Tôn Nghệ Không</td>
+                            <td>{{$course->price}} {{$course->price_sale}}</td>
+                            <td>{{$course->submited_at}}</td>
+                            <td>
+                                @if ($course->status == 'pending')
+                                    <span class="badge bg-warning">Chờ duyệt</span>
+                                @endif
+                            </td>
+                            <td><a href="" class="btn btn-info btn-sm">Kiểm tra</a></td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
