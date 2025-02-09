@@ -17,7 +17,7 @@
                 </div>
             @endif --}}
 
-        <form action="{{ route('categories.store') }}" method="POST">
+        <form action="{{ route('admin.categories.store') }}" method="POST">
             @csrf
             <div class="mb-3">
                 <label class="form-label">Tên danh mục</label>
@@ -40,7 +40,7 @@
             </div>
 
             <button type="submit" class="btn btn-success">Thêm</button>
-            <a href="{{ route('categories.index') }}" class="btn btn-secondary">Quay lại</a>
+            <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">Quay lại</a>
         </form>
     </div>
 @endsection
