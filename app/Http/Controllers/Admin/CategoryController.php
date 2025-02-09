@@ -39,7 +39,7 @@ class CategoryController extends Controller
                 'parent_id' => ['nullable', Rule::exists('categories', 'id')],
             ],
 
-    [
+            [
                 'name.required' => 'Phải điền tên cho danh mục',
                 'name.max'      => 'Tối đa là 255 kí tự'
             ]
@@ -108,18 +108,25 @@ class CategoryController extends Controller
         // Xác định danh mục có phải là danh mục cha không
         $isParentCategory = $category->parent_id === null;
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'parent_id' => [
-                'nullable',
-                'exists:categories,id',
-                function ($attribute, $value, $fail) use ($isParentCategory) {
-                    if ($isParentCategory && $value !== null) {
-                        $fail('Danh mục cha không thể có danh mục cha khác.');
-                    }
-                },
+        $validated = $request->validate(
+            [
+                'name' => 'required|string|max:255',
+                'parent_id' => [
+                    'nullable',
+                    'exists:categories,id',
+                    function ($attribute, $value, $fail) use ($isParentCategory) {
+                        if ($isParentCategory && $value !== null) {
+                            $fail('Danh mục cha không thể có danh mục cha khác.');
+                        }
+                    },
+                ],
             ],
-        ]);
+            [
+                'name.required' => 'Phải điền tên cho danh mục',
+                'name.max'      => 'Tối đa là 255 kí tự'
+
+            ]
+        );
 
         // Tạo slug từ name nếu tên bị thay đổi
         if ($category->name !== $validated['name']) {
@@ -172,8 +179,10 @@ class CategoryController extends Controller
     {
         $categories = Category::onlyTrashed()->get();
 
-        return view(self::VIEW_PATH . __FUNCTION__, compact('categories'));
+        return view('admins.categories.trashed', compact('categories'));
     }
+
+    
 
     public function forceDelete($id)
     {

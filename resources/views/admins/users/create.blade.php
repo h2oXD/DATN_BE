@@ -44,7 +44,7 @@
                         </div>
                         <div class="col-lg-4 mb-lg-3 col-12 mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input placeholder="Nhập Email" type="email" class="form-control" name="email"
+                            <input placeholder="Nhập Email" type="" class="form-control" name="email"
                                 id="email" value="{{ old('email') }}" />
                             @error('email')
                                 <span class="text-danger">{{ $message }}</span>

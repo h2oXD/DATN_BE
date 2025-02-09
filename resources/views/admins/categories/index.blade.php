@@ -74,7 +74,7 @@
                                                             <i class="fe fe-edit"></i> Sửa
                                                         </a>
                                                         <form id="delete-category-{{ $child->id }}" 
-                                                              action="{{ route('categories.destroy', $child->id) }}" 
+                                                              action="{{ route('categories.forceDelete', $child->id) }}" 
                                                               method="POST" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')

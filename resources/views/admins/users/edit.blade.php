@@ -12,16 +12,16 @@
 
             </div>
             <div class="card-body">
-                @if (session()->has('success') && !session()->get('success'))
+                {{-- @if (session()->has('success') && !session()->get('success'))
                     <div class="alert alert-danger">
                         {{ session()->get('error') }}
                     </div>
-                @endif
+                @endif --}}
 
                 @if (session()->has('success') && session()->get('success'))
                     <div class="alert alert-info">Thao tác thành công!</div>
                 @endif
-
+{{-- 
                 @if ($errors->any())
                     <div class="alert alert-danger">
                         <ul>
@@ -30,7 +30,7 @@
                             @endforeach
                         </ul>
                     </div>
-                @endif
+                @endif --}}
 
                 <form class="row" method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
                     @csrf
@@ -39,24 +39,33 @@
                     <div class="mb-3 col-6">
                         <label for="name" class="form-label">Tên</label>
                         <input type="text" class="form-control" name="name" id="name"
-                            value="{{ old('name', $user->name) }}" required />
+                            value="{{ old('name', $user->name) }}" />
+                            @error('name')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="mb-3 col-6">
                         <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" name="email" id="email"
-                            value="{{ old('email', $user->email) }}" required />
+                            value="{{ old('email', $user->email) }}"  />
+                            @error('email')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="mb-3 col-6">
                         <label for="phone_number" class="form-label">Số điện thoại</label>
                         <input type="text" class="form-control" name="phone_number" id="phone_number"
                             value="{{ old('phone_number', $user->phone_number) }}" />
+                            @error('phone_number')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="mb-3 col-6">
                         <label for="role" class="form-label">Vai trò</label>
-                        <select name="role" class="form-control" required>
+                        <select name="role" class="form-control" >
                             <option value="lecturer" {{ $user->roles->first()->name === 'lecturer' ? 'selected' : '' }}>
                                 Giảng viên</option>
                             <option value="student" {{ $user->roles->first()->name === 'student' ? 'selected' : '' }}>Học
