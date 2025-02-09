@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
-    const PATH_VIEW = 'admins.courses.';  
+    const PATH_VIEW = 'admins.courses.';
 
     public function index(Request $request)
     {
@@ -20,9 +20,9 @@ class CourseController extends Controller
         $category = $request->get('category');
         $tag = $request->get('tag');
         $status = $request->get('status');
-    
+
         $categories = Category::all();
-    
+
         $courses = Course::with('category', 'tags', 'lecturer')
             ->when($search, function ($query, $search) {
                 return $query->where('title', 'like', "%$search%")
@@ -43,7 +43,7 @@ class CourseController extends Controller
             ->paginate(10);
         return view(self::PATH_VIEW . 'index', compact('courses', 'categories'));
     }
-    
+
     public function show($id)
     {
         $course = Course::with(['category', 'tags', 'lecturer'])->findOrFail($id);
@@ -53,8 +53,8 @@ class CourseController extends Controller
     public function approve(Request $request, $id)
     {
         $course = Course::findOrFail($id);
-        $course->status = 'published'; 
-        $course->submited_at = now();  
+        $course->status = 'published';
+        $course->submited_at = now();
         $course->save();
 
         return redirect()->route('courses.index')->with('success', 'Khóa học đã được phê duyệt');
@@ -62,7 +62,7 @@ class CourseController extends Controller
     public function reject(Request $request, $id)
     {
         $course = Course::findOrFail($id);
-        $course->status = 'draft';  
+        $course->status = 'pending';
         $course->save();
         return redirect()->route('courses.index')->with('success', 'Khóa học đã bị từ chối');
     }
@@ -83,12 +83,26 @@ class CourseController extends Controller
             'title' => 'required|max:255',
             'description' => 'required',
             'category_id' => 'required|exists:categories,id',
-            'status' => 'required|in:draft,published',
-            'price' => 'nullable|numeric',
-            'tags' => 'nullable|array',
+            'status' => 'required|in:pending,published',
+            'price' => 'required|numeric',
+            'tags' => 'required|array',
             'tags.*' => 'exists:tags,id',
             'thumbnail' => 'nullable|image|max:2048',
+        ], [
+            'title.required' => 'Vui lòng nhập tiêu đề khóa học.',
+            'title.max' => 'Tiêu đề khóa học không được vượt quá 255 ký tự.',
+
+            'description.required' => 'Vui lòng nhập mô tả cho khóa học.',
+
+            'price.required' => 'Vui lòng nhập giá khóa học.',
+            'price.numeric' => 'Giá khóa học phải là một số hợp lệ.',
+
+            'tags.required' => 'Vui lòng chọn thẻ',
+
+            'thumbnail.image' => 'Ảnh đại diện phải là một tệp hình ảnh.',
+            'thumbnail.max' => 'Ảnh đại diện không được lớn hơn 2MB.',
         ]);
+
 
         try {
             if ($request->hasFile('thumbnail')) {

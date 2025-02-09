@@ -3,7 +3,7 @@
 @section('content')
     <div class="card">
         <div class="card-header d-flex justify-content-between align-content-center">
-            <h2 class="m-0">Danh sách Tags</h2>
+            <h2 class="m-0">Danh sách Thẻ</h2>
             <a href="{{ route('tags.create') }}" class="btn btn-primary">Thêm mới</a>
         </div>
         <div class="card-body">

@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Models\UserRole;
 use App\Models\Video;
 use App\Models\Voucher;
+use App\Models\VoucherUse;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -149,21 +150,21 @@ class DatabaseSeeder extends Seeder
             'lecturer_id' => 1,
             'category_id' => 3,
             'title' => 'Khoá học Laravel',
-            'status' => 'draft',
+            'status' => 'pending',
             'admin_commission_rate' => 30
         ]);
         Course::create([
             'lecturer_id' => 1,
             'category_id' => 1,
             'title' => 'Khoá học React',
-            'status' => 'draft',
+            'status' => 'pending',
             'admin_commission_rate' => 30
         ]);
         Course::create([
             'lecturer_id' => 1,
             'category_id' => 4,
             'title' => 'Khoá học PHP cơ bản',
-            'status' => 'draft',
+            'status' => 'pending',
             'admin_commission_rate' => 30
         ]);
 
@@ -239,11 +240,11 @@ class DatabaseSeeder extends Seeder
         }
 
         // Tạo lịch sử sử dụng voucher
-        $voucherUse = [
+        VoucherUse::create([
             'voucher_id'    => 1,
             'user_id'       => $student->id,
-            'course_id'     ,
-            'time_used'     ,
-        ];
+            'course_id'     => $courseID->id,
+            'time_used'     => Carbon::now(),
+        ]);
     }
 }

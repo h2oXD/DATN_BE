@@ -42,14 +42,16 @@
                                                         <i class="fe fe-refresh-ccw"></i> Khôi phục
                                                     </button>
                                                 </form>
-                                                <form action="{{ route('categories.forceDelete', $category->id) }}"
+                                                <form id="delete-category-{{ $category->id }}" 
+                                                    action="{{ route('categories.forceDelete', $category->id) }}"
                                                     method="POST"
                                                     onsubmit="return confirm('Bạn có chắc muốn xóa vĩnh viễn?');">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="dropdown-item text-danger">
-                                                        <i class="fe fe-trash"></i> Xóa vĩnh viễn
-                                                    </button>
+                                                    <button type="button" class="dropdown-item text-danger"
+                                                    onclick="confirmDelete({{ $category->id }})">
+                                                <i class="fe fe-trash"></i> Xóa vĩnh viễn
+                                            </button>
                                                 </form>
                                             </span>
                                         </span>
@@ -62,4 +64,24 @@
             </div>
         </div>
     </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: "Bạn có chắc chắn muốn xoá?",
+                text: "Hành động này không thể hoàn tác!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Xoá",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(`delete-category-${id}`).submit();
+                }
+            });
+        }
+    </script>
 @endsection
