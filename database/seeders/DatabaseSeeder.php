@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Models\UserRole;
 use App\Models\Video;
 use App\Models\Voucher;
+use App\Models\VoucherUse;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -240,5 +241,13 @@ class DatabaseSeeder extends Seeder
         foreach ($vouchers as $voucher) {
             Voucher::create($voucher);
         }
+
+        // Tạo lịch sử sử dụng voucher
+        VoucherUse::create([
+            'voucher_id'    => 1,
+            'user_id'       => $student->id,
+            'course_id'     => $courseID->id,
+            'time_used'     => Carbon::now(),
+        ]);
     }
 }
