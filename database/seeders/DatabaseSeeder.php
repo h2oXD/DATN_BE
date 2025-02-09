@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Models\UserRole;
 use App\Models\Video;
 use App\Models\Voucher;
+use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -60,6 +61,10 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('123123123'),
             'profile_picture' => '/profile_pictures/EtUIcPlzMJiTg9JiTQl1Lm6XSY3RRTJ0mmZHC1Xx.jpg',
         ]);
+        Wallet::create([
+            'user_id' => $student->id,
+            'balance' => 0
+        ]);
         Student::create([
             'user_id' => $student->id,
         ]);
@@ -75,6 +80,10 @@ class DatabaseSeeder extends Seeder
             'email' => 'giangviena@gmail.com',
             'password' => Hash::make('123123123'),
             'profile_picture' => '/profile_pictures/RkukY0gX1gZ7vlcCNkqVTaA5SejQFlAVm1BGStq3.jpg',
+        ]);
+        Wallet::create([
+            'user_id' => $lecturer->id,
+            'balance' => 0
         ]);
         Student::create([
             'user_id' => $lecturer->id,
