@@ -75,4 +75,8 @@ class Course extends Model
     {
         return $this->hasManyThrough(Coding::class, Section::class, 'course_id', 'lesson_id', 'id', 'id');
     }
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'course_tag', 'course_id', 'tag_id');
+    }
 }
