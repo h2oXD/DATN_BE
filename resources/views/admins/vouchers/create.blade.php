@@ -37,26 +37,26 @@
                 @csrf
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="name" class="form-label">Tên</label>
-                    <input type="text" class="form-control" name="name" id="name" value="{{ old('name') }}"/>
+                    <input type="text" class="form-control" name="name" id="name" value="{{ old('name') }}" />
                     @error('name')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="code" class="form-label">Mã giảm giá</label>
-                    <input type="text" class="form-control" name="code" id="code" value="{{ old('code') }}"/>
+                    <input type="text" class="form-control" name="code" id="code" value="{{ old('code') }}" />
                     @error('code')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
-                
+
 
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="type" class="form-label">Loại giảm giá</label>
-                    <select name="type" class="form-select text-dark" >
-                        <option value="percent">Phần trăm</option>
-                        <option value="fix_amount">Giá tiền</option>
+                    <select name="type" class="form-select text-dark">
+                        <option @if (old('type') == 'percent') selected @endif value="percent">Phần trăm</option>
+                        <option @if (old('type') == 'fix_amount') selected @endif value="fix_amount">Giá tiền</option>
                     </select>
                     @error('type')
                         <span class="text-danger">{{ $message }}</span>
@@ -64,25 +64,18 @@
                 </div>
 
                 <div class="col-lg-6 mb-2 col-12">
-                    <label for="discount_percent" class="form-label">Số % giảm</label>
-                    <input type="number" class="form-control" name="discount_percent" id="discount_percent"
-                        min="0" value="{{ old('discount_percent') }}"/>
-                    @error('discount_percent')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="col-lg-6 mb-2 col-12">
-                    <label for="discount_amount" class="form-label">Số tiền giảm</label>
-                    <input type="number" class="form-control" name="discount_amount" id="discount_amount" min="0" value="{{ old('discount_amount') }}"/>
-                    @error('discount_amount')
+                    <label for="discount_price" class="form-label">Số % / Số tiền giảm</label>
+                    <input type="number" class="form-control" name="discount_price" id="discount_price" min="0"
+                        value="{{ old('discount_price') }}" />
+                    @error('discount_price')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="start_time" class="form-label">Ngày bắt đầu</label>
-                    <input type="datetime-local" class="form-control" name="start_time" id="start_time" value="{{ old('start_time') }}"/>
+                    <input type="datetime-local" class="form-control" name="start_time" id="start_time"
+                        value="{{ old('start_time') }}" />
                     @error('start_time')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -90,7 +83,8 @@
 
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="end_time" class="form-label">Ngày kết thúc</label>
-                    <input type="datetime-local" class="form-control" name="end_time" id="end_time" value="{{ old('end_time') }}"/>
+                    <input type="datetime-local" class="form-control" name="end_time" id="end_time"
+                        value="{{ old('end_time') }}" />
                     @error('end_time')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -98,7 +92,7 @@
 
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="count" class="form-label">Số lượng</label>
-                    <input type="number" class="form-control" name="count" id="count" value="{{ old('count') }}"/>
+                    <input type="number" class="form-control" name="count" id="count" value="{{ old('count') }}" />
                     @error('count')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -106,7 +100,7 @@
 
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="is_active" class="form-label">Trạng thái</label>
-                    <select name="is_active" class="form-select text-dark" >
+                    <select name="is_active" class="form-select text-dark">
                         <option value="1">Hoạt động</option>
                         <option value="0">Khóa</option>
                     </select>
@@ -114,7 +108,7 @@
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
-                
+
                 <div class="my-3 col-12">
                     <label for="description" class="form-label">Nội dung</label>
                     <textarea name="description" id="description">{{ old('description') }}</textarea>
@@ -131,7 +125,7 @@
         </div>
     </div>
 
-    <script>
+    {{-- <script>
         document.addEventListener("DOMContentLoaded", function() {
             const typeSelect = document.querySelector('select[name="type"]');
             const discountPercentInput = document.querySelector('input[name="discount_percent"]');
@@ -155,7 +149,7 @@
             // Gán sự kiện thay đổi giá trị
             typeSelect.addEventListener("change", toggleDiscountFields);
         });
-    </script>
+    </script> --}}
 @endsection
 
 @section('script')

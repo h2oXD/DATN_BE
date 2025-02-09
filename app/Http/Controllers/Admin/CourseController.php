@@ -23,7 +23,7 @@ class CourseController extends Controller
 
         $categories = Category::all();
 
-        $courses = Course::with('category', 'tags', 'lecturer')
+        $courses = Course::with('category', 'tags')
             ->when($search, function ($query, $search) {
                 return $query->where('title', 'like', "%$search%")
                     ->orWhere('description', 'like', "%$search%");
