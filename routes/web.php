@@ -59,3 +59,4 @@ Route::resource('tags', TagController::class);
 Route::resource('courses', CourseController::class);
 Route::post('courses/{id}/approve', [CourseController::class, 'approve'])->name('courses.approve');
 Route::post('courses/{id}/reject', [CourseController::class, 'reject'])->name('courses.reject');
+Route::get('admin/courses', [CourseController::class, 'censorCourseList'])->name('censor.corse.list');
