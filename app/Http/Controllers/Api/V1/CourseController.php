@@ -15,11 +15,7 @@ class CourseController extends Controller
     public function getLecturerCourse()
     {
         try {
-            // $courses = Course::with('category')
-            // ->select(['title','category_id','status','thumbnail','level'])
-            // ->where('lecturer_id', request()->user()->lecturer_id)
-            // ->get();
-            $courses = Course::where('lecturer_id', request()->user()->lecturer_id)
+            $courses = Course::where('user_id', request()->user()->id)
                 ->paginate(4);
             return response()->json([
                 'message' => 'Lấy dữ liệu thành công',
@@ -37,7 +33,7 @@ class CourseController extends Controller
         try {
             $course = Course::create([
                 'title' => $request->title,
-                'lecturer_id' => $request->user()->lecturer->id,
+                'user_id' => $request->user()->id,
                 'category_id' => $request->category_id ?? null,
                 'status' => 'draft',
                 'admin_commission_rate' => 30,
@@ -54,8 +50,8 @@ class CourseController extends Controller
     }
     public function showLecturerCourse($course_id)
     {
-        $lecturer_id = request()->user()->lecturer_id;
-        $course = Course::with(['sections', 'lessons', 'documents', 'videos', 'codings'])->where([['lecturer_id', $lecturer_id], ['id', $course_id]])->first();
+        $user_id = request()->user()->id;
+        $course = Course::with(['sections', 'lessons', 'documents', 'videos', 'codings'])->where([['user_id', $user_id], ['id', $course_id]])->first();
 
         if (!$course) {
             return response()->json([
@@ -68,8 +64,8 @@ class CourseController extends Controller
     }
     public function updateLecturerCourse(UpdateCourseRequest $request, $course_id)
     {
-        $lecturer_id = $request->user()->lecturer_id;
-        $course = Course::where('lecturer_id', $lecturer_id)->find($course_id);
+        $user_id = $request->user()->id;
+        $course = Course::where('user_id', $user_id)->find($course_id);
         if (!$course) {
             return response()->json([
                 'message' => 'Không tìm thấy khoá học'

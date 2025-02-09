@@ -2,7 +2,7 @@
 
 use App\Models\Course;
 use App\Models\Lecturer;
-use App\Models\Student;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,16 +16,12 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignIdFor(Student::class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(Course::class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(Lecturer::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade')->comment('id của Người mua');
+            $table->foreignIdFor(Course::class)->constrained()->onDelete('cascade')->comment('id của Khoá học');
             $table->decimal('amount',10, 2);
-            $table->enum('type', ['purchase','refund']);
-            $table->enum('status', ['pending','completed','failed','refunded']);
             $table->enum('payment_method', ['credit_card','paypal','bank_transfer','wallet']);
             $table->datetime('transaction_date');
-            $table->string('reference_id')->nullable()->default(NULL);
+            $table->string('wallet_id')->nullable()->default(NULL);
         
             $table->timestamps();
         });

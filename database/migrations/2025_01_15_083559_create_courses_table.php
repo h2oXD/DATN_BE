@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\Category;
-use App\Models\Lecturer;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,7 +14,7 @@ return new class extends Migration {
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Lecturer::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Category::class)->nullable()->constrained()->onDelete('cascade');
 
             $table->integer('price')->nullable();
@@ -37,10 +37,12 @@ return new class extends Migration {
             $table->string('level')->nullable()->comment("Trình độ");
 
             $table->decimal('admin_commission_rate', 5, 2)->default(0);
-            
+
             $table->timestamps();
 
-            $table->timestamp('submited_at')->nullable();
+            $table->timestamp('submited_at')->nullable()->comment('Thời gian gửi yêu cầu kiểm duyệt');
+            $table->timestamp('censored_at')->nullable()->comment('Thời gian được phê duyệt');
+            $table->text('admin_comment')->nullable()->comment('Phản hồi của quản trị viên');
         });
     }
 

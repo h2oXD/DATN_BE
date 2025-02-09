@@ -2,7 +2,7 @@
 
 use App\Models\Course;
 use App\Models\Lesson;
-use App\Models\Student;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('completions', function (Blueprint $table) {
             $table->id();
             
-            $table->foreignIdFor(Student::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Course::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Lesson::class)->constrained()->onDelete('cascade');
             $table->enum('status', ['in_progress','completed']);

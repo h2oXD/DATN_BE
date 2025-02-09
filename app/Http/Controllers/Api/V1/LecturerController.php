@@ -26,10 +26,9 @@ class LecturerController extends Controller
     }
     public function getLecturerInfo()
     {
-        $lecturerInfo = Lecturer::find(request()->user()->lecturer_id);
         return response()->json([
             'message' => 'Lấy dữ liệu thành công',
-            'lecturer' => $lecturerInfo
+            'lecturer' => request()->user()
         ], 201);
     }
     

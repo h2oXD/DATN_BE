@@ -110,12 +110,6 @@ class UserController extends Controller
             $role = Role::where('name', $data['role'])->first();
             $user->roles()->attach($role);
 
-            if ($data['role'] === 'lecturer') {
-                $user->roles()->attach(Role::where('name', 'student')->first());
-                Lecturer::create(['user_id' => $user->id]);
-            }
-
-            Student::create(['user_id' => $user->id]);
 
             return redirect()->route('users.index')->with('success', 'Tạo user thành công!');
 

@@ -25,6 +25,9 @@ return new class extends Migration
             $table->text('bio')->nullable();
             $table->integer('google_id')->nullable();
 
+            $table->string('linkedin_url')->nullable()->default(NULL);
+            $table->string('website_url')->nullable()->default(NULL);
+
             $table->timestamps();
         });
     }

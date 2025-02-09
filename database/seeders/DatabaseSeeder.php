@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Models\UserRole;
 use App\Models\Video;
 use App\Models\Voucher;
+use App\Models\Wallet;
 use App\Models\VoucherUse;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -61,8 +62,9 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('123123123'),
             'profile_picture' => '/profile_pictures/EtUIcPlzMJiTg9JiTQl1Lm6XSY3RRTJ0mmZHC1Xx.jpg',
         ]);
-        Student::create([
+        Wallet::create([
             'user_id' => $student->id,
+            'balance' => 0
         ]);
         $roleStudent = Role::select('id')->where('name', 'student')->first();
         UserRole::create([
@@ -77,11 +79,9 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('123123123'),
             'profile_picture' => '/profile_pictures/RkukY0gX1gZ7vlcCNkqVTaA5SejQFlAVm1BGStq3.jpg',
         ]);
-        Student::create([
+        Wallet::create([
             'user_id' => $lecturer->id,
-        ]);
-        $lecturerID = Lecturer::create([
-            'user_id' => $lecturer->id,
+            'balance' => 0
         ]);
         $roleLecturer = Role::select('id')->where('name', 'lecturer')->first();
         UserRole::create([
@@ -150,21 +150,21 @@ class DatabaseSeeder extends Seeder
         }
 
         $courseID = Course::create([
-            'lecturer_id' => 1,
+            'user_id' => 3,
             'category_id' => 3,
             'title' => 'Khoá học Laravel',
             'status' => 'pending',
             'admin_commission_rate' => 30
         ]);
         Course::create([
-            'lecturer_id' => 1,
+            'user_id' => 3,
             'category_id' => 1,
             'title' => 'Khoá học React',
             'status' => 'pending',
             'admin_commission_rate' => 30
         ]);
         Course::create([
-            'lecturer_id' => 1,
+            'user_id' => 3,
             'category_id' => 4,
             'title' => 'Khoá học PHP cơ bản',
             'status' => 'pending',
