@@ -63,7 +63,7 @@ class CategoryController extends Controller
         // Đảm bảo slug là duy nhất
         $originalSlug = $slug;
         $count = 1;
-        while (Category::where('slug', $slug)->exists()) {
+        while (Category::withTrashed()->where('slug', $slug)->exists()) {
             $slug = $originalSlug . '-' . $count;
             $count++;
         }
@@ -177,12 +177,17 @@ class CategoryController extends Controller
 
     public function trashed()
     {
-        $categories = Category::onlyTrashed()->get();
+        // Lấy danh mục cha đã xóa và kèm theo danh mục con cũng đã xóa
+        $categories = Category::onlyTrashed()->with(['children' => function ($query) {
+            $query->onlyTrashed(); // Lấy cả danh mục con bị xóa
+        }])->whereNull('parent_id')->get();
 
         return view('admins.categories.trashed', compact('categories'));
     }
 
-    
+
+
+
 
     public function forceDelete($id)
     {
@@ -207,7 +212,18 @@ class CategoryController extends Controller
     public function restore($id)
     {
         $category = Category::onlyTrashed()->findOrFail($id);
+
+        // Nếu danh mục là danh mục con nhưng danh mục cha vẫn bị xóa
+        if ($category->parent_id) {
+            $parent = Category::onlyTrashed()->find($category->parent_id);
+            if ($parent) {
+                return back()->with('error', 'Vui lòng khôi phục danh mục cha trước!');
+            }
+        }
+
+        // Khôi phục danh mục cha và tất cả danh mục con
         $category->restore();
+        $category->children()->onlyTrashed()->restore();
 
         return back()->with('success', 'Danh mục đã được khôi phục!');
     }
