@@ -39,7 +39,7 @@ Route::get('/admin/statistics/count-stats', [StatisticsController::class, 'count
 
 Route::get('/admin/dashboards/statistics', [StatisticsController::class, 'index']);
 
-Route::resource('vouchers', VoucherController::class);
+Route::resource('admin/vouchers', VoucherController::class);
 
 
 Route::prefix('admin')->name('admin.')->group(function () {
