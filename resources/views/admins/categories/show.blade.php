@@ -15,4 +15,6 @@
 
     <a href="{{ route('categories.index') }}" class="btn btn-secondary">Quay lại</a>
 </div>
+
+
 @endsection

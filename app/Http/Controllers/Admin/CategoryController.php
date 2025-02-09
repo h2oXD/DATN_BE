@@ -39,7 +39,7 @@ class CategoryController extends Controller
                 'parent_id' => ['nullable', Rule::exists('categories', 'id')],
             ],
 
-    [
+            [
                 'name.required' => 'Phải điền tên cho danh mục',
                 'name.max'      => 'Tối đa là 255 kí tự'
             ]
@@ -63,7 +63,7 @@ class CategoryController extends Controller
         // Đảm bảo slug là duy nhất
         $originalSlug = $slug;
         $count = 1;
-        while (Category::where('slug', $slug)->exists()) {
+        while (Category::withTrashed()->where('slug', $slug)->exists()) {
             $slug = $originalSlug . '-' . $count;
             $count++;
         }
@@ -108,18 +108,25 @@ class CategoryController extends Controller
         // Xác định danh mục có phải là danh mục cha không
         $isParentCategory = $category->parent_id === null;
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'parent_id' => [
-                'nullable',
-                'exists:categories,id',
-                function ($attribute, $value, $fail) use ($isParentCategory) {
-                    if ($isParentCategory && $value !== null) {
-                        $fail('Danh mục cha không thể có danh mục cha khác.');
-                    }
-                },
+        $validated = $request->validate(
+            [
+                'name' => 'required|string|max:255',
+                'parent_id' => [
+                    'nullable',
+                    'exists:categories,id',
+                    function ($attribute, $value, $fail) use ($isParentCategory) {
+                        if ($isParentCategory && $value !== null) {
+                            $fail('Danh mục cha không thể có danh mục cha khác.');
+                        }
+                    },
+                ],
             ],
-        ]);
+            [
+                'name.required' => 'Phải điền tên cho danh mục',
+                'name.max'      => 'Tối đa là 255 kí tự'
+
+            ]
+        );
 
         // Tạo slug từ name nếu tên bị thay đổi
         if ($category->name !== $validated['name']) {
@@ -170,10 +177,17 @@ class CategoryController extends Controller
 
     public function trashed()
     {
-        $categories = Category::onlyTrashed()->get();
+        // Lấy danh mục cha đã xóa và kèm theo danh mục con cũng đã xóa
+        $categories = Category::onlyTrashed()->with(['children' => function ($query) {
+            $query->onlyTrashed(); // Lấy cả danh mục con bị xóa
+        }])->whereNull('parent_id')->get();
 
-        return view(self::VIEW_PATH . __FUNCTION__, compact('categories'));
+        return view('admins.categories.trashed', compact('categories'));
     }
+
+
+
+
 
     public function forceDelete($id)
     {
@@ -198,7 +212,18 @@ class CategoryController extends Controller
     public function restore($id)
     {
         $category = Category::onlyTrashed()->findOrFail($id);
+
+        // Nếu danh mục là danh mục con nhưng danh mục cha vẫn bị xóa
+        if ($category->parent_id) {
+            $parent = Category::onlyTrashed()->find($category->parent_id);
+            if ($parent) {
+                return back()->with('error', 'Vui lòng khôi phục danh mục cha trước!');
+            }
+        }
+
+        // Khôi phục danh mục cha và tất cả danh mục con
         $category->restore();
+        $category->children()->onlyTrashed()->restore();
 
         return back()->with('success', 'Danh mục đã được khôi phục!');
     }

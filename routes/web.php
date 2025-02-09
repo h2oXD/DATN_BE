@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\VoucherController;
+use App\Http\Controllers\Api\V1\CategoryController as V1CategoryController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -39,10 +40,14 @@ Route::get('/admin/statistics/count-stats', [StatisticsController::class, 'count
 Route::get('/admin/dashboards/statistics', [StatisticsController::class, 'index']);
 
 Route::resource('vouchers', VoucherController::class);
-Route::resource('categories', CategoryController::class);
-Route::get('categories/trashed', [CategoryController::class, 'trashed'])->name('categories.trashed');
-Route::delete('categories/{id}/force-delete', [CategoryController::class, 'forceDestroy'])
+
+
+Route::get('categories/trashed',[CategoryController::class,'trashed'])->name('categories.trashed');
+Route::delete('categories/{id}/force-delete', [CategoryController::class, 'forceDelete'])
     ->name('categories.forceDelete');
+
+Route::resource('categories', CategoryController::class);
+
 Route::post('categories/{id}/restore', [CategoryController::class, 'restore'])->name('categories.restore');    
 
 Route::resource('users', UserController::class);
