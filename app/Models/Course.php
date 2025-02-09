@@ -51,6 +51,30 @@ class Course extends Model
         return $this->belongsTo(Category::class, 'category_id');
 
     }
+    public function sections()
+    {
+        return $this->hasMany(Section::class);
+    }
+
+    public function lessons()
+    {
+        return $this->hasManyThrough(Lesson::class, Section::class);
+    }
+
+    public function videos()
+    {
+        return $this->hasManyThrough(Video::class, Section::class, 'course_id', 'lesson_id', 'id', 'id');
+    }
+
+    public function documents()
+    {
+        return $this->hasManyThrough(Document::class, Section::class, 'course_id', 'lesson_id', 'id', 'id');
+    }
+
+    public function codings()
+    {
+        return $this->hasManyThrough(Coding::class, Section::class, 'course_id', 'lesson_id', 'id', 'id');
+    }
     public function tags()
     {
         return $this->belongsToMany(Tag::class, 'course_tag', 'course_id', 'tag_id');

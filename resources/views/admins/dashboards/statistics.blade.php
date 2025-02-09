@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-    <div class="container my-5">
+    <div class="container">
         <div class="card">
             <div class="card-header">
                 <h2>Thống kê tổng quan</h2>
@@ -74,7 +74,7 @@
         </div>
         <div class="card my-5">
             <div class="card-header">
-                <h2>Biểu đồ thống kê doanh thu </h2>
+                <h2>biểu đồ thống kê doanh thu</h2>
             </div>
             <div class="card-body">
                 <div class="my-2" id="noDataMessage" style="display:none;">Không có dữ liệu doanh thu</div>

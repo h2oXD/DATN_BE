@@ -27,15 +27,22 @@ class UserController extends Controller
     {
         $search = $request->get('search');
         $role = $request->get('role');
+    
+        // Chỉ lấy người dùng có vai trò là 'student' hoặc 'lecturer'
         $users = User::with('roles')
+            ->whereHas('roles', function ($query) {
+                $query->whereIn('name', ['student', 'lecturer']);
+            })
             ->when($search, function ($query, $search) {
-                return $query->where('name', 'like', "%$search%")
-                    ->orWhere('email', 'like', "%$search%");
+                return $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%")
+                      ->orWhere('email', 'like', "%$search%");
+                });
             })
             ->when($role, function ($query, $role) {
                 return $query->whereHas('roles', function ($query) use ($role) {
                     if ($role == 1) {
-                        $query->where('role_id', 1);
+                        $query->where('role_id', 1);  // Lọc theo vai trò cụ thể nếu cần
                     } elseif ($role == 2) {
                         $query->where('role_id', 2);
                     }
@@ -43,9 +50,10 @@ class UserController extends Controller
             })
             ->latest('id')
             ->paginate(5);
-
+    
         return view(self::PATH_VIEW . 'index', compact('users'));
     }
+    
 
 
     public function create()
@@ -59,8 +67,8 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users,email',
-            'phone_number' => 'nullable|max:20',
-            'profile_picture' => 'nullable|image|max:2048',
+            'phone_number' => 'required|max:20',
+            'profile_picture' => 'required|image|max:2048',
             'role' => 'required|in:lecturer,student',
             'password' => 'required|min:8|confirmed',
         ], [
@@ -71,13 +79,14 @@ class UserController extends Controller
             'email.email' => 'Email không đúng định dạng.',
             'email.unique' => 'Email này đã được sử dụng.',
 
+            'phone_number.required' => 'Vui lòng nhập số điện thoại.',
             'phone_number.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
 
+            'profile_picture.required' => 'Vui lòng thêm ảnh đại diện.',
             'profile_picture.image' => 'Ảnh đại diện phải là một tệp hình ảnh.',
             'profile_picture.max' => 'Ảnh đại diện không được lớn hơn 2MB.',
 
             'role.required' => 'Vui lòng chọn vai trò.',
-            'role.in' => 'Vai trò không hợp lệ, chỉ chấp nhận lecturer hoặc student.',
 
             'password.required' => 'Vui lòng nhập mật khẩu.',
             'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
@@ -128,7 +137,7 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required|max:255',
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-            'phone_number' => 'nullable|max:20',
+            'phone_number' => 'required|max:20',
             'profile_picture' => 'nullable|image|max:2048',
             'role' => 'required|in:lecturer,student',
         ], [
@@ -139,13 +148,12 @@ class UserController extends Controller
             'email.email' => 'Email không đúng định dạng.',
             'email.unique' => 'Email này đã được sử dụng.',
 
+            'phone_number.required' => 'Vui lòng nhập số điện thoại.',
             'phone_number.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
 
             'profile_picture.image' => 'Ảnh đại diện phải là một tệp hình ảnh.',
             'profile_picture.max' => 'Ảnh đại diện không được lớn hơn 2MB.',
 
-            'role.required' => 'Vui lòng chọn vai trò.',
-            'role.in' => 'Vai trò không hợp lệ, chỉ chấp nhận lecturer hoặc student.',
         ]);
 
         try {

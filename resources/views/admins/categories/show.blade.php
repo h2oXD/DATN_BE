@@ -13,6 +13,8 @@
         @endforeach
     </ul>
 
-    <a href="{{ route('categories.index') }}" class="btn btn-secondary">Quay lại</a>
+    <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">Quay lại</a>
 </div>
+
+
 @endsection

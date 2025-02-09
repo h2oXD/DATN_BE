@@ -2,97 +2,101 @@
 
 @section('content')
     <div class="container">
-        <h2>Danh sách danh mục</h2>
+        <div class="card bg-white shadow">
+            <div class="card-header">
+                <h2 class="mb-0">Danh sách danh mục</h2>
+            </div>
+            <div class="card-body">
+                @if (session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                @endif
 
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
+                <a href="{{ route('admin.categories.create') }}" class="btn btn-primary mb-3">Thêm danh mục</a>
+                <a href="{{ route('admin.categories.trashed') }}" class="btn btn-primary mb-3">Trash</a>
 
-        <a href="{{ route('categories.create') }}" class="btn btn-primary mb-3">Thêm danh mục</a>
+                <div class="table-responsive border-0 overflow-y-hidden">
+                    <table class="table mb-0 text-nowrap table-centered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Category</th>
+                                <th>Slug</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($categories as $category)
+                                @if ($category->parent_id === null)
+                                    <tr class="accordion-toggle collapsed" data-bs-toggle="collapse"
+                                        data-bs-target="#collapse{{ $category->id }}">
+                                        <td>
+                                            <i class="fe fe-chevron-down fs-4 me-2"></i>
+                                            {{ $category->name }}
+                                        </td>
+                                        <td>{{ $category->slug }}</td>
+                                        <td>
+                                            <a class="btn btn-warning btn-sm" href="{{ route('admin.categories.edit', $category->id) }}">
+                                                <i class="fe fe-edit"></i> Sửa
+                                            </a>
+                                            <form id="delete-category-{{ $category->id }}"
+                                                  action="{{ route('admin.categories.destroy', $category->id) }}"
+                                                  method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" class="btn btn-danger btn-sm"
+                                                        onclick="confirmDelete({{ $category->id }})">
+                                                    <i class="fe fe-trash"></i> Xóa
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
 
-        <ul class="list-group">
-            @foreach ($categories as $index => $category)
-                @if ($category->parent_id === null)
-                    {{-- Chỉ hiển thị danh mục cha --}}
-                    <li class="list-group-item">
-                        <div class="d-flex justify-content-between">
-                            <span>{{ $index + 1 }}. <strong>{{ $category->name }}</strong></span> {{-- STT và tên danh mục cha --}}
-                            <div>
-                                <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-warning btn-sm">Sửa</a>
-                                <form id="delete-category-{{ $category->id }}"
-                                    action="{{ route('categories.destroy', $category->id) }}" method="POST"
-                                    class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        onclick="confirmDelete({{ $category->id }})">Xóa</button>
-                                </form>
-                            </div>
-                        </div>
-
-                        {{-- Nút dropdown hiển thị danh mục con --}}
-                        @if ($category->children->count())
-                            <button class="btn btn-info btn-sm toggle-subcategories">▼</button>
-                            <ul class="list-group mt-2 d-none">
-                                @foreach ($category->children as $child)
-                                    <li class="list-group-item" style="padding-left: 30px;"> {{-- Căn thẳng hàng với danh mục cha --}}
-                                        <div class="d-flex justify-content-between">
-                                            <span>-- {{ $child->name }}</span> {{-- Tên danh mục con --}}
-                                            <div>
-                                                <a href="{{ route('categories.edit', $child->id) }}"
-                                                    class="btn btn-warning btn-sm">Sửa</a>
+                                    @foreach ($category->children as $child)
+                                        <tr class="collapse bg-light" id="collapse{{ $category->id }}">
+                                            <td style="padding-left: 40px;">-- {{ $child->name }}</td>
+                                            <td>{{ $child->slug }}</td>
+                                            <td>
+                                                <a class="btn btn-warning btn-sm" href="{{ route('admin.categories.edit', $child->id) }}">
+                                                    <i class="fe fe-edit"></i> Sửa
+                                                </a>
                                                 <form id="delete-category-{{ $child->id }}"
-                                                    action="{{ route('categories.destroy', $child->id) }}" method="POST"
-                                                    class="d-inline">
+                                                      action="{{ route('admin.categories.destroy', $child->id) }}"
+                                                      method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="button" class="btn btn-danger btn-sm"
-                                                        onclick="confirmDelete({{ $child->id }})">Xóa</button>
+                                                            onclick="confirmDelete({{ $child->id }})">
+                                                        <i class="fe fe-trash"></i> Xóa
+                                                    </button>
                                                 </form>
-                                            </div>
-                                        </div>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @else
-                            <button class="btn btn-info btn-sm">Không có danh mục con</button>
-                        @endif
-                    </li>
-                @endif
-            @endforeach
-        </ul>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-        {{-- JavaScript để bật/tắt danh mục con --}}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-            document.querySelectorAll('.toggle-subcategories').forEach(button => {
-                button.addEventListener('click', function() {
-                    let subcategories = this.nextElementSibling;
-                    subcategories.classList.toggle('d-none');
-                    this.textContent = subcategories.classList.contains('d-none') ? '▼' : '▲';
+            function confirmDelete(id) {
+                Swal.fire({
+                    title: "Bạn có chắc chắn muốn xoá?",
+                    text: "Hành động này không thể hoàn tác!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Xoá",
+                    cancelButtonText: "Hủy"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById(`delete-category-${id}`).submit();
+                    }
                 });
-            });
+            }
         </script>
-
     </div>
-@endsection
-@section('script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function confirmDelete(id) {
-            Swal.fire({
-                title: "Bạn có chắc chắn muốn xoá?",
-                text: "Hành động này không thể hoàn tác!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Xoá",
-                cancelButtonText: "Hủy"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById(`delete-category-${id}`).submit();
-                }
-            });
-        }
-    </script>
 @endsection

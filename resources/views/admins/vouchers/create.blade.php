@@ -110,7 +110,7 @@
                 </div>
                 <div class="my-3 col-12">
                     <label for="description" class="form-label">Nội dung</label>
-                    <textarea name="description" id="description"></textarea>
+                    <textarea name="description" id="description">{{ old('description') }}</textarea>
                     @error('description')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -149,6 +149,7 @@
         });
     </script>
 @endsection
+
 @section('script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.6.0/tinymce.min.js"
         integrity="sha512-/4EpSbZW47rO/cUIb0AMRs/xWwE8pyOLf8eiDWQ6sQash5RP1Cl8Zi2aqa4QEufjeqnzTK8CLZWX7J5ZjLcc1Q=="
