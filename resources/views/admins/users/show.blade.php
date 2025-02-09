@@ -54,7 +54,7 @@
                 <div class="col-md-9">{{ $user->updated_at->format('d-m-Y H:i') }}</div>
             </div>
             <div class="text-end">
-                <a href="{{ route('users.index') }}" class="btn btn-secondary">Quay lại</a>
+                <a href="{{ route($user->roles->contains('name', 'lecturer') ? 'lecturers.index' : 'students.index') }}" class="btn btn-secondary">Quay lại</a>
             </div>
         </div>
     </div>
