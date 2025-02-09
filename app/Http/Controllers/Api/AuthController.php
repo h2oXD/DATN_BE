@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -48,6 +49,11 @@ class AuthController extends Controller
             UserRole::create([
                 'user_id' => $user->id,
                 'role_id' => $role->id
+            ]);
+
+            Wallet::create([
+                'user_id' => $user->id,
+                'balance' => 0
             ]);
             $token = $user->createToken(__CLASS__)->plainTextToken;
 
