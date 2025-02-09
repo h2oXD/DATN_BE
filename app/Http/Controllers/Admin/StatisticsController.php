@@ -89,10 +89,10 @@ class StatisticsController extends Controller
 
     public function countStats()
     {
-        return response()->json([
-            'courses' => Course::count(),
-            'lecturers' => Lecturer::count(),
-            'students' => Transaction::distinct('student_id')->count()
-        ]);
+        // return response()->json([
+        //     'courses' => Course::count(),
+        //     'lecturers' => Lecturer::count(),
+        //     'students' => Transaction::distinct('student_id')->count()
+        // ]);
     }
 }

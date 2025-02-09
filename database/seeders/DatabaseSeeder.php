@@ -17,6 +17,7 @@ use App\Models\UserRole;
 use App\Models\Video;
 use App\Models\Voucher;
 use App\Models\Wallet;
+use App\Models\VoucherUse;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -65,9 +66,6 @@ class DatabaseSeeder extends Seeder
             'user_id' => $student->id,
             'balance' => 0
         ]);
-        Student::create([
-            'user_id' => $student->id,
-        ]);
         $roleStudent = Role::select('id')->where('name', 'student')->first();
         UserRole::create([
             'user_id' => $student->id,
@@ -84,12 +82,6 @@ class DatabaseSeeder extends Seeder
         Wallet::create([
             'user_id' => $lecturer->id,
             'balance' => 0
-        ]);
-        Student::create([
-            'user_id' => $lecturer->id,
-        ]);
-        $lecturerID = Lecturer::create([
-            'user_id' => $lecturer->id,
         ]);
         $roleLecturer = Role::select('id')->where('name', 'lecturer')->first();
         UserRole::create([
@@ -158,21 +150,21 @@ class DatabaseSeeder extends Seeder
         }
 
         $courseID = Course::create([
-            'lecturer_id' => 1,
+            'user_id' => 3,
             'category_id' => 3,
             'title' => 'Khoá học Laravel',
             'status' => 'pending',
             'admin_commission_rate' => 30
         ]);
         Course::create([
-            'lecturer_id' => 1,
+            'user_id' => 3,
             'category_id' => 1,
             'title' => 'Khoá học React',
             'status' => 'pending',
             'admin_commission_rate' => 30
         ]);
         Course::create([
-            'lecturer_id' => 1,
+            'user_id' => 3,
             'category_id' => 4,
             'title' => 'Khoá học PHP cơ bản',
             'status' => 'pending',
@@ -249,5 +241,13 @@ class DatabaseSeeder extends Seeder
         foreach ($vouchers as $voucher) {
             Voucher::create($voucher);
         }
+
+        // Tạo lịch sử sử dụng voucher
+        VoucherUse::create([
+            'voucher_id'    => 1,
+            'user_id'       => $student->id,
+            'course_id'     => $courseID->id,
+            'time_used'     => Carbon::now(),
+        ]);
     }
 }
