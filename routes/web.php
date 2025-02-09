@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\StatisticsController;
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CourseApprovalController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TagController;

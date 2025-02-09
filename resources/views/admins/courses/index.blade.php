@@ -19,8 +19,10 @@
                     <div class="col-lg-2 col-12 mb-2">
                         <select name="category" class="form-select ms-2 text-dark">
                             <option value="">Tất cả danh mục</option>
-                            @foreach($categories as $category)
-                                <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}"
+                                    {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -59,18 +61,20 @@
                                             <span class="badge bg-danger">Đã từ chối</span>
                                         @endif
                                     </td>
-                                    
+
                                     <td>
                                         @if ($course->status == 'draft')
-                                        <form action="{{ route('courses.approve', $course->id) }}" method="POST" style="display:inline-block;">
-                                            @csrf
-                                            <button type="submit" class="btn btn-success btn-sm">Phê duyệt</button>
-                                        </form>
-                                        <form action="{{ route('courses.reject', $course->id) }}" method="POST" style="display:inline-block;">
-                                            @csrf
-                                            <button type="submit" class="btn btn-danger btn-sm">Từ chối</button>
-                                        </form>
-                                    @endif
+                                            <form action="{{ route('courses.approve', $course->id) }}" method="POST"
+                                                style="display:inline-block;">
+                                                @csrf
+                                                <button type="submit" class="btn btn-success btn-sm">Phê duyệt</button>
+                                            </form>
+                                            <form action="{{ route('courses.reject', $course->id) }}" method="POST"
+                                                style="display:inline-block;">
+                                                @csrf
+                                                <button type="submit" class="btn btn-danger btn-sm">Từ chối</button>
+                                            </form>
+                                        @endif
 
                                     </td>
                                     <td>

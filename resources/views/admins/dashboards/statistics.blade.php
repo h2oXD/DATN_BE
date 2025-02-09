@@ -33,9 +33,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="my-2" id="noDataMessage" style="display:none;">Không có dữ liệu doanh thu</div>
-                <canvas class="apex-charts" id="revenueChart" width="400" height="200"></canvas>
             </div>
 
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -74,6 +71,15 @@
                     })
                     .catch(error => console.error('Error:', error));
             </script>
+        </div>
+        <div class="card my-5">
+            <div class="card-header">
+                <h2>Biểu đồ thống kê doanh thu </h2>
+            </div>
+            <div class="card-body">
+                <div class="my-2" id="noDataMessage" style="display:none;">Không có dữ liệu doanh thu</div>
+                <canvas class="apex-charts" id="revenueChart" width="400" height="200"></canvas>
+            </div>
         </div>
     </div>
 @endsection
