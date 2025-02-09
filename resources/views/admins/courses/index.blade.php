@@ -72,7 +72,7 @@
                                         </div>
                                     </td>
                                     <td>{{ $course->category->name }}</td>
-                                    <td>{{ $course->lecturer->name }}</td>
+                                    {{-- <td>{{ $course->lecturer->name }}</td> --}}
                                     <td>
                                         @if ($course->status == 'pending')
                                             <span class="badge bg-warning">Chờ duyệt</span>

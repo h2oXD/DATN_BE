@@ -63,10 +63,10 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if ($vouchers->type === 'percent' && $vouchers->discount_percent)
-                                            <span class="">{{ $vouchers->discount_percent }}%</span>
-                                        @elseif ($vouchers->type === 'fix_amount' && $vouchers->discount_amount)
-                                            <span class="">{{ number_format($vouchers->discount_amount) }} VND</span>
+                                        @if ($vouchers->type === 'percent' && $vouchers->discount_price)
+                                            <span class="">{{ $vouchers->discount_price }}%</span>
+                                        @elseif ($vouchers->type === 'fix_amount' && $vouchers->discount_price)
+                                            <span class="">{{ number_format($vouchers->discount_price) }} VND</span>
                                         @else
                                             <span class="badge bg-warning">Không có</span>
                                         @endif

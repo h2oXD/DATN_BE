@@ -8,28 +8,11 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-content-center">
             <h2>Chỉnh sửa người dùng</h2>
-
         </div>
         <div class="card-body">
-            {{-- @if (session()->has('success') && !session()->get('success'))
-            <div class="alert alert-danger">
-                {{ session()->get('error') }}
-            </div>
-        @endif --}}
-
             @if (session()->has('success') && session()->get('success'))
                 <div class="alert alert-info">Thao tác thành công!</div>
             @endif
-            {{-- 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif --}}
 
             <form class="row" method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
                 @csrf
@@ -67,8 +50,8 @@
                     <select name="role" class="form-control">
                         <option value="lecturer" {{ $user->roles->first()->name === 'lecturer' ? 'selected' : '' }}>
                             Giảng viên</option>
-                        <option value="student" {{ $user->roles->first()->name === 'student' ? 'selected' : '' }}>Học
-                            viên</option>
+                        <option value="student" {{ $user->roles->first()->name === 'student' ? 'selected' : '' }}>
+                            Học viên</option>
                     </select>
                 </div>
 
@@ -91,12 +74,10 @@
                     </div>
                 </div>
                 <div class="text-end">
-                    <a href="{{ route('users.index') }}" class="btn btn-secondary">Quay lại</a>
+                    <a href="{{ route($user->roles->contains('name', 'lecturer') ? 'lecturers.index' : 'students.index') }}" class="btn btn-secondary">Quay lại</a>
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                 </div>
             </form>
-
         </div>
-
     </div>
 @endsection

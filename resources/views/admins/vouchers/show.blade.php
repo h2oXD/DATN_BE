@@ -38,22 +38,15 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-3"><strong>Số % giảm:</strong></div>
+                    <div class="col-md-3"><strong>Số % / Số tiền giảm:</strong></div>
                     <div class="col-md-9">
-                        @if ($item->discount_percent)
-                            <span class="">{{ $item->discount_percent }}%</span>
-                        @else
-                            <span class="">Không có</span>
-                        @endif
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3"><strong>Số tiền giảm:</strong></div>
-                    <div class="col-md-9">
-                        @if ($item->discount_amount)
-                            <span class="">{{ $item->discount_amount }} VND</span>
-                        @else
-                            <span class="">Không có</span>
+                        @if ($item->discount_price)
+                            <span class="">{{ $item->discount_price }} @if ($item->type === 'percent')
+                                    <span class="">%</span>
+                                @elseif ($item->type === 'fix_amount')
+                                    <span class="">Giá</span>
+                                @endif
+                            </span>
                         @endif
                     </div>
                 </div>

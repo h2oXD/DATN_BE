@@ -18,8 +18,7 @@ return new class extends Migration
             $table->string('code')->comment('Mã giảm giá');
             $table->text('description')->comment('Nội dung phiếu giảm giá');
             $table->enum('type', ['percent', 'fix_amount'])->comment('Cho phép giảm theo phần trăm hoặc giá cụ thể');
-            $table->decimal('discount_percent', 10, 0)->nullable()->comment('Giảm bao nhiêu phần trăm');
-            $table->integer('discount_amount')->nullable()->comment('Giảm theo số tiền cụ thể');
+            $table->integer('discount_price')->nullable()->comment('Giảm theo % hoặc số tiền cụ thể');
             $table->datetime('start_time')->comment('Ngày bắt đầu giảm giá');
             $table->datetime('end_time')->comment('Ngày kết thúc giảm giá');
             $table->integer('count')->comment('Số phiếu giảm giá còn lại');
