@@ -15,7 +15,7 @@
             </div>
         @endif --}}
 
-        <form action="{{ route('categories.update', $category->id) }}" method="POST">
+        <form action="{{ route('admin.categories.update', $category->id) }}" method="POST">
             @csrf
             @method('PUT')
 
@@ -46,7 +46,7 @@
             @endif
 
             <button type="submit" class="btn btn-warning">Cập nhật</button>
-            <a href="{{ route('categories.index') }}" class="btn btn-secondary">Quay lại</a>
+            <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">Quay lại</a>
         </form>
     </div>
 @endsection
