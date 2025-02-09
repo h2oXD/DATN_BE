@@ -69,7 +69,7 @@
                 <div id="navCourse" class="collapse " data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-dark " href="{{ route('courses.index') }}">Danh sách khoá học</a>
+                            <a class="nav-link text-dark " href="{{ route('courses.index') }}">Khoá học đang bán</a>
 
                         </li>
                     </ul>

@@ -53,7 +53,8 @@
                     <table class="table mb-3 text-nowrap table-hover table-centered">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col">Tên khóa học</th>
+                                <th scope="col">Ảnh bìa</th>
+                                <th scope="col">Tiêu đề</th>
                                 <th scope="col">Danh mục</th>
                                 <th scope="col">Giảng viên</th>
                                 <th scope="col">Trạng thái</th>
@@ -64,6 +65,7 @@
                         <tbody>
                             @foreach ($courses as $course)
                                 <tr>
+                                    <td></td>
                                     <td>
                                         <div class="d-flex align-items-center flex-row gap-2">
                                             <h5 class="mb-0">{{ $course->title }}</h5>
