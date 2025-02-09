@@ -42,13 +42,16 @@ Route::get('/admin/dashboards/statistics', [StatisticsController::class, 'index'
 Route::resource('vouchers', VoucherController::class);
 
 
-Route::get('categories/trashed',[CategoryController::class,'trashed'])->name('categories.trashed');
-Route::delete('categories/{id}/force-delete', [CategoryController::class, 'forceDelete'])
-    ->name('categories.forceDelete');
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('categories/trashed', [CategoryController::class, 'trashed'])->name('categories.trashed');
+    Route::delete('categories/{id}/force-delete', [CategoryController::class, 'forceDelete'])
+        ->name('categories.forceDelete');
 
-Route::resource('categories', CategoryController::class);
+    Route::resource('categories', CategoryController::class)->names('categories');
 
-Route::post('categories/{id}/restore', [CategoryController::class, 'restore'])->name('categories.restore');    
+    Route::post('categories/{id}/restore', [CategoryController::class, 'restore'])->name('categories.restore');
+});
+
 
 Route::resource('users', UserController::class);
 Route::resource('tags', TagController::class);

@@ -176,14 +176,18 @@ class CategoryController extends Controller
 
 
     public function trashed()
-    {
-        // Lấy danh mục cha đã xóa và kèm theo danh mục con cũng đã xóa
-        $categories = Category::onlyTrashed()->with(['children' => function ($query) {
-            $query->onlyTrashed(); // Lấy cả danh mục con bị xóa
-        }])->whereNull('parent_id')->get();
+{
+    // Lấy danh mục cha đã bị xóa (nếu có)
+    $trashedParents = Category::onlyTrashed()->whereNull('parent_id')->with(['children' => function ($query) {
+        $query->onlyTrashed(); // Lấy danh mục con bị xóa của danh mục cha đã bị xóa
+    }])->get();
 
-        return view('admins.categories.trashed', compact('categories'));
-    }
+    // Lấy danh mục con bị xóa nhưng có danh mục cha chưa bị xóa
+    $trashedChildren = Category::onlyTrashed()->whereNotNull('parent_id')->get();
+
+    return view('admins.categories.trashed', compact('trashedParents', 'trashedChildren'));
+}
+
 
 
 
@@ -223,7 +227,7 @@ class CategoryController extends Controller
 
         // Khôi phục danh mục cha và tất cả danh mục con
         $category->restore();
-        $category->children()->onlyTrashed()->restore();
+       
 
         return back()->with('success', 'Danh mục đã được khôi phục!');
     }

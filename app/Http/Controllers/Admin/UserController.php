@@ -27,15 +27,22 @@ class UserController extends Controller
     {
         $search = $request->get('search');
         $role = $request->get('role');
+    
+        // Chỉ lấy người dùng có vai trò là 'student' hoặc 'lecturer'
         $users = User::with('roles')
+            ->whereHas('roles', function ($query) {
+                $query->whereIn('name', ['student', 'lecturer']);
+            })
             ->when($search, function ($query, $search) {
-                return $query->where('name', 'like', "%$search%")
-                    ->orWhere('email', 'like', "%$search%");
+                return $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%")
+                      ->orWhere('email', 'like', "%$search%");
+                });
             })
             ->when($role, function ($query, $role) {
                 return $query->whereHas('roles', function ($query) use ($role) {
                     if ($role == 1) {
-                        $query->where('role_id', 1);
+                        $query->where('role_id', 1);  // Lọc theo vai trò cụ thể nếu cần
                     } elseif ($role == 2) {
                         $query->where('role_id', 2);
                     }
@@ -43,9 +50,10 @@ class UserController extends Controller
             })
             ->latest('id')
             ->paginate(5);
-
+    
         return view(self::PATH_VIEW . 'index', compact('users'));
     }
+    
 
 
     public function create()
