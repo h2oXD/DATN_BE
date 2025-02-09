@@ -66,19 +66,10 @@
                 </div>
 
                 <div class="col-lg-6 mb-2 col-12">
-                    <label for="discount_percent" class="form-label">Số % giảm</label>
-                    <input type="number" class="form-control" name="discount_percent" id="discount_percent"
-                        min="0" value="{{ old('discount_percent', $item->discount_percent) }}"/>
-                    @error('discount_percent')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="col-lg-6 mb-2 col-12">
-                    <label for="discount_amount" class="form-label">Số tiền giảm</label>
-                    <input type="number" class="form-control" name="discount_amount" id="discount_amount" min="0" 
-                    value="{{ old('discount_amount', $item->discount_amount) }}"/>
-                    @error('discount_amount')
+                    <label for="discount_price" class="form-label">Số % / Số tiền giảm</label>
+                    <input type="number" class="form-control" name="discount_price" id="discount_price"
+                        min="0" value="{{ old('discount_price', $item->discount_price) }}"/>
+                    @error('discount_price')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
@@ -134,7 +125,7 @@
         </div>
     </div>
 
-    <script>
+    {{-- <script>
         document.addEventListener("DOMContentLoaded", function() {
             const typeSelect = document.querySelector('select[name="type"]');
             const discountPercentInput = document.querySelector('input[name="discount_percent"]');
@@ -158,7 +149,7 @@
             // Gán sự kiện thay đổi giá trị
             typeSelect.addEventListener("change", toggleDiscountFields);
         });
-    </script>
+    </script> --}}
 @endsection
 
 @section('script')
