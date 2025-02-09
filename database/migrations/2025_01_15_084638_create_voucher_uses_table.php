@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Course;
 use App\Models\User;
 use App\Models\Voucher;
 use Illuminate\Database\Migrations\Migration;
@@ -16,11 +17,10 @@ return new class extends Migration
         Schema::create('voucher_uses', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignIdFor(Voucher::class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
-            $table->timestamp('applied_at');
-            $table->timestamp('expired_at')->nullable()->default(NULL);
-            $table->boolean('is_used')->default('1');
+            $table->foreignIdFor(Voucher::class)->constrained()->onDelete('cascade')->comment('ID phiếu giảm giá được dùng');
+            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade')->comment('ID người sử dụng');
+            $table->foreignIdFor(Course::class)->constrained()->onDelete('cascade')->comment('ID khóa học được sử dụng');
+            $table->timestamp('time_used')->comment('Thời gian sử dụng');
 
             $table->timestamps();
         });

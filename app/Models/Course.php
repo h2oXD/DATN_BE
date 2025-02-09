@@ -35,12 +35,6 @@ class Course extends Model
         'submited_at'
     ];
 
-
-    public function lecturer()
-    {
-        return $this->belongsTo(Lecturer::class, 'lecturer_id');
-    }
-
     public function transactions()
     {
         return $this->hasMany(Transaction::class, 'course_id');

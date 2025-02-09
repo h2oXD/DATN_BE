@@ -7,7 +7,7 @@
 @section('content')
     <div class="card">
         <div class="card-header d-flex justify-content-between align-content-center">
-            <h2 class="m-0">Kiểm duyệt khoá học</h2>
+            <h2 class="m-0">Danh sách khoá học</h2>
         </div>
         <div class="card-body p-0">
             <form method="GET" action="{{ route('courses.index') }}" class="row gx-3 m-2">
@@ -53,7 +53,8 @@
                     <table class="table mb-3 text-nowrap table-hover table-centered">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col">Tên khóa học</th>
+                                <th scope="col">Ảnh bìa</th>
+                                <th scope="col">Tiêu đề</th>
                                 <th scope="col">Danh mục</th>
                                 <th scope="col">Giảng viên</th>
                                 <th scope="col">Trạng thái</th>
@@ -64,6 +65,7 @@
                         <tbody>
                             @foreach ($courses as $course)
                                 <tr>
+                                    <td></td>
                                     <td>
                                         <div class="d-flex align-items-center flex-row gap-2">
                                             <h5 class="mb-0">{{ $course->title }}</h5>

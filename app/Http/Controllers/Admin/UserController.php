@@ -7,6 +7,7 @@ use App\Models\Lecturer;
 use App\Models\Role;
 use App\Models\Student;
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -101,15 +102,14 @@ class UserController extends Controller
 
             $user = User::create($data);
 
+            Wallet::create([
+                'user_id' => $user->id,
+                'balance' => 0
+            ]);
+
             $role = Role::where('name', $data['role'])->first();
             $user->roles()->attach($role);
 
-            if ($data['role'] === 'lecturer') {
-                $user->roles()->attach(Role::where('name', 'student')->first());
-                Lecturer::create(['user_id' => $user->id]);
-            }
-
-            Student::create(['user_id' => $user->id]);
 
             return redirect()->route('users.index')->with('success', 'Tạo user thành công!');
 
