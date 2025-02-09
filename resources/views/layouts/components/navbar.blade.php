@@ -62,12 +62,12 @@
                 <div id="navProject" class="collapse " data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-light " href="{{ route('categories.index') }}">Danh sách danh
+                            <a class="nav-link text-light " href="{{ route('admin.categories.index') }}">Danh sách danh
                                 mục</a>
 
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light " href="{{ route('categories.create') }}">Thêm mới danh
+                            <a class="nav-link text-light " href="{{ route('admin.categories.create') }}">Thêm mới danh
                                 mục</a>
                         </li>
                     </ul>
