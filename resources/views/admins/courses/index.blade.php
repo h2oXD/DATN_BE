@@ -34,82 +34,62 @@
                 </div>
             @endif
 
-                @if (session()->has('success') && session()->get('success'))
-                    <div class="alert alert-info">
-                        Thao tác thành công!
-                    </div>
-<<<<<<< HEAD
-                    <div class="col-lg-2 col-12 mb-2">
-                        <select name="category" class="form-select ms-2 text-dark">
-                            <option value="">Tất cả danh mục</option>
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->id }}"
-                                    {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}
-                                </option>
-=======
-                @endif
+            @if (session()->has('success') && session()->get('success'))
+                <div class="alert alert-info">
+                    Thao tác thành công!
+                </div>
+            @endif
 
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
->>>>>>> 1603065fd665ff39a16fff4ba72baa6ba8a8bdc7
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                <div class="table-responsive">
-                    <table class="table mb-3 text-nowrap table-hover table-centered">
-                        <thead class="table-light">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            <div class="table-responsive">
+                <table class="table mb-3 text-nowrap table-hover table-centered">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Ảnh bìa</th>
+                            <th scope="col">Tiêu đề</th>
+                            <th scope="col">Danh mục</th>
+                            <th scope="col">Giảng viên</th>
+                            <th scope="col">Trạng thái</th>
+                            <th scope="col">Thao tác</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($courses as $course)
                             <tr>
-                                <th scope="col">Ảnh bìa</th>
-                                <th scope="col">Tiêu đề</th>
-                                <th scope="col">Danh mục</th>
-                                <th scope="col">Giảng viên</th>
-                                <th scope="col">Trạng thái</th>
-                                <th scope="col">Thao tác</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($courses as $course)
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                        <div class="d-flex align-items-center flex-row gap-2">
-                                            <h5 class="mb-0">{{ $course->title }}</h5>
-                                        </div>
-                                    </td>
-                                    <td>{{ $course->category->name }}</td>
-                                    <td>{{ $course->lecturer->name }}</td>
-                                    <td>
-                                        @if ($course->status == 'pending')
-                                            <span class="badge bg-warning">Chờ duyệt</span>
-                                        @elseif($course->status == 'published')
-                                            <span class="badge bg-success">Đã phê duyệt</span>
-                                        @elseif($course->status == 'rejected')
-                                            <span class="badge bg-danger">Đã từ chối</span>
-                                        @endif
-                                    </td>
+                                <td>
+                                    <img src="{{ Storage::url($course->thumbnail) }}" alt="avatar"
+                                        class="w-50 h-50 avatar-md">
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center flex-row gap-2">
+                                        <h5 class="mb-0">{{ $course->title }}</h5>
+                                    </div>
+                                </td>
+                                <td>{{ $course->category->name }}</td>
+                                {{-- <td>{{ $course->lecturer->name }}</td> --}}
+                                <td>
+                                    @if ($course->status == 'pending')
+                                        <span class="badge bg-warning">Chờ duyệt</span>
+                                    @elseif($course->status == 'published')
+                                        <span class="badge bg-success">Đã phê duyệt</span>
+                                    @elseif($course->status == 'rejected')
+                                        <span class="badge bg-danger">Đã từ chối</span>
+                                    @endif
+                                </td>
 
-                                    <td>
-<<<<<<< HEAD
-                                        @if ($course->status == 'draft')
-                                            <form action="{{ route('courses.approve', $course->id) }}" method="POST"
-                                                style="display:inline-block;">
-                                                @csrf
-                                                <button type="submit" class="btn btn-success btn-sm">Phê duyệt</button>
-                                            </form>
-                                            <form action="{{ route('courses.reject', $course->id) }}" method="POST"
-                                                style="display:inline-block;">
-                                                @csrf
-                                                <button type="submit" class="btn btn-danger btn-sm">Từ chối</button>
-                                            </form>
-                                        @endif
-=======
-                                        @if ($course->status == 'pending')
-                                        <form action="{{ route('courses.approve', $course->id) }}" method="POST" style="display:inline-block;">
+                                <td>
+                                    @if ($course->status == 'pending')
+                                        <form action="{{ route('courses.approve', $course->id) }}" method="POST"
+                                            style="display:inline-block;">
                                             @csrf
                                             <button type="submit" class="btn btn-success btn-sm">Phê duyệt</button>
                                         </form>
@@ -119,7 +99,6 @@
                                             <button type="submit" class="btn btn-danger btn-sm">Từ chối</button>
                                         </form>
                                     @endif
->>>>>>> 1603065fd665ff39a16fff4ba72baa6ba8a8bdc7
 
                                 </td>
                                 <td>

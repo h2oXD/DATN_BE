@@ -23,7 +23,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {;
+Route::get('/', function () {
+    ;
     return view('admins.dashboards.dash-board');
 });
 Route::get('login', function () {
@@ -40,22 +41,41 @@ Route::get('/admin/statistics/count-stats', [StatisticsController::class, 'count
 
 Route::get('/admin/dashboards/statistics', [StatisticsController::class, 'index']);
 
-Route::resource('vouchers', VoucherController::class);
+Route::resource('admin/vouchers', VoucherController::class);
 
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('categories/trashed', [CategoryController::class, 'trashed'])->name('categories.trashed');
     Route::delete('categories/{id}/force-delete', [CategoryController::class, 'forceDelete'])
         ->name('categories.forceDelete');
-
     Route::resource('categories', CategoryController::class)->names('categories');
-
     Route::post('categories/{id}/restore', [CategoryController::class, 'restore'])->name('categories.restore');
 });
 
 
-Route::resource('users', UserController::class);
+Route::prefix('users')->group(function () {
+    Route::get('/lecturers', [UserController::class, 'indexLecturers'])->name('lecturers.index');
+    Route::get('/students', [UserController::class, 'indexStudents'])->name('students.index');
+    Route::get('/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/', [UserController::class, 'store'])->name('users.store');
+    Route::get('/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+});
+
+
 Route::resource('tags', TagController::class);
+Route::delete('/delete/{id}', [TagController::class, 'delete'])->name('tags.delete');
+Route::delete('/forceDelete/{id}', [TagController::class, 'forceDelete'])->name('tags.forceDelete');
+Route::get('/admin/tags/check/{id}', [TagController::class, 'forceDelete']);
+Route::get('/admin/tags/check/{id}', [TagController::class, 'checkTagUsage']);
+
+// Routes cho thùng rác
+Route::get('/trash', [TagController::class, 'trash'])->name('tags.trash');
+Route::post('/restore/{id}', [TagController::class, 'restore'])->name('tags.restore');
+
+
 
 Route::resource('courses', CourseController::class);
 Route::post('courses/{id}/approve', [CourseController::class, 'approve'])->name('courses.approve');

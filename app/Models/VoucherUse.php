@@ -12,8 +12,7 @@ class VoucherUse extends Model
     protected $fillable = [
         'voucher_id',
         'user_id',
-        'applied_at',
-        'expired_at',
-        'is_used',
+        'course_id',
+        'time_used',
     ];
 }

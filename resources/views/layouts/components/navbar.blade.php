@@ -183,13 +183,14 @@
                 <div id="navProfile" class="collapse" data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="{{ route('users.index') }}">Học viên</a>
+                            <a class="nav-link text-dark" href="{{ route('students.index') }}">Học viên</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="{{ route('users.index') }}">Giảng viên</a>
+                            <a class="nav-link text-dark" href="{{ route('lecturers.index') }}">Giảng viên</a>
                         </li>
                     </ul>
                 </div>
+                
             </li>
 
             <!-- Nav item -->

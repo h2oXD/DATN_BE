@@ -26,11 +26,6 @@ class Transaction extends Model
         return $this->belongsTo(Course::class, 'course_id');
     }
 
-    public function lecturer()
-    {
-        return $this->belongsTo(Lecturer::class, 'lecturer_id');
-    }
-
     public function student()
     {
         return $this->belongsTo(User::class, 'student_id');

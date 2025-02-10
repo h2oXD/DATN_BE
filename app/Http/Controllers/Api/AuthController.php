@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,9 @@ class AuthController extends Controller
 {
     public function getUser(Request $request)
     {
-        return response()->json($request->user());
+        $role = $request->user()->roles;
+        $user = $request->user();
+        return response()->json($user);
     }
     public function register(Request $request)
     {
@@ -48,6 +51,11 @@ class AuthController extends Controller
             UserRole::create([
                 'user_id' => $user->id,
                 'role_id' => $role->id
+            ]);
+
+            Wallet::create([
+                'user_id' => $user->id,
+                'balance' => 0
             ]);
             $token = $user->createToken(__CLASS__)->plainTextToken;
 
@@ -85,20 +93,14 @@ class AuthController extends Controller
             return response()->json(['message' => 'Thông tin đăng nhập không chính xác'], Response::HTTP_UNAUTHORIZED);
         }
 
+        $role = UserRole::where('user_id',$user->id);
+
         $token = $user->createToken(__CLASS__)->plainTextToken;
 
-        if ($user->lecturer->id) {
-            return response()->json([
-                'user_id' => $user->id,
-                'student_id' => $user->student->id,
-                'lecturer_id' => $user->lecturer->id,
-                'token' => $token
-            ], Response::HTTP_OK);
-        }
         return response()->json([
             'user_id' => $user->id,
-            'student_id' => $user->student->id,
-            'token' => $token
+            'token' => $token,
+            'role' => $role
         ], Response::HTTP_OK);
 
     }

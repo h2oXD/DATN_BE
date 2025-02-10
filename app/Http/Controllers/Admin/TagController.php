@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\AdminBaseController;
+use App\Models\Course;
+use App\Models\CourseTag;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -43,8 +45,57 @@ class TagController extends AdminBaseController
     }
     public function updateMessage()
     {
-        return [
+        return [];
+    }
 
-        ];
+    public function delete($id)
+    {
+        $tag = Tag::findOrFail($id);
+        $tag->delete();
+        return response()->json(['message' => 'Tag đã được đưa vào thùng rác.']);
+    }
+
+    public function forceDelete($id)
+    {
+        $tag = Tag::onlyTrashed()->with('courses')->findOrFail($id);
+
+        // Kiểm tra nếu tag có khóa học liên quan
+        if ($tag->courses->count() > 0) {
+            return redirect()->route('tags.trash')->with('error', 'Không thể xóa! Vui lòng xóa các khóa học chứa tag này trước.');
+        }
+
+        $tag->forceDelete();
+        return redirect()->route('tags.trash')->with('success', 'Tag đã bị xóa vĩnh viễn.');
+    }
+
+    public function trash()
+    {
+        $trashedTags = Tag::onlyTrashed()->with('courses')->get();
+
+        return view('admins.tags.trash', compact('trashedTags'));
+    }
+
+
+    public function restore($id)
+    {
+        $tag = Tag::onlyTrashed()->findOrFail($id);
+        $tag->restore();
+
+        return redirect()->route('tags.index')->with('success', 'Tag đã được khôi phục thành công!');
+    }
+
+    public function checkTagUsage($id)
+    {
+        $tag = Tag::with('courses')->onlyTrashed()->findOrFail($id);
+
+        if ($tag->courses->count() > 0) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tag này đang được sử dụng trong các khóa học!',
+                'courses' => $tag->courses->pluck('name')
+            ]);
+        }
+
+        return response()->json(['status' => 'success']);
     }
 }
