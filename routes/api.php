@@ -39,12 +39,12 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::put('/lecturer/courses/{course_id}', [CourseController::class, 'updateLecturerCourse']); //Cập nhật khóa học 
     Route::delete('/lecturer/courses/{course_id}', [CourseController::class, 'destroyLecturerCourse']); //Xoá khoá học
 
-    //section in course
+    //section in course 
     Route::post('/lecturer/courses/{course_id}/sections', [CourseController::class, 'createSection']); //Tạo mới section trong khoá học
     Route::put('/lecturer/courses/{course_id}/sections/{section_id}', [CourseController::class, 'updateSection']); //Cập nhật section trong khóa học 
     Route::delete('/lecturer/courses/{course_id}/sections/{section_id}', [CourseController::class, 'destroySection']); //Xoá section trong khoá học
 
-    //lesson in section
+    //lesson in section 
     Route::post('/lecturer/courses/{course_id}/sections/lessons', [CourseController::class, 'createLesson']); //Tạo mới section trong khoá học
     Route::put('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}', [CourseController::class, 'updateLesson']); //Cập nhật section trong khóa học 
     Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}', [CourseController::class, 'destroyLesson']); //Xoá section trong khoá học
