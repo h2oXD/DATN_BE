@@ -3,10 +3,7 @@
 @section('content')
     <div class="card">
         <div class="card-header d-flex justify-content-between align-content-center">
-            <div class="d-flex">
-                <h2 class="m-0 mx-2">Danh sách Thẻ</h2>
-                <a href="{{ route('tags.trash') }}" class="btn btn-warning">Thùng rác</a>
-            </div>
+            <h2 class="m-0">Danh sách thẻ</h2>
             <a href="{{ route('tags.create') }}" class="btn btn-primary">Thêm mới</a>
         </div>
         <div class="card-body">
