@@ -29,20 +29,17 @@
             <div class="row mb-3">
                 <div class="col-md-3"><strong>Vai trò:</strong></div>
                 <div class="col-md-9">
-                    @foreach ($user->roles->toArray() as $item)
-                        @if ($item['name'] == 'lecturer')
-                            <span class="badge bg-warning">Giảng viên</span>
-                        @elseif($item['name'] == 'student')
-                            <span class="badge bg-success">Học viên</span>
-                        @endif
-                    @endforeach
+                    @if ($user->roles->contains('name', 'lecturer'))
+                        <span class="badge bg-warning">Giảng viên</span>
+                    @elseif ($user->roles->contains('name', 'student') && !$user->roles->contains('name', 'lecturer'))
+                        <span class="badge bg-success">Học viên</span>
+                    @endif
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col-md-3"><strong>Ảnh đại diện:</strong></div>
                 <div class="col-md-9">
-                    <img src="{{ Storage::url($user->profile_picture) }}" class="rounded-circle" width="100"
-                        height="100">
+                    <img src="{{ Storage::url($user->profile_picture) }}" class="rounded-circle" width="100" height="100">
                 </div>
             </div>
             <div class="row mb-3">

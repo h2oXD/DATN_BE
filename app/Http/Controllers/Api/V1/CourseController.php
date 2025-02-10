@@ -75,32 +75,9 @@ class CourseController extends Controller
         }
         $course->update($request->all());
         return response()->json([
-            'message' => 'Không tìm thấy khoá học'
-        ], 404);
+            'message' => 'Cập nhật thành công'
+        ], 200);
     }
-    public function destroyLecturerCourse($course_id)
-    {
-        try {
-            $user_id = request()->user()->id;
-            $course = Course::where('user_id', $user_id)->find($course_id);
-
-            if (!$course) {
-                return response()->json([
-                    'message' => 'Không tìm thấy khoá học'
-                ], 404);
-            }
-
-            $course->delete();
-            return response()->json([
-                'message' => 'Xoá khoá học thành công'
-            ], 200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'message' => 'Lỗi server',
-            ], 500);
-        }
-    }
-
 
     public function createSection(Request $request, $course_id)
     {
@@ -118,6 +95,7 @@ class CourseController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
             ], 500);
         }
     }
@@ -125,19 +103,31 @@ class CourseController extends Controller
     public function updateSection(Request $request, $course_id, $section_id)
     {
         try {
-            $section = Section::where('course_id', $course_id)->findOrFail($section_id);
+            $user_id = $request->user()->id;
+            $course = Course::where('user_id', $user_id)->find($course_id);
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Không tìm thấy khoá học'
+                ], 404);
+            }
+            $section = Section::where('course_id', $course_id)->find($section_id);
+            if (!$section) {
+                return response()->json([
+                    'message' => 'Không tìm thấy section'
+                ], 404);
+            }
             $section->update($request->all());
             return response()->json([
                 'section' => $section,
-                'message' => 'Cập nhật section thành công',
+                'message' => 'Cập nhật section thành công'
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi server',
+                'error' => $th
             ], 500);
         }
     }
-
     public function destroySection($course_id, $section_id)
     {
         try {
@@ -149,26 +139,32 @@ class CourseController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
             ], 500);
         }
     }
 
+
     public function createLesson(Request $request, $course_id, $section_id)
     {
         try {
-            $section = Section::where('course_id', $course_id)->findOrFail($section_id);
+            $course = Course::findOrFail($course_id);
+            $section = $course->sections()->findOrFail($section_id);
+            
             $lesson = $section->lessons()->create([
                 'title' => $request->title,
-                'content' => $request->content,
+                'description' => $request->content,
                 'order' => $request->order,
             ]);
+            
             return response()->json([
                 'lesson' => $lesson,
-                'message' => 'Tạo mới bài học thành công',
+                'message' => 'Tạo mới lesson thành công',
             ], 201);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
             ], 500);
         }
     }
@@ -176,12 +172,42 @@ class CourseController extends Controller
     public function updateLesson(Request $request, $course_id, $section_id, $lesson_id)
     {
         try {
-            $lesson = Lesson::where('section_id', $section_id)->where('course_id', $course_id)->findOrFail($lesson_id);
-            $lesson->update($request->all());
+            $user_id = $request->user()->id;
+            $course = Course::where('user_id', $user_id)->find($course_id);
+
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Không tìm thấy khóa học'
+                ], 404);
+            }
+
+            $section = Section::where('course_id', $course_id)->find($section_id);
+
+            if (!$section) {
+                return response()->json([
+                    'message' => 'Không tìm thấy section'
+                ], 404);
+            }
+
+            $lesson = Lesson::where('section_id', $section_id)->find($lesson_id);
+
+            if (!$lesson) {
+                return response()->json([
+                    'message' => 'Không tìm thấy lesson'
+                ], 404);
+            }
+
+            $lesson->update([
+                'title' => $request->title,
+                'description' => $request->description,
+                'content' => $request->content,
+                'order' => $request->order,
+            ]);
+
             return response()->json([
-                'lesson' => $lesson,
-                'message' => 'Cập nhật bài học thành công',
+                'message' => 'Cập nhật lesson thành công',
             ], 200);
+
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi server',
@@ -189,14 +215,40 @@ class CourseController extends Controller
         }
     }
 
-    public function destroyLesson($course_id, $section_id, $lesson_id)
+    public function destroyLesson(Request $request, $course_id, $section_id, $lesson_id)
     {
         try {
-            $lesson = Lesson::where('section_id', $section_id)->where('course_id', $course_id)->findOrFail($lesson_id);
+            $user_id = $request->user()->id;
+            $course = Course::where('user_id', $user_id)->find($course_id);
+
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Không tìm thấy khóa học'
+                ], 404);
+            }
+
+            $section = Section::where('course_id', $course_id)->find($section_id);
+
+            if (!$section) {
+                return response()->json([
+                    'message' => 'Không tìm thấy section'
+                ], 404);
+            }
+
+            $lesson = Lesson::where('section_id', $section_id)->find($lesson_id);
+
+            if (!$lesson) {
+                return response()->json([
+                    'message' => 'Không tìm thấy lesson'
+                ], 404);
+            }
+
             $lesson->delete();
+
             return response()->json([
-                'message' => 'Xoá bài học thành công',
+                'message' => 'Xóa lesson thành công',
             ], 200);
+
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi server',
