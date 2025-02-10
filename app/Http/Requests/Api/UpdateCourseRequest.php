@@ -22,7 +22,21 @@ class UpdateCourseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'category_id'           => [''],
+            'title'                 => [''],
+            'description'           => [''],
+            'price'                 => [''],
+            'price_sale'            => [''],
+            'target_students'       => [''],
+            'learning_outcomes'     => [''],
+            'prerequisites'         => [''],
+            'who_is_this_for'       => [''],
+            'admin_commission_rate' => [''],
+            'thumbnail'             => [''],
+            'language'              => [''],
+            'level'                 => [''],
+            'primary_content'       => [''],
+            'updated_at'            => [''],
         ];
     }
 }

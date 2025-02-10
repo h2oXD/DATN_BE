@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\VoucherController;
+use App\Http\Controllers\Admin\VoucherUseController;
 use App\Http\Controllers\Api\V1\CategoryController as V1CategoryController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +43,7 @@ Route::get('/admin/statistics/count-stats', [StatisticsController::class, 'count
 Route::get('/admin/dashboards/statistics', [StatisticsController::class, 'index']);
 
 Route::resource('admin/vouchers', VoucherController::class);
+Route::resource('admin/voucher-use', VoucherUseController::class);
 
 
 Route::prefix('admin')->name('admin.')->group(function () {
