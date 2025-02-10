@@ -161,6 +161,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark " href="{{ route('vouchers.create') }}">Thêm mới</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark " href="{{ route('voucher-use.index') }}">Lịch sử</a>
+                        </li>
                     </ul>
                 </div>
             </li>

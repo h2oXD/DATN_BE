@@ -15,4 +15,19 @@ class VoucherUse extends Model
         'course_id',
         'time_used',
     ];
+
+    public function voucher()
+    {
+        return $this->belongsTo(Voucher::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
 }
