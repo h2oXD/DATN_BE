@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\AdminBaseController;
 use App\Models\Voucher;
+use App\Models\VoucherUse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -14,6 +15,17 @@ class VoucherController extends AdminBaseController
         $this->model = Voucher::class;
         $this->viewPath = 'admins.vouchers.';
         $this->routePath = 'vouchers.index';
+    }
+
+    public function destroy($id)
+    {
+        $item = $this->model::findOrFail($id);
+
+        VoucherUse::where('voucher_id', $item->id)->delete();
+
+        $item->delete();
+
+        return redirect()->route($this->routePath)->with('success', 'Xóa thành công!');
     }
 
     protected function storeValidate()

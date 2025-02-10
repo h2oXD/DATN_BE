@@ -11,6 +11,7 @@ use App\Models\Lesson;
 use App\Models\Section;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
@@ -25,7 +26,7 @@ class CourseController extends Controller
             ], 201);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => 'Lỗi serve',
+                'message' => 'Lỗi hệ thống',
             ], 500);
         }
 
@@ -53,7 +54,20 @@ class CourseController extends Controller
     public function showLecturerCourse($course_id)
     {
         $user_id = request()->user()->id;
-        $course = Course::with(['sections', 'lessons', 'documents', 'videos', 'codings'])->where([['user_id', $user_id], ['id', $course_id]])->first();
+        $course = Course::with([
+            'sections' => function ($query) {
+                $query->orderBy('order');
+            },
+            'sections.lessons' => function ($query) {
+                $query->orderBy('order');
+            },
+            'sections.lessons.documents' => function ($query) {
+                $query->orderBy('order');
+            },
+            'sections.lessons.videos',
+            'sections.lessons.codings',
+            'sections.lessons.quizzes'
+        ])->where([['user_id', $user_id], ['id', $course_id]])->first();
 
         if (!$course) {
             return response()->json([
@@ -62,26 +76,64 @@ class CourseController extends Controller
         }
         return response()->json([
             'course' => $course,
-        ], 201);
+        ], 200);
     }
     public function updateLecturerCourse(UpdateCourseRequest $request, $course_id)
     {
-        $user_id = $request->user()->id;
-        $course = Course::where('user_id', $user_id)->find($course_id);
-        if (!$course) {
+        try {
+            $user_id = $request->user()->id;
+            $course = Course::where('user_id', $user_id)->find($course_id);
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Không tìm thấy khoá học'
+                ], 404);
+            }
+            $data = $request->all();
+
+            // Xử lý upload ảnh
+            if ($request->hasFile('thumbnail')) {
+                $oldThumbnail = $course->thumbnail; // Lưu đường dẫn ảnh cũ
+                $file = $request->file('thumbnail');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $data['thumbnail'] = $file->storeAs('images/thumbnails', $fileName, 'public');
+            }
+            // Xử lý upload video_preview
+            if ($request->hasFile('video_preview')) {
+                $oldVideo = $course->video_preview; // Lưu đường dẫn video cũ
+                $file = $request->file('video_preview'); // Thay đổi tên trường
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $data['video_preview'] = $file->storeAs('videos/courses', $fileName, 'public'); // Thay đổi tên trường
+            }
+
+            $course->update($data);
+
+            // Xóa ảnh cũ sau khi update thành công
+            if (isset($oldThumbnail)) {
+                Storage::delete($oldThumbnail);
+            }
+            // Xóa video cũ sau khi update thành công
+            if (isset($oldVideo)) {
+                Storage::delete($oldVideo);
+            }
+
             return response()->json([
-                'message' => 'Không tìm thấy khoá học'
-            ], 404);
+                'message' => 'Cập nhật thành công'
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Lỗi hệ thống'
+            ], 500);
         }
-        $course->update($request->all());
-        return response()->json([
-            'message' => 'Cập nhật thành công'
-        ], 200);
     }
 
     public function createSection(Request $request, $course_id)
     {
         try {
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'order' => 'required|integer', 
+            ]);
             $course = Course::findOrFail($course_id);
             $section = $course->sections()->create([
                 'title' => $request->title,
@@ -103,6 +155,11 @@ class CourseController extends Controller
     public function updateSection(Request $request, $course_id, $section_id)
     {
         try {
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'order' => 'required|integer', 
+            ]);
             $user_id = $request->user()->id;
             $course = Course::where('user_id', $user_id)->find($course_id);
             if (!$course) {
@@ -148,15 +205,21 @@ class CourseController extends Controller
     public function createLesson(Request $request, $course_id, $section_id)
     {
         try {
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'order' => 'required|integer', 
+            ]);
             $course = Course::findOrFail($course_id);
             $section = $course->sections()->findOrFail($section_id);
-            
+
             $lesson = $section->lessons()->create([
                 'title' => $request->title,
-                'description' => $request->content,
+                'description' => $request->description,
                 'order' => $request->order,
+                'course_id' => $course_id,
             ]);
-            
+
             return response()->json([
                 'lesson' => $lesson,
                 'message' => 'Tạo mới lesson thành công',
@@ -169,26 +232,28 @@ class CourseController extends Controller
         }
     }
 
+
     public function updateLesson(Request $request, $course_id, $section_id, $lesson_id)
     {
         try {
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'order' => 'required|integer', 
+            ]);
             $user_id = $request->user()->id;
             $course = Course::where('user_id', $user_id)->find($course_id);
-
             if (!$course) {
                 return response()->json([
                     'message' => 'Không tìm thấy khóa học'
                 ], 404);
             }
-
             $section = Section::where('course_id', $course_id)->find($section_id);
-
             if (!$section) {
                 return response()->json([
                     'message' => 'Không tìm thấy section'
                 ], 404);
             }
-
             $lesson = Lesson::where('section_id', $section_id)->find($lesson_id);
 
             if (!$lesson) {
@@ -196,55 +261,44 @@ class CourseController extends Controller
                     'message' => 'Không tìm thấy lesson'
                 ], 404);
             }
-
             $lesson->update([
                 'title' => $request->title,
                 'description' => $request->description,
-                'content' => $request->content,
                 'order' => $request->order,
             ]);
-
             return response()->json([
+                'lesson' => $lesson,
                 'message' => 'Cập nhật lesson thành công',
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi server',
             ], 500);
         }
     }
-
     public function destroyLesson(Request $request, $course_id, $section_id, $lesson_id)
     {
         try {
             $user_id = $request->user()->id;
             $course = Course::where('user_id', $user_id)->find($course_id);
-
             if (!$course) {
                 return response()->json([
                     'message' => 'Không tìm thấy khóa học'
                 ], 404);
             }
-
             $section = Section::where('course_id', $course_id)->find($section_id);
-
             if (!$section) {
                 return response()->json([
                     'message' => 'Không tìm thấy section'
                 ], 404);
             }
-
             $lesson = Lesson::where('section_id', $section_id)->find($lesson_id);
-
             if (!$lesson) {
                 return response()->json([
                     'message' => 'Không tìm thấy lesson'
                 ], 404);
             }
-
             $lesson->delete();
-
             return response()->json([
                 'message' => 'Xóa lesson thành công',
             ], 200);
