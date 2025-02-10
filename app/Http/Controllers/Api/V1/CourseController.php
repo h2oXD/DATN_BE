@@ -167,7 +167,7 @@ class CourseController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'title' => 'required',
-                'description' => 'nullable|
+                'description' => 'nullable|string',
                 'order' => 'required'
             ]);
             $user_id = $request->user()->id;
@@ -281,11 +281,7 @@ class CourseController extends Controller
                     'message' => 'Không tìm thấy lesson'
                 ], 404);
             }
-            $lesson->update([
-                'title' => $request->title,
-                'description' => $request->description,
-                'order' => $request->order,
-            ]);
+            $lesson->update($request->all());
             return response()->json([
                 'lesson' => $lesson,
                 'message' => 'Cập nhật lesson thành công',
