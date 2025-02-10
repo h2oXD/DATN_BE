@@ -12,6 +12,7 @@ use App\Models\Section;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class CourseController extends Controller
 {
@@ -129,16 +130,25 @@ class CourseController extends Controller
     public function createSection(Request $request, $course_id)
     {
         try {
-            $request->validate([
-                'title' => 'required|string|max:255',
+            $validator = Validator::make($request->all(), [
+                'title' => 'required',
                 'description' => 'nullable|string',
-                'order' => 'required|integer', 
             ]);
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+            // Tìm Course, nếu không có sẽ trả về lỗi 404
             $course = Course::findOrFail($course_id);
+
+            // Lấy order lớn nhất hiện tại và tăng thêm 1
+            $maxOrder = $course->sections()->max('order') ?? 0;
+            $newOrder = $maxOrder + 1;
+
+            // Tạo mới Section
             $section = $course->sections()->create([
                 'title' => $request->title,
                 'description' => $request->description,
-                'order' => $request->order,
+                'order' => $newOrder,
             ]);
             return response()->json([
                 'section' => $section,
@@ -155,11 +165,6 @@ class CourseController extends Controller
     public function updateSection(Request $request, $course_id, $section_id)
     {
         try {
-            $request->validate([
-                'title' => 'required|string|max:255',
-                'description' => 'nullable|string',
-                'order' => 'required|integer', 
-            ]);
             $user_id = $request->user()->id;
             $course = Course::where('user_id', $user_id)->find($course_id);
             if (!$course) {
@@ -205,18 +210,28 @@ class CourseController extends Controller
     public function createLesson(Request $request, $course_id, $section_id)
     {
         try {
-            $request->validate([
-                'title' => 'required|string|max:255',
+            $validator = Validator::make($request->all(), [
+                'title' => 'required',
                 'description' => 'nullable|string',
-                'order' => 'required|integer', 
             ]);
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+            // Tìm Course, nếu không có thì trả về lỗi 404
             $course = Course::findOrFail($course_id);
+
+            // Tìm Section trong Course, nếu không có thì trả về lỗi 404
             $section = $course->sections()->findOrFail($section_id);
 
+            // Lấy order lớn nhất hiện tại trong section và tăng thêm 1
+            $maxOrder = $section->lessons()->max('order') ?? 0;
+            $newOrder = $maxOrder + 1;
+
+            // Tạo mới Lesson
             $lesson = $section->lessons()->create([
                 'title' => $request->title,
                 'description' => $request->description,
-                'order' => $request->order,
+                'order' => $newOrder, // Tự động tăng order
                 'course_id' => $course_id,
             ]);
 
@@ -236,10 +251,9 @@ class CourseController extends Controller
     public function updateLesson(Request $request, $course_id, $section_id, $lesson_id)
     {
         try {
-            $request->validate([
-                'title' => 'required|string|max:255',
+            $validator = Validator::make($request->all(), [
+                'title' => 'required',
                 'description' => 'nullable|string',
-                'order' => 'required|integer', 
             ]);
             $user_id = $request->user()->id;
             $course = Course::where('user_id', $user_id)->find($course_id);
@@ -273,6 +287,7 @@ class CourseController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi server',
+                'error' => $th,
             ], 500);
         }
     }
