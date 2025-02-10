@@ -52,11 +52,11 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>Ngày bắt đầu:</strong></div>
-                    <div class="col-md-9">{{ $item->start_time }}</div>
+                    <div class="col-md-9">{{ \Carbon\Carbon::parse($item->start_time)->format('d/m/Y H:i:s') }}</div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>Ngày hết hạn:</strong></div>
-                    <div class="col-md-9">{{ $item->end_time }}</div>
+                    <div class="col-md-9">{{ \Carbon\Carbon::parse($item->end_time)->format('d/m/Y H:i:s') }}</div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>Số lượng:</strong></div>
@@ -80,11 +80,11 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>Ngày tạo:</strong></div>
-                    <div class="col-md-9">{{ $item->created_at }}</div>
+                    <div class="col-md-9">{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y H:i:s') }}</div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>Ngày cập nhật:</strong></div>
-                    <div class="col-md-9">{{ $item->updated_at }}</div>
+                    <div class="col-md-9">{{ \Carbon\Carbon::parse($item->updated_at)->format('d/m/Y H:i:s') }}</div>
                 </div>
                 <div class="text-end">
                     <a href="{{ route('vouchers.index') }}" class="btn btn-secondary">Quay lại</a>
