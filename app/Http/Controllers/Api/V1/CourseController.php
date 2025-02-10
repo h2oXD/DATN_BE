@@ -73,7 +73,7 @@ class CourseController extends Controller
         }
         $course->update($request->all());
         return response()->json([
-            'message' => 'Không tìm thấy khoá học'
-        ], 404);
+            'message' => 'Cập nhật thành công'
+        ], 200);
     }
 }

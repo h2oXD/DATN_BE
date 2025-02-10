@@ -10,7 +10,7 @@ class Course extends Model
     use HasFactory;
 
     protected $fillable = [
-        'lecturer_id',
+        'user_id',
         'category_id',
         'title',
         'description',
@@ -32,7 +32,9 @@ class Course extends Model
         
         'created_at',
         'updated_at',
-        'submited_at'
+        'submited_at',
+        'censored_at',
+        'admin_comment'
     ];
 
     public function transactions()
