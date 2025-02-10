@@ -165,6 +165,11 @@ class CourseController extends Controller
     public function updateSection(Request $request, $course_id, $section_id)
     {
         try {
+            $validator = Validator::make($request->all(), [
+                'title' => 'required',
+                'description' => 'nullable|
+                'order' => 'required'
+            ]);
             $user_id = $request->user()->id;
             $course = Course::where('user_id', $user_id)->find($course_id);
             if (!$course) {
@@ -254,6 +259,7 @@ class CourseController extends Controller
             $validator = Validator::make($request->all(), [
                 'title' => 'required',
                 'description' => 'nullable|string',
+                'order' => 'required',
             ]);
             $user_id = $request->user()->id;
             $course = Course::where('user_id', $user_id)->find($course_id);
