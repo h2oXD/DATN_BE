@@ -76,4 +76,18 @@ class CourseController extends Controller
             'message' => 'Cập nhật thành công'
         ], 200);
     }
+
+    // Document
+    public function createDocument(StoreCourseRequest $request)
+    {
+        
+    }
+    public function updateDocument(UpdateCourseRequest $request)
+    {
+        
+    }
+    public function destroyDocument()
+    {
+        
+    }
 }

@@ -55,9 +55,9 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}', [CourseController::class, 'destroyVideo']); //Xoá section trong khoá học
 
     //document in lesson
-    Route::post('/lecturer/courses/{course_id}/sections/lessons/documents', [CourseController::class, 'createDocument']); //Tạo mới section trong khoá học
-    Route::put('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents/{document_id}', [CourseController::class, 'updateDocument']); //Cập nhật section trong khóa học 
-    Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents/{document_id}', [CourseController::class, 'destroyDocument']); //Xoá section trong khoá học
+    Route::post('/lecturer/courses/{course_id}/sections/lessons/documents', [CourseController::class, 'createDocument']); //Tạo mới document
+    Route::put('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents/{document_id}', [CourseController::class, 'updateDocument']); //Cập nhật document
+    Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents/{document_id}', [CourseController::class, 'destroyDocument']); //Xoá document
 
     //coding in lesson
     Route::post('/lecturer/courses/{course_id}/sections/lessons/codings', [CourseController::class, 'createVideo']); //Tạo mới section trong khoá học
