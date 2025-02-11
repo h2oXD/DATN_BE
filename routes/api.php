@@ -50,7 +50,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}', [CourseController::class, 'destroyLesson']); //Xoá section trong khoá học
 
     //video in lesson
-    Route::post('/lecturer/courses/{course_id}/sections/lessons/videos', [CourseController::class, 'createVideo']); //Tạo mới section trong khoá học
+    Route::post('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos', [CourseController::class, 'createVideo']); //Tạo mới section trong khoá học
     Route::put('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}', [CourseController::class, 'updateVideo']); //Cập nhật section trong khóa học 
     Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}', [CourseController::class, 'destroyVideo']); //Xoá section trong khoá học
 
