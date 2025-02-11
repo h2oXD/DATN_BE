@@ -15,4 +15,9 @@ class Document extends Model
         'file_type',
         'order',
     ];
+
+    public function lesson()
+    {
+        return $this->belongsTo(Lesson::class);
+    }
 }

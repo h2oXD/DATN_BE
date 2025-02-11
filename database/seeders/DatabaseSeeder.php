@@ -60,6 +60,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Học viên 1',
             'email' => 'hocvien1@gmail.com',
             'password' => Hash::make('123123123'),
+            'phone_number' => '0333444555',
             'profile_picture' => '/profile_pictures/EtUIcPlzMJiTg9JiTQl1Lm6XSY3RRTJ0mmZHC1Xx.jpg',
         ]);
         Wallet::create([
@@ -77,6 +78,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Giảng viên A',
             'email' => 'giangviena@gmail.com',
             'password' => Hash::make('123123123'),
+            'phone_number' => '0888777666',
             'profile_picture' => '/profile_pictures/RkukY0gX1gZ7vlcCNkqVTaA5SejQFlAVm1BGStq3.jpg',
         ]);
         Wallet::create([
@@ -152,6 +154,8 @@ class DatabaseSeeder extends Seeder
         $courseID = Course::create([
             'user_id' => 3,
             'category_id' => 3,
+            'price' => 109000,
+            'price_sale' => 99000,
             'title' => 'Khoá học Laravel',
             'status' => 'pending',
             'admin_commission_rate' => 30
@@ -202,9 +206,9 @@ class DatabaseSeeder extends Seeder
         // Tạo phiếu giảm giá
         $vouchers = [
             [
-                'name' => 'Giảm phí vận chuyển',
+                'name' => 'Giảm giá thanh toán',
                 'code' => 'DVC10',
-                'description' => 'Giảm giá phí vận chuyển 10k VND',
+                'description' => 'Giảm giá thanh toán 10k VND',
                 'type' => 'fix_amount',
                 'discount_price' => 10000,
                 'start_time' => Carbon::now(),
