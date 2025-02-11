@@ -195,14 +195,42 @@ class CourseController extends Controller
             ], 500);
         }
     }
-    public function destroySection($course_id, $section_id)
+    public function destroySection(Request $request, $course_id, $section_id)
     {
         try {
-            $section = Section::where('course_id', $course_id)->findOrFail($section_id);
+            $user_id = $request->user()->id;
+
+            // Kiểm tra xem khóa học có thuộc về user không
+            $course = Course::where('user_id', $user_id)->find($course_id);
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Không tìm thấy khóa học'
+                ], 404);
+            }
+
+            // Kiểm tra xem section có tồn tại không
+            $section = Section::where('course_id', $course_id)->find($section_id);
+            if (!$section) {
+                return response()->json([
+                    'message' => 'Không tìm thấy section'
+                ], 404);
+            }
+
+            // Lấy giá trị order trước khi xóa
+            $deletedOrder = $section->order;
+
+            // Xóa section
             $section->delete();
+
+            // Cập nhật lại thứ tự order cho các section còn lại
+            Section::where('course_id', $course_id)
+                ->where('order', '>', $deletedOrder) // Chỉ cập nhật các section có thứ tự lớn hơn section đã xóa
+                ->decrement('order'); // Giảm order đi 1
+
             return response()->json([
-                'message' => 'Xoá section thành công',
+                'message' => 'Xóa section thành công và cập nhật lại thứ tự',
             ], 200);
+
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi server',
@@ -210,6 +238,8 @@ class CourseController extends Controller
             ], 500);
         }
     }
+
+
 
 
     public function createLesson(Request $request, $course_id, $section_id)
@@ -297,33 +327,52 @@ class CourseController extends Controller
     {
         try {
             $user_id = $request->user()->id;
+
+            // Kiểm tra xem khóa học có thuộc về user không
             $course = Course::where('user_id', $user_id)->find($course_id);
             if (!$course) {
                 return response()->json([
                     'message' => 'Không tìm thấy khóa học'
                 ], 404);
             }
+
+            // Kiểm tra xem section có tồn tại không
             $section = Section::where('course_id', $course_id)->find($section_id);
             if (!$section) {
                 return response()->json([
                     'message' => 'Không tìm thấy section'
                 ], 404);
             }
+
+            // Kiểm tra xem lesson có tồn tại không
             $lesson = Lesson::where('section_id', $section_id)->find($lesson_id);
             if (!$lesson) {
                 return response()->json([
                     'message' => 'Không tìm thấy lesson'
                 ], 404);
             }
+
+            // Lưu order của lesson trước khi xóa
+            $deletedOrder = $lesson->order;
+
+            // Xóa lesson
             $lesson->delete();
+
+            // Cập nhật lại thứ tự order cho các lesson còn lại trong section
+            Lesson::where('section_id', $section_id)
+                ->where('order', '>', $deletedOrder) // Chỉ cập nhật các lesson có thứ tự lớn hơn lesson đã xóa
+                ->decrement('order'); // Giảm order đi 1
+
             return response()->json([
-                'message' => 'Xóa lesson thành công',
+                'message' => 'Xóa lesson thành công và cập nhật lại thứ tự',
             ], 200);
 
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
             ], 500);
         }
     }
+
 }
