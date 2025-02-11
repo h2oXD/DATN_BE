@@ -47,16 +47,10 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password)
             ]);
-            $role = Role::select('id', 'name')->where('name', 'student')->first();
-            UserRole::create([
-                'user_id' => $user->id,
-                'role_id' => $role->id
-            ]);
+            $role = Role::where('name', 'student')->first();
+            $user->roles()->attach($role->id);
 
-            Wallet::create([
-                'user_id' => $user->id,
-                'balance' => 0
-            ]);
+            $user->wallet()->create(['balance' => 0]);
             $token = $user->createToken(__CLASS__)->plainTextToken;
 
             DB::commit();
@@ -93,7 +87,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'Thông tin đăng nhập không chính xác'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $role = UserRole::where('user_id',$user->id);
+        $role = $user->roles; 
 
         $token = $user->createToken(__CLASS__)->plainTextToken;
 
