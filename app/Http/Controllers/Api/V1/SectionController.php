@@ -8,7 +8,7 @@ use App\Models\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class LectionController extends Controller
+class SectionController extends Controller
 {
     public function createSection(Request $request, $course_id)
     {

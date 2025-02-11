@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\LectionController;
 use App\Http\Controllers\Api\V1\LecturerController;
 use App\Http\Controllers\Api\V1\LessonController;
+use App\Http\Controllers\Api\V1\SectionController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
@@ -43,9 +44,9 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
 
     Route::prefix('lecturer/courses/{course_id}')->group(function () {
         //section in course hieu
-        Route::post('/sections', [LectionController::class, 'createSection']); // Tạo mới section trong khóa học
-        Route::put('/sections/{section_id}', [LectionController::class, 'updateSection']); // Cập nhật section trong khóa học
-        Route::delete('/sections/{section_id}', [LectionController::class, 'destroySection']); // Xóa section trong khóa học
+        Route::post('/sections', [SectionController::class, 'createSection']); // Tạo mới section trong khóa học
+        Route::put('/sections/{section_id}', [SectionController::class, 'updateSection']); // Cập nhật section trong khóa học
+        Route::delete('/sections/{section_id}', [SectionController::class, 'destroySection']); // Xóa section trong khóa học
 
         //lesson in section hieu
         Route::prefix('/sections/{section_id}')->group(function () {
