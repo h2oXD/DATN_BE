@@ -9,7 +9,9 @@ use App\Models\Course;
 use App\Models\Lecturer;
 use App\Models\Lesson;
 use App\Models\Section;
+use App\Models\Video;
 use Carbon\Carbon;
+use getID3;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -133,9 +135,18 @@ class CourseController extends Controller
     public function createVideo(Request $request, $course_id, $section_id, $lesson_id)
     {
         try {
+            $course = $request->user()->courses()->with(['sections' => function ($query) use ($section_id) {
+                $query->where('id', $section_id);
+            }, 'sections.lessons' => function ($query) use ($lesson_id) {
+                $query->where('id', $lesson_id);
+            }])->find($course_id);
+
+            if (!$course || !$course->sections->first() || !$lesson = $course->sections->first()->lessons->first()) {
+                return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404); // Combined check
+            }
+
             $validator = Validator::make($request->all(), [
-                'video_url' => 'required|file|mimetypes:video/mp4,video/x-msvideo,video/x-matroska',
-                'duration' => 'required|string',
+                'video_url' => 'required|file|mimes:mp4,mov,avi',
             ]);
 
             if ($validator->fails()) {
@@ -145,14 +156,39 @@ class CourseController extends Controller
                 ], 422);
             }
 
-            $file = $request->file('video_url');
-            $filePath = $file->store('videos');
-            $fileUrl = Storage::url($filePath);
+            $data = $request->except('video_url');
 
-            $lesson = Lesson::findOrFail($lesson_id);
+            if ($request->hasFile('video_url')) {
+                $file = $request->file('video_url');
+                $timestamp = now()->timestamp; // Current timestamp
+                $newFileName = $timestamp . '_' . $file->getClientOriginalName(); // Add timestamp to filename
+                $data['video_url'] = $file->storeAs('videos', $newFileName);
+            }
+
+            // Lấy thời lượng video bằng getID3
+            $getID3 = new getID3();
+            $fileInfo = $getID3->analyze($file->getRealPath());
+
+            if (!isset($fileInfo['playtime_seconds'])) {
+                return response()->json([
+                    'message' => 'Không thể lấy thời lượng video',
+                ], 400);
+            }
+
+            $duration = round($fileInfo['playtime_seconds']);
+
+            if ($duration <= 60) {
+                return response()->json([
+                    'message' => 'Thời lượng video không đủ',
+                    'errors' => [
+                        'duration' => ['Thời lượng video phải lớn hơn 1 phút.'],
+                    ],
+                ], 422);
+            }
+
             $video = $lesson->videos()->create([
-                'video_url' => $fileUrl,
-                'duration' => $request->duration,
+                'video_url' => $data['video_url'],
+                'duration' => $duration,
             ]);
 
             return response()->json([
@@ -167,15 +203,33 @@ class CourseController extends Controller
         }
     }
 
+
+
     /**
      * Cập nhật video
      */
     public function updateVideo(Request $request, $course_id, $section_id, $lesson_id, $video_id)
     {
         try {
+            $course = $request->user()->courses()->with(['sections' => function ($query) use ($section_id) {
+                $query->where('id', $section_id);
+            }, 'sections.lessons' => function ($query) use ($lesson_id) {
+                $query->where('id', $lesson_id);
+            }, 'sections.lessons.videos' => function ($query) use ($video_id) {
+                $query->where('id', $video_id);
+            }])->find($course_id);
+
+            if (
+                !$course ||
+                !$course->sections->first() ||
+                !$course->sections->first()->lessons->first() ||
+                !$video = $course->sections->first()->lessons->first()->videos->first()
+            ) {
+                return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404); // Combined check
+            }
+
             $validator = Validator::make($request->all(), [
-                'video_url' => 'required|url',
-                'duration' => 'required|string',
+                'video_url' => 'nullable|file|mimes:mp4,mov,avi',
             ]);
 
             if ($validator->fails()) {
@@ -184,31 +238,49 @@ class CourseController extends Controller
                     'errors' => $validator->errors(),
                 ], 422);
             }
+            $data = $request->except('video_url');
 
-            $user_id = $request->user()->id;
-            $course = Course::where('user_id', $user_id)->find($course_id);
-            if (!$course) {
-                return response()->json([
-                    'message' => 'Không tìm thấy khóa học'
-                ], 404);
+            $currentVideo = $video->video_url;
+
+            if ($request->hasFile('video_url')) {
+                if ($request->hasFile('video_url')) {
+                    $file = $request->file('video_url');
+                    $timestamp = now()->timestamp; // Current timestamp
+                    $newFileName = $timestamp . '_' . $file->getClientOriginalName(); // Add timestamp to filename
+                    $data['video_url'] = $file->storeAs('videos', $newFileName);
+                }
             }
-            $section = Section::where('course_id', $course_id)->find($section_id);
-            if (!$section) {
+
+
+            // Lấy thời lượng video bằng getID3
+            $getID3 = new getID3();
+            $fileInfo = $getID3->analyze($file->getRealPath());
+
+            if (!isset($fileInfo['playtime_seconds'])) {
                 return response()->json([
-                    'message' => 'Không tìm thấy section'
-                ], 404);
+                    'message' => 'Không thể lấy thời lượng video',
+                ], 400);
             }
-            $lesson = Lesson::where('section_id', $section_id)->find($lesson_id);
-            if (!$lesson) {
+
+            $duration = round($fileInfo['playtime_seconds']);
+
+            if ($duration <= 60) {
                 return response()->json([
-                    'message' => 'Không tìm thấy lesson'
-                ], 404);
+                    'message' => 'Thời lượng video không đủ',
+                    'errors' => [
+                        'duration' => ['Thời lượng video phải lớn hơn 1 phút.'],
+                    ],
+                ], 422);
             }
-            $video = $lesson->videos()->where('id', $video_id)->firstOrFail();
+
+            // Cập nhật video mới vào database
             $video->update([
-                'video_url' => $request->video_url,
-                'duration' => $request->duration,
+                'video_url' => $data['video_url'],
+                'duration' => $duration,
             ]);
+            if ($currentVideo && Storage::exists($currentVideo) && !empty($currentVideo)) {
+                Storage::delete($currentVideo);
+            }
 
             return response()->json([
                 'video' => $video,
@@ -222,33 +294,48 @@ class CourseController extends Controller
         }
     }
 
+
     /**
      * Xóa video
      */
     public function destroyVideo(Request $request, $course_id, $section_id, $lesson_id, $video_id)
     {
         try {
-            $user_id = $request->user()->id;
-            $course = Course::where('user_id', $user_id)->find($course_id);
+            $course = $request->user()->courses()->with(['sections' => function ($query) use ($section_id) {
+                $query->where('id', $section_id);
+            }, 'sections.lessons' => function ($query) use ($lesson_id) {
+                $query->where('id', $lesson_id);
+            }, 'sections.lessons.videos' => function ($query) use ($video_id) {
+                $query->where('id', $video_id);
+            }])->find($course_id);
+
+
             if (!$course) {
-                return response()->json([
-                    'message' => 'Không tìm thấy khóa học'
-                ], 404);
+                return response()->json(['message' => 'Không tìm thấy khóa học'], 404);
             }
-            $section = Section::where('course_id', $course_id)->find($section_id);
+
+            $section = $course->sections->first();
             if (!$section) {
-                return response()->json([
-                    'message' => 'Không tìm thấy section'
-                ], 404);
+                return response()->json(['message' => 'Không tìm thấy section'], 404);
             }
-            $lesson = Lesson::where('section_id', $section_id)->find($lesson_id);
+
+            $lesson = $section->lessons->first();
             if (!$lesson) {
-                return response()->json([
-                    'message' => 'Không tìm thấy lesson'
-                ], 404);
+                return response()->json(['message' => 'Không tìm thấy lesson'], 404);
             }
-            $video = $lesson->videos()->where('id', $video_id)->firstOrFail();
+
+            $video = $lesson->videos->first();
+            if (!$video) {
+                return response()->json(['message' => 'Không tìm thấy video bài học'], 404);
+            }
+
+            $currentVideo = $video->video_url;
+
             $video->delete();
+
+            if ($currentVideo && Storage::exists($currentVideo) && !empty($currentVideo)) {
+                Storage::delete($currentVideo);
+            }
 
             return response()->json([
                 'message' => 'Xóa video thành công',
