@@ -21,11 +21,19 @@ class LessonController extends Controller
             if ($validator->fails()) {
                 return response()->json(['errors' => $validator->errors()], 422);
             }
-            // Tìm Course, nếu không có thì trả về lỗi 404
-            $course = Course::findOrFail($course_id);
-
-            // Tìm Section trong Course, nếu không có thì trả về lỗi 404
-            $section = $course->sections()->findOrFail($section_id);
+            $user_id = $request->user()->id;
+            $course = Course::where('user_id', $user_id)->find($course_id);
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Không tìm thấy khóa học'
+                ], 404);
+            }
+            $section = Section::where('course_id', $course_id)->find($section_id);
+            if (!$section) {
+                return response()->json([
+                    'message' => 'Không tìm thấy section'
+                ], 404);
+            }
 
             // Lấy order lớn nhất hiện tại trong section và tăng thêm 1
             $maxOrder = $section->lessons()->max('order') ?? 0;

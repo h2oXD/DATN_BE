@@ -20,8 +20,14 @@ class SectionController extends Controller
             if ($validator->fails()) {
                 return response()->json(['errors' => $validator->errors()], 422);
             }
-            // Tìm Course, nếu không có sẽ trả về lỗi 404
-            $course = Course::findOrFail($course_id);
+
+            $user_id = $request->user()->id;
+            $course = Course::where('user_id', $user_id)->find($course_id);
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Không tìm thấy khoá học'
+                ], 404);
+            }
 
             // Lấy order lớn nhất hiện tại và tăng thêm 1
             $maxOrder = $course->sections()->max('order') ?? 0;
