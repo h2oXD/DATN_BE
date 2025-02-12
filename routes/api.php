@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\LecturerController;
 use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\VideoController;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,11 +21,12 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', [AuthController::class, 'getUser']);
     //wallet in user
-    Route::get('/user/wallet',[UserController::class ,'show']);
-    Route::put('/user/wallet/{wallet_id}',[UserController::class ,'update']);
+    Route::get('/user/wallet', [UserController::class, 'show']);
+    Route::put('/user/wallet/{wallet_id}', [UserController::class, 'update']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
@@ -50,9 +52,9 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}', [CourseController::class, 'destroyLesson']); //Xoá section trong khoá học
 
     //video in lesson
-    Route::post('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos', [CourseController::class, 'createVideo']); //Tạo mới section trong khoá học
-    Route::put('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}', [CourseController::class, 'updateVideo']); //Cập nhật section trong khóa học 
-    Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}', [CourseController::class, 'destroyVideo']); //Xoá section trong khoá học
+    Route::post('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos', [VideoController::class, 'createVideo']); //Tạo mới section trong khoá học
+    Route::put('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}', [VideoController::class, 'updateVideo']); //Cập nhật section trong khóa học 
+    Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}', [VideoController::class, 'destroyVideo']); //Xoá section trong khoá học
 
     //document in lesson
     Route::post('/lecturer/courses/{course_id}/sections/lessons/documents', [CourseController::class, 'createDocument']); //Tạo mới section trong khoá học
