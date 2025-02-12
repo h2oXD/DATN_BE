@@ -5,10 +5,6 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreCourseRequest;
 use App\Http\Requests\Api\UpdateCourseRequest;
-use App\Models\Course;
-use App\Models\Lecturer;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -32,7 +28,6 @@ class CourseController extends Controller
                 'message' => 'Lỗi hệ thống',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
     }
     public function createLecturerCourse(StoreCourseRequest $request)
     {

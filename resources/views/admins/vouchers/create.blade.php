@@ -50,28 +50,34 @@
                     @enderror
                 </div>
 
-
+                
 
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="type" class="form-label">Loại giảm giá</label>
-                    <select name="type" class="form-select text-dark">
-                        <option @if (old('type') == 'percent') selected @endif value="percent">Phần trăm</option>
-                        <option @if (old('type') == 'fix_amount') selected @endif value="fix_amount">Giá tiền</option>
+                    <select name="type" class="form-select text-dark" >
+                        <option value="percent">Phần trăm</option>
+                        <option value="fix_amount">Giá tiền</option>
                     </select>
                     @error('type')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
-
                 <div class="col-lg-6 mb-2 col-12">
-                    <label for="discount_price" class="form-label">Số % / Số tiền giảm</label>
-                    <input type="number" class="form-control" name="discount_price" id="discount_price" min="0"
-                        value="{{ old('discount_price') }}" />
-                    @error('discount_price')
+                    <label for="discount_percent" class="form-label">Số % giảm</label>
+                    <input type="number" class="form-control" name="discount_percent" id="discount_percent"
+                        min="0" value="{{ old('discount_percent') }}"/>
+                    @error('discount_percent')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
+                <div class="col-lg-6 mb-2 col-12">
+                    <label for="discount_amount" class="form-label">Số tiền giảm</label>
+                    <input type="number" class="form-control" name="discount_amount" id="discount_amount" min="0" value="{{ old('discount_amount') }}"/>
+                    @error('discount_amount')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="start_time" class="form-label">Ngày bắt đầu</label>
                     <input type="datetime-local" class="form-control" name="start_time" id="start_time"
@@ -80,7 +86,6 @@
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
-
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="end_time" class="form-label">Ngày kết thúc</label>
                     <input type="datetime-local" class="form-control" name="end_time" id="end_time"
@@ -89,7 +94,6 @@
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
-
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="count" class="form-label">Số lượng</label>
                     <input type="number" class="form-control" name="count" id="count" value="{{ old('count') }}" />
@@ -97,7 +101,6 @@
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
-
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="is_active" class="form-label">Trạng thái</label>
                     <select name="is_active" class="form-select text-dark">
@@ -108,7 +111,7 @@
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
-
+                
                 <div class="my-3 col-12">
                     <label for="description" class="form-label">Nội dung</label>
                     <textarea name="description" id="description">{{ old('description') }}</textarea>
@@ -116,7 +119,6 @@
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
-
                 <div class="col-12">
                     <button type="submit" class="btn btn-primary">Thêm mới</button>
                     <a href="{{ route('vouchers.index') }}" class="btn btn-secondary">Quay lại</a>
