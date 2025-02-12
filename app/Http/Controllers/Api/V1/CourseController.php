@@ -10,10 +10,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CourseController extends Controller
 {
-    public function getLecturerCourse()
+    public function index()
     {
         try {
-            $courses = request()->user()->course()->paginate(5);
+            $courses = request()->user()->courses()->paginate(5);
             if (!$courses) {
                 return response()->json([
                     'message' => 'Không tìm thấy khoá học',
@@ -29,7 +29,7 @@ class CourseController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-    public function createLecturerCourse(StoreCourseRequest $request)
+    public function store(StoreCourseRequest $request)
     {
         try {
             $course = $request->user()->courses()->create([
@@ -49,7 +49,7 @@ class CourseController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-    public function showLecturerCourse($course_id)
+    public function show($course_id)
     {
         $course = request()->user()->courses()->with([
             'sections' => function ($query) {
@@ -58,9 +58,7 @@ class CourseController extends Controller
             'sections.lessons' => function ($query) {
                 $query->orderBy('order');
             },
-            'sections.lessons.documents' => function ($query) {
-                $query->orderBy('order');
-            },
+            'sections.lessons.documents',
             'sections.lessons.videos',
             'sections.lessons.codings',
             'sections.lessons.quizzes'
@@ -76,7 +74,7 @@ class CourseController extends Controller
             'course' => $course,
         ], Response::HTTP_OK);
     }
-    public function updateLecturerCourse(UpdateCourseRequest $request, $course_id)
+    public function update(UpdateCourseRequest $request, $course_id)
     {
         try {
 
@@ -125,7 +123,7 @@ class CourseController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-    public function destroyLecturerCourse($course_id)
+    public function destroy($course_id)
     {
         $course = request()->user()->courses()->find($course_id);
         if (!$course) {

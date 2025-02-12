@@ -12,7 +12,7 @@ class VideoController extends Controller
 {
     //
 
-    public function createVideo(Request $request, $course_id, $section_id, $lesson_id)
+    public function store(Request $request, $course_id, $section_id, $lesson_id)
     {
         try {
             $course = $request->user()->courses()->with(['sections' => function ($query) use ($section_id) {
@@ -40,8 +40,7 @@ class VideoController extends Controller
 
             if ($request->hasFile('video_url')) {
                 $file = $request->file('video_url');
-                $timestamp = now()->timestamp; // Current timestamp
-                $newFileName = $timestamp . '_' . $file->getClientOriginalName(); // Add timestamp to filename
+                $newFileName = time() . '_' . $file->getClientOriginalName(); // Add timestamp to filename
                 $data['video_url'] = $file->storeAs('videos', $newFileName);
             }
 
@@ -50,6 +49,7 @@ class VideoController extends Controller
             $fileInfo = $getID3->analyze($file->getRealPath());
 
             if (!isset($fileInfo['playtime_seconds'])) {
+                Storage::delete($data['video_url']);
                 return response()->json([
                     'message' => 'Không thể lấy thời lượng video',
                 ], 400);
@@ -58,6 +58,7 @@ class VideoController extends Controller
             $duration = round($fileInfo['playtime_seconds']);
 
             if ($duration <= 60) {
+                Storage::delete($data['video_url']);
                 return response()->json([
                     'message' => 'Thời lượng video không đủ',
                     'errors' => [
@@ -88,7 +89,7 @@ class VideoController extends Controller
     /**
      * Cập nhật video
      */
-    public function updateVideo(Request $request, $course_id, $section_id, $lesson_id, $video_id)
+    public function update(Request $request, $course_id, $section_id, $lesson_id, $video_id)
     {
         try {
             $course = $request->user()->courses()->with(['sections' => function ($query) use ($section_id) {
@@ -109,7 +110,7 @@ class VideoController extends Controller
             }
 
             $validator = Validator::make($request->all(), [
-                'video_url' => 'nullable|file|mimes:mp4,mov,avi',
+                'video_url' => 'required|file|mimes:mp4,mov,avi',
             ]);
 
             if ($validator->fails()) {
@@ -125,8 +126,8 @@ class VideoController extends Controller
             if ($request->hasFile('video_url')) {
                 if ($request->hasFile('video_url')) {
                     $file = $request->file('video_url');
-                    $timestamp = now()->timestamp; // Current timestamp
-                    $newFileName = $timestamp . '_' . $file->getClientOriginalName(); // Add timestamp to filename
+
+                    $newFileName = time() . '_' . $file->getClientOriginalName(); // Add timestamp to filename
                     $data['video_url'] = $file->storeAs('videos', $newFileName);
                 }
             }
@@ -137,6 +138,7 @@ class VideoController extends Controller
             $fileInfo = $getID3->analyze($file->getRealPath());
 
             if (!isset($fileInfo['playtime_seconds'])) {
+                Storage::delete($data['video_url']);
                 return response()->json([
                     'message' => 'Không thể lấy thời lượng video',
                 ], 400);
@@ -145,6 +147,7 @@ class VideoController extends Controller
             $duration = round($fileInfo['playtime_seconds']);
 
             if ($duration <= 60) {
+                Storage::delete($data['video_url']);
                 return response()->json([
                     'message' => 'Thời lượng video không đủ',
                     'errors' => [
@@ -178,7 +181,7 @@ class VideoController extends Controller
     /**
      * Xóa video
      */
-    public function destroyVideo(Request $request, $course_id, $section_id, $lesson_id, $video_id)
+    public function destroy(Request $request, $course_id, $section_id, $lesson_id, $video_id)
     {
         try {
             $course = $request->user()->courses()->with(['sections' => function ($query) use ($section_id) {
@@ -206,9 +209,7 @@ class VideoController extends Controller
                 Storage::delete($currentVideo);
             }
 
-            return response()->json([
-                'message' => 'Xóa video thành công',
-            ], 200);
+            return response()->noContent();
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi hệ thống',
