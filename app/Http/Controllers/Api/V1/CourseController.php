@@ -7,9 +7,12 @@ use App\Http\Requests\Api\StoreCourseRequest;
 use App\Http\Requests\Api\UpdateCourseRequest;
 use App\Models\Course;
 use App\Models\Lecturer;
+use App\Models\Lesson;
+use App\Models\Section;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class CourseController extends Controller
 {
@@ -123,4 +126,12 @@ class CourseController extends Controller
             ], 500);
         }
     }
+
+
+
+
+
+
+
+
 }
