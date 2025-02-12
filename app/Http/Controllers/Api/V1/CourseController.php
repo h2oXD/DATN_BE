@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreCourseRequest;
 use App\Http\Requests\Api\UpdateCourseRequest;
 use App\Models\Course;
+use App\Models\Document;
 use App\Models\Lecturer;
 use App\Models\Lesson;
 use App\Models\Section;
@@ -127,13 +128,5 @@ class CourseController extends Controller
             ], 500);
         }
     }
-
-
-  
-
-
-
-
-
 
 }

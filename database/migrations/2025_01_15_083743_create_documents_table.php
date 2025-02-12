@@ -17,8 +17,7 @@ return new class extends Migration
 
             $table->foreignIdFor(Lesson::class)->constrained()->onDelete('cascade');
             $table->string('document_url');
-            $table->enum('file_type', ['pdf','doc']);
-            $table->integer('order');
+            $table->enum('file_type', ['pdf','doc','docx']);
 
             $table->timestamps();
         });

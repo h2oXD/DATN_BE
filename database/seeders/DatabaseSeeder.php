@@ -95,6 +95,19 @@ class DatabaseSeeder extends Seeder
             'role_id' => $roleLecturer->id,
         ]);
 
+        $lecturer = User::create([
+            'name' => 'Giảng viên B',
+            'email' => 'giangvienb@gmail.com',
+            'password' => Hash::make('123123123'),
+            'phone_number' => '0888777666',
+            'profile_picture' => '/profile_pictures/RkukY0gX1gZ7vlcCNkqVTaA5SejQFlAVm1BGStq3.jpg',
+        ]);
+        
+        $lecturer->wallet()->create(['balance' => 0]);
+        
+        $roles = Role::whereIn('name', ['student', 'lecturer'])->pluck('id');
+        $lecturer->roles()->attach($roles);
+
         $categories = [
             [
                 'id' => 1,
