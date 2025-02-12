@@ -85,3 +85,4 @@ Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function () {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/tags', [CategoryController::class, 'index']);

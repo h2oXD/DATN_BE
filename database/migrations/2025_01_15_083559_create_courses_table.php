@@ -20,8 +20,9 @@ return new class extends Migration {
             $table->integer('price')->nullable();
             $table->integer('price_sale')->nullable();
 
-            $table->string('title');
+            $table->string('title',50);
             $table->string('thumbnail')->nullable();
+            $table->string('video_preview')->nullable();
             $table->text('description')->nullable()->comment("Mô tả");
             $table->string('primary_content')->nullable()->comment("Nội dung chính trong khoá học này là");
             
