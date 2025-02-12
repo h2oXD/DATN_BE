@@ -16,12 +16,12 @@ class LessonCodingController extends Controller
     public function createCoding(Request $request, $course_id, $section_id, $lesson_id)
     {
         // Kiểm tra quyền của giảng viên đối với khoá học
-        $user_id = $request->user()->id;
-        $course = Course::where('user_id', $user_id)->find($course_id);
+        $course = request()->user()->courses()->find($course_id);
+        // $course = Course::where('user_id', $user_id)->find($course_id);
         if (!$course) {
             return response()->json([
-                'message' => 'Không tìm thấy khoá học hoặc bạn không có quyền tạo bài tập trong khoá học này'
-            ], 403);
+                'message' => 'Không tìm thấy khoá học'
+            ], 404);
         }
 
         //  Kiểm tra section có tồn tại trong course không
@@ -90,12 +90,12 @@ class LessonCodingController extends Controller
     public function updateCoding(Request $request, $course_id, $section_id, $lesson_id, $coding_id)
     {
         // Kiểm tra quyền của giảng viên đối với khoá học
-        $user_id = $request->user()->id;
-        $course = Course::where('user_id', $user_id)->find($course_id);
+        $course = request()->user()->courses()->find($course_id);
+        // $course = Course::where('user_id', $user_id)->find($course_id);
         if (!$course) {
             return response()->json([
-                'message' => 'Không tìm thấy khoá học hoặc bạn không có quyền chỉnh sửa bài tập trong khoá học này'
-            ], 403);
+                'message' => 'Không tìm thấy khoá học'
+            ], 404);
         }
 
         // Kiểm tra section có tồn tại trong course không
@@ -167,12 +167,12 @@ class LessonCodingController extends Controller
     public function destroyCoding($course_id, $section_id, $lesson_id, $coding_id)
     {
         // Kiểm tra quyền của giảng viên đối với khoá học
-        $user_id = auth()->id();
-        $course = Course::where('user_id', $user_id)->find($course_id);
+        $course = request()->user()->courses()->find($course_id);
+        // $course = Course::where('user_id', $user_id)->find($course_id);
         if (!$course) {
             return response()->json([
-                'message' => 'Không tìm thấy khoá học hoặc bạn không có quyền xoá bài tập trong khoá học này'
-            ], 403);
+                'message' => 'Không tìm thấy khoá học'
+            ], 404);
         }
 
         // Kiểm tra section có tồn tại trong course không
