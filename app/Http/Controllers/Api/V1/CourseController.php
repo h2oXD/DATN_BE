@@ -10,7 +10,9 @@ use App\Models\Document;
 use App\Models\Lecturer;
 use App\Models\Lesson;
 use App\Models\Section;
+use App\Models\Video;
 use Carbon\Carbon;
+use getID3;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -31,7 +33,6 @@ class CourseController extends Controller
                 'message' => 'Lỗi hệ thống',
             ], 500);
         }
-
     }
     public function createLecturerCourse(StoreCourseRequest $request)
     {

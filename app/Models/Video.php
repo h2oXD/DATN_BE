@@ -13,5 +13,13 @@ class Video extends Model
         'lesson_id',
         'video_url',
         'duration',
+        'created_at',
+        'updated_at',
     ];
+
+
+    public function lesson()
+    {
+        return $this->belongsTo(Lesson::class);
+    }
 }

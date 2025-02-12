@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V1\LessonCodingController;
 use App\Http\Controllers\Api\V1\LessonController;
 use App\Http\Controllers\Api\V1\SectionController;
 use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\VideoController;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -59,10 +60,10 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
         });
     });
 
-    //video in lesson thuyet
-    Route::post('/lecturer/courses/{course_id}/sections/lessons/videos', [CourseController::class, 'createVideo']); //Tạo mới section trong khoá học
-    Route::put('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}', [CourseController::class, 'updateVideo']); //Cập nhật section trong khóa học 
-    Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}', [CourseController::class, 'destroyVideo']); //Xoá section trong khoá học
+    //video in lesson
+    Route::post('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos', [VideoController::class, 'createVideo']); //Tạo mới section trong khoá học
+    Route::put('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}', [VideoController::class, 'updateVideo']); //Cập nhật section trong khóa học 
+    Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}', [VideoController::class, 'destroyVideo']); //Xoá section trong khoá học
 
     //document in lesson
     Route::post('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', [DocumentController::class, 'createDocument']); //Tạo mới document

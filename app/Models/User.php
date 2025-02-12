@@ -57,7 +57,11 @@ class User extends Authenticatable
         return $this->roles->contains('name', $role);
     }
     public function wallet()
-{
-    return $this->hasOne(Wallet::class);
-}
+    {
+        return $this->hasOne(Wallet::class);
+    }
+    public function courses()
+    {
+        return $this->hasMany(Course::class);
+    }
 }
