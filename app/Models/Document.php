@@ -13,7 +13,6 @@ class Document extends Model
         'lesson_id',
         'document_url',
         'file_type',
-        'order',
     ];
 
     public function lesson()
