@@ -67,6 +67,16 @@ Route::prefix('users')->group(function () {
 
 
 Route::resource('tags', TagController::class);
+Route::delete('/delete/{id}', [TagController::class, 'delete'])->name('tags.delete');
+Route::delete('/forceDelete/{id}', [TagController::class, 'forceDelete'])->name('tags.forceDelete');
+Route::get('/admin/tags/check/{id}', [TagController::class, 'forceDelete']);
+Route::get('/admin/tags/check/{id}', [TagController::class, 'checkTagUsage']);
+
+// Routes cho thùng rác
+Route::get('/trash', [TagController::class, 'trash'])->name('tags.trash');
+Route::post('/restore/{id}', [TagController::class, 'restore'])->name('tags.restore');
+
+
 
 Route::resource('courses', CourseController::class);
 Route::post('courses/{id}/approve', [CourseController::class, 'approve'])->name('courses.approve');
