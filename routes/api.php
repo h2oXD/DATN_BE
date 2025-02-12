@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DeepSeekController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CourseController;
+use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\LectionController;
 use App\Http\Controllers\Api\V1\LecturerController;
 use App\Http\Controllers\Api\V1\LessonCodingController;
@@ -63,17 +64,10 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::put('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}', [CourseController::class, 'updateVideo']); //Cập nhật section trong khóa học 
     Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}', [CourseController::class, 'destroyVideo']); //Xoá section trong khoá học
 
-<<<<<<< HEAD
     //document in lesson
-    Route::post('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', [CourseController::class, 'createDocument']); //Tạo mới document
-    Route::put('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents/{document_id}', [CourseController::class, 'updateDocument']); //Cập nhật document
-    Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents/{document_id}', [CourseController::class, 'destroyDocument']); //Xoá document
-=======
-    //document in lesson tai
-    Route::post('/lecturer/courses/{course_id}/sections/lessons/documents', [CourseController::class, 'createDocument']); //Tạo mới section trong khoá học
-    Route::put('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents/{document_id}', [CourseController::class, 'updateDocument']); //Cập nhật section trong khóa học 
-    Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents/{document_id}', [CourseController::class, 'destroyDocument']); //Xoá section trong khoá học
->>>>>>> 332c72dc67a730232a175c0394ac04b9fea8bea9
+    Route::post('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', [DocumentController::class, 'createDocument']); //Tạo mới document
+    Route::put('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents/{document_id}', [DocumentController::class, 'updateDocument']); //Cập nhật document
+    Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents/{document_id}', [DocumentController::class, 'destroyDocument']); //Xoá document
 
 
     //coding in lesson
