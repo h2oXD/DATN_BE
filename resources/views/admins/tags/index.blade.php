@@ -3,7 +3,7 @@
 @section('content')
     <div class="card">
         <div class="card-header d-flex justify-content-between align-content-center">
-            <h2 class="m-0">Danh sách Thẻ</h2>
+            <h2 class="m-0">Danh sách thẻ</h2>
             <a href="{{ route('tags.create') }}" class="btn btn-primary">Thêm mới</a>
         </div>
         <div class="card-body">
@@ -14,8 +14,8 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Tên Tag</th>
-                        <th></th>
+                        <th>Tên Thẻ</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,7 +24,7 @@
                             <td>{{ $tag->id }}</td>
                             <td>{{ $tag->name }}</td>
                             <td>
-                                <span class="dropdown dropstart">
+                                {{-- <span class="dropdown dropstart">
                                     <a class="btn-icon btn btn-ghost btn-sm rounded-circle" href="#" role="button"
                                         data-bs-toggle="dropdown" data-bs-offset="-20,20" aria-expanded="false">
                                         <i class="fe fe-more-vertical"></i>
@@ -49,14 +49,37 @@
                                             Sửa
                                         </a>
                                         <a class="dropdown-item" href="#">
-                                            <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                            </svg>
-                                            Xoá
+                                            <form action="{{ route('tags.destroy', $tag->id) }}" method="POST"
+                                                style="display:inline-block;" id="delete-tag-{{ $tag->id }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <a class="dropdown-item">
+                                                    <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="size-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                                    </svg>
+                                                    <button type="button"
+                                                        class="btn btn-transparent btn-sm fs-5 ps-0 w-100 text-start"
+                                                        onclick="confirmDelete({{ $tag->id }})">Xóa</button>
+                                                </a>
+
+                                            </form>
                                         </a>
-                                    </span>
+                                    </span> --}}
+
+                                {{-- Nút sửa (Chuyển hướng đến trang chỉnh sửa tag hiện tại) --}}
+                                <a href="{{ route('tags.edit', $tag->id) }}" class="btn btn-warning btn-sm">Sửa</a>
+
+                                {{-- Nút xóa (Gửi yêu cầu xóa đến server) --}}
+                                <form action="{{ route('tags.destroy', $tag->id) }}" method="POST"
+                                    style="display:inline-block;" id="delete-tag-{{ $tag->id }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                        onclick="confirmDelete({{ $tag->id }})">Xóa</button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach

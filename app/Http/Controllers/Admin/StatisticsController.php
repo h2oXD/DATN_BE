@@ -15,75 +15,66 @@ class StatisticsController extends Controller
 
     public function index()
     {
-        $totalRevenue = Transaction::where('status', 'completed')->sum('amount');
-        $totalCourses = Course::count();
-        $totalUsers = User::count();
-
-        return view('admins.dashboards.statistics', compact('totalRevenue', 'totalCourses', 'totalUsers'));
+        return view('admins.dashboards.statistics', [
+            'totalRevenue' => Transaction::sum('amount'), 
+            'totalCourses' => Course::count(),
+            'totalUsers'   => User::count(),
+        ]);
     }
-
 
     public function totalRevenue()
     {
-        $total = Transaction::where('status', 'completed')->sum('amount');
-        return response()->json(['total_revenue' => $total]);
+        return response()->json([
+            'total_revenue' => Transaction::sum('amount') 
+        ]);
     }
-
 
     public function revenueByCourse()
     {
-        $data = Transaction::where('status', 'completed')
-            ->join('courses', 'transactions.course_id', '=', 'courses.id')
-            ->groupBy('transactions.course_id', 'courses.title')
-            ->selectRaw('courses.title as course, SUM(transactions.amount) as revenue')
-            ->orderByDesc('revenue')
-            ->get();
+        $data = Transaction::with('course:id,title')
+            ->get()
+            ->groupBy('course.title')
+            ->map(fn($transactions) => [
+                'course'  => optional($transactions->first()->course)->title, // Kiểm tra null tránh lỗi
+                'revenue' => $transactions->sum('amount'),
+            ])
+            ->values();
 
         return response()->json($data);
     }
-
 
     public function revenueByLecturer()
     {
-        $data = Transaction::where('status', 'completed')
-            ->join('lecturers', 'transactions.lecturer_id', '=', 'lecturers.id')
-            ->join('users', 'lecturers.user_id', '=', 'users.id')
-            ->groupBy('transactions.lecturer_id', 'users.name')
-            ->selectRaw('users.name as lecturer, SUM(transactions.amount) as revenue')
-            ->orderByDesc('revenue')
-            ->get();
+        $data = Transaction::with(['lecturer.user:id,name'])
+            ->get()
+            ->groupBy('lecturer.user.name')
+            ->map(fn($transactions) => [
+                'lecturer' => optional($transactions->first()->lecturer->user)->name, // Kiểm tra null
+                'revenue'  => $transactions->sum('amount'),
+            ])
+            ->values();
 
         return response()->json($data);
     }
 
-
     public function revenueByTime(Request $request)
     {
-        $type = $request->input('type', 'day'); // Mặc định theo ngày
+        $type = $request->input('type', 'day');
 
-        switch ($type) {
-            case 'month':
-                $dateFormat = "DATE_FORMAT(transaction_date, '%Y-%m')"; // YYYY-MM
-                break;
-            case 'year':
-                $dateFormat = "YEAR(transaction_date)"; // YYYY
-                break;
-            default:
-                $dateFormat = "DATE(transaction_date)"; // YYYY-MM-DD
-        }
+        $dateFormats = [
+            'day'   => "DATE(transaction_date)",
+            'month' => "DATE_FORMAT(transaction_date, '%Y-%m')",
+            'year'  => "YEAR(transaction_date)"
+        ];
 
-        $data = Transaction::where('status', 'completed')
-            ->selectRaw("$dateFormat as date, SUM(amount) as revenue")
+        $format = $dateFormats[$type] ?? $dateFormats['day'];
+
+        $data = Transaction::selectRaw("$format as date, SUM(amount) as revenue")
             ->groupBy('date')
             ->orderBy('date', 'asc')
             ->get();
 
-        // Nếu không có dữ liệu, trả về mảng rỗng
-        if ($data->isEmpty()) {
-            return response()->json([]);
-        }
-
-        return response()->json($data);
+        return response()->json($data->isEmpty() ? [] : $data);
     }
 
 
