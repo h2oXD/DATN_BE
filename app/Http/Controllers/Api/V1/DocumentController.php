@@ -10,184 +10,161 @@ use App\Models\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class DocumentController extends Controller
 {
 
-    public function createDocument(Request $request, $course_id, $section_id, $lesson_id)
+    public function store(Request $request, $course_id, $section_id, $lesson_id)
     {
         try {
-            // Validate
+            $course = $request->user()->courses()->with([
+                'sections' => function ($query) use ($section_id) {
+                    $query->where('id', $section_id);
+                },
+                'sections.lessons' => function ($query) use ($lesson_id) {
+                    $query->where('id', $lesson_id);
+                }
+            ])->find($course_id);
+
+            if (!$course || !$course->sections->first() || !$lesson = $course->sections->first()->lessons->first()) {
+                return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404); // Combined check
+            }
+
             $validator = Validator::make($request->all(), [
-                'document' => 'required|file|mimes:pdf,doc,docx|max:2048',
+                'document_url' => 'required|file|mimes:pdf,doc,docx|max:2048',
             ]);
+
             if ($validator->fails()) {
                 return response()->json([
                     'errors' => $validator->errors()
-                ], 422);
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            // Kiểm tra Course, Section và Lesson có tồn tại không
-            $course = Course::where('user_id', $request->user()->id)->find($course_id);
-            if (!$course) {
-                return response()->json([
-                    'message' => 'Khóa học không tồn tại'
-                ], 404);
+            $data = $request->all();
+
+            if ($request->hasFile('document_url')) {
+                $data['document_url'] = Storage::putFile('documents', $request->file('document_url'));
+                $data['file_type'] = $request->file('document_url')->getClientOriginalExtension();
             }
 
-            $section = Section::where('id', $section_id)->where('course_id', $course_id)->first();
-            if (!$section) {
-                return response()->json([
-                    'message' => 'Section không tồn tại'
-                ], 404);
-            }
-
-            $lesson = Lesson::where('id', $lesson_id)->where('section_id', $section_id)->first();
-            if (!$lesson) {
-                return response()->json([
-                    'message' => 'Lesson không tồn tại'
-                ], 404);
-            }
-
-            // Upload file document
-            $file = $request->file('document');
-            $fileType = $file->getClientOriginalExtension();
-            if ($request->hasFile('document')) {
-                $filePath = Storage::put('documents', $request->file('document'));
-            }
-
-            // Thêm mới document vào database
-            $document = $lesson->documents()->create([
-                'document_url' => $filePath,
-                'file_type' => $fileType,
-            ]);
+            $document = $lesson->documents()->create($data);
 
             return response()->json([
                 'message' => 'Document tải lên thành công',
                 'document' => $document
-            ], 201);
+            ], Response::HTTP_CREATED);
 
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi server',
                 'error' => $th->getMessage(),
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-    public function updateDocument(Request $request, $course_id, $section_id, $lesson_id, $document_id)
+    public function update(Request $request, $course_id, $section_id, $lesson_id, $document_id)
     {
         try {
-            // Validate
-            // sometimes không bắt buộc người dùng cập nhật file mới khi mà họ không muốn
+            $course = $request->user()->courses()->with([
+                'sections' => function ($query) use ($section_id) {
+                    $query->where('id', $section_id);
+                },
+                'sections.lessons' => function ($query) use ($lesson_id) {
+                    $query->where('id', $lesson_id);
+                },
+                'sections.lessons.documents' => function ($query) use ($document_id) {
+                    $query->where('id', $document_id);
+                }
+            ])->find($course_id);
+
+            if (
+                !$course ||
+                !$course->sections->first() ||
+                !$course->sections->first()->lessons->first() ||
+                !$document = $course->sections->first()->lessons->first()->documents->first()
+            ) {
+                return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404); // Combined check
+            }
+
             $validator = Validator::make($request->all(), [
-                'document' => 'sometimes|file|mimes:pdf,doc,docx|max:2048',
+                'document_url' => 'file|mimes:pdf,doc,docx|max:2048|required',
             ]);
+
             if ($validator->fails()) {
                 return response()->json([
                     'errors' => $validator->errors()
-                ], 422);
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            // Kiểm tra Course, Section, Lesson, Document có tồn tại không
-            $course = Course::where('user_id', $request->user()->id)->find($course_id);
-            if (!$course) {
-                return response()->json([
-                    'message' => 'Khóa học không tồn tại'
-                ], 404);
-            }
-            $section = Section::where('id', $section_id)->where('course_id', $course_id)->first();
-            if (!$section) {
-                return response()->json([
-                    'message' => 'Section không tồn tại'
-                ], 404);
-            }
-            $lesson = Lesson::where('id', $lesson_id)->where('section_id', $section_id)->first();
-            if (!$lesson) {
-                return response()->json([
-                    'message' => 'Lesson không tồn tại'
-                ], 404);
-            }
-            $document = Document::where('id', $document_id)->where('lesson_id', $lesson_id)->first();
-            if (!$document) {
-                return response()->json([
-                    'message' => 'Document không tồn tại'
-                ], 404);
+            $data = $request->all();
+
+            if ($request->hasFile('document_url')) {
+                $currentFileDocument = $document->document_url;
+                $data['document_url'] = Storage::putFile('documents', $request->file('document_url'));
+                $data['file_type'] = $request->file('document_url')->getClientOriginalExtension();
             }
 
-            // Nếu có file mới được upload thì sẽ xóa file cũ
-            if ($request->hasFile('document')) {
-                // Lấy đường dẫn file từ storage và xóa ảnh cũ
-                $oldFilePath = $document->document_url;
-                if (Storage::exists($oldFilePath)) {
-                    Storage::delete($oldFilePath);
-                }
+            $document->update($data);
 
-                // Upload file mới
-                $file = $request->file('document');
-                $fileType = $file->getClientOriginalExtension();
-                if ($request->hasFile('document')) {
-                    $filePath = Storage::put('documents', $request->file('document'));
-                }
-
-                $document->document_url = $filePath;
-                $document->file_type = $fileType;
+            if (
+                isset($currentFileDocument) &&
+                $currentFileDocument &&
+                !empty($currentFileDocument) &&
+                Storage::exists($currentFileDocument)
+            ) {
+                Storage::delete($currentFileDocument);
             }
-
-            $document->save();
 
             return response()->json([
                 'message' => 'Document đã được cập nhật',
                 'document' => $document
-            ], 200);
+            ], Response::HTTP_OK);
 
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi server',
                 'error' => $th->getMessage(),
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-    public function destroyDocument(Request $request, $course_id, $section_id, $lesson_id, $document_id)
+    public function destroy(Request $request, $course_id, $section_id, $lesson_id, $document_id)
     {
         try {
-            // Kiểm tra Course, Section, Lesson, Document có tồn tại không
-            $course = Course::where('user_id', $request->user()->id)->find($course_id);
-            if (!$course) {
-                return response()->json([
-                    'message' => 'Khóa học không tồn tại'
-                ], 404);
-            }
-            $section = Section::where('id', $section_id)->where('course_id', $course_id)->first();
-            if (!$section) {
-                return response()->json([
-                    'message' => 'Section không tồn tại'
-                ], 404);
-            }
-            $lesson = Lesson::where('id', $lesson_id)->where('section_id', $section_id)->first();
-            if (!$lesson) {
-                return response()->json([
-                    'message' => 'Lesson không tồn tại'
-                ], 404);
-            }
-            $document = Document::where('id', $document_id)->where('lesson_id', $lesson_id)->first();
-            if (!$document) {
-                return response()->json([
-                    'message' => 'Document không tồn tại'
-                ], 404);
+            $course = $request->user()->courses()->with([
+                'sections' => function ($query) use ($section_id) {
+                    $query->where('id', $section_id);
+                },
+                'sections.lessons' => function ($query) use ($lesson_id) {
+                    $query->where('id', $lesson_id);
+                },
+                'sections.lessons.documents' => function ($query) use ($document_id) {
+                    $query->where('id', $document_id);
+                }
+            ])->find($course_id);
+
+            if (
+                !$course ||
+                !$course->sections->first() ||
+                !$course->sections->first()->lessons->first() ||
+                !$document = $course->sections->first()->lessons->first()->documents->first()
+            ) {
+                return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404); // Combined check
             }
 
-            // Lấy đường dẫn file từ storage và xóa file
-            $oldFilePath = $document->document_url;
-            if (Storage::exists($oldFilePath)) {
-                Storage::delete($oldFilePath);
-            }
+            $currentFileDocument = $document->document_url;
 
-            // Xóa document trong database
             $document->delete();
 
-            return response()->json([
-                'message' => 'Document đã được xóa'
-            ], 200);
+            if (
+                isset($currentFileDocument) &&
+                $currentFileDocument &&
+                !empty($currentFileDocument) &&
+                Storage::exists($currentFileDocument)
+            ) {
+                Storage::delete($currentFileDocument);
+            }
+
+            return response()->noContent();
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi server',

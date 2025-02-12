@@ -194,7 +194,6 @@ class DatabaseSeeder extends Seeder
             'order' => 1
         ]);
         $lessonID = Lesson::create([
-            'course_id' => $courseID->id,
             'section_id' => $sectionID->id,
             'title' => 'Cài đặt laragon',
             'order' => 1
@@ -205,7 +204,6 @@ class DatabaseSeeder extends Seeder
             'duration' => 1248
         ]);
         Lesson::create([
-            'course_id' => $courseID->id,
             'section_id' => $sectionID->id,
             'title' => 'Cấu trúc thư mục laravel',
             'order' => 2

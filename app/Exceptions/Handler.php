@@ -31,4 +31,13 @@ class Handler extends ExceptionHandler
     {
         return $request->is('api/*') || $request->isJson() || $request->wantsJson() || $request->ajax() || $request->expectsJson();
     }
+    // Ví dụ trong App\Exceptions\Handler.php
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof \Illuminate\Http\Exceptions\PostTooLargeException) {
+            return response()->json(['message' => 'File quá lớn'], 413);
+        }
+
+        return parent::render($request, $e);
+    }
 }

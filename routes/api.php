@@ -1,18 +1,15 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\DeepSeekController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
-use App\Http\Controllers\Api\V1\LectionController;
 use App\Http\Controllers\Api\V1\LecturerController;
 use App\Http\Controllers\Api\V1\LessonCodingController;
 use App\Http\Controllers\Api\V1\LessonController;
 use App\Http\Controllers\Api\V1\SectionController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\VideoController;
-use App\Models\UserRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,42 +36,12 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::get('/lecturer/dashboard', [LecturerController::class, 'dashboard']);
     Route::get('/lecturer', [LecturerController::class, 'getLecturerInfo']);
 
-    //course in lecturer
-    Route::get('/lecturer/courses', [CourseController::class, 'getLecturerCourse']);  //Lấy danh sách khóa học
-    Route::post('/lecturer/courses', [CourseController::class, 'createLecturerCourse']); //Tạo mới khoá học
-    Route::get('/lecturer/courses/{course_id}', [CourseController::class, 'showLecturerCourse']); //Lấy chi tiết khóa học
-    Route::put('/lecturer/courses/{course_id}', [CourseController::class, 'updateLecturerCourse']); //Cập nhật khóa học 
-    Route::delete('/lecturer/courses/{course_id}', [CourseController::class, 'destroyLecturerCourse']); //Xoá khoá học
-
-    Route::prefix('lecturer/courses/{course_id}')->group(function () {
-        //section in course hieu
-        Route::post('/sections', [SectionController::class, 'createSection']); // Tạo mới section trong khóa học
-        Route::put('/sections/{section_id}', [SectionController::class, 'updateSection']); // Cập nhật section trong khóa học
-        Route::delete('/sections/{section_id}', [SectionController::class, 'destroySection']); // Xóa section trong khóa học
-
-        //lesson in section hieu
-        Route::prefix('/sections/{section_id}')->group(function () {
-            Route::post('/lessons', [LessonController::class, 'createLesson']); // Tạo mới lesson trong section
-            Route::put('/lessons/{lesson_id}', [LessonController::class, 'updateLesson']); // Cập nhật lesson trong section
-            Route::delete('/lessons/{lesson_id}', [LessonController::class, 'destroyLesson']); // Xóa lesson trong section
-        });
-    });
-
-    //video in lesson
-    Route::post('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos', [VideoController::class, 'createVideo']); //Tạo mới section trong khoá học
-    Route::put('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}', [VideoController::class, 'updateVideo']); //Cập nhật section trong khóa học 
-    Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}', [VideoController::class, 'destroyVideo']); //Xoá section trong khoá học
-
-    //document in lesson
-    Route::post('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', [DocumentController::class, 'createDocument']); //Tạo mới document
-    Route::put('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents/{document_id}', [DocumentController::class, 'updateDocument']); //Cập nhật document
-    Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents/{document_id}', [DocumentController::class, 'destroyDocument']); //Xoá document
-
-
-    //coding in lesson
-    Route::post('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', [LessonCodingController::class, 'createCoding']); // Tạo mới coding trong lesson
-    Route::put('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings/{coding_id}', [LessonCodingController::class, 'updateCoding']); // Cập nhật coding trong lesson
-    Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings/{coding_id}', [LessonCodingController::class, 'destroyCoding']); // Xóa coding trong lesson
+    Route::apiResource('/lecturer/courses', CourseController::class)->parameters(['courses' => 'course_id']);
+    Route::apiResource('lecturer/courses/{course_id}/sections', SectionController::class)->only(['store', 'update', 'destroy'])->parameters(['sections' => 'section_id']);
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons', LessonController::class)->only(['store', 'update', 'destroy'])->parameters(['lessons' => 'lesson_id']);
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos', VideoController::class)->only(['store', 'update', 'destroy'])->parameters(['videos' => 'video_id']);
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', DocumentController::class)->only(['store', 'update', 'destroy'])->parameters(['documents' => 'document_id']);
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', LessonCodingController::class)->only(['store', 'update', 'destroy'])->parameters(['codings' => 'coding_id']);
 
     //quiz in lesson tu
     Route::post('/lecturer/courses/{course_id}/sections/lessons/quizzes', [CourseController::class, 'createQuiz']); //Tạo mới section trong khoá học
