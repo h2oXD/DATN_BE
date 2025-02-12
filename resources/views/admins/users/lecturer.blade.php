@@ -69,11 +69,11 @@
                                     </div>
                                 </td>
                                 <td>
-                                    @foreach ($user->roles as $role)
-                                        <span class="badge {{ $role->name == 'lecturer' ? 'bg-warning' : 'bg-success' }}">
-                                            {{ $role->name == 'lecturer' ? 'Giảng viên' : 'Học viên' }}
-                                        </span>
-                                    @endforeach
+                                    @if ($user->roles->contains('name', 'lecturer'))
+                                        <span class="badge bg-warning">Giảng viên</span>
+                                    @elseif ($user->roles->contains('name', 'student') && !$user->roles->contains('name', 'lecturer'))
+                                        <span class="badge bg-success">Học viên</span>
+                                    @endif
                                 </td>
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->created_at }}</td>
