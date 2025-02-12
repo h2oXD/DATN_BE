@@ -150,7 +150,7 @@ class DocumentController extends Controller
     public function destroyDocument(Request $request, $course_id, $section_id, $lesson_id, $document_id)
     {
         try {
-            // Kiểm tra Document có tồn tại không
+            // Kiểm tra Course, Section, Lesson, Document có tồn tại không
             $course = Course::where('user_id', $request->user()->id)->find($course_id);
             if (!$course) {
                 return response()->json([
@@ -161,6 +161,12 @@ class DocumentController extends Controller
             if (!$section) {
                 return response()->json([
                     'message' => 'Section không tồn tại'
+                ], 404);
+            }
+            $lesson = Lesson::where('id', $lesson_id)->where('section_id', $section_id)->first();
+            if (!$lesson) {
+                return response()->json([
+                    'message' => 'Lesson không tồn tại'
                 ], 404);
             }
             $document = Document::where('id', $document_id)->where('lesson_id', $lesson_id)->first();
