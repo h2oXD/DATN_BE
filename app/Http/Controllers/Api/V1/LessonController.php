@@ -25,7 +25,7 @@ class LessonController extends Controller
             if (!$course || !$section = $course->sections->first()) {
                 return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404); // Combined check
             }
-            
+
             $validator = Validator::make($request->all(), [
                 'title' => 'required',
                 'description' => 'nullable|string',
@@ -34,7 +34,7 @@ class LessonController extends Controller
             if ($validator->fails()) {
                 return response()->json(['errors' => $validator->errors()], 422);
             }
-            
+
             $data = $request->all();
 
             // Lấy order lớn nhất hiện tại trong section và tăng thêm 1
@@ -98,6 +98,7 @@ class LessonController extends Controller
     }
     public function destroy(Request $request, $course_id, $section_id, $lesson_id)
     {
+        DB::beginTransaction();
         try {
             $course = $request->user()->courses()->with([
                 'sections' => function ($query) use ($section_id) {
@@ -114,7 +115,7 @@ class LessonController extends Controller
 
             // Lưu order của lesson trước khi xóa
             $deletedOrder = $lesson->order;
-            DB::beginTransaction();
+
             // Xóa lesson
             $lesson->delete();
 
