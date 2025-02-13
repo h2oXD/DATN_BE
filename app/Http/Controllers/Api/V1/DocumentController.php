@@ -87,7 +87,7 @@ class DocumentController extends Controller
             }
 
             $validator = Validator::make($request->all(), [
-                'document' => 'sometimes|file|mimes:pdf,doc,docx|max:2048|required',
+                'document_url' => 'sometimes|file|mimes:pdf,doc,docx|max:2048|required',
             ]);
 
             if ($validator->fails()) {
