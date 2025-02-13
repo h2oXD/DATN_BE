@@ -5,22 +5,20 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\UserRole;
-use App\Models\Wallet;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
     public function getUser(Request $request)
     {
-        $role = $request->user()->roles;
         $user = $request->user();
+        $user->roles;
         return response()->json($user);
     }
     public function register(Request $request)
@@ -87,7 +85,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'Thông tin đăng nhập không chính xác'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $role = $user->roles; 
+        $role = $user->roles;
 
         $token = $user->createToken(__CLASS__)->plainTextToken;
 
@@ -105,6 +103,6 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Đăng xuất thành công'
-        ]);
+        ], Response::HTTP_OK);
     }
 }

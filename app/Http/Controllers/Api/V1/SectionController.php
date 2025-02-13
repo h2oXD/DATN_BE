@@ -91,6 +91,7 @@ class SectionController extends Controller
     }
     public function destroy(Request $request, $course_id, $section_id)
     {
+        DB::beginTransaction();
         try {
             $course = $request->user()->courses()->with([
                 'sections' => function ($query) use ($section_id) {
@@ -104,7 +105,6 @@ class SectionController extends Controller
 
             // Lấy giá trị order trước khi xóa
             $deletedOrder = $section->order;
-            DB::beginTransaction();
             // Xóa section
             $section->delete();
 
