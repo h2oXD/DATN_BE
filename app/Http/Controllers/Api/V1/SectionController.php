@@ -12,6 +12,30 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SectionController extends Controller
 {
+    public function index(Request $request, $course_id)
+    {
+        try {
+            $course = $request->user()->courses()->find($course_id);
+
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Không tìm thấy khoá học',
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            $sections = $course->sections()->paginate(5);
+
+            return response()->json([
+                'message' => 'Lấy dữ liệu thành công',
+                'sections' => $sections
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Lỗi hệ thống',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public function store(Request $request, $course_id)
     {
         try {
@@ -43,6 +67,31 @@ class SectionController extends Controller
                 'section' => $section,
                 'message' => 'Tạo mới section thành công',
             ], Response::HTTP_CREATED);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function show(Request $request, $course_id, $section_id)
+    {
+        try {
+            $course = $request->user()->courses()->with([
+                'sections' => function ($query) use ($section_id) {
+                    $query->where('id', $section_id);
+                }
+            ])->find($course_id);
+
+            if (!$course || !$section = $course->sections->first()) {
+                return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404); 
+            }
+
+            return response()->json([
+                'message' => 'Lấy dữ liệu thành công',
+                'section' => $section
+            ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi server',
@@ -91,6 +140,7 @@ class SectionController extends Controller
     }
     public function destroy(Request $request, $course_id, $section_id)
     {
+        DB::beginTransaction();
         try {
             $course = $request->user()->courses()->with([
                 'sections' => function ($query) use ($section_id) {
@@ -104,7 +154,6 @@ class SectionController extends Controller
 
             // Lấy giá trị order trước khi xóa
             $deletedOrder = $section->order;
-            DB::beginTransaction();
             // Xóa section
             $section->delete();
 

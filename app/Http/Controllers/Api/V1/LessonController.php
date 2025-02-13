@@ -13,6 +13,31 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LessonController extends Controller
 {
+    public function index(Request $request, $course_id, $section_id)
+    {
+        try {
+            $course = $request->user()->courses()->with([
+                'sections' => function ($query) use ($section_id) {
+                    $query->where('id', $section_id)->with('lessons');
+                }
+            ])->find($course_id);
+
+            if (!$course || !$section = $course->sections->first()) {
+                return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404);
+            }
+
+            return response()->json([
+                'message' => 'Lấy dữ liệu thành công',
+                'lessons' => $section->lessons
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public function store(Request $request, $course_id, $section_id)
     {
         try {
@@ -25,7 +50,7 @@ class LessonController extends Controller
             if (!$course || !$section = $course->sections->first()) {
                 return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404); // Combined check
             }
-            
+
             $validator = Validator::make($request->all(), [
                 'title' => 'required',
                 'description' => 'nullable|string',
@@ -34,7 +59,7 @@ class LessonController extends Controller
             if ($validator->fails()) {
                 return response()->json(['errors' => $validator->errors()], 422);
             }
-            
+
             $data = $request->all();
 
             // Lấy order lớn nhất hiện tại trong section và tăng thêm 1
@@ -54,6 +79,35 @@ class LessonController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function show(Request $request, $course_id, $section_id, $lesson_id)
+    {
+        try {
+            $course = $request->user()->courses()->with([
+                'sections' => function ($query) use ($section_id) {
+                    $query->where('id', $section_id);
+                },
+                'sections.lessons' => function ($query) use ($lesson_id) {
+                    $query->where('id', $lesson_id);
+                }
+            ])->find($course_id);
+
+            if (!$course || !$course->sections->first() || !$lesson = $course->sections->first()->lessons->first()) {
+                return response()->json(['message' => 'Không tìm thấy tài nguyên'], Response::HTTP_NOT_FOUND); // Combined check
+            }
+
+            return response()->json([
+                'message' => 'Lấy dữ liệu thành công',
+                'lesson' => $lesson
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public function update(Request $request, $course_id, $section_id, $lesson_id)
     {
         try {

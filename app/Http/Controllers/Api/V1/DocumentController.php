@@ -14,7 +14,36 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DocumentController extends Controller
 {
+    public function index(Request $request, $course_id, $section_id, $lesson_id)
+    {
+        try {
+            $course = $request->user()->courses()->with([
+                'sections' => function ($query) use ($section_id) {
+                    $query->where('id', $section_id);
+                },
+                'sections.lessons' => function ($query) use ($lesson_id) {
+                    $query->where('id', $lesson_id);
+                }
+            ])->find($course_id);
 
+            if (!$course || !$course->sections->first() || !$lesson = $course->sections->first()->lessons->first()) {
+                return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404); // Combined check
+            }
+
+            $document = $lesson->documents;
+
+            return response()->json([
+                'message' => 'Danh sách Document',
+                'document' => $document
+            ], Response::HTTP_OK);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
     public function store(Request $request, $course_id, $section_id, $lesson_id)
     {
         try {
@@ -62,6 +91,44 @@ class DocumentController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+    public function show(Request $request, $course_id, $section_id, $lesson_id, $document_id)
+    {
+        try {
+            $course = $request->user()->courses()->with([
+                'sections' => function ($query) use ($section_id) {
+                    $query->where('id', $section_id);
+                },
+                'sections.lessons' => function ($query) use ($lesson_id) {
+                    $query->where('id', $lesson_id);
+                },
+                'sections.lessons.documents' => function ($query) use ($document_id) {
+                    $query->where('id', $document_id);
+                }
+            ])->find($course_id);
+
+            if (
+                !$course ||
+                !$course->sections->first() ||
+                !$course->sections->first()->lessons->first() ||
+                !$document = $course->sections->first()->lessons->first()->documents->first()
+            ) {
+                return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404); // Combined check
+            }
+
+            $document = Document::find($document_id);
+
+            return response()->json([
+                'message' => 'chi tiết Document',
+                'document' => $document
+            ], Response::HTTP_OK);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
     public function update(Request $request, $course_id, $section_id, $lesson_id, $document_id)
     {
         try {
@@ -87,7 +154,7 @@ class DocumentController extends Controller
             }
 
             $validator = Validator::make($request->all(), [
-                'document' => 'sometimes|file|mimes:pdf,doc,docx|max:2048|required',
+                'document_url' => 'file|mimes:pdf,doc,docx|max:2048|required',
             ]);
 
             if ($validator->fails()) {

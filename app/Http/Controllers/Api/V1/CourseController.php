@@ -14,11 +14,13 @@ class CourseController extends Controller
     {
         try {
             $courses = request()->user()->courses()->paginate(5);
+
             if (!$courses) {
                 return response()->json([
                     'message' => 'Không tìm thấy khoá học',
                 ], Response::HTTP_NOT_FOUND);
             }
+
             return response()->json([
                 'message' => 'Lấy dữ liệu thành công',
                 'courses' => $courses
@@ -51,67 +53,82 @@ class CourseController extends Controller
     }
     public function show($course_id)
     {
-        $course = request()->user()->courses()->with([
-            'sections' => function ($query) {
-                $query->orderBy('order');
-            },
-            'sections.lessons' => function ($query) {
-                $query->orderBy('order');
-            },
-            'sections.lessons.documents',
-            'sections.lessons.videos',
-            'sections.lessons.codings',
-            'sections.lessons.quizzes'
-        ])->find($course_id);
+        try {
+            $course = request()->user()->courses()->with([
+                'sections' => function ($query) {
+                    $query->orderBy('order');
+                },
+                'sections.lessons' => function ($query) {
+                    $query->orderBy('order');
+                },
+                'sections.lessons.documents',
+                'sections.lessons.videos',
+                'sections.lessons.codings',
+                'sections.lessons.quizzes'
+            ])->find($course_id);
 
-        if (!$course) {
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Không tìm thấy khoá học',
+                ], Response::HTTP_NOT_FOUND);
+            }
+
             return response()->json([
-                'message' => 'Không tìm thấy khoá học',
-            ], Response::HTTP_NOT_FOUND);
+                'course' => $course,
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th,
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return response()->json([
-            'course' => $course,
-        ], Response::HTTP_OK);
     }
     public function update(UpdateCourseRequest $request, $course_id)
     {
         try {
-
             $course = $request->user()->courses()->find($course_id);
+
             if (!$course) {
                 return response()->json([
                     'message' => 'Không tìm thấy khoá học'
                 ], Response::HTTP_NOT_FOUND);
             }
+
             $data = $request->except('thumbnail', 'video_preview');
 
-
-            // Xử lý upload ảnh
             if ($request->hasFile('thumbnail')) {
-                $currentThumbnail = $course->thumbnail; // Lưu đường dẫn ảnh cũ
+                $currentThumbnail = $course->thumbnail;
                 $file = $request->file('thumbnail');
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 $data['thumbnail'] = $file->storeAs('images/thumbnails', $fileName, 'public');
             }
-            // Xử lý upload video_preview
+
             if ($request->hasFile('video_preview')) {
-                $currentVideo = $course->video_preview; // Lưu đường dẫn video cũ
-                $file = $request->file('video_preview'); // Thay đổi tên trường
+                $currentVideo = $course->video_preview;
+                $file = $request->file('video_preview');
                 $fileName = time() . '_' . $file->getClientOriginalName();
-                $data['video_preview'] = $file->storeAs('videos/courses', $fileName, 'public'); // Thay đổi tên trường
+                $data['video_preview'] = $file->storeAs('videos/courses', $fileName, 'public');
             }
 
             $course->update($data);
 
-            // Xóa ảnh cũ sau khi update thành công
-            if (isset($currentThumbnail) && $currentThumbnail && !empty($currentThumbnail) && Storage::exists($currentThumbnail)) {
+            if (
+                isset($currentThumbnail) &&
+                $currentThumbnail &&
+                !empty($currentThumbnail) &&
+                Storage::exists($currentThumbnail)
+            ) {
                 Storage::delete($currentThumbnail);
             }
-            // Xóa video cũ sau khi update thành công
-            if (isset($currentVideo) && $currentVideo && Storage::exists($currentVideo) && !empty($currentVideo)) {
+
+            if (
+                isset($currentVideo) &&
+                $currentVideo &&
+                Storage::exists($currentVideo) &&
+                !empty($currentVideo)
+            ) {
                 Storage::delete($currentVideo);
             }
+
             return response()->json([
                 'message' => 'Cập nhật thành công',
                 'data' => $course
@@ -125,24 +142,43 @@ class CourseController extends Controller
     }
     public function destroy($course_id)
     {
-        $course = request()->user()->courses()->find($course_id);
-        if (!$course) {
+        try {
+            $course = request()->user()->courses()->find($course_id);
+
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Không tìm thấy khoá học'
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            $currentThumbnail = $course->thumbnail;
+            $currentVideo = $course->video_preview;
+
+            $course->delete();
+
+            if (
+                isset($currentThumbnail) &&
+                $currentThumbnail &&
+                !empty($currentThumbnail) &&
+                Storage::exists($currentThumbnail)
+            ) {
+                Storage::delete($currentThumbnail);
+            }
+
+            if (
+                isset($currentVideo) &&
+                $currentVideo &&
+                Storage::exists($currentVideo) &&
+                !empty($currentVideo)
+            ) {
+                Storage::delete($currentVideo);
+            }
+
+            return response()->noContent();
+        } catch (\Throwable $th) {
             return response()->json([
-                'message' => 'Không tìm thấy khoá học'
-            ], Response::HTTP_NOT_FOUND);
+                'message' => $th,
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $currentThumbnail = $course->thumbnail;
-        $currentVideo = $course->video_preview;
-
-        $course->delete();
-
-        if (isset($currentThumbnail) && $currentThumbnail && !empty($currentThumbnail) && Storage::exists($currentThumbnail)) {
-            Storage::delete($currentThumbnail);
-        }
-        if (isset($currentVideo) && $currentVideo && Storage::exists($currentVideo) && !empty($currentVideo)) {
-            Storage::delete($currentVideo);
-        }
-        return response()->noContent();
     }
 }
