@@ -12,6 +12,35 @@ class VideoController extends Controller
 {
     //
 
+    public function index(Request $request, $course_id, $section_id, $lesson_id)
+    {
+        try {
+
+            $course = $request->user()->courses()
+                ->with(['sections' => function ($query) use ($section_id) {
+                    $query->where('id', $section_id);
+                }, 'sections.lessons' => function ($query) use ($lesson_id) {
+                    $query->where('id', $lesson_id);
+                }])
+                ->find($course_id);
+
+
+            if (!$course || !$course->sections->first() || !$lesson = $course->sections->first()->lessons->first()) {
+                return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404);
+            }
+
+
+            $videos = $lesson->videos;
+
+
+            return response()->json([
+                'data' => $videos,
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json(['message' => 'Đã xảy ra lỗi trong quá trình xử lý'], 500);
+        }
+    }
     public function store(Request $request, $course_id, $section_id, $lesson_id)
     {
         try {
@@ -84,6 +113,39 @@ class VideoController extends Controller
         }
     }
 
+
+    public function show(Request $request, $course_id, $section_id, $lesson_id, $video_id)
+    {
+        try {
+            // Lấy khóa học thuộc về người dùng hiện tại và kiểm tra section và lesson
+            $course = $request->user()->courses()
+                ->with(['sections' => function ($query) use ($section_id) {
+                    $query->where('id', $section_id);
+                }, 'sections.lessons' => function ($query) use ($lesson_id) {
+                    $query->where('id', $lesson_id);
+                }])
+                ->find($course_id);
+
+            // Kiểm tra xem course, section, và lesson có tồn tại không
+            if (!$course || !$course->sections->first() || !$lesson = $course->sections->first()->lessons->first()) {
+                return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404);
+            }
+
+            // Kiểm tra xem video có tồn tại trong lesson không
+            $video = $lesson->videos->where('id', $video_id)->first();
+            if (!$video) {
+                return response()->json(['message' => 'Video không tồn tại'], 404);
+            }
+
+            // Trả về response dạng JSON
+            return response()->json([
+                'data' => $video,
+            ]);
+        } catch (\Exception $e) {
+            // Xử lý lỗi nếu có
+            return response()->json(['message' => 'Đã xảy ra lỗi trong quá trình xử lý'], 500);
+        }
+    }
 
 
     /**
