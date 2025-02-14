@@ -12,6 +12,27 @@ use Illuminate\Support\Facades\Validator;
 
 class LessonCodingController extends Controller
 {
+
+    // Lấy danh sách bài tập lập trình
+    public function index(Request $request, $course_id, $section_id, $lesson_id)
+    {
+        $course = $request->user()->courses()->with([
+            'sections' => function ($query) use ($section_id) {
+                $query->where('id', $section_id);
+            },
+            'sections.lessons' => function ($query) use ($lesson_id) {
+                $query->where('id', $lesson_id);
+            },
+            'sections.lessons.codings'
+        ])->find($course_id);
+
+        if (!$course || !$course->sections->first() || !$lesson = $course->sections->first()->lessons->first()) {
+            return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404);
+        }
+
+        return response()->json($lesson->codings);
+    }
+
     // Tạo bài tập lập trình mới
     public function store(Request $request, $course_id, $section_id, $lesson_id)
     {
@@ -69,9 +90,6 @@ class LessonCodingController extends Controller
             ], 500);
         }
     }
-
-
-
 
     // Cập nhật bài tập lập trình
     public function update(Request $request, $course_id, $section_id, $lesson_id, $coding_id)
@@ -172,5 +190,30 @@ class LessonCodingController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    // Lấy chi tiết một bài tập lập trình cụ thể
+    public function show(Request $request, $course_id, $section_id, $lesson_id, $coding_id)
+    {
+        $course = $request->user()->courses()->with([
+            'sections' => function ($query) use ($section_id) {
+                $query->where('id', $section_id);
+            },
+            'sections.lessons' => function ($query) use ($lesson_id) {
+                $query->where('id', $lesson_id);
+            },
+            'sections.lessons.codings' => function ($query) use ($coding_id) {
+                $query->where('id', $coding_id);
+            }
+        ])->find($course_id);
+
+        $lesson = optional(optional($course)->sections->first())->lessons->first();
+        $coding = optional($lesson)->codings->first();
+
+        if (!$lesson || !$coding) {
+            return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404);
+        }
+
+        return response()->json($coding);
     }
 }

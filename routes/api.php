@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', [AuthController::class, 'getUser']);
-    Route::apiResource('user', UserController::class)->only(['show','update']);
+    Route::apiResource('user', UserController::class)->only(['show', 'update']);
     Route::apiResource('user/wish-list', WishListController::class);
     //wallet in user
     Route::get('/user/wallet', [WalletController::class, 'show']);
@@ -46,7 +46,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons', LessonController::class)->only(['store', 'update', 'destroy'])->parameters(['lessons' => 'lesson_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos', VideoController::class)->only(['store', 'update', 'destroy'])->parameters(['videos' => 'video_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', DocumentController::class)->only(['store', 'update', 'destroy'])->parameters(['documents' => 'document_id']);
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', LessonCodingController::class)->only(['store', 'update', 'destroy'])->parameters(['codings' => 'coding_id']);
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', LessonCodingController::class)->parameters(['codings' => 'coding_id']);
 
     //quiz in lesson tu
     Route::post('/lecturer/courses/{course_id}/sections/lessons/quizzes', [CourseController::class, 'createQuiz']); //Tạo mới section trong khoá học
@@ -69,4 +69,4 @@ Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function () {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/tags', [TagController::class, 'index']);
+Route::apiResource('/tags', TagController::class)->except(['edit', 'create'])->parameters(['tags' => 'tag_id']);
