@@ -42,10 +42,10 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::get('/lecturer', [LecturerController::class, 'getLecturerInfo']);
 
     Route::apiResource('/lecturer/courses', CourseController::class)->parameters(['courses' => 'course_id']);
-    Route::apiResource('lecturer/courses/{course_id}/sections', SectionController::class)->only(['store', 'update', 'destroy'])->parameters(['sections' => 'section_id']);
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons', LessonController::class)->only(['store', 'update', 'destroy'])->parameters(['lessons' => 'lesson_id']);
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos', VideoController::class)->only(['store', 'update', 'destroy'])->parameters(['videos' => 'video_id']);
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', DocumentController::class)->only(['store', 'update', 'destroy'])->parameters(['documents' => 'document_id']);
+    Route::apiResource('lecturer/courses/{course_id}/sections', SectionController::class)->parameters(['sections' => 'section_id']);
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons', LessonController::class)->parameters(['lessons' => 'lesson_id']);
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos', VideoController::class)->parameters(['videos' => 'video_id']);
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', DocumentController::class)->parameters(['documents' => 'document_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', LessonCodingController::class)->parameters(['codings' => 'coding_id']);
 
     //quiz in lesson tu
@@ -69,4 +69,4 @@ Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function () {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/categories', [CategoryController::class, 'index']);
-Route::apiResource('/tags', TagController::class)->except(['edit', 'create'])->parameters(['tags' => 'tag_id']);
+Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id']);
