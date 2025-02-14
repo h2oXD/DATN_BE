@@ -38,7 +38,7 @@
                                     <span class="badge bg-warning">Chờ duyệt</span>
                                 @endif
                             </td>
-                            <td><a href="" class="btn btn-info btn-sm">Kiểm tra</a></td>
+                            <td><a href="{{route('check.course', $course->id)}}" class="btn btn-info btn-sm">Kiểm tra</a></td>
                         </tr>
                     @endforeach
                 </tbody>
