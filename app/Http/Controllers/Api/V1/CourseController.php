@@ -93,6 +93,12 @@ class CourseController extends Controller
                 ], Response::HTTP_NOT_FOUND);
             }
 
+            if ($course->status !== 'draft') {
+                return response()->json([
+                    'message' => 'Không thể cập nhật khoá học này vì không phải bản nháp'
+                ], Response::HTTP_FORBIDDEN);
+            }
+
             $data = $request->except('thumbnail', 'video_preview');
 
             if ($request->hasFile('thumbnail')) {
@@ -151,6 +157,12 @@ class CourseController extends Controller
                 ], Response::HTTP_NOT_FOUND);
             }
 
+            if ($course->status !== 'draft') {
+                return response()->json([
+                    'message' => 'Không thể xoá khoá học này vì không phải bản nháp'
+                ], Response::HTTP_FORBIDDEN);
+            }
+
             $currentThumbnail = $course->thumbnail;
             $currentVideo = $course->video_preview;
 
@@ -182,29 +194,35 @@ class CourseController extends Controller
         }
     }
 
-    public function approve($course_id)
+    public function pending($course_id)
     {
-        $course = request()->user()->courses()->find($course_id);
+        try {
+            $course = request()->user()->courses()->find($course_id);
 
-        if (!$course) {
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Không tìm thấy khoá học'
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            if ($course->status !== 'draft') {
+                return response()->json([
+                    'message' => 'Không thể gửi yêu cầu phê duyệt khoá học vì không phải bản nháp'
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $course->status = 'pending';
+            $course->submited_at = now();
+            $course->save();
+
             return response()->json([
-                'message' => 'Không tìm thấy khoá học'
-            ], Response::HTTP_NOT_FOUND);
-        }
-
-        if ($course->status !== 'draft') {
+                'message' => 'Gửi yêu cầu phê duyệt thành công',
+                'data' => $course
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
             return response()->json([
-                'message' => 'Không thể gửi yêu cầu phê duyệt khoá học'
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                'message' => $th,
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $course->status = 'published';
-        $course->submited_at = now();
-        $course->save();
-
-        return response()->json([
-            'message' => 'Gửi yêu cầu phê duyệt thành công',
-            'data' => $course
-        ], Response::HTTP_OK);
     }
 }

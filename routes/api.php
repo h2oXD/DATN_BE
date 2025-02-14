@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', [AuthController::class, 'getUser']);
-    Route::apiResource('user', UserController::class)->only(['show','update']);
+    Route::apiResource('user', UserController::class)->only(['show', 'update']);
     Route::apiResource('user/wish-list', WishListController::class);
     //wallet in user
     Route::get('/user/wallet', [WalletController::class, 'show']);
@@ -43,10 +43,11 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::get('/lecturer', [LecturerController::class, 'getLecturerInfo']);
 
     Route::apiResource('/lecturer/courses', CourseController::class)->parameters(['courses' => 'course_id']);
-    Route::apiResource('lecturer/courses/{course_id}/sections', SectionController::class)->only(['store', 'update', 'destroy'])->parameters(['sections' => 'section_id']);
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons', LessonController::class)->only(['store', 'update', 'destroy'])->parameters(['lessons' => 'lesson_id']);
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos', VideoController::class)->only(['store', 'update', 'destroy'])->parameters(['videos' => 'video_id']);
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', DocumentController::class)->only(['store', 'update', 'destroy'])->parameters(['documents' => 'document_id']);
+    Route::post('/lecturer/courses/{course_id}/pending', [CourseController::class, 'pending']);
+    Route::apiResource('lecturer/courses/{course_id}/sections', SectionController::class)->parameters(['sections' => 'section_id']);
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons', LessonController::class)->parameters(['lessons' => 'lesson_id']);
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos', VideoController::class)->parameters(['videos' => 'video_id']);
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', DocumentController::class)->parameters(['documents' => 'document_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', LessonCodingController::class)->only(['store', 'update', 'destroy'])->parameters(['codings' => 'coding_id']);
 
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes',QuizController::class)->parameters(['quizzes' => 'quiz_id']);
