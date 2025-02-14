@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\LecturerController;
 use App\Http\Controllers\Api\V1\LessonCodingController;
 use App\Http\Controllers\Api\V1\LessonController;
+use App\Http\Controllers\Api\V1\QuizController;
 use App\Http\Controllers\Api\V1\SectionController;
 use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\UserController;
@@ -42,16 +43,16 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::get('/lecturer', [LecturerController::class, 'getLecturerInfo']);
 
     Route::apiResource('/lecturer/courses', CourseController::class)->parameters(['courses' => 'course_id']);
+    Route::post('/lecturer/courses/{course_id}/pending', [CourseController::class, 'pending']);
     Route::apiResource('lecturer/courses/{course_id}/sections', SectionController::class)->parameters(['sections' => 'section_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons', LessonController::class)->parameters(['lessons' => 'lesson_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos', VideoController::class)->parameters(['videos' => 'video_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', DocumentController::class)->parameters(['documents' => 'document_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', LessonCodingController::class)->only(['store', 'update', 'destroy'])->parameters(['codings' => 'coding_id']);
 
-    //quiz in lesson tu
-    Route::post('/lecturer/courses/{course_id}/sections/lessons/quizzes', [CourseController::class, 'createQuiz']); //Tạo mới section trong khoá học
-    Route::put('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}', [CourseController::class, 'updateQuiz']); //Cập nhật section trong khóa học 
-    Route::delete('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}', [CourseController::class, 'destroyQuiz']); //Xoá section trong khoá học
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes',QuizController::class)->parameters(['quizzes' => 'quiz_id']);
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}/questions',QuizController::class)->parameters(['questions' => 'question_id']);
+
 
 
 });
