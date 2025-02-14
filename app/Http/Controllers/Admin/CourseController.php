@@ -125,7 +125,25 @@ class CourseController extends Controller
 
     public function censorCourseList()
     {
-        $courses = Course::where('status','pending')->get();
-        return view('admins.courses.censor-course-list',compact('courses'));
+        $courses = Course::where('status', 'pending')->get();
+        return view('admins.courses.censor-course-list', compact('courses'));
+    }
+    public function checkCourse($course_id)
+    {
+        $course = Course::with([
+            'sections' => function ($query) {
+                $query->orderBy('order');
+            },
+            'sections.lessons' => function ($query) {
+                $query->orderBy('order');
+            },
+            'sections.lessons.documents',
+            'sections.lessons.videos',
+            'sections.lessons.codings',
+            'sections.lessons.quizzes'
+        ])->find($course_id);
+
+        // dd($course->toArray());
+        return view(self::PATH_VIEW . 'check-course', compact('course'));
     }
 }

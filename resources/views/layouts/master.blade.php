@@ -24,7 +24,7 @@
 
             <!-- Page Header -->
             <!-- Container fluid -->
-            <div class="m-3">
+            <div class="">
                 @yield('content')
             </div>
 
