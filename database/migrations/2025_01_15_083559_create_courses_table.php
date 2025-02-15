@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Category::class)->nullable()->constrained()->onDelete('cascade');
 
-            $table->integer('price')->nullable();
+            $table->integer('price_regular')->nullable();
             $table->integer('price_sale')->nullable();
 
             $table->string('title',50);

@@ -47,9 +47,39 @@
 @section('content')
     <div class="m-3">
         <div class="card">
-            <div class="card-body pb-1">
-                <h1>{{ $course->title }}</h1>
-                <ul class="nav nav-lb-tab border-bottom-0" id="tab" role="tablist">
+            <div class="card-body pb-1 pt-3 px-3">
+                <li class="list-group-item bg-transparent pb-2">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <a href="#">
+                                <div class="d-flex align-items-center flex-row gap-3">
+                                    @if ($course->thumbnail)
+                                        <img src="{{ Storage::url($course->thumbnail) }}" alt=""
+                                            class="avatar-lg rounded">
+                                    @else
+                                        <img src="/avatar-1.jpg" alt=""
+                                            class="avatar-lg rounded">
+                                    @endif
+
+                                    <div class="text-body">
+                                        <p class="mb-0">
+                                            <span class="fw-bold mb-0 h5">{{ $course->user->name }}</span>
+                                            <span class="ms-1 fs-6">{{ $course->user->email }}</span>
+                                        </p>
+                                        <span class="fs-6">
+                                            <span class="ms-1">Thời gian gửi: {{ $course->submited_at }}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-auto text-center">
+                            <button class="btn btn-outline-primary btn-sm">Chấp nhận</button>
+                            <button class="btn btn-outline-danger btn-sm">Từ chối</button>
+                        </div>
+                    </div>
+                </li>
+                <ul class="nav nav-lb-tab border-bottom-0 pb-2 pt-2 border-top" id="tab" role="tablist">
                     <li class="nav-item my-1" role="presentation">
                         <a class="nav-link p-0 active" id="courses-tab" data-bs-toggle="pill" href="#courses" role="tab"
                             aria-controls="courses" aria-selected="true">Nội dung các bài</a>
