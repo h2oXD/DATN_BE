@@ -1,4 +1,7 @@
 @extends('layouts.master')
+@section('title')
+    Dashboard
+@endsection
 @section('content')
     <section class="container-fluid p-4">
         <div class="row">

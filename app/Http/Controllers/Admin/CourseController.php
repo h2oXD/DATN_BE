@@ -127,6 +127,7 @@ class CourseController extends Controller
     public function checkCourse($course_id)
     {
         $course = Course::with([
+            'user',
             'sections' => function ($query) {
                 $query->orderBy('order');
             },
