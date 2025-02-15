@@ -33,7 +33,7 @@
             <h2 class="m-0">Thêm mới phiếu giảm giá</h2>
         </div>
         <div class="card-body">
-            <form method="POST" class="row" action="{{ route('vouchers.store') }}" enctype="multipart/form-data">
+            <form method="POST" class="row" action="{{ route('admin.vouchers.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="name" class="form-label">Tên</label>
@@ -121,7 +121,7 @@
                 </div>
                 <div class="col-12">
                     <button type="submit" class="btn btn-primary">Thêm mới</button>
-                    <a href="{{ route('vouchers.index') }}" class="btn btn-secondary">Quay lại</a>
+                    <a href="{{ route('admin.vouchers.index') }}" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>

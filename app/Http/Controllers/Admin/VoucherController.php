@@ -14,7 +14,7 @@ class VoucherController extends AdminBaseController
     {
         $this->model = Voucher::class;
         $this->viewPath = 'admins.vouchers.';
-        $this->routePath = 'vouchers.index';
+        $this->routePath = 'admin.vouchers.index';
     }
 
     public function destroy($id)

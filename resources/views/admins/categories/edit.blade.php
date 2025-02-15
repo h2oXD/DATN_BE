@@ -39,9 +39,6 @@
                             </option>
                         @endforeach
                     </select>
-                    @error('parent_id')
-                        <div class="text-danger mt-1">{{ $message }}</div>
-                    @enderror
                 </div>
             @endif
 

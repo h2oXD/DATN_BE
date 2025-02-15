@@ -6,7 +6,7 @@
             <h2>Chỉnh sửa Tag</h2>
         </div>
         <div class="card-body">
-            <form action="{{ route('tags.update', $item) }}" method="POST">
+            <form action="{{ route('admin.tags.update', $item) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="mb-3">
@@ -17,7 +17,7 @@
                     @enderror
                 </div>
                 <button type="submit" class="btn btn-primary">Cập nhật</button>
-                <a href="{{ route('tags.index') }}" class="btn btn-secondary">Quay lại</a>
+                <a href="{{ route('admin.tags.index') }}" class="btn btn-secondary">Quay lại</a>
             </form>
         </div>
     </div>

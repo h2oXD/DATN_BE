@@ -11,7 +11,7 @@
             <a href="{{ route('users.create') }}" class="btn btn-primary">Thêm mới người dùng</a>
         </div>
         <div class="card-body p-0">
-            <form method="GET" action="{{ route('students.index') }}" class="row gx-3 m-2">
+            <form method="GET" action="{{ route('admin.students.index') }}" class="row gx-3 m-2">
                 <div class="col-lg-8 col-12 mb-2">
                     <input type="text" name="search" class="form-control" placeholder="Tìm kiếm"
                         value="{{ request('search') }}">

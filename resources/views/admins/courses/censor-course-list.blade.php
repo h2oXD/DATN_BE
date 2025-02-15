@@ -40,7 +40,7 @@
                                         <span class="badge bg-warning">Chờ duyệt</span>
                                     @endif
                                 </td>
-                                <td class="border-end"><a href="{{ route('check.course', $course->id) }}"
+                                <td class="border-end"><a href="{{ route('admin.check.course', $course->id) }}"
                                         class="btn btn-info btn-sm">Kiểm tra</a></td>
                             </tr>
                         @endforeach
