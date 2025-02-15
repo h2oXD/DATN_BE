@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [DashBoardController::class, 'index']);
+Route::get('/', [DashBoardController::class, 'index'])->name('admin.home');
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('login', [AuthController::class, 'login'])->name('login');
 
@@ -65,11 +65,12 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::post('/restore/{id}', [TagController::class, 'restore'])->name('tags.restore');
 
         //Course
-        Route::resource('courses', CourseController::class);
+        // Route::resource('courses', CourseController::class);
         Route::get('courses/{course_id}/checkCourse', [CourseController::class, 'checkCourse'])->name('check.course');
         Route::post('courses/{id}/approve', [CourseController::class, 'approve'])->name('courses.approve');
         Route::post('courses/{id}/reject', [CourseController::class, 'reject'])->name('courses.reject');
-        Route::get('courses', [CourseController::class, 'censorCourseList'])->name('censor.course.list');
+        Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
+        Route::get('courses/censor', [CourseController::class, 'censorCourseList'])->name('censor.courses.list');
     });
 });
 
