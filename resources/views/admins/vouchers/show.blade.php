@@ -87,7 +87,7 @@
                     <div class="col-md-9">{{ \Carbon\Carbon::parse($item->updated_at)->format('d/m/Y H:i:s') }}</div>
                 </div>
                 <div class="text-end">
-                    <a href="{{ route('vouchers.index') }}" class="btn btn-secondary">Quay lại</a>
+                    <a href="{{ route('admin.vouchers.index') }}" class="btn btn-secondary">Quay lại</a>
                 </div>
             </div>
         </div>

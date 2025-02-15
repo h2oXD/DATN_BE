@@ -5,13 +5,13 @@
 @endsection
 
 @section('content')
-    <div class="card">
+    <div class="card m-3">
         <div class="card-header d-flex justify-content-between align-content-center">
             <h2 class="m-0">Danh sách giảng viên</h2>
-            <a href="{{ route('users.create') }}" class="btn btn-primary">Thêm mới người dùng</a>
+            <a href="{{ route('admin.users.create') }}" class="btn btn-primary">Thêm mới người dùng</a>
         </div>
         <div class="card-body p-0">
-            <form method="GET" action="{{ route('lecturers.index') }}" class="row gx-3 m-2">
+            <form method="GET" action="{{ route('admin.lecturers.index') }}" class="row gx-3 m-2">
                 <div class="col-lg-8 col-12 mb-2">
                     <input type="text" name="search" class="form-control" placeholder="Tìm kiếm"
                         value="{{ request('search') }}">
@@ -86,7 +86,7 @@
                                         </a>
                                         <span class="dropdown-menu">
                                             <span class="dropdown-header">Settings</span>
-                                            <a href="{{ route('users.show', $user->id) }}" class="dropdown-item">
+                                            <a href="{{ route('admin.users.show', $user->id) }}" class="dropdown-item">
                                                 <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                                     class="size-6">
@@ -96,7 +96,7 @@
                                                         d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                                 </svg>Xem
                                             </a>
-                                            <a class="dropdown-item" href="{{ route('users.edit', $user->id) }}">
+                                            <a class="dropdown-item" href="{{ route('admin.users.edit', $user->id) }}">
                                                 <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                                     class="size-6">
@@ -116,7 +116,7 @@
                                                 Xóa
                                             </a>
                                             <form id="delete-tag-{{ $user->id }}"
-                                                action="{{ route('users.destroy', $user->id) }}" method="POST"
+                                                action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
                                                 style="display:none;">
                                                 @csrf
                                                 @method('DELETE')

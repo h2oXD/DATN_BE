@@ -97,7 +97,7 @@
                 </div>
 
                 <div class="text-end">
-                    <a href="{{ route('voucher-use.index') }}" class="btn btn-secondary">Quay lại</a>
+                    <a href="{{ route('admin.voucher-use.index') }}" class="btn btn-secondary">Quay lại</a>
                 </div>
 
             </div>
