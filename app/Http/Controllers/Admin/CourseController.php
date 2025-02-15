@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
-    const PATH_VIEW = 'admins.admin.courses.';
+    const PATH_VIEW = 'admins.courses.';
 
     public function index(Request $request)
     {

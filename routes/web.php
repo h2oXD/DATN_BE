@@ -46,7 +46,7 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         // User
         Route::prefix('users')->group(function () {
             Route::get('lecturers', [UserController::class, 'indexLecturers'])->name('lecturers.index');
-            Route::get('/students', [UserController::class, 'indexStudents'])->name('students.index');
+            Route::get('students', [UserController::class, 'indexStudents'])->name('students.index');
             Route::get('/create', [UserController::class, 'create'])->name('users.create');
             Route::post('/', [UserController::class, 'store'])->name('users.store');
             Route::get('/{user}', [UserController::class, 'show'])->name('users.show');
@@ -57,10 +57,7 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
 
         // Tag
         Route::resource('tags', TagController::class);
-        Route::delete('/delete/{id}', [TagController::class, 'delete'])->name('tags.delete');
         Route::delete('/forceDelete/{id}', [TagController::class, 'forceDelete'])->name('tags.forceDelete');
-        Route::get('tags/check/{id}', [TagController::class, 'forceDelete']);
-        Route::get('tags/check/{id}', [TagController::class, 'checkTagUsage']);
         Route::get('/trash', [TagController::class, 'trash'])->name('tags.trash');
         Route::post('/restore/{id}', [TagController::class, 'restore'])->name('tags.restore');
 

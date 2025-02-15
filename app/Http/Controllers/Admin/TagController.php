@@ -48,13 +48,6 @@ class TagController extends AdminBaseController
         return [];
     }
 
-    public function delete($id)
-    {
-        $tag = Tag::findOrFail($id);
-        $tag->delete();
-        return response()->json(['message' => 'Tag đã được đưa vào thùng rác.']);
-    }
-
     public function forceDelete($id)
     {
         $tag = Tag::onlyTrashed()->with('courses')->findOrFail($id);
@@ -82,20 +75,5 @@ class TagController extends AdminBaseController
         $tag->restore();
 
         return redirect()->route('admin.tags.index')->with('success', 'Tag đã được khôi phục thành công!');
-    }
-
-    public function checkTagUsage($id)
-    {
-        $tag = Tag::with('courses')->onlyTrashed()->findOrFail($id);
-
-        if ($tag->courses->count() > 0) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Tag này đang được sử dụng trong các khóa học!',
-                'courses' => $tag->courses->pluck('name')
-            ]);
-        }
-
-        return response()->json(['status' => 'success']);
     }
 }
