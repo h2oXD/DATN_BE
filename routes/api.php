@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', [AuthController::class, 'getUser']);
     Route::apiResource('user', UserController::class)->only(['show', 'update']);
-    Route::apiResource('user/wish-list', WishListController::class);
+    Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
     //wallet in user
     Route::get('/user/wallet', [WalletController::class, 'show']);
     Route::put('/user/wallet/{wallet_id}', [WalletController::class, 'update']);
