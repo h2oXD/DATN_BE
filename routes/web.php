@@ -69,7 +69,7 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::get('courses/{course_id}/checkCourse', [CourseController::class, 'checkCourse'])->name('check.course');
         Route::post('courses/{id}/approve', [CourseController::class, 'approve'])->name('courses.approve');
         Route::post('courses/{id}/reject', [CourseController::class, 'reject'])->name('courses.reject');
-        Route::get('courses', [CourseController::class, 'censorCourseList'])->name('censor.corse.list');
+        Route::get('courses', [CourseController::class, 'censorCourseList'])->name('censor.course.list');
     });
 });
 

@@ -14,7 +14,7 @@
                 <div class="alert alert-info">Thao tác thành công!</div>
             @endif
 
-            <form class="row" method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
+            <form class="row" method="POST" action="{{ route('admin.users.update', $user->id) }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 

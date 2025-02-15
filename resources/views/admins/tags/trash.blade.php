@@ -4,7 +4,7 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-content-center">
             <h2>Thùng rác Tags</h2>
-            <a href="{{ route('tags.index') }}" class="btn btn-primary">Quay lại</a>
+            <a href="{{ route('admin.tags.index') }}" class="btn btn-primary">Quay lại</a>
         </div>
         <div class="card-body">
             @if (session('error'))
@@ -44,13 +44,13 @@
                                 @endif
                             </td>
                             <td>
-                                <form action="{{ route('tags.restore', $tag->id) }}" method="POST" style="display:inline;">
+                                <form action="{{ route('admin.tags.restore', $tag->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     <button type="submit" class="btn btn-success">Khôi phục</button>
                                 </form>
 
                                 @if ($tag->courses->count() == 0)
-                                    <form action="{{ route('tags.forceDelete', $tag->id) }}" method="POST"
+                                    <form action="{{ route('admin.tags.forceDelete', $tag->id) }}" method="POST"
                                         style="display:inline;">
                                         @csrf
                                         @method('DELETE')

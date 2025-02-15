@@ -6,7 +6,7 @@
             <h2>Thêm mới Tag</h2>
         </div>
         <div class="card-body">
-            <form action="{{ route('tags.store') }}" method="POST">
+            <form action="{{ route('admin.tags.store') }}" method="POST">
                 @csrf
                 <div class="mb-3">
                     <label for="name" class="form-label">Tên Tag</label>
@@ -16,7 +16,7 @@
                     @enderror
                 </div>
                 <button type="submit" class="btn btn-success">Lưu</button>
-                <a href="{{ route('tags.index') }}" class="btn btn-secondary">Quay lại</a>
+                <a href="{{ route('admin.tags.index') }}" class="btn btn-secondary">Quay lại</a>
             </form>
         </div>
     </div>
