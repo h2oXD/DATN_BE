@@ -19,11 +19,10 @@ class CourseController extends Controller
         $search = $request->get('search');
         $category = $request->get('category');
         $tag = $request->get('tag');
-        $status = $request->get('status');
 
         $categories = Category::all();
 
-        $courses = Course::with('category', 'tags')
+        $courses = Course::with('category', 'tags')->where('status','published')
             ->when($search, function ($query, $search) {
                 return $query->where('title', 'like', "%$search%")
                     ->orWhere('description', 'like', "%$search%");
@@ -35,9 +34,6 @@ class CourseController extends Controller
                 return $query->whereHas('tags', function ($query) use ($tag) {
                     $query->where('name', 'like', "%$tag%");
                 });
-            })
-            ->when($status, function ($query, $status) {
-                return $query->where('status', $status);
             })
             ->latest('id')
             ->paginate(10);
