@@ -30,7 +30,7 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
     Route::prefix('admin')->name('admin.')->group(function () {
         //Dashboard
         Route::get('/', [DashBoardController::class, 'dashboard'])->name('dashboard');
-        Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+        Route::post('logout', [AuthController::class, 'logout'])->name('admin.logout');
 
         //Voucher
         Route::resource('vouchers', VoucherController::class);
