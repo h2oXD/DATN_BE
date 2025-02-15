@@ -29,7 +29,7 @@
         </div>
     @endif --}}
 
-    <div class="card">
+    <div class="card m-3">
         <div class="card-header">
             <h2 class="m-0">Cập nhật phiếu giảm giá</h2>
         </div>

@@ -69,7 +69,7 @@
                                         <div class="col">
                                             <a class="text-body" href="#">
                                                 <div class="d-flex">
-                                                    <img src="../../assets/images/avatar/avatar-1.jpg" alt=""
+                                                    <img src="" alt=""
                                                         class="avatar-md rounded-circle" />
                                                     <div class="ms-3">
                                                         <h5 class="fw-bold mb-1">Kristin Watson:</h5>
