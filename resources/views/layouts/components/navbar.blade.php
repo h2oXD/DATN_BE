@@ -23,7 +23,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark " href="{{ url('/admin/dashboards/statistics') }}">
+                <a class="nav-link text-dark " href="">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-10 me-2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -39,7 +39,7 @@
                 </p>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" href="{{route('censor.corse.list')}}">
+                <a class="nav-link text-dark" href="{{route('admin.censor.course.list')}}">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-10 me-2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -69,7 +69,7 @@
                 <div id="navCourse" class="collapse " data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-dark " href="{{ route('courses.index') }}">Khoá học đang bán</a>
+                            <a class="nav-link text-dark " href="">Khoá học đang bán</a>
 
                         </li>
                     </ul>
@@ -133,10 +133,10 @@
                 <div id="navCardManagement" class="collapse" data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="{{ route('tags.index') }}">Danh sách thẻ</a>
+                            <a class="nav-link text-dark" href="{{ route('admin.tags.index') }}">Danh sách thẻ</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="{{ route('tags.create') }}">Thêm mới thẻ</a>
+                            <a class="nav-link text-dark" href="{{ route('admin.tags.create') }}">Thêm mới thẻ</a>
                         </li>
                     </ul>
                 </div>
@@ -156,13 +156,13 @@
                 <div id="navecommerce" class="collapse " data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-dark " href="{{ route('vouchers.index') }}">Danh sách</a>
+                            <a class="nav-link text-dark " href="{{ route('admin.vouchers.index') }}">Danh sách</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark " href="{{ route('vouchers.create') }}">Thêm mới</a>
+                            <a class="nav-link text-dark " href="{{ route('admin.vouchers.create') }}">Thêm mới</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark " href="{{ route('voucher-use.index') }}">Lịch sử</a>
+                            <a class="nav-link text-dark " href="{{ route('admin.voucher-use.index') }}">Lịch sử</a>
                         </li>
                     </ul>
                 </div>
@@ -186,10 +186,10 @@
                 <div id="navProfile" class="collapse" data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="{{ route('students.index') }}">Học viên</a>
+                            <a class="nav-link text-dark" href="{{ route('admin.students.index') }}">Học viên</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="{{ route('lecturers.index') }}">Giảng viên</a>
+                            <a class="nav-link text-dark" href="{{ route('admin.lecturers.index') }}">Giảng viên</a>
                         </li>
                     </ul>
                 </div>

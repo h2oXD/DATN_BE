@@ -17,7 +17,7 @@ class TagController extends AdminBaseController
         // Ví dụ: 
         $this->model = Tag::class;
         $this->viewPath = 'admins.tags.';
-        $this->routePath = 'tags.index';
+        $this->routePath = 'admin.tags.index';
         // $this->uploadPath = 'images/products'; 
     }
     protected function storeValidate()
@@ -61,11 +61,11 @@ class TagController extends AdminBaseController
 
         // Kiểm tra nếu tag có khóa học liên quan
         if ($tag->courses->count() > 0) {
-            return redirect()->route('tags.trash')->with('error', 'Không thể xóa! Vui lòng xóa các khóa học chứa tag này trước.');
+            return redirect()->route('admin.tags.trash')->with('error', 'Không thể xóa! Vui lòng xóa các khóa học chứa tag này trước.');
         }
 
         $tag->forceDelete();
-        return redirect()->route('tags.trash')->with('success', 'Tag đã bị xóa vĩnh viễn.');
+        return redirect()->route('admin.tags.trash')->with('success', 'Tag đã bị xóa vĩnh viễn.');
     }
 
     public function trash()
@@ -81,7 +81,7 @@ class TagController extends AdminBaseController
         $tag = Tag::onlyTrashed()->findOrFail($id);
         $tag->restore();
 
-        return redirect()->route('tags.index')->with('success', 'Tag đã được khôi phục thành công!');
+        return redirect()->route('admin.tags.index')->with('success', 'Tag đã được khôi phục thành công!');
     }
 
     public function checkTagUsage($id)

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
-    const PATH_VIEW = 'admins.courses.';
+    const PATH_VIEW = 'admins.admin.courses.';
 
     public function index(Request $request)
     {
@@ -57,14 +57,14 @@ class CourseController extends Controller
         $course->submited_at = now();
         $course->save();
 
-        return redirect()->route('courses.index')->with('success', 'Khóa học đã được phê duyệt');
+        return redirect()->route('admin.courses.index')->with('success', 'Khóa học đã được phê duyệt');
     }
     public function reject(Request $request, $id)
     {
         $course = Course::findOrFail($id);
         $course->status = 'pending';
         $course->save();
-        return redirect()->route('courses.index')->with('success', 'Khóa học đã bị từ chối');
+        return redirect()->route('admin.courses.index')->with('success', 'Khóa học đã bị từ chối');
     }
 
     public function edit($id)
@@ -117,7 +117,7 @@ class CourseController extends Controller
                 $course->tags()->sync($request->input('tags'));
             }
 
-            return redirect()->route('courses.index')->with('success', 'Cập nhật khóa học thành công!');
+            return redirect()->route('admin.courses.index')->with('success', 'Cập nhật khóa học thành công!');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }
