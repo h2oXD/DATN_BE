@@ -57,10 +57,7 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
 
         // Tag
         Route::resource('tags', TagController::class);
-        Route::delete('/delete/{id}', [TagController::class, 'delete'])->name('tags.delete');
         Route::delete('/forceDelete/{id}', [TagController::class, 'forceDelete'])->name('tags.forceDelete');
-        Route::get('tags/check/{id}', [TagController::class, 'forceDelete']);
-        Route::get('tags/check/{id}', [TagController::class, 'checkTagUsage']);
         Route::get('/trash', [TagController::class, 'trash'])->name('tags.trash');
         Route::post('/restore/{id}', [TagController::class, 'restore'])->name('tags.restore');
 
