@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\StatisticsController;
 
 use App\Http\Controllers\Admin\CategoryController;
@@ -23,36 +24,42 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    ;
-    return view('admins.dashboards.dash-board');
+
+
+
+// Route::get('login', function () {
+//     return view('auths.login');
+// });
+Route::get('/admin/login', [AuthController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AuthController::class, 'login'])->name('login');
+
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin', function () {;
+        return view('admins.dashboards.dash-board');
+    });
+    Route::post('/admin/logout', [AuthController::class, 'logout'])->name('admin.logout');
+    Route::get('/admin/statistics/total-revenue', [StatisticsController::class, 'totalRevenue']);
+    Route::get('/admin/statistics/revenue-by-course', [StatisticsController::class, 'revenueByCourse']);
+    Route::get('/admin/statistics/revenue-by-lecturer', [StatisticsController::class, 'revenueByLecturer']);
+    Route::get('/admin/statistics/revenue-by-time', [StatisticsController::class, 'revenueByTime']);
+    Route::get('/admin/statistics/count-stats', [StatisticsController::class, 'countStats']);
+    Route::get('/admin/dashboards/statistics', [StatisticsController::class, 'index']);
+
+    Route::resource('admin/vouchers', VoucherController::class);
+    Route::resource('admin/voucher-use', VoucherUseController::class);
+
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('categories/trashed', [CategoryController::class, 'trashed'])->name('categories.trashed');
+        Route::delete('categories/{id}/force-delete', [CategoryController::class, 'forceDelete'])
+            ->name('categories.forceDelete');
+        Route::resource('categories', CategoryController::class)->names('categories');
+        Route::post('categories/{id}/restore', [CategoryController::class, 'restore'])->name('categories.restore');
+    });
 });
-Route::get('login', function () {
-    return view('auths.login');
-});
+
 
 Route::resource('tags', TagController::class);
-
-Route::get('/admin/statistics/total-revenue', [StatisticsController::class, 'totalRevenue']);
-Route::get('/admin/statistics/revenue-by-course', [StatisticsController::class, 'revenueByCourse']);
-Route::get('/admin/statistics/revenue-by-lecturer', [StatisticsController::class, 'revenueByLecturer']);
-Route::get('/admin/statistics/revenue-by-time', [StatisticsController::class, 'revenueByTime']);
-Route::get('/admin/statistics/count-stats', [StatisticsController::class, 'countStats']);
-
-Route::get('/admin/dashboards/statistics', [StatisticsController::class, 'index']);
-
-Route::resource('admin/vouchers', VoucherController::class);
-Route::resource('admin/voucher-use', VoucherUseController::class);
-
-
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('categories/trashed', [CategoryController::class, 'trashed'])->name('categories.trashed');
-    Route::delete('categories/{id}/force-delete', [CategoryController::class, 'forceDelete'])
-        ->name('categories.forceDelete');
-    Route::resource('categories', CategoryController::class)->names('categories');
-    Route::post('categories/{id}/restore', [CategoryController::class, 'restore'])->name('categories.restore');
-});
-
 
 Route::prefix('users')->group(function () {
     Route::get('/lecturers', [UserController::class, 'indexLecturers'])->name('lecturers.index');
