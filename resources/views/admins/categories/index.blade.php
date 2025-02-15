@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-    <div class="container">
+    <div class="container mt-3">
         <div class="card bg-white shadow">
             <div class="card-header">
                 <h2 class="mb-0">Danh sách danh mục</h2>
