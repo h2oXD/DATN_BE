@@ -9,7 +9,7 @@
             <div class="card-body">
                 <p><strong>ID:</strong> {{ $item->id }}</p>
                 <p><strong>Tên Tag:</strong> {{ $item->name }}</p>
-                <a href="{{ route('tags.index') }}" class="btn btn-secondary">Quay lại</a>
+                <a href="{{ route('admin.tags.index') }}" class="btn btn-secondary">Quay lại</a>
             </div>
         </div>
 

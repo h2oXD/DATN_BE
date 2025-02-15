@@ -17,23 +17,12 @@
         </div>
     @endif
 
-    {{-- Đoạn này dùng để thông báo lỗi thành một khối --}}
-    {{-- @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif --}}
-
-    <div class="card">
+    <div class="card m-3">
         <div class="card-header">
             <h2 class="m-0">Thêm mới phiếu giảm giá</h2>
         </div>
         <div class="card-body">
-            <form method="POST" class="row" action="{{ route('vouchers.store') }}" enctype="multipart/form-data">
+            <form method="POST" class="row" action="{{ route('admin.vouchers.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="name" class="form-label">Tên</label>
@@ -50,34 +39,28 @@
                     @enderror
                 </div>
 
-                
+
 
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="type" class="form-label">Loại giảm giá</label>
-                    <select name="type" class="form-select text-dark" >
-                        <option value="percent">Phần trăm</option>
-                        <option value="fix_amount">Giá tiền</option>
+                    <select name="type" class="form-select text-dark">
+                        <option @if (old('type') == 'percent') selected @endif value="percent">Phần trăm</option>
+                        <option @if (old('type') == 'fix_amount') selected @endif value="fix_amount">Giá tiền</option>
                     </select>
                     @error('type')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
+
                 <div class="col-lg-6 mb-2 col-12">
-                    <label for="discount_percent" class="form-label">Số % giảm</label>
-                    <input type="number" class="form-control" name="discount_percent" id="discount_percent"
-                        min="0" value="{{ old('discount_percent') }}"/>
-                    @error('discount_percent')
+                    <label for="discount_price" class="form-label">Số % / Số tiền giảm</label>
+                    <input type="number" class="form-control" name="discount_price" id="discount_price" min="0"
+                        value="{{ old('discount_price') }}" />
+                    @error('discount_price')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
-                <div class="col-lg-6 mb-2 col-12">
-                    <label for="discount_amount" class="form-label">Số tiền giảm</label>
-                    <input type="number" class="form-control" name="discount_amount" id="discount_amount" min="0" value="{{ old('discount_amount') }}"/>
-                    @error('discount_amount')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="start_time" class="form-label">Ngày bắt đầu</label>
                     <input type="datetime-local" class="form-control" name="start_time" id="start_time"
@@ -86,6 +69,7 @@
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
+
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="end_time" class="form-label">Ngày kết thúc</label>
                     <input type="datetime-local" class="form-control" name="end_time" id="end_time"
@@ -94,6 +78,7 @@
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
+
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="count" class="form-label">Số lượng</label>
                     <input type="number" class="form-control" name="count" id="count" value="{{ old('count') }}" />
@@ -101,6 +86,7 @@
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
+
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="is_active" class="form-label">Trạng thái</label>
                     <select name="is_active" class="form-select text-dark">
@@ -111,7 +97,7 @@
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
-                
+
                 <div class="my-3 col-12">
                     <label for="description" class="form-label">Nội dung</label>
                     <textarea name="description" id="description">{{ old('description') }}</textarea>
@@ -119,39 +105,14 @@
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
+
                 <div class="col-12">
                     <button type="submit" class="btn btn-primary">Thêm mới</button>
-                    <a href="{{ route('vouchers.index') }}" class="btn btn-secondary">Quay lại</a>
+                    <a href="{{ route('admin.vouchers.index') }}" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>
     </div>
-
-    {{-- <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const typeSelect = document.querySelector('select[name="type"]');
-            const discountPercentInput = document.querySelector('input[name="discount_percent"]');
-            const discountAmountInput = document.querySelector('input[name="discount_amount"]');
-
-            function toggleDiscountFields() {
-                if (typeSelect.value === "percent") {
-                    discountPercentInput.removeAttribute("disabled");
-                    discountAmountInput.setAttribute("disabled", "disabled");
-                    discountAmountInput.value = "";
-                } else {
-                    discountAmountInput.removeAttribute("disabled");
-                    discountPercentInput.setAttribute("disabled", "disabled");
-                    discountPercentInput.value = "";
-                }
-            }
-
-            // Gọi hàm khi trang tải xong để đảm bảo đúng trạng thái ban đầu
-            toggleDiscountFields();
-
-            // Gán sự kiện thay đổi giá trị
-            typeSelect.addEventListener("change", toggleDiscountFields);
-        });
-    </script> --}}
 @endsection
 
 @section('script')

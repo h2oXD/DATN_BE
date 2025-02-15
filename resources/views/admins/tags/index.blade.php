@@ -1,14 +1,14 @@
 @extends('layouts.master')
 
 @section('content')
-    <div class="card">
+    <div class="card m-3">
         <div class="card-header d-flex justify-content-between align-content-center">
             <div class="d-flex">
                 <h2 class="m-0 mx-2">Danh sách thẻ</h2>
-                <a href="{{ route('tags.trash') }}" class="btn btn-danger">Thùng rác</a>
+                <a href="{{ route('admin.tags.trash') }}" class="btn btn-danger">Thùng rác</a>
             </div>
             <div>
-                <a href="{{ route('tags.create') }}" class="btn btn-primary">Thêm mới</a>
+                <a href="{{ route('admin.tags.create') }}" class="btn btn-primary">Thêm mới</a>
             </div>
         </div>
         <div class="card-body">
@@ -36,7 +36,7 @@
                                     </a>
                                     <span class="dropdown-menu">
                                         <span class="dropdown-header">Settings</span>
-                                        <a href="{{ route('tags.show', $tag->id) }}" class="dropdown-item">
+                                        <a href="{{ route('admin.tags.show', $tag->id) }}" class="dropdown-item">
                                             <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
                                                 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -44,7 +44,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                             </svg>Xem</a>
-                                        <a class="dropdown-item" href="{{ route('tags.edit', $tag->id) }}">
+                                        <a class="dropdown-item" href="{{ route('admin.tags.edit', $tag->id) }}">
                                             <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
                                                 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -54,7 +54,7 @@
                                             Sửa
                                         </a>
                                         <a class="dropdown-item" href="#">
-                                            <form action="{{ route('tags.destroy', $tag->id) }}" method="POST"
+                                            <form action="{{ route('admin.tags.destroy', $tag->id) }}" method="POST"
                                                 style="display:inline-block;" id="delete-tag-{{ $tag->id }}">
                                                 @csrf
                                                 @method('DELETE')
@@ -75,10 +75,10 @@
                                     </span> --}}
 
                                 {{-- Nút sửa (Chuyển hướng đến trang chỉnh sửa tag hiện tại) --}}
-                                <a href="{{ route('tags.edit', $tag->id) }}" class="btn btn-warning btn-sm">Sửa</a>
+                                <a href="{{ route('admin.tags.edit', $tag->id) }}" class="btn btn-warning btn-sm">Sửa</a>
 
                                 {{-- Nút xóa (Gửi yêu cầu xóa đến server) --}}
-                                <form action="{{ route('tags.destroy', $tag->id) }}" method="POST"
+                                <form action="{{ route('admin.tags.destroy', $tag->id) }}" method="POST"
                                     style="display:inline-block;" id="delete-tag-{{ $tag->id }}">
                                     @csrf
                                     @method('DELETE')

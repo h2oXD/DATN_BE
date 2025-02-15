@@ -19,11 +19,10 @@ class CourseController extends Controller
         $search = $request->get('search');
         $category = $request->get('category');
         $tag = $request->get('tag');
-        $status = $request->get('status');
 
         $categories = Category::all();
 
-        $courses = Course::with('category', 'tags')
+        $courses = Course::with('category', 'tags')->where('status','published')
             ->when($search, function ($query, $search) {
                 return $query->where('title', 'like', "%$search%")
                     ->orWhere('description', 'like', "%$search%");
@@ -35,9 +34,6 @@ class CourseController extends Controller
                 return $query->whereHas('tags', function ($query) use ($tag) {
                     $query->where('name', 'like', "%$tag%");
                 });
-            })
-            ->when($status, function ($query, $status) {
-                return $query->where('status', $status);
             })
             ->latest('id')
             ->paginate(10);
@@ -57,14 +53,14 @@ class CourseController extends Controller
         $course->submited_at = now();
         $course->save();
 
-        return redirect()->route('courses.index')->with('success', 'Khóa học đã được phê duyệt');
+        return redirect()->route('admin.courses.index')->with('success', 'Khóa học đã được phê duyệt');
     }
     public function reject(Request $request, $id)
     {
         $course = Course::findOrFail($id);
         $course->status = 'pending';
         $course->save();
-        return redirect()->route('courses.index')->with('success', 'Khóa học đã bị từ chối');
+        return redirect()->route('admin.courses.index')->with('success', 'Khóa học đã bị từ chối');
     }
 
     public function edit($id)
@@ -117,7 +113,7 @@ class CourseController extends Controller
                 $course->tags()->sync($request->input('tags'));
             }
 
-            return redirect()->route('courses.index')->with('success', 'Cập nhật khóa học thành công!');
+            return redirect()->route('admin.courses.index')->with('success', 'Cập nhật khóa học thành công!');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }

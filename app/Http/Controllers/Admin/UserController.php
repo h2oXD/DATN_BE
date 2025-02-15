@@ -119,7 +119,7 @@ class UserController extends Controller
                 $user->roles()->attach($studentRole);
             }
     
-            return redirect()->route($data['role'] === 'lecturer' ? 'lecturers.index' : 'students.index')
+            return redirect()->route($data['role'] === 'lecturer' ? 'admin.lecturers.index' : 'admin.students.index')
                              ->with('success', 'Tạo user thành công!');
     
         } catch (\Throwable $th) {
@@ -180,7 +180,7 @@ class UserController extends Controller
                 $user->roles()->syncWithoutDetaching(Role::where('name', 'student')->first());
             }
 
-            return redirect()->route($data['role'] === 'lecturer' ? 'lecturers.index' : 'students.index')
+            return redirect()->route($data['role'] === 'lecturer' ? 'admin.lecturers.index' : 'admin.students.index')
                              ->with('success', 'Cập nhật user thành công!');
 
         } catch (\Throwable $th) {

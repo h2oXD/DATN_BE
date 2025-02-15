@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <div class="card">
+    <div class="card m-3 ">
         <div class="card-header d-flex justify-content-between align-content-center">
             <h2 class="m-0">Lịch sử phiếu giảm giá đã dùng</h2>
         </div>
@@ -87,7 +87,7 @@
                                         </a>
                                         <span class="dropdown-menu">
                                             <span class="dropdown-header">Hành động</span>
-                                            <a href="{{ route('voucher-use.show', $item->id) }}" class="dropdown-item">
+                                            <a href="{{ route('admin.voucher-use.show', $item->id) }}" class="dropdown-item">
                                                 <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                                     class="size-6">
@@ -97,7 +97,7 @@
                                                         d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                                 </svg>Xem chi tiết
                                             </a>
-                                            <form action="{{ route('voucher-use.destroy', $item->id) }}" method="POST"
+                                            <form action="{{ route('admin.voucher-use.destroy', $item->id) }}" method="POST"
                                                 style="display:inline-block;" id="delete-voucher-{{ $item->id }}">
                                                 @csrf
                                                 @method('DELETE')

@@ -6,11 +6,11 @@
 
 @section('content')
 
-    <div class="card">
+    <div class="card m-3">
         <div class="card-header d-flex justify-content-between align-content-center">
             <h2 class="m-0">Danh sách phiếu giảm giá</h2>
 
-            <a href="{{ route('vouchers.create') }}" class="btn btn-primary">Thêm mới phiếu giảm giá</a>
+            <a href="{{ route('admin.vouchers.create') }}" class="btn btn-primary">Thêm mới phiếu giảm giá</a>
         </div>
         <div class="card-body p-0">
             @if (session()->has('success') && !session()->get('success'))
@@ -94,7 +94,7 @@
                                         </a>
                                         <span class="dropdown-menu">
                                             <span class="dropdown-header">Hành động</span>
-                                            <a href="{{ route('vouchers.show', $vouchers->id) }}" class="dropdown-item">
+                                            <a href="{{ route('admin.vouchers.show', $vouchers->id) }}" class="dropdown-item">
                                                 <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                                     class="size-6">
@@ -104,7 +104,7 @@
                                                         d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                                 </svg>Xem
                                             </a>
-                                            <a class="dropdown-item" href="{{ route('vouchers.edit', $vouchers->id) }}">
+                                            <a class="dropdown-item" href="{{ route('admin.vouchers.edit', $vouchers->id) }}">
                                                 <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                                     class="size-6">
@@ -113,7 +113,7 @@
                                                 </svg>
                                                 Sửa
                                             </a>
-                                            <form action="{{ route('vouchers.destroy', $vouchers->id) }}" method="POST"
+                                            <form action="{{ route('admin.vouchers.destroy', $vouchers->id) }}" method="POST"
                                                 style="display:inline-block;" id="delete-voucher-{{ $vouchers->id }}">
                                                 @csrf
                                                 @method('DELETE')

@@ -17,7 +17,7 @@ class TagController extends AdminBaseController
         // Ví dụ: 
         $this->model = Tag::class;
         $this->viewPath = 'admins.tags.';
-        $this->routePath = 'tags.index';
+        $this->routePath = 'admin.tags.index';
         // $this->uploadPath = 'images/products'; 
     }
     protected function storeValidate()
@@ -48,24 +48,17 @@ class TagController extends AdminBaseController
         return [];
     }
 
-    public function delete($id)
-    {
-        $tag = Tag::findOrFail($id);
-        $tag->delete();
-        return response()->json(['message' => 'Tag đã được đưa vào thùng rác.']);
-    }
-
     public function forceDelete($id)
     {
         $tag = Tag::onlyTrashed()->with('courses')->findOrFail($id);
 
         // Kiểm tra nếu tag có khóa học liên quan
         if ($tag->courses->count() > 0) {
-            return redirect()->route('tags.trash')->with('error', 'Không thể xóa! Vui lòng xóa các khóa học chứa tag này trước.');
+            return redirect()->route('admin.tags.trash')->with('error', 'Không thể xóa! Vui lòng xóa các khóa học chứa tag này trước.');
         }
 
         $tag->forceDelete();
-        return redirect()->route('tags.trash')->with('success', 'Tag đã bị xóa vĩnh viễn.');
+        return redirect()->route('admin.tags.trash')->with('success', 'Tag đã bị xóa vĩnh viễn.');
     }
 
     public function trash()
@@ -81,21 +74,6 @@ class TagController extends AdminBaseController
         $tag = Tag::onlyTrashed()->findOrFail($id);
         $tag->restore();
 
-        return redirect()->route('tags.index')->with('success', 'Tag đã được khôi phục thành công!');
-    }
-
-    public function checkTagUsage($id)
-    {
-        $tag = Tag::with('courses')->onlyTrashed()->findOrFail($id);
-
-        if ($tag->courses->count() > 0) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Tag này đang được sử dụng trong các khóa học!',
-                'courses' => $tag->courses->pluck('name')
-            ]);
-        }
-
-        return response()->json(['status' => 'success']);
+        return redirect()->route('admin.tags.index')->with('success', 'Tag đã được khôi phục thành công!');
     }
 }

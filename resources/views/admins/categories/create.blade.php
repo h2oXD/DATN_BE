@@ -1,24 +1,10 @@
 @extends('layouts.master')
 
 @section('content')
-    <div class="container">
-        <div class="card">
+    <div class="container mt-3">
+        <div class="card bg-white shadow">
             <div class="card-header">
                 <h2>Thêm danh mục</h2>
-
-                {{-- <div class="card-body">
-                    @if (session()->has('success') && !session()->get('success'))
-                        <div class="alert alert-danger">
-                            {{ session()->get('error') }}
-                        </div>
-                    @endif
-        
-                    @if (session()->has('success') && session()->get('success'))
-                        <div class="alert alert-info">
-                            Thao tác thành công!
-                        </div>
-                    @endif --}}
-
             </div>
             <div class="card-body">
                 <form action="{{ route('admin.categories.store') }}" method="POST">
@@ -47,6 +33,7 @@
                     <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">Quay lại</a>
                 </form>
             </div>
+        </div>
         </div>
 
     </div>
