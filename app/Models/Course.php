@@ -29,7 +29,7 @@ class Course extends Model
         'language',
         'level',
         'primary_content',
-        
+
         'created_at',
         'updated_at',
         'submited_at',
@@ -45,7 +45,6 @@ class Course extends Model
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
-
     }
     public function sections()
     {
@@ -74,5 +73,9 @@ class Course extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class, 'course_tag', 'course_id', 'tag_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

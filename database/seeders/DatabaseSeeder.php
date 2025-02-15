@@ -6,11 +6,9 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Course;
-use App\Models\Lecturer;
 use App\Models\Lesson;
 use App\Models\Role;
 use App\Models\Section;
-use App\Models\Student;
 use App\Models\Tag;
 use App\Models\User;
 use App\Models\UserRole;
@@ -102,9 +100,9 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '0888777666',
             'profile_picture' => '/profile_pictures/RkukY0gX1gZ7vlcCNkqVTaA5SejQFlAVm1BGStq3.jpg',
         ]);
-        
+
         $lecturer->wallet()->create(['balance' => 0]);
-        
+
         $roles = Role::whereIn('name', ['student', 'lecturer'])->pluck('id');
         $lecturer->roles()->attach($roles);
 

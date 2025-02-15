@@ -31,9 +31,9 @@
                                         width="100px" alt="">
                                 </td>
                                 <td class="border-end">{{ $course->title }}</td>
-                                <td class="border-end">Lập trình Website</td>
-                                <td class="border-end">Tôn Nghệ Không</td>
-                                <td class="border-end">{{ $course->price }} {{ $course->price_sale }}</td>
+                                <td class="border-end">{{ $course->category->name}}</td>
+                                <td class="border-end">{{ $course->user->name}}</td>
+                                <td class="border-end">{{ $course->price }} </td>
                                 <td class="border-end">{{ $course->submited_at }}</td>
                                 <td class="border-end">
                                     @if ($course->status == 'pending')
