@@ -42,7 +42,7 @@ class AuthController extends Controller
         // Tạo session khi đăng nhập thành công
         $request->session()->regenerate();
 
-        return view('admins.dashboards.dash-board');
+        return redirect()->route('admin.home');
     }
 
     // Đăng xuất

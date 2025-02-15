@@ -87,6 +87,10 @@ class AuthController extends Controller
 
         $role = $user->roles;
 
+        if ($user->hasRole('admin')) {
+            return response()->json(['message' => 'Thông tin đăng nhập không chính xác'], Response::HTTP_UNAUTHORIZED);
+        }
+
         $token = $user->createToken(__CLASS__)->plainTextToken;
 
         return response()->json([
