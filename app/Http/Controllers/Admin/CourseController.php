@@ -22,7 +22,7 @@ class CourseController extends Controller
 
         $categories = Category::all();
 
-        $courses = Course::with('category', 'tags')->where('status','published')
+        $courses = Course::with('category', 'tags')->where('status', 'published')
             ->when($search, function ($query, $search) {
                 return $query->where('title', 'like', "%$search%")
                     ->orWhere('description', 'like', "%$search%");
@@ -140,7 +140,12 @@ class CourseController extends Controller
             'sections.lessons.quizzes'
         ])->find($course_id);
 
-        // dd($course->toArray());
-        return view(self::PATH_VIEW . 'check-course', compact('course'));
+
+        $totalLessons = $course->sections->flatMap(function ($section) {
+            return $section->lessons;
+        })->count();
+
+        // dd($totalLessons);
+        return view(self::PATH_VIEW . 'check-course', compact('course','totalLessons'));
     }
 }

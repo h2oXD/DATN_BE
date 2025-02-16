@@ -13,8 +13,11 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Symfony\Component\HttpFoundation\Response;
 
+
 class AuthController extends Controller
 {
+
+
     public function getUser(Request $request)
     {
         $user = $request->user();
@@ -58,7 +61,6 @@ class AuthController extends Controller
                 'role' => $role,
                 'token' => $token
             ], Response::HTTP_OK);
-
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json([
@@ -98,7 +100,6 @@ class AuthController extends Controller
             'token' => $token,
             'role' => $role
         ], Response::HTTP_OK);
-
     }
 
     public function logout(Request $request)
