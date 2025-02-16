@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\SectionController;
 use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\VideoController;
+use App\Http\Controllers\Api\V1\VNPayAPIController;
 use App\Http\Controllers\Api\V1\WalletController;
 use App\Http\Controllers\Api\V1\WishListController;
 use Illuminate\Http\Request;
@@ -36,6 +37,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //wallet in user
     Route::get('/user/wallet', [WalletController::class, 'show']);
     Route::put('/user/wallet/{wallet_id}', [WalletController::class, 'update']);
+
+    // Payment
+    Route::post('/user/create-payment', [VNPayAPIController::class, 'createPayment']);
+    Route::get('/user/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
