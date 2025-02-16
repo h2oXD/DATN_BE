@@ -14,7 +14,8 @@
                 <div class="alert alert-info">Thao tác thành công!</div>
             @endif
 
-            <form class="row" method="POST" action="{{ route('admin.users.update', $user->id) }}" enctype="multipart/form-data">
+            <form class="row" method="POST" action="{{ route('admin.users.update', $user->id) }}"
+                enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -45,15 +46,15 @@
                     @enderror
                 </div>
 
-                <div class="mb-3 col-6">
-                    <label for="role" class="form-label">Vai trò</label>
-                    <select name="role" class="form-control">
-                        <option value="lecturer" {{ $user->roles->first()->name === 'lecturer' ? 'selected' : '' }}>
-                            Giảng viên</option>
-                        <option value="student" {{ $user->roles->first()->name === 'student' ? 'selected' : '' }}>
-                            Học viên</option>
-                    </select>
-                </div>
+                @if ($user->roles->count() === 1 && $user->roles->first()->name === 'student')
+                    <div class="mb-3 col-6">
+                        <label for="role" class="form-label">Vai trò</label>
+                        <select name="role" class="form-control">
+                            <option value="student" selected>Học viên</option>
+                            <option value="lecturer">Giảng viên</option>
+                        </select>
+                    </div>
+                @endif
 
                 <div class="mb-3 col-6">
                     <label for="password" class="form-label">Mật khẩu</label>
@@ -65,7 +66,7 @@
                     <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" />
                 </div>
 
-                <div class="mb-3 col-6">
+                <div class="mb-3 col-7 ">
                     <label for="profile_picture" class="form-label">Ảnh đại diện</label>
                     <div class="d-flex align-items-center gap-3">
                         <img src="{{ Storage::url($user->profile_picture) }}" class="rounded-circle" width="80"
@@ -74,7 +75,8 @@
                     </div>
                 </div>
                 <div class="text-end">
-                    <a href="{{ route($user->roles->contains('name', 'lecturer') ? 'admin.lecturers.index' : 'admin.students.index') }}" class="btn btn-secondary">Quay lại</a>
+                    <a href="{{ route($user->roles->contains('name', 'lecturer') ? 'admin.lecturers.index' : 'admin.students.index') }}"
+                        class="btn btn-secondary">Quay lại</a>
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                 </div>
             </form>
