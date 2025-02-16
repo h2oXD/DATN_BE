@@ -126,11 +126,6 @@ class CourseController extends Controller
     }
     public function checkCourse($course_id)
     {
-        // Lấy danh sách tất cả khóa học chờ duyệt
-        $courses = Course::with(['user', 'category'])
-            ->where('status', 'pending')
-            ->get();
-
         // lấy thông tin khóa học cụ thể theo ID 
         $course = Course::with([
             'user',
