@@ -57,8 +57,7 @@
                                         <img src="{{ Storage::url($course->thumbnail) }}" alt=""
                                             class="avatar-lg rounded">
                                     @else
-                                        <img src="/avatar-1.jpg" alt=""
-                                            class="avatar-lg rounded">
+                                        <img src="/avatar-1.jpg" alt="" class="avatar-lg rounded">
                                     @endif
 
                                     <div class="text-body">
@@ -199,8 +198,36 @@
 
                 <!-- Tab Pending -->
                 <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
-                    <h3 class="m-3">Danh sách bài chờ duyệt</h3>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="m-3">Danh sách các khóa học chờ duyệt</h3>
+                        </div>
+                        <div class="card-body">
+                            @if ($courses->isEmpty())
+                                <p class="m-3 text-muted">Không có bài nào đang chờ duyệt</p>
+                            @else
+                                <ul class="list-group m-3">
+                                    @foreach ($courses as $item)
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <img src="{{ $item->thumbnail ? asset('storage/' . $item->thumbnail) : asset('default-thumbnail.jpg') }}"
+                                                alt="Thumbnail" class="me-3"
+                                                style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
+                                            <div>
+                                                <h5 class="mb-1">{{ $item->title }}</h5>
+                                                <small class="text-muted">
+                                                    Giảng viên: {{ optional($item->user)->name ?? 'Chưa có' }} |
+                                                    Danh mục: {{ optional($item->category)->name ?? 'Chưa có' }}
+                                                </small>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Tab kiểm tra  -->
                 <div class="tab-pane fade" id="kiemtra" role="tabpanel" aria-labelledby="kiemtra-tab">
                     <h3 class="m-3">Kiem tra</h3>
                 </div>
