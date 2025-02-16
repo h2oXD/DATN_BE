@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\V1\WalletController;
 use App\Http\Controllers\Api\V1\WishListController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use L5Swagger\Http\Controllers\SwaggerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,3 +78,5 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id']);
+
+Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.default.api');

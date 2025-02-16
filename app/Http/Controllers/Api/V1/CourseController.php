@@ -10,10 +10,53 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CourseController extends Controller
 {
+    /**
+     * @OA\Get(
+     *      path="/api/lecturer/courses",
+     *      tags={"Lecturer - Courses"},
+     *      summary="Lấy danh sách khóa học của giảng viên",
+     *      description="API trả về danh sách các khóa học do giảng viên tạo, có phân trang (8 khóa học mỗi trang).",
+     *      security={{"sanctum":{}}},
+     *      @OA\Response(
+     *          response=200,
+     *          description="Lấy danh sách khóa học thành công",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Lấy dữ liệu thành công"),
+     *              @OA\Property(property="courses", type="object",
+     *                  @OA\Property(property="current_page", type="integer", example=1),
+     *                  @OA\Property(property="data", type="array",
+     *                      @OA\Items(
+     *                          @OA\Property(property="id", type="integer", example=1),
+     *                          @OA\Property(property="title", type="string", example="Lập trình Laravel"),
+     *                          @OA\Property(property="category", type="object",
+     *                              @OA\Property(property="id", type="integer", example=2),
+     *                              @OA\Property(property="name", type="string", example="Web Development")
+     *                          ),
+     *                          @OA\Property(property="created_at", type="string", format="date-time", example="2025-02-16T14:55:30Z")
+     *                      )
+     *                  ),
+     *                  @OA\Property(property="total", type="integer", example=20),
+     *                  @OA\Property(property="last_page", type="integer", example=3)
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthorized - Chưa đăng nhập hoặc token không hợp lệ",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=500,
+     *          description="Lỗi hệ thống"
+     *      )
+     * )
+     */
     public function index()
     {
         try {
-            $courses = request()->user()->courses()->paginate(5);
+            $courses = request()->user()->courses()->with('category')->paginate(8);
 
             if (!$courses) {
                 return response()->json([
