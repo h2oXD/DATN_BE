@@ -165,7 +165,7 @@ class DatabaseSeeder extends Seeder
         $courseID = Course::create([
             'user_id' => 3,
             'category_id' => 3,
-            'price' => 109000,
+            'price_regular' => 109000,
             'price_sale' => 99000,
             'title' => 'Khoá học Laravel',
             'status' => 'pending',

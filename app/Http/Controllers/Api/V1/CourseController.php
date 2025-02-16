@@ -13,7 +13,7 @@ class CourseController extends Controller
     public function index()
     {
         try {
-            $courses = request()->user()->courses()->paginate(5);
+            $courses = request()->user()->courses()->with('category')->paginate(8);
 
             if (!$courses) {
                 return response()->json([
