@@ -7,6 +7,9 @@
                 <h2>Thêm danh mục</h2>
             </div>
             <div class="card-body">
+                @if (session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                @endif
                 <form action="{{ route('admin.categories.store') }}" method="POST">
                     @csrf
                     <div class="mb-3">
@@ -34,7 +37,7 @@
                 </form>
             </div>
         </div>
-        </div>
+    </div>
 
     </div>
 @endsection

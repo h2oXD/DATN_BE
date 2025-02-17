@@ -13,6 +13,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Symfony\Component\HttpFoundation\Response;
 
+
 /**
  * @OA\Info(
  *      title="API Documentation",
@@ -27,6 +28,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class AuthController extends Controller
 {
+
+
     public function getUser(Request $request)
     {
         $user = $request->user();
@@ -179,7 +182,6 @@ class AuthController extends Controller
             'token' => $token,
             'role' => $role
         ], Response::HTTP_OK);
-
     }
 
     public function logout(Request $request)

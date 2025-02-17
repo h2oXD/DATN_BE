@@ -6,6 +6,7 @@
         "version": "1.0.0"
     },
     "servers": [
+        },
         {
             "url": "http://my-default-host.com",
             "description": "API Server"
@@ -278,6 +279,7 @@
                     }
                 ]
             }
+
         },
         "/api/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents": {
             "get": {
@@ -1081,17 +1083,1731 @@
             "name": "Authentication",
             "description": "Authentication"
         },
+
+        },
+        "/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos": {
+            "get": {
+                "tags": [
+                    "Videos"
+                ],
+                "summary": "Lấy danh sách video của bài học",
+                "description": "API này trả về danh sách video thuộc về bài học cụ thể",
+                "operationId": "ac8fd02bf39034af2ddc2615b77eb3fa",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "section_id",
+                        "in": "path",
+                        "description": "ID của section",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "lesson_id",
+                        "in": "path",
+                        "description": "ID của bài học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Danh sách video",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "lesson_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "video_url": {
+                                                        "type": "string",
+                                                        "example": "storage/videos/sample.mp4"
+                                                    },
+                                                    "duration": {
+                                                        "type": "integer",
+                                                        "example": 120
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2025-02-16T10:00:00Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2025-02-16T10:30:00Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Chưa đăng nhập hoặc token không hợp lệ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy tài nguyên",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy tài nguyên"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi hệ thống",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Đã xảy ra lỗi trong quá trình xử lý"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos": {
+            "post": {
+                "tags": [
+                    "Videos"
+                ],
+                "summary": "Thêm video mới vào bài học",
+                "description": "Tải lên và lưu trữ video cho một bài học cụ thể",
+                "operationId": "storeVideo",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "section_id",
+                        "in": "path",
+                        "description": "ID của phần trong khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "lesson_id",
+                        "in": "path",
+                        "description": "ID của bài học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "video_url"
+                                ],
+                                "properties": {
+                                    "video_url": {
+                                        "description": "File video (định dạng mp4, mov, avi)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tạo mới video thành công",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "video": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "lesson_id": {
+                                                    "type": "integer"
+                                                },
+                                                "video_url": {
+                                                    "description": "Đường dẫn video",
+                                                    "type": "string"
+                                                },
+                                                "duration": {
+                                                    "description": "Thời lượng video",
+                                                    "type": "integer"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tạo mới video thành công"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Không thể lấy thời lượng video",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không thể lấy thời lượng video"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy tài nguyên",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy tài nguyên"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Dữ liệu không hợp lệ hoặc thời lượng video không đủ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dữ liệu không hợp lệ"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "video_url": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The video_url field is required."
+                                                    }
+                                                },
+                                                "duration": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "Thời lượng video phải lớn hơn 1 phút."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Chưa đăng nhập hoặc token không hợp lệ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi hệ thống",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi hệ thống"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Chi tiết lỗi"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}": {
+            "get": {
+                "tags": [
+                    "Videos"
+                ],
+                "summary": "Lấy thông tin chi tiết của một video",
+                "description": "API này trả về thông tin chi tiết của một video thuộc về bài học cụ thể",
+                "operationId": "39df77e52876b9a1fede66d23a55168d",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "section_id",
+                        "in": "path",
+                        "description": "ID của section",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "lesson_id",
+                        "in": "path",
+                        "description": "ID của bài học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "video_id",
+                        "in": "path",
+                        "description": "ID của video",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Thông tin chi tiết của video",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "lesson_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "video_url": {
+                                                    "type": "string",
+                                                    "example": "storage/videos/sample.mp4"
+                                                },
+                                                "duration": {
+                                                    "type": "integer",
+                                                    "example": 120
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-02-16T10:00:00Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-02-16T10:30:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Chưa đăng nhập hoặc token không hợp lệ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy tài nguyên",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy tài nguyên"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi hệ thống",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Đã xảy ra lỗi trong quá trình xử lý"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Videos"
+                ],
+                "summary": "Cập nhật video của bài học",
+                "description": "API này cho phép giảng viên cập nhật video cho một bài học",
+                "operationId": "656bdd0d6ca8845e2f0781192d8bf8b1",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "section_id",
+                        "in": "path",
+                        "description": "ID của section",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "lesson_id",
+                        "in": "path",
+                        "description": "ID của bài học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "video_id",
+                        "in": "path",
+                        "description": "ID của video cần cập nhật",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Dữ liệu video cần cập nhật",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "video_url"
+                                ],
+                                "properties": {
+                                    "video_url": {
+                                        "description": "File video (mp4, mov, avi)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Cập nhật video thành công",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "video": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "lesson_id": {
+                                                    "type": "integer"
+                                                },
+                                                "video_url": {
+                                                    "type": "string",
+                                                    "example": "storage/videos/new_video.mp4"
+                                                },
+                                                "duration": {
+                                                    "type": "integer",
+                                                    "example": 180
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-02-16T10:00:00Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-02-16T12:00:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cập nhật video thành công"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Chưa đăng nhập hoặc token không hợp lệ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Không thể lấy thời lượng video",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không thể lấy thời lượng video"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Dữ liệu không hợp lệ hoặc thời lượng video không đủ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dữ liệu không hợp lệ"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "video_url": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "File không đúng định dạng"
+                                                    }
+                                                },
+                                                "duration": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "Thời lượng video phải lớn hơn 1 phút."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy tài nguyên",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy tài nguyên"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi hệ thống",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi hệ thống"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Chi tiết lỗi hệ thống"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Videos"
+                ],
+                "summary": "Xóa video của bài học",
+                "description": "API này cho phép giảng viên xóa một video khỏi bài học",
+                "operationId": "f79604e4039018a48ce02dd519a63bd0",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "section_id",
+                        "in": "path",
+                        "description": "ID của section",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "lesson_id",
+                        "in": "path",
+                        "description": "ID của bài học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "video_id",
+                        "in": "path",
+                        "description": "ID của video cần xóa",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized - Chưa đăng nhập hoặc token không hợp lệ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Xóa video thành công"
+                    },
+                    "404": {
+                        "description": "Không tìm thấy tài nguyên",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy tài nguyên"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi hệ thống",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi hệ thống"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Chi tiết lỗi hệ thống"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        },
+
+        },
+        "/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings": {
+            "get": {
+                "tags": [
+                    "Lessons"
+                ],
+                "summary": "Lấy danh sách codings của bài học",
+                "description": "API này trả về danh sách các codings của một bài học cụ thể thuộc một section và khóa học mà user có quyền truy cập.",
+                "operationId": "0d6f08f6e6282fcc5d9e7afe6fecbe4e",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "section_id",
+                        "in": "path",
+                        "description": "ID của section",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "lesson_id",
+                        "in": "path",
+                        "description": "ID của bài học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Danh sách codings của bài học",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "language": {
+                                                "type": "string",
+                                                "example": "hoc php"
+                                            },
+                                            "problem_title": {
+                                                "type": "string",
+                                                "example": "php buoi 1"
+                                            },
+                                            "starter_code": {
+                                                "type": "string",
+                                                "example": "dhdhdh"
+                                            },
+                                            "solution_code": {
+                                                "type": "string",
+                                                "example": "dhdhdh"
+                                            },
+                                            "test_cases": {
+                                                "type": "array",
+                                                "items": {
+                                                    "properties": {
+                                                        "input": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "integer"
+                                                            },
+                                                            "example": [
+                                                                1,
+                                                                2
+                                                            ]
+                                                        },
+                                                        "output": {
+                                                            "type": "integer",
+                                                            "example": 3
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "lesson_id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2025-02-16T16:44:38.000000Z"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2025-02-16T16:44:38.000000Z"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy tài nguyên",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy tài nguyên"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Lessons"
+                ],
+                "summary": "Tạo mới coding cho bài học",
+                "description": "API này cho phép tạo một coding cho một bài học cụ thể thuộc một section và khóa học mà user có quyền truy cập.",
+                "operationId": "6609277efeb955f1977d214116370c68",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "section_id",
+                        "in": "path",
+                        "description": "ID của section",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "lesson_id",
+                        "in": "path",
+                        "description": "ID của bài học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "language",
+                                    "problem_title",
+                                    "starter_code",
+                                    "solution_code",
+                                    "test_cases"
+                                ],
+                                "properties": {
+                                    "language": {
+                                        "type": "string",
+                                        "example": "Python"
+                                    },
+                                    "problem_title": {
+                                        "type": "string",
+                                        "example": "Tính tổng hai số"
+                                    },
+                                    "problem_description": {
+                                        "type": "string",
+                                        "example": "Viết một function nhận vào hai số và trả về tổng của chúng.",
+                                        "nullable": true
+                                    },
+                                    "starter_code": {
+                                        "type": "string",
+                                        "example": "def sum(a, b):\\n    return 0"
+                                    },
+                                    "solution_code": {
+                                        "type": "string",
+                                        "example": "def sum(a, b):\\n    return a + b"
+                                    },
+                                    "test_cases": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "input": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "integer"
+                                                    },
+                                                    "example": [
+                                                        1,
+                                                        2
+                                                    ]
+                                                },
+                                                "output": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Bài tập lập trình đã được tạo thành công!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bài tập lập trình đã được tạo thành công!"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "language": {
+                                                    "type": "string",
+                                                    "example": "Python"
+                                                },
+                                                "problem_title": {
+                                                    "type": "string",
+                                                    "example": "Tính tổng hai số"
+                                                },
+                                                "problem_description": {
+                                                    "type": "string",
+                                                    "example": "Viết một function nhận vào hai số và trả về tổng của chúng.",
+                                                    "nullable": true
+                                                },
+                                                "starter_code": {
+                                                    "type": "string",
+                                                    "example": "def sum(a, b):\\n    return 0"
+                                                },
+                                                "solution_code": {
+                                                    "type": "string",
+                                                    "example": "def sum(a, b):\\n    return a + b"
+                                                },
+                                                "test_cases": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "input": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "example": [
+                                                                    1,
+                                                                    2
+                                                                ]
+                                                            },
+                                                            "output": {
+                                                                "type": "integer",
+                                                                "example": 3
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "lesson_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-02-16T16:44:38.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-02-16T16:44:38.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Dữ liệu không hợp lệ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dữ liệu không hợp lệ"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "language": [
+                                                    "Trường này là bắt buộc."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi khi tạo bài tập lập trình!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi khi tạo bài tập lập trình!"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Lỗi database..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings/{coding_id}": {
+            "get": {
+                "tags": [
+                    "Lessons"
+                ],
+                "summary": "Lấy chi tiết một bài tập lập trình",
+                "description": "API này trả về thông tin chi tiết của một coding thuộc một bài học cụ thể.",
+                "operationId": "87f6f38da0bd423da0d4f1e0cc38f3ca",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "section_id",
+                        "in": "path",
+                        "description": "ID của section",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "lesson_id",
+                        "in": "path",
+                        "description": "ID của bài học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "coding_id",
+                        "in": "path",
+                        "description": "ID của bài tập lập trình",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chi tiết bài tập lập trình",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "language": {
+                                            "type": "string",
+                                            "example": "Python"
+                                        },
+                                        "problem_title": {
+                                            "type": "string",
+                                            "example": "Tính tổng hai số"
+                                        },
+                                        "problem_description": {
+                                            "type": "string",
+                                            "example": "Viết một function nhận vào hai số và trả về tổng của chúng.",
+                                            "nullable": true
+                                        },
+                                        "starter_code": {
+                                            "type": "string",
+                                            "example": "def sum(a, b):\\n    return 0"
+                                        },
+                                        "solution_code": {
+                                            "type": "string",
+                                            "example": "def sum(a, b):\\n    return a + b"
+                                        },
+                                        "test_cases": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "input": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "integer"
+                                                        },
+                                                        "example": [
+                                                            1,
+                                                            2
+                                                        ]
+                                                    },
+                                                    "output": {
+                                                        "type": "integer",
+                                                        "example": 3
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "lesson_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-02-16T16:44:38.000000Z"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-02-16T16:44:38.000000Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy tài nguyên",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy tài nguyên"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Lessons"
+                ],
+                "summary": "Cập nhật coding của bài học",
+                "description": "API này cho phép cập nhật một coding của bài học thuộc một section và khóa học mà user có quyền truy cập.",
+                "operationId": "135ffe3699941148514eab00a54e2929",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "section_id",
+                        "in": "path",
+                        "description": "ID của section",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "lesson_id",
+                        "in": "path",
+                        "description": "ID của bài học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "coding_id",
+                        "in": "path",
+                        "description": "ID của coding cần cập nhật",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "language",
+                                    "problem_title",
+                                    "starter_code",
+                                    "solution_code",
+                                    "test_cases"
+                                ],
+                                "properties": {
+                                    "language": {
+                                        "type": "string",
+                                        "example": "Python"
+                                    },
+                                    "problem_title": {
+                                        "type": "string",
+                                        "example": "Tính tổng hai số"
+                                    },
+                                    "problem_description": {
+                                        "type": "string",
+                                        "example": "Viết một function nhận vào hai số và trả về tổng của chúng.",
+                                        "nullable": true
+                                    },
+                                    "starter_code": {
+                                        "type": "string",
+                                        "example": "def sum(a, b):\\n    return 0"
+                                    },
+                                    "solution_code": {
+                                        "type": "string",
+                                        "example": "def sum(a, b):\\n    return a + b"
+                                    },
+                                    "test_cases": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "input": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "integer"
+                                                    },
+                                                    "example": [
+                                                        1,
+                                                        2
+                                                    ]
+                                                },
+                                                "output": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Bài tập lập trình đã được cập nhật thành công!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bài tập lập trình đã được cập nhật thành công!"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "language": {
+                                                    "type": "string",
+                                                    "example": "Python"
+                                                },
+                                                "problem_title": {
+                                                    "type": "string",
+                                                    "example": "Tính tổng hai số"
+                                                },
+                                                "problem_description": {
+                                                    "type": "string",
+                                                    "example": "Viết một function nhận vào hai số và trả về tổng của chúng.",
+                                                    "nullable": true
+                                                },
+                                                "starter_code": {
+                                                    "type": "string",
+                                                    "example": "def sum(a, b):\\n    return 0"
+                                                },
+                                                "solution_code": {
+                                                    "type": "string",
+                                                    "example": "def sum(a, b):\\n    return a + b"
+                                                },
+                                                "test_cases": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "input": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "example": [
+                                                                    1,
+                                                                    2
+                                                                ]
+                                                            },
+                                                            "output": {
+                                                                "type": "integer",
+                                                                "example": 3
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "lesson_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-02-16T16:44:38.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-02-16T16:44:38.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy tài nguyên",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy tài nguyên"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Dữ liệu không hợp lệ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dữ liệu không hợp lệ"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "language": [
+                                                    "Trường này là bắt buộc."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi khi cập nhật bài tập lập trình!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi khi cập nhật bài tập lập trình!"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Lỗi database..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Lessons"
+                ],
+                "summary": "Xóa coding của bài học",
+                "description": "API này cho phép xóa một coding của bài học thuộc một section và khóa học mà user có quyền truy cập.",
+                "operationId": "fb81bc80be3169de6bbf95ae895e6fb4",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "section_id",
+                        "in": "path",
+                        "description": "ID của section",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "lesson_id",
+                        "in": "path",
+                        "description": "ID của bài học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "coding_id",
+                        "in": "path",
+                        "description": "ID của coding cần xóa",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Bài tập lập trình đã được xóa thành công!"
+                    },
+                    "404": {
+                        "description": "Không tìm thấy tài nguyên",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy tài nguyên"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi khi xóa bài tập lập trình!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi khi xóa bài tập lập trình!"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Lỗi database..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        },
+
+
         {
             "name": "Lecturer - Courses",
             "description": "Lecturer - Courses"
         },
         {
+
             "name": "Document",
             "description": "Document"
         },
         {
             "name": "Thanh toán",
             "description": "Thanh toán"
+
+
+            "name": "Videos",
+            "description": "Videos"
+        },
+        {
+            "name": "Lessons",
+            "description": "Lessons"
+
         }
     ]
 }
