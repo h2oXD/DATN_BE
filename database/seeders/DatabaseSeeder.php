@@ -259,5 +259,21 @@ class DatabaseSeeder extends Seeder
             'course_id'     => $courseID->id,
             'time_used'     => Carbon::now(),
         ]);
+
+
+        $reviews = [
+            [
+            	'user_id'      =>   $lecturer->id,
+                'course_id'    =>   $courseID->id,
+                'rating'       =>   5,
+                'review_text'  =>   'Good job'
+            ],
+            [
+                'user_id'      =>   $lecturer->id,
+                'course_id'    =>   $courseID->id,
+                'rating'       =>   2,
+                'review_text'  =>   'Very bad'
+            ]
+        ];
     }
 }
