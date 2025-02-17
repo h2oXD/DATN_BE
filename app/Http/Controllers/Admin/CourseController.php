@@ -22,7 +22,7 @@ class CourseController extends Controller
 
         $categories = Category::all();
 
-        $courses = Course::with('category', 'tags')->where('status','published')
+        $courses = Course::with('category', 'tags')->where('status', 'published')
             ->when($search, function ($query, $search) {
                 return $query->where('title', 'like', "%$search%")
                     ->orWhere('description', 'like', "%$search%");
@@ -126,6 +126,7 @@ class CourseController extends Controller
     }
     public function checkCourse($course_id)
     {
+        // lấy thông tin khóa học cụ thể theo ID 
         $course = Course::with([
             'user',
             'sections' => function ($query) {
@@ -141,6 +142,6 @@ class CourseController extends Controller
         ])->find($course_id);
 
         // dd($course->toArray());
-        return view(self::PATH_VIEW . 'check-course', compact('course'));
+        return view(self::PATH_VIEW . 'check-course', compact('course', 'courses'));
     }
 }
