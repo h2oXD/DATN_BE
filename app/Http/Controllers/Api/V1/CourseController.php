@@ -12,7 +12,7 @@ class CourseController extends Controller
 {
     /**
      * @OA\Get(
-     *      path="/api/lecturer/courses",
+     *      path="api/lecturer/courses",
      *      tags={"Lecturer - Courses"},
      *      summary="Lấy danh sách khóa học của giảng viên",
      *      description="API trả về danh sách các khóa học do giảng viên tạo, có phân trang (8 khóa học mỗi trang).",
@@ -74,19 +74,68 @@ class CourseController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * @OA\Post(
+     *     path="api/lecturer/courses",
+     *     summary="Tạo khoá học mới",
+     *     tags={"Lecturer - Courses"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"title", "category_id"},
+     *             @OA\Property(property="title", type="string", example="Lập trình Laravel"),
+     *             @OA\Property(property="category_id", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Tạo khoá học thành công",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="course_id", type="integer", example=10)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Lỗi validation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Dữ liệu không hợp lệ!"),
+     *             @OA\Property(property="errors", type="object",
+     *                 @OA\Property(property="title", type="array",
+     *                     @OA\Items(type="string", example="Tiêu đề không được để trống.")
+     *                 ),
+     *                 @OA\Property(property="category_id", type="array",
+     *                     @OA\Items(type="string", example="Danh mục không hợp lệ.")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Lỗi hệ thống",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Lỗi hệ thống"),
+     *             @OA\Property(property="error", type="string")
+     *         )
+     *     )
+     * )
+     */
+
     public function store(StoreCourseRequest $request)
     {
         try {
             $course = $request->user()->courses()->create([
                 'title' => $request->title,
-                'category_id' => $request->category_id,
+                'category_id' => $request->category_id ?? null,
                 'status' => 'draft',
                 'admin_commission_rate' => 30,
             ]);
 
             return response()->json([
                 'course_id' => $course->id,
-            ], Response::HTTP_OK);
+            ], Response::HTTP_CREATED);
 
         } catch (\Throwable $th) {
             return response()->json([
@@ -94,6 +143,117 @@ class CourseController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * @OA\Get(
+     *     path="api/lecturer/courses/{course_id}",
+     *     summary="Lấy thông tin chi tiết khoá học",
+     *     tags={"Lecturer - Courses"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="course_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của khoá học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Thông tin chi tiết khoá học",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer"),
+     *                 @OA\Property(property="user_id", type="integer"),
+     *                 @OA\Property(property="category_id", type="integer", nullable=true),
+     *                 @OA\Property(property="price_regular", type="integer", nullable=true),
+     *                 @OA\Property(property="price_sale", type="integer", nullable=true),
+     *                 @OA\Property(property="title", type="string"),
+     *                 @OA\Property(property="thumbnail", type="string", nullable=true),
+     *                 @OA\Property(property="video_preview", type="string", nullable=true),
+     *                 @OA\Property(property="description", type="string", nullable=true),
+     *                 @OA\Property(property="primary_content", type="string", nullable=true),
+     *                 @OA\Property(property="status", type="string", enum={"draft", "pending", "published"}),
+     *                 @OA\Property(property="is_show_home", type="boolean", nullable=true),
+     *                 @OA\Property(property="target_students", type="string", nullable=true),
+     *                 @OA\Property(property="learning_outcomes", type="array", @OA\Items(type="string"), nullable=true),
+     *                 @OA\Property(property="prerequisites", type="string", nullable=true),
+     *                 @OA\Property(property="who_is_this_for", type="string", nullable=true),
+     *                 @OA\Property(property="language", type="string", nullable=true),
+     *                 @OA\Property(property="level", type="string", nullable=true),
+     *                 @OA\Property(property="admin_commission_rate", type="number", format="float", nullable=true),
+     *                 @OA\Property(property="submited_at", type="string", format="date-time", nullable=true),
+     *                 @OA\Property(property="censored_at", type="string", format="date-time", nullable=true),
+     *                 @OA\Property(property="admin_comment", type="string", nullable=true),
+     *                 @OA\Property(property="category", type="object", nullable=true,
+     *                     @OA\Property(property="id", type="integer"),
+     *                     @OA\Property(property="name", type="string"),
+     *                     @OA\Property(property="slug", type="string", nullable=true),
+     *                     @OA\Property(property="image", type="string", nullable=true),
+     *                     @OA\Property(property="parent_id", type="integer", nullable=true)
+     *                 ),
+     *                 @OA\Property(property="sections", type="array", @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer"),
+     *                     @OA\Property(property="title", type="string"),
+     *                     @OA\Property(property="description", type="string", nullable=true),
+     *                     @OA\Property(property="order", type="integer"),
+     *                     @OA\Property(property="lessons", type="array", @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer"),
+     *                         @OA\Property(property="title", type="string"),
+     *                         @OA\Property(property="description", type="string", nullable=true),
+     *                         @OA\Property(property="order", type="integer"),
+     *                         @OA\Property(property="documents", type="array", @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="id", type="integer"),
+     *                             @OA\Property(property="document_url", type="string"),
+     *                             @OA\Property(property="file_type", type="string", enum={"pdf","doc","docx"})
+     *                         )),
+     *                         @OA\Property(property="videos", type="array", @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="id", type="integer"),
+     *                             @OA\Property(property="video_url", type="string"),
+     *                             @OA\Property(property="duration", type="integer", nullable=true)
+     *                         )),
+     *                         @OA\Property(property="codings", type="array", @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="id", type="integer"),
+     *                             @OA\Property(property="language", type="string"),
+     *                             @OA\Property(property="problem_title", type="string"),
+     *                             @OA\Property(property="problem_description", type="string", nullable=true),
+     *                             @OA\Property(property="starter_code", type="string"),
+     *                             @OA\Property(property="solution_code", type="string"),
+     *                             @OA\Property(property="test_cases", type="array", @OA\Items(type="string"))
+     *                         )),
+     *                         @OA\Property(property="quizzes", type="array", @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="id", type="integer"),
+     *                             @OA\Property(property="title", type="string"),
+     *                             @OA\Property(property="description", type="string", nullable=true)
+     *                         ))
+     *                     ))
+     *                 ))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Không tìm thấy khoá học",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy khoá học")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Lỗi server",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Lỗi server nội bộ")
+     *         )
+     *     )
+     * )
+     */
+
     public function show($course_id)
     {
         try {
@@ -107,7 +267,8 @@ class CourseController extends Controller
                 'sections.lessons.documents',
                 'sections.lessons.videos',
                 'sections.lessons.codings',
-                'sections.lessons.quizzes'
+                'sections.lessons.quizzes',
+                'category'
             ])->find($course_id);
 
             if (!$course) {
@@ -117,7 +278,7 @@ class CourseController extends Controller
             }
 
             return response()->json([
-                'course' => $course,
+                'data' => $course,
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([
@@ -125,6 +286,114 @@ class CourseController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * @OA\Put(
+     *     path="api/lecturer/courses/{course_id}",
+     *     summary="Cập nhật khoá học",
+     *     tags={"Lecturer - Courses"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="course_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của khoá học cần cập nhật",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"category_id", "title"},
+     *                 @OA\Property(property="category_id", type="integer", description="ID danh mục khóa học"),
+     *                 @OA\Property(property="title", type="string", maxLength=255, description="Tiêu đề khóa học"),
+     *                 @OA\Property(property="description", type="string", nullable=true, description="Mô tả khóa học"),
+     *                 @OA\Property(property="price", type="integer", minimum=0, nullable=true, description="Giá khóa học"),
+     *                 @OA\Property(property="price_sale", type="integer", minimum=0, nullable=true, description="Giá khuyến mãi (phải nhỏ hơn hoặc bằng giá gốc)"),
+     *                 @OA\Property(property="target_students", type="string", nullable=true, description="Đối tượng học viên"),
+     *                 @OA\Property(property="learning_outcomes", type="string", format="json", nullable=true, description="Kết quả học tập (JSON hợp lệ)"),
+     *                 @OA\Property(property="prerequisites", type="string", nullable=true, description="Điều kiện tiên quyết"),
+     *                 @OA\Property(property="who_is_this_for", type="string", nullable=true, description="Dành cho ai"),
+     *                 @OA\Property(property="admin_commission_rate", type="number", minimum=0, maximum=100, nullable=true, description="Tỷ lệ hoa hồng của admin"),
+     *                 @OA\Property(property="thumbnail", type="string", format="binary", nullable=true, description="Ảnh đại diện (jpeg, png, jpg, gif)"),
+     *                 @OA\Property(property="video_preview", type="string", format="binary", nullable=true, description="Video xem trước (mp4, avi, mpeg, quicktime)"),
+     *                 @OA\Property(property="language", type="string", nullable=true, description="Ngôn ngữ"),
+     *                 @OA\Property(property="level", type="string", nullable=true, description="Trình độ"),
+     *                 @OA\Property(property="primary_content", type="string", nullable=true, description="Nội dung chính"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Cập nhật thành công",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Cập nhật thành công"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer"),
+     *                 @OA\Property(property="user_id", type="integer"),
+     *                 @OA\Property(property="category_id", type="integer"),
+     *                 @OA\Property(property="price_regular", type="integer"),
+     *                 @OA\Property(property="price_sale", type="integer"),
+     *                 @OA\Property(property="title", type="string"),
+     *                 @OA\Property(property="thumbnail", type="string"),
+     *                 @OA\Property(property="video_preview", type="string"),
+     *                 @OA\Property(property="description", type="string"),
+     *                 @OA\Property(property="primary_content", type="string"),
+     *                 @OA\Property(property="status", type="string", enum={"draft", "pending", "published"}),
+     *                 @OA\Property(property="target_students", type="string"),
+     *                 @OA\Property(property="learning_outcomes", type="string", format="json"),
+     *                 @OA\Property(property="prerequisites", type="string"),
+     *                 @OA\Property(property="who_is_this_for", type="string"),
+     *                 @OA\Property(property="language", type="string"),
+     *                 @OA\Property(property="level", type="string"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Không thể cập nhật khoá học này vì không phải bản nháp",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Không thể cập nhật khoá học này vì không phải bản nháp")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Không tìm thấy khoá học",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy khoá học")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Lỗi validation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Lỗi validation."),
+     *             @OA\Property(property="errors", type="object",
+     *                 @OA\Property(property="category_id", type="array", @OA\Items(type="string", example="Danh mục khóa học là bắt buộc.")),
+     *                 @OA\Property(property="title", type="array", @OA\Items(type="string", example="Tiêu đề khóa học là bắt buộc.")),
+     *                 @OA\Property(property="price", type="array", @OA\Items(type="string", example="Giá khóa học phải là số nguyên.")),
+     *                 @OA\Property(property="price_sale", type="array", @OA\Items(type="string", example="Giá khuyến mãi phải nhỏ hơn hoặc bằng giá gốc.")),
+     *                 @OA\Property(property="learning_outcomes", type="array", @OA\Items(type="string", example="Kết quả học tập phải là chuỗi JSON hợp lệ.")),
+     *                 @OA\Property(property="thumbnail", type="array", @OA\Items(type="string", example="Hình ảnh phải là tệp có định dạng jpeg, png, jpg hoặc gif.")),
+     *                 @OA\Property(property="video_preview", type="array", @OA\Items(type="string", example="Video phải có định dạng mp4, avi, mpeg, quicktime."))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Lỗi hệ thống",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Lỗi hệ thống"),
+     *             @OA\Property(property="error", type="string")
+     *         )
+     *     )
+     * )
+     */
+
+
     public function update(UpdateCourseRequest $request, $course_id)
     {
         try {
@@ -157,7 +426,7 @@ class CourseController extends Controller
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 $data['video_preview'] = $file->storeAs('videos/courses', $fileName, 'public');
             }
-
+            
             $course->update($data);
 
             if (
@@ -189,6 +458,49 @@ class CourseController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * @OA\Delete(
+     *     path="api/lecturer/courses/{course_id}",
+     *     summary="Xoá khoá học",
+     *     tags={"Lecturer - Courses"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="course_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của khoá học cần xoá",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Xoá khoá học thành công (Không có nội dung trả về)"
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Không thể xoá khoá học này vì không phải bản nháp",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Không thể xoá khoá học này vì không phải bản nháp")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Không tìm thấy khoá học",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy khoá học")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Lỗi hệ thống",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Lỗi hệ thống"),
+     *             @OA\Property(property="error", type="string")
+     *         )
+     *     )
+     * )
+     */
+
     public function destroy($course_id)
     {
         try {

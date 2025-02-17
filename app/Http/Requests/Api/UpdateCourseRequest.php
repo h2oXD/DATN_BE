@@ -25,11 +25,11 @@ class UpdateCourseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id'               => ['required', Rule::exists('categories', 'id')],
-            'title'                     => ['required', 'string', 'max:255'],
+            'category_id'               => ['nullable', Rule::exists('categories', 'id')],
+            'title'                     => ['nullable', 'string', 'max:255'],
             'description'               => ['nullable', 'string'],
-            'price'                     => ['nullable', 'integer', 'min:0'],
-            'price_sale'                => ['nullable', 'integer', 'min:0', 'lte:price'],
+            'price_regular'             => ['nullable', 'integer', 'min:0'],
+            'price_sale'                => ['nullable', 'integer', 'min:0', 'lte:price_regular'],
             'target_students'           => ['nullable', 'string'],
             'learning_outcomes'         => ['nullable', 'json'],
             'prerequisites'             => ['nullable', 'string'],
@@ -51,8 +51,8 @@ class UpdateCourseRequest extends FormRequest
             'title.string' => 'Tiêu đề khóa học phải là chuỗi.',
             'title.max' => 'Tiêu đề khóa học không được vượt quá 255 ký tự.',
             'description.string' => 'Mô tả khóa học phải là chuỗi.',
-            'price.integer' => 'Giá khóa học phải là số nguyên.',
-            'price.min' => 'Giá khóa học phải lớn hơn hoặc bằng 0.',
+            'price_regular.integer' => 'Giá khóa học phải là số nguyên.',
+            'price_regular.min' => 'Giá khóa học phải lớn hơn hoặc bằng 0.',
             'price_sale.integer' => 'Giá khuyến mãi phải là số nguyên.',
             'price_sale.min' => 'Giá khuyến mãi phải lớn hơn hoặc bằng 0.',
             'price_sale.lte' => 'Giá khuyến mãi phải nhỏ hơn hoặc bằng giá gốc.',

@@ -26,14 +26,13 @@ class StoreCourseRequest extends FormRequest
     {
         return [
             'title' => ['required'],
-            'category_id' => [Rule::exists('categories','id'),'required']
+            'category_id' => [Rule::exists('categories','id'),]
         ];
     }
     public function messages()
     {
         return [
             'title.required' => 'Tiêu đề không được để trống.',
-            'category_id.required' => 'Danh mục không được để trống.',
             'category_id.exists' => 'Danh mục không hợp lệ.',
         ];
     }

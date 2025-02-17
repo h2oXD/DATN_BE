@@ -14,7 +14,7 @@ class Course extends Model
         'category_id',
         'title',
         'description',
-        'price',
+        'price_regular',
         'price_sale',
         'status',
 
@@ -26,6 +26,7 @@ class Course extends Model
         'admin_commission_rate',
         'is_show_home',
         'thumbnail',
+        'video_preview',
         'language',
         'level',
         'primary_content',
