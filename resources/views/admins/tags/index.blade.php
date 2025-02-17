@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-    <div class="card m-3">
+    <div class="card">
         <div class="card-header d-flex justify-content-between align-content-center">
             <div class="d-flex">
                 <h2 class="m-0 mx-2">Danh sách thẻ</h2>
@@ -11,7 +11,7 @@
                 <a href="{{ route('admin.tags.create') }}" class="btn btn-primary">Thêm mới</a>
             </div>
         </div>
-        <div class="card-body">
+        <div class="card-body p-0">
             @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif

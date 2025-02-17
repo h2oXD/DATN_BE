@@ -70,11 +70,12 @@
                                 </td>
                                 <td>
                                     @foreach ($user->roles as $role)
-                                        <span class="badge {{ $role->name == 'lecturer' ? 'bg-warning' : 'bg-success' }}">
-                                            {{ $role->name == 'lecturer' ? 'Giảng viên' : 'Học viên' }}
-                                        </span>
+                                        @if ($role->name == 'student')
+                                            <span class="badge bg-success">Học viên</span>
+                                        @endif
                                     @endforeach
                                 </td>
+                                
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->created_at }}</td>
                                 <td>

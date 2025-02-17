@@ -281,8 +281,17 @@
 
                 <!-- Tab Pending -->
                 <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
-                    <h3 class="m-3">Danh sách bài chờ duyệt</h3>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="m-3">Danh sách các khóa học chờ duyệt</h3>
+                        </div>
+                        <div class="card-body">
+                            
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Tab kiểm tra  -->
                 <div class="tab-pane fade" id="kiemtra" role="tabpanel" aria-labelledby="kiemtra-tab">
                     <h3 class="m-3">Kiem tra</h3>
                 </div>
