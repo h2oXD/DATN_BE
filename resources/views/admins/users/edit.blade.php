@@ -75,10 +75,10 @@
                     </div>
                 </div>
                 <div class="text-end">
-                    <a href="{{ route($user->roles->contains('name', 'lecturer') ? 'admin.lecturers.index' : 'admin.students.index') }}"
-                        class="btn btn-secondary">Quay lại</a>
+                    <a href="{{ url()->previous() }}" class="btn btn-secondary">Quay lại</a>
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                 </div>
+                
             </form>
         </div>
     </div>
