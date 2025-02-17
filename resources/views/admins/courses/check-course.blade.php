@@ -191,7 +191,90 @@
                 <div class="tab-pane fade" id="approved" role="tabpanel" aria-labelledby="approved-tab">
                     <div class="card">
                         <div class="card-body">
+                            <!-- Phan nay la tong quan-->
 
+                            <div class="bg-light py-5">
+                                <div class="container">
+                                    <div class="row g-4">
+                                        <!-- Phần Video Preview + Mô Tả (70%) -->
+                                        <div class="col-md-8">
+                                            <!-- Video Preview -->
+                                            <div id="video-container" class="card mb-4" style="display: none;">
+                                                <div class="card-body p-0">
+                                                    <video id="video-preview" class="w-100 rounded-top" controls>
+                                                        <source src="video_url.mp4" type="video/mp4">
+                                                        Trình duyệt của bạn không hỗ trợ video.
+                                                    </video>
+                                                </div>
+                                            </div>
+                                            <!-- Mô Tả -->
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <!-- Tiêu đề Mô tả -->
+                                                    <h2 class="card-title h4 fw-bold mb-3">MÔ TẢ</h2>
+                                                    <!-- Nội dung Mô tả với gạch chân -->
+                                                    <div class="border-bottom pb-3 mb-3">
+                                                        <p class="card-text text-muted">Mô tả nội dung khóa học sẽ hiển thị
+                                                            ở đây...</p>
+                                                    </div>
+                                                    <!-- Phần bổ sung (nếu cần) -->
+                                                    <p class="card-text text-muted">Thêm thông tin bổ sung (nếu có).</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Phần Tổng Quan Khóa Học (30%) -->
+                                        <div class="col-md-4">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <!-- Tiêu đề Tổng quan khóa học -->
+                                                    <h2 class="card-title h4 fw-bold mb-3 border-bottom pb-3">Tổng quan
+                                                        khóa học</h2>
+                                                    <!-- Nội dung Tổng quan khóa học -->
+                                                    <ul class="list-unstyled text-muted">
+                                                        <li class="d-flex justify-content-between mb-3">
+                                                            <span><strong>Thời gian video:</strong></span>
+                                                            <span>30 Phút</span>
+                                                        </li>
+                                                        <li class="d-flex justify-content-between mb-3">
+                                                            <span><strong>Bài giảng:</strong></span>
+                                                            <span>{{ $totalLessons }}</span>
+                                                        </li>
+                                                        <li class="d-flex justify-content-between mb-3">
+                                                            <span><strong>Bài kiểm tra:</strong></span>
+                                                            <span>2</span>
+                                                        </li>
+                                                        <li class="d-flex justify-content-between mb-3">
+                                                            <span><strong>Trình độ:</strong></span>
+                                                            <span>Sơ cấp</span>
+                                                        </li>
+                                                        <li class="d-flex justify-content-between mb-3">
+                                                            <span><strong>Học viên:</strong></span>
+                                                            <span>0</span>
+                                                        </li>
+                                                        <li class="d-flex justify-content-between mb-3">
+                                                            <span><strong>Price:</strong></span>
+                                                            <span class="badge bg-success">Free</span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bootstrap JS và Popper.js -->
+                            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+                            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+                            <script>
+                                // Kiểm tra nếu có video hay không
+                                const video = document.getElementById('video-preview');
+                                if (video && video.querySelector('source').getAttribute('src') !== "") {
+                                    document.getElementById('video-container').style.display = 'block';
+                                }
+                            </script>
                         </div>
                     </div>
                 </div>
