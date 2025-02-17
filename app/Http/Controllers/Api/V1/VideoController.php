@@ -8,9 +8,91 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
+
+/**
+ * @OA\Server(
+ *      url=L5_SWAGGER_CONST_HOST,
+ *      description="API Server"
+ * )
+ */
+
+
+
 class VideoController extends Controller
 {
-    //
+    /**
+     * @OA\Get(
+     *     path="/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos",
+     *     summary="Lấy danh sách video của bài học",
+     *     description="API này trả về danh sách video thuộc về bài học cụ thể",
+     *     tags={"Videos"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="course_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của khóa học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="section_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của section",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="lesson_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của bài học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Danh sách video",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="data", type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="lesson_id", type="integer"),
+     *                     @OA\Property(property="video_url", type="string", example="storage/videos/sample.mp4"),
+     *                     @OA\Property(property="duration", type="integer", example=120),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2025-02-16T10:00:00Z"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-02-16T10:30:00Z")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized - Chưa đăng nhập hoặc token không hợp lệ",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Không tìm thấy tài nguyên",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy tài nguyên")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Lỗi hệ thống",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Đã xảy ra lỗi trong quá trình xử lý")
+     *         )
+     *     )
+     * )
+     */
+
+
+
 
     public function index(Request $request, $course_id, $section_id, $lesson_id)
     {
@@ -41,6 +123,120 @@ class VideoController extends Controller
             return response()->json(['message' => 'Đã xảy ra lỗi trong quá trình xử lý'], 500);
         }
     }
+
+
+    /**
+     * @OA\Post(
+     *     path="/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos",
+     *     summary="Thêm video mới vào bài học",
+     *     description="Tải lên và lưu trữ video cho một bài học cụ thể",
+     *     operationId="storeVideo",
+     *     tags={"Videos"},
+     *     security={{"bearerAuth": {}}},
+     * 
+     *     @OA\Parameter(
+     *         name="course_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của khóa học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="section_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của phần trong khóa học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="lesson_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của bài học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     * 
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"video_url"},
+     *                 @OA\Property(
+     *                     property="video_url",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="File video (định dạng mp4, mov, avi)"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=201,
+     *         description="Tạo mới video thành công",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="video", type="object",
+     *                 @OA\Property(property="id", type="integer"),
+     *                 @OA\Property(property="lesson_id", type="integer"),
+     *                 @OA\Property(property="video_url", type="string", description="Đường dẫn video"),
+     *                 @OA\Property(property="duration", type="integer", description="Thời lượng video"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time")
+     *             ),
+     *             @OA\Property(property="message", type="string", example="Tạo mới video thành công")
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=400,
+     *         description="Không thể lấy thời lượng video",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Không thể lấy thời lượng video")
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=404,
+     *         description="Không tìm thấy tài nguyên",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy tài nguyên")
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=422,
+     *         description="Dữ liệu không hợp lệ hoặc thời lượng video không đủ",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Dữ liệu không hợp lệ"),
+     *             @OA\Property(property="errors", type="object",
+     *                 @OA\Property(property="video_url", type="array",
+     *                     @OA\Items(type="string", example="The video_url field is required.")
+     *                 ),
+     *                 @OA\Property(property="duration", type="array",
+     *                     @OA\Items(type="string", example="Thời lượng video phải lớn hơn 1 phút.")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized - Chưa đăng nhập hoặc token không hợp lệ",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Lỗi hệ thống",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Lỗi hệ thống"),
+     *             @OA\Property(property="error", type="string", example="Chi tiết lỗi")
+     *         )
+     *     )
+     * )
+     */
+
     public function store(Request $request, $course_id, $section_id, $lesson_id)
     {
         try {
@@ -114,6 +310,83 @@ class VideoController extends Controller
     }
 
 
+    /**
+     * @OA\Get(
+     *     path="/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}",
+     *     summary="Lấy thông tin chi tiết của một video",
+     *     description="API này trả về thông tin chi tiết của một video thuộc về bài học cụ thể",
+     *     tags={"Videos"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="course_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của khóa học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="section_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của section",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="lesson_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của bài học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="video_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của video",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Thông tin chi tiết của video",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="lesson_id", type="integer", example=1),
+     *                 @OA\Property(property="video_url", type="string", example="storage/videos/sample.mp4"),
+     *                 @OA\Property(property="duration", type="integer", example=120),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-02-16T10:00:00Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2025-02-16T10:30:00Z")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized - Chưa đăng nhập hoặc token không hợp lệ",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Không tìm thấy tài nguyên",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy tài nguyên")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Lỗi hệ thống",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Đã xảy ra lỗi trong quá trình xử lý")
+     *         )
+     *     )
+     * )
+     */
+
+
     public function show(Request $request, $course_id, $section_id, $lesson_id, $video_id)
     {
         try {
@@ -149,7 +422,117 @@ class VideoController extends Controller
 
 
     /**
-     * Cập nhật video
+     * @OA\Put(
+     *     path="/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}",
+     *     summary="Cập nhật video của bài học",
+     *     description="API này cho phép giảng viên cập nhật video cho một bài học",
+     *     tags={"Videos"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="course_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của khóa học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="section_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của section",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="lesson_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của bài học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="video_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của video cần cập nhật",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Dữ liệu video cần cập nhật",
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"video_url"},
+     *                 @OA\Property(
+     *                     property="video_url",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="File video (mp4, mov, avi)"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Cập nhật video thành công",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="video", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="lesson_id", type="integer"),
+     *                 @OA\Property(property="video_url", type="string", example="storage/videos/new_video.mp4"),
+     *                 @OA\Property(property="duration", type="integer", example=180),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-02-16T10:00:00Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2025-02-16T12:00:00Z")
+     *             ),
+     *             @OA\Property(property="message", type="string", example="Cập nhật video thành công")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized - Chưa đăng nhập hoặc token không hợp lệ",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Không thể lấy thời lượng video",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Không thể lấy thời lượng video")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Dữ liệu không hợp lệ hoặc thời lượng video không đủ",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Dữ liệu không hợp lệ"),
+     *             @OA\Property(property="errors", type="object",
+     *                 @OA\Property(property="video_url", type="array", @OA\Items(type="string", example="File không đúng định dạng")),
+     *                 @OA\Property(property="duration", type="array", @OA\Items(type="string", example="Thời lượng video phải lớn hơn 1 phút."))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Không tìm thấy tài nguyên",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy tài nguyên")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Lỗi hệ thống",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Lỗi hệ thống"),
+     *             @OA\Property(property="error", type="string", example="Chi tiết lỗi hệ thống")
+     *         )
+     *     )
+     * )
      */
     public function update(Request $request, $course_id, $section_id, $lesson_id, $video_id)
     {
@@ -241,8 +624,71 @@ class VideoController extends Controller
 
 
     /**
-     * Xóa video
+     * @OA\Delete(
+     *     path="/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}",
+     *     summary="Xóa video của bài học",
+     *     description="API này cho phép giảng viên xóa một video khỏi bài học",
+     *     tags={"Videos"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="course_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của khóa học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="section_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của section",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="lesson_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của bài học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="video_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của video cần xóa",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized - Chưa đăng nhập hoặc token không hợp lệ",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Xóa video thành công"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Không tìm thấy tài nguyên",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy tài nguyên")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Lỗi hệ thống",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Lỗi hệ thống"),
+     *             @OA\Property(property="error", type="string", example="Chi tiết lỗi hệ thống")
+     *         )
+     *     )
+     * )
      */
+
     public function destroy(Request $request, $course_id, $section_id, $lesson_id, $video_id)
     {
         try {
