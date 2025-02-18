@@ -9,6 +9,8 @@ class Enrollment extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'course_id',
         'student_id',

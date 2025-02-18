@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\Lesson;
 use App\Models\Role;
 use App\Models\Section;
@@ -168,7 +169,7 @@ class DatabaseSeeder extends Seeder
             'price_regular' => 109000,
             'price_sale' => 99000,
             'title' => 'Khoá học Laravel',
-            'status' => 'pending',
+            'status' => 'published',
             'admin_commission_rate' => 30
         ]);
         Course::create([
@@ -259,5 +260,21 @@ class DatabaseSeeder extends Seeder
             'course_id'     => $courseID->id,
             'time_used'     => Carbon::now(),
         ]);
+
+        $enrollments = [
+            [
+                'user_id' => 2,
+                'course_id' => 1,
+                'status' => 'active',
+            ],
+            [
+                'user_id' => 3,
+                'course_id' => 1,
+                'status' => 'completed',
+            ]
+        ];
+        foreach ($enrollments as $enrollment) {
+            Enrollment::create($enrollment);
+        }
     }
 }
