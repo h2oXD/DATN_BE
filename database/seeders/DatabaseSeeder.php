@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\Lesson;
+use App\Models\Review;
 use App\Models\Role;
 use App\Models\Section;
 use App\Models\Tag;
@@ -183,6 +184,34 @@ class DatabaseSeeder extends Seeder
             'category_id' => 4,
             'title' => 'Khoá học PHP cơ bản',
             'status' => 'pending',
+            'is_free' => true,
+            'admin_commission_rate' => 30
+        ]);
+
+        Course::create([
+            'user_id' => 4,
+            'category_id' => 4,
+            'title' => 'Khoá học PHP nâng cao',
+            'status' => 'published',
+            'is_free' => true,
+            'admin_commission_rate' => 30
+        ]);
+
+        Course::create([
+            'user_id' => 4,
+            'category_id' => 3,
+            'title' => 'Khoá học Laravel cơ bản',
+            'status' => 'published',
+            'is_free' => true,
+            'admin_commission_rate' => 30
+        ]);
+
+        Course::create([
+            'user_id' => 4,
+            'category_id' => 5,
+            'title' => 'Khoá học Js nâng cao',
+            'status' => 'published',
+            'is_free' => true,
             'admin_commission_rate' => 30
         ]);
 
@@ -263,17 +292,33 @@ class DatabaseSeeder extends Seeder
 
         $reviews = [
             [
-            	'user_id'      =>   $lecturer->id,
-                'course_id'    =>   $courseID->id,
+            	'user_id'      =>   4,
+                'course_id'    =>   3,
                 'rating'       =>   5,
                 'review_text'  =>   'Good job'
             ],
             [
-                'user_id'      =>   $lecturer->id,
-                'course_id'    =>   $courseID->id,
+                'user_id'      =>   3,
+                'course_id'    =>   2,
                 'rating'       =>   2,
                 'review_text'  =>   'Very bad'
+            ],
+            [
+                'user_id'      =>   4,
+                'course_id'    =>   4,
+                'rating'       =>   4,
+                'review_text'  =>   'Very good'
+            ],
+            [
+                'user_id'      =>   4,
+                'course_id'    =>   5,
+                'rating'       =>   5,
+                'review_text'  =>   'Dinh noc kich tran'
             ]
         ];
+
+        foreach ($reviews as $review) {
+            Review::create($review);
+        }
     }
 }
