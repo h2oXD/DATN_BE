@@ -30,10 +30,13 @@ class LecturerRegisterController extends Controller
         }
 
         $data = $validator->validated();
-        // $user->update($data['certificate_file']);
+
+        if (isset($data['certificate_file']) && !empty($data['certificate_file'])) {
+            $user->update($data['certificate_file']);
+        }
         LecturerRegister::create([
             'user_id' => $user->id,
-            'lecture_answers' => $data['lecture_answers']
+            'lecture_answers' => $request->lecture_answers
         ]);
         return response()->json(['message' => 'Answers submitted successfully'], Response::HTTP_OK);
     }
