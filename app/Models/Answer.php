@@ -14,10 +14,12 @@ class Answer extends Model
         'answer_text',
         'is_correct',
         'order',
+        'note'
     ];
 
     public function question()
     {
         return $this->belongsTo(Question::class);
     }
+
 }

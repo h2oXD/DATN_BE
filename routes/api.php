@@ -63,11 +63,10 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', DocumentController::class)->parameters(['documents' => 'document_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', LessonCodingController::class)->parameters(['codings' => 'coding_id']);
 
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes',QuizController::class)->parameters(['quizzes' => 'quiz_id']);
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}/questions',QuizController::class)->parameters(['questions' => 'question_id']);
 
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes', QuizController::class)->parameters(['quizzes' => 'quiz_id']);
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}/questions', QuizController::class)->parameters(['questions' => 'question_id']);
-
-
+    Route::post('lessons/order',[LessonController::class, 'updateOrder']);
 
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {

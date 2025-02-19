@@ -39,8 +39,8 @@ class StudyController extends Controller
                     'sections.lessons.videos',
                     'sections.lessons.quizzes.questions',
                 ])
-                ->where('status', 'published') 
-                ->findOrFail($courseId);
+                    ->where('status', 'published')
+                    ->findOrFail($courseId);
 
                 return response()->json([
                     'course' => $course,

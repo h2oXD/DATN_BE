@@ -17,9 +17,13 @@ class Question extends Model
         'correct_answers',
         'order',
     ];
-
-    public function quiz()
-    {
+    public function quiz() {
         return $this->belongsTo(Quiz::class);
     }
+
+    public function answers() {
+        return $this->hasMany(Answer::class);
+    }
+
+
 }

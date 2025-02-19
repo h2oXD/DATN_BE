@@ -282,16 +282,6 @@ class VideoController extends Controller
 
             $duration = round($fileInfo['playtime_seconds']);
 
-            if ($duration <= 60) {
-                Storage::delete($data['video_url']);
-                return response()->json([
-                    'message' => 'Thời lượng video không đủ',
-                    'errors' => [
-                        'duration' => ['Thời lượng video phải lớn hơn 1 phút.'],
-                    ],
-                ], 422);
-            }
-
             $video = $lesson->videos()->create([
                 'video_url' => $data['video_url'],
                 'duration' => $duration,
@@ -590,16 +580,6 @@ class VideoController extends Controller
             }
 
             $duration = round($fileInfo['playtime_seconds']);
-
-            if ($duration <= 60) {
-                Storage::delete($data['video_url']);
-                return response()->json([
-                    'message' => 'Thời lượng video không đủ',
-                    'errors' => [
-                        'duration' => ['Thời lượng video phải lớn hơn 1 phút.'],
-                    ],
-                ], 422);
-            }
 
             // Cập nhật video mới vào database
             $video->update([
