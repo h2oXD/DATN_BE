@@ -20,7 +20,7 @@ class VNPayAPIController extends Controller
      *   path="/user/courses/{course_id}/create-payment",
      *   tags={"VNPay"},
      *   summary="Tạo yêu cầu thanh toán VNPay cho khóa học",
-     *   description="API này cho phép người dùng tạo yêu cầu thanh toán VNPay cho khóa học.",
+     *   description="API này cho phép người dùng tạo yêu cầu thanh toán VNPay cho khóa học (trừ khóa học miễn phí).",
      *   security={{"BearerAuth": {}}},
      *   @OA\Parameter(
      *       name="course_id",
@@ -34,7 +34,7 @@ class VNPayAPIController extends Controller
      *     @OA\JsonContent(
      *       type="object",
      *       @OA\Property(property="amount", type="integer", example=10000, description="Số tiền cần thanh toán"),
-     *       @OA\Property(property="bank_code", type="string", example="NCB", description="Mã ngân hàng (ví dụ: NCB, VISA, JSC)")
+     *       @OA\Property(property="bank_code", type="string", example="NCB", description="Mã ngân hàng (ví dụ: NCB, VISA, JCB)")
      *     )
      *   ),
      *   @OA\Response(
@@ -47,11 +47,20 @@ class VNPayAPIController extends Controller
      *     )
      *   ),
      *   @OA\Response(
+     *     response=200,
+     *     description="Khóa học miễn phí, đã tự động đăng ký",
+     *     @OA\JsonContent(
+     *         type="object",
+     *         @OA\Property(property="message", type="string", example="Khóa học miễn phí, đã tự động đăng ký")
+     *     )
+     *   ),
+     *   @OA\Response(
      *     response=400,
-     *     description="Lỗi validation",
+     *     description="Lỗi validation hoặc đã tham gia khóa học",
      *     @OA\JsonContent(
      *       type="object",
-     *       @OA\Property(property="errors", type="object", description="Các lỗi validation")
+     *       @OA\Property(property="errors", type="object", description="Các lỗi validation"),
+     *       @OA\Property(property="error", type="string", example="Bạn đã tham gia khóa học")
      *     )
      *   ),
      *   @OA\Response(
@@ -90,110 +99,193 @@ class VNPayAPIController extends Controller
 
             $own_course = $request->user()->courses()->find($course_id);
             $course = Course::findOrFail($course_id);
+            $is_free = $course->is_free;
 
-            // Kiểm tra khóa học đã được sở hữu chưa
-            if ($own_course) {
-                return response()->json([
-                    'status'    => 'error',
-                    'message'   => 'Khóa học đã sở hữu không cần thanh toán'
-                ], Response::HTTP_LOCKED);
-            }
-            // Kiểm tra khóa học có tồn tại không
-            if (!$course) {
-                return response()->json([
-                    'status'    => 'error',
-                    'message'   => 'Không tìm thấy khóa học cần thanh toán'
-                ], Response::HTTP_NOT_FOUND);
-            }
-            // Kiểm tra trạng thái của khóa học có hợp lệ không
-            if ($course->status === "pending" || $course->status === "draft") {
-                return response()->json([
-                    'status'    => 'error',
-                    'message'   => 'Trạng thái khóa học không hợp lệ'
-                ], Response::HTTP_LOCKED);
-            }
-            // Kiểm tra giao dịch có bị trùng lặp không
-            $existingTransaction = Transaction::where('user_id', $request->user()->id)
-                ->where('course_id', $course_id)
-                ->whereIn('status', ['pending', 'success'])
-                ->first();
-            if ($existingTransaction) {
-                return response()->json([
-                    'error' => 'Giao dịch thất bại'
-                ], Response::HTTP_BAD_REQUEST);
-            }
-
-            // Kiểm tra dữ liệu truyền lên
-            $validator = Validator::make($request->all(), [
-                'amount'    => 'required|int',
-                'bank_code' => 'required|string'
-            ]);
-            if ($validator->fails()) {
-                return response()->json([
-                    'errors' => $validator->errors()
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
-
-            // Lấy thông tin cấu hình từ .env
-            $vnp_TmnCode    = env('VNP_TMN_CODE');
-            $vnp_HashSecret = env('VNP_HASH_SECRET');
-            $vnp_Url        = env('VNP_URL'); // URL của môi trường test hoặc production
-            $vnp_Returnurl  = str_replace('{course_id}', $course_id, env('VNP_RETURN_URL'));
-
-            // Tạo các tham số thanh toán
-            $vnp_TxnRef     = time() . ""; // Mã giao dịch duy nhất
-            $vnp_OrderInfo  = "Thanh toán khóa học";
-            $vnp_OrderType  = "education";
-            $vnp_Amount     = $request->input('amount', 0) * 100; // Số tiền (nhân với 100) để loại bỏ phần thập phân
-            $vnp_Locale     = "vn";
-            $vnp_BankCode   = $request->input('bank_code', "");
-            $vnp_IpAddr     = $request->ip();
-
-            // Mảng các tham số gửi lên VNPAY
-            $inputData = [
-                "vnp_Version"       => "2.1.0",
-                "vnp_TmnCode"       => $vnp_TmnCode,
-                "vnp_Amount"        => $vnp_Amount,
-                "vnp_Command"       => "pay",
-                "vnp_CreateDate"    => date('YmdHis'),
-                "vnp_CurrCode"      => "VND",
-                "vnp_IpAddr"        => $vnp_IpAddr,
-                "vnp_Locale"        => $vnp_Locale,
-                "vnp_OrderInfo"     => $vnp_OrderInfo,
-                "vnp_OrderType"     => $vnp_OrderType,
-                "vnp_ReturnUrl"     => $vnp_Returnurl,
-                "vnp_TxnRef"        => $vnp_TxnRef,
-            ];
-
-            if (!empty($vnp_BankCode)) {
-                $inputData['vnp_BankCode'] = $vnp_BankCode;
-            }
-
-            // Sắp xếp mảng theo thứ tự key
-            ksort($inputData);
-            // Tạo chuỗi hash data
-            $hashdata = "";
-            $query = "";
-            $i = 0;
-            foreach ($inputData as $key => $value) {
-                if ($i == 1) {
-                    $hashdata .= '&' . urlencode($key) . "=" . urlencode($value);
-                } else {
-                    $hashdata .= urlencode($key) . "=" . urlencode($value);
-                    $i = 1;
+            if ($is_free == 0) {
+                
+                // Kiểm tra khóa học đã được sở hữu chưa
+                if ($own_course) {
+                    return response()->json([
+                        'status'    => 'error',
+                        'message'   => 'Khóa học đã sở hữu không cần thanh toán'
+                    ], Response::HTTP_LOCKED);
                 }
-                $query .= urlencode($key) . "=" . urlencode($value) . '&';
+                // Kiểm tra khóa học có tồn tại không
+                if (!$course) {
+                    return response()->json([
+                        'status'    => 'error',
+                        'message'   => 'Không tìm thấy khóa học cần thanh toán'
+                    ], Response::HTTP_NOT_FOUND);
+                }
+                // Kiểm tra trạng thái của khóa học có hợp lệ không
+                if ($course->status === "pending" || $course->status === "draft") {
+                    return response()->json([
+                        'status'    => 'error',
+                        'message'   => 'Trạng thái khóa học không hợp lệ'
+                    ], Response::HTTP_LOCKED);
+                }
+                // Kiểm tra người dùng đã tham gia khóa học chưa
+                $Enrolled = Enrollment::where('user_id', $request->user()->id)
+                    ->where('course_id', $course_id)
+                    ->first();
+                if ($Enrolled) {
+                    return response()->json([
+                        'error' => 'Bạn đã tham gia khóa học'
+                    ], Response::HTTP_BAD_REQUEST);
+                }
+                // Kiểm tra giao dịch có bị trùng lặp không
+                $existingTransaction = Transaction::where('user_id', $request->user()->id)
+                    ->where('course_id', $course_id)
+                    ->whereIn('status', ['pending', 'success'])
+                    ->first();
+                if ($existingTransaction) {
+                    return response()->json([
+                        'error' => 'Giao dịch thất bại'
+                    ], Response::HTTP_BAD_REQUEST);
+                }
+
+                // Kiểm tra dữ liệu truyền lên
+                $validator = Validator::make($request->all(), [
+                    'amount'    => 'required|int',
+                    'bank_code' => 'required|string'
+                ]);
+                if ($validator->fails()) {
+                    return response()->json([
+                        'errors' => $validator->errors()
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                }
+
+                // Lấy thông tin cấu hình từ .env
+                $vnp_TmnCode    = env('VNP_TMN_CODE');
+                $vnp_HashSecret = env('VNP_HASH_SECRET');
+                $vnp_Url        = env('VNP_URL'); // URL của môi trường test hoặc production
+                $vnp_Returnurl  = str_replace('{course_id}', $course_id, env('VNP_RETURN_URL'));
+
+                // Tạo các tham số thanh toán
+                $vnp_TxnRef     = time() . ""; // Mã giao dịch duy nhất
+                $vnp_OrderInfo  = "Thanh toán khóa học";
+                $vnp_OrderType  = "education";
+                $vnp_Amount     = $request->input('amount', 0) * 100; // Số tiền (nhân với 100) để loại bỏ phần thập phân
+                $vnp_Locale     = "vn";
+                $vnp_BankCode   = $request->input('bank_code', "");
+                $vnp_IpAddr     = $request->ip();
+
+                // Mảng các tham số gửi lên VNPAY
+                $inputData = [
+                    "vnp_Version"       => "2.1.0",
+                    "vnp_TmnCode"       => $vnp_TmnCode,
+                    "vnp_Amount"        => $vnp_Amount,
+                    "vnp_Command"       => "pay",
+                    "vnp_CreateDate"    => date('YmdHis'),
+                    "vnp_CurrCode"      => "VND",
+                    "vnp_IpAddr"        => $vnp_IpAddr,
+                    "vnp_Locale"        => $vnp_Locale,
+                    "vnp_OrderInfo"     => $vnp_OrderInfo,
+                    "vnp_OrderType"     => $vnp_OrderType,
+                    "vnp_ReturnUrl"     => $vnp_Returnurl,
+                    "vnp_TxnRef"        => $vnp_TxnRef,
+                ];
+
+                if (!empty($vnp_BankCode)) {
+                    $inputData['vnp_BankCode'] = $vnp_BankCode;
+                }
+
+                // Sắp xếp mảng theo thứ tự key
+                ksort($inputData);
+                // Tạo chuỗi hash data
+                $hashdata = "";
+                $query = "";
+                $i = 0;
+                foreach ($inputData as $key => $value) {
+                    if ($i == 1) {
+                        $hashdata .= '&' . urlencode($key) . "=" . urlencode($value);
+                    } else {
+                        $hashdata .= urlencode($key) . "=" . urlencode($value);
+                        $i = 1;
+                    }
+                    $query .= urlencode($key) . "=" . urlencode($value) . '&';
+                }
+
+                // Tạo mã hash bảo mật
+                $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
+                $paymentUrl = $vnp_Url . "?" . $query . 'vnp_SecureHash=' . $vnpSecureHash;
+
+                // Trả về URL thanh toán cho client
+                return response()->json([
+                    'status'        => 'success',
+                    'payment_url'   => $paymentUrl
+                ], Response::HTTP_CREATED);
+
+            } else {
+                
+                // Kiểm tra khóa học đã được sở hữu chưa
+                if ($own_course) {
+                    return response()->json([
+                        'status'    => 'error',
+                        'message'   => 'Khóa học đã sở hữu không cần thanh toán'
+                    ], Response::HTTP_LOCKED);
+                }
+                // Kiểm tra khóa học có tồn tại không
+                if (!$course) {
+                    return response()->json([
+                        'status'    => 'error',
+                        'message'   => 'Không tìm thấy khóa học cần thanh toán'
+                    ], Response::HTTP_NOT_FOUND);
+                }
+                // Kiểm tra trạng thái của khóa học có hợp lệ không
+                if ($course->status === "pending" || $course->status === "draft") {
+                    return response()->json([
+                        'status'    => 'error',
+                        'message'   => 'Trạng thái khóa học không hợp lệ'
+                    ], Response::HTTP_LOCKED);
+                }
+                // Kiểm tra người dùng đã tham gia khóa học chưa
+                $Enrolled = Enrollment::where('user_id', $request->user()->id)
+                    ->where('course_id', $course_id)
+                    ->first();
+                if ($Enrolled) {
+                    return response()->json([
+                        'error' => 'Bạn đã tham gia khóa học'
+                    ], Response::HTTP_BAD_REQUEST);
+                }
+                // Kiểm tra giao dịch có bị trùng lặp không
+                $existingTransaction = Transaction::where('user_id', $request->user()->id)
+                    ->where('course_id', $course_id)
+                    ->whereIn('status', ['pending', 'success'])
+                    ->first();
+                if ($existingTransaction) {
+                    return response()->json([
+                        'error' => 'Giao dịch thất bại'
+                    ], Response::HTTP_BAD_REQUEST);
+                }
+
+                Transaction::create([
+                    'user_id' => $request->user()->id,
+                    'course_id' => $course_id,
+                    'amount' => 0,
+                    'payment_method' => 'bank_transfer',
+                    'status' => 'success',
+                    'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
+                ]);
+                Enrollment::create([
+                    'user_id' => $request->user()->id,
+                    'course_id' => $course_id,
+                    'status' => 'active',
+                    'enrolled_at' => Carbon::now('Asia/Ho_Chi_Minh')
+                ]);
+                Progress::create([
+                    'user_id' => $request->user()->id,
+                    'course_id' => $course_id,
+                    'status' => 'in_progress',
+                    'progress_percent' => 0
+                ]);
+
+                return response()->json([
+                    'message' => 'Thanh toán thành công!'
+                ], Response::HTTP_OK);
+
             }
 
-            // Tạo mã hash bảo mật
-            $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
-            $paymentUrl = $vnp_Url . "?" . $query . 'vnp_SecureHash=' . $vnpSecureHash;
-
-            // Trả về URL thanh toán cho client
-            return response()->json([
-                'status'        => 'success',
-                'payment_url'   => $paymentUrl
-            ], Response::HTTP_CREATED);
         } catch (\Throwable $th) {
             return response()->json([
                 'message'   => 'Lỗi server',
@@ -267,14 +359,14 @@ class VNPayAPIController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Callback xử lý thành công",
+     *         description="Thanh toán thành công",
      *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="Thanh toán thành công!")
      *         )
      *     ),
      *     @OA\Response(
      *         response=400,
-     *         description="Callback xử lý thất bại",
+     *         description="Thanh toán thất bại hoặc đã tham gia vào khóa học",
      *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="Thanh toán thất bại!")
      *         )
@@ -316,6 +408,16 @@ class VNPayAPIController extends Controller
         // }
 
         try {
+
+            // Kiểm tra người dùng đã tham gia khóa học chưa
+            $Enrolled = Enrollment::where('user_id', $request->user()->id)
+                ->where('course_id', $course_id)
+                ->first();
+            if ($Enrolled) {
+                return response()->json([
+                    'error' => 'Bạn đã tham gia khóa học'
+                ], Response::HTTP_BAD_REQUEST);
+            }
             // Kiểm tra giao dịch có bị trùng lặp không
             $existingTransaction = Transaction::where('user_id', $request->user()->id)
                 ->where('course_id', $course_id)
