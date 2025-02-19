@@ -6,7 +6,10 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\Lesson;
+use App\Models\Question;
+use App\Models\Quiz;
 use App\Models\Review;
 use App\Models\Role;
 use App\Models\Section;
@@ -64,7 +67,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Wallet::create([
             'user_id' => $student->id,
-            'balance' => 0
+            'balance' => 999000
         ]);
         $roleStudent = Role::select('id')->where('name', 'student')->first();
         UserRole::create([
@@ -166,15 +169,17 @@ class DatabaseSeeder extends Seeder
         $courseID = Course::create([
             'user_id' => 3,
             'category_id' => 3,
-            'price_regular' => 109000,
+            'price_regular' => 199000,
             'price_sale' => 99000,
             'title' => 'Khoá học Laravel',
-            'status' => 'pending',
+            'status' => 'published',
             'admin_commission_rate' => 30
         ]);
         Course::create([
             'user_id' => 3,
             'category_id' => 1,
+            'price_regular' => 500000,
+            'price_sale' => 399000,
             'title' => 'Khoá học React',
             'status' => 'pending',
             'admin_commission_rate' => 30
@@ -182,6 +187,8 @@ class DatabaseSeeder extends Seeder
         Course::create([
             'user_id' => 3,
             'category_id' => 4,
+            'price_regular' => 99000,
+            'price_sale' => 89000,
             'title' => 'Khoá học PHP cơ bản',
             'status' => 'pending',
             'is_free' => true,
@@ -289,6 +296,52 @@ class DatabaseSeeder extends Seeder
             'time_used'     => Carbon::now(),
         ]);
 
+        $enrollments = [
+            [
+                'user_id' => 2,
+                'course_id' => 1,
+                'status' => 'active',
+            ],
+            [
+                'user_id' => 3,
+                'course_id' => 1,
+                'status' => 'completed',
+            ]
+        ];
+        foreach ($enrollments as $enrollment) {
+            Enrollment::create($enrollment);
+        }
+
+        $quizzes = [
+            [
+                'title' => 'cách cài đặt laragon?'
+            ],
+            [
+                'title' => 'cấu trúc thư mục của laragon như thế nào?'
+            ]
+        ];
+        foreach ($quizzes as $quiz) {
+            Quiz::create($quiz);
+        }
+
+        $questions = [
+            [
+                'quiz_id' => 1,
+                'question_text' => 'Cách cài đặt Laragon?',
+                'is_multiple_choice' => 0,
+                'correct_answers' => json_encode(['Cài đặt bằng trình cài đặt chính thức']),
+                'order' => 1
+            ],
+            [
+                'quiz_id' => 2,
+                'question_text' => 'Cấu trúc thư mục của Laragon như thế nào?',
+                'is_multiple_choice' => 1,
+                'correct_answers' => json_encode(['www', 'bin', 'etc', 'data']),
+                'order' => 2
+            ]
+        ];
+        foreach ($questions as $question) {
+            Question::create($question);
 
         $reviews = [
             [
@@ -322,4 +375,5 @@ class DatabaseSeeder extends Seeder
         }
     }
     
+}
 }

@@ -31,34 +31,34 @@ class StudyController extends Controller
 
         $progressPercent = $progress ? $progress->progress_percent : 0;
 
-        switch ($enrollment->status) {
-            case 'active':
-                $course = Course::with([
-                    'sections.lessons.documents',
-                    'sections.lessons.codings',
-                    'sections.lessons.videos',
-                    'sections.lessons.quizzes.questions',
-                ])
-                    ->where('status', 'published')
-                    ->findOrFail($courseId);
+        if ($enrollment->status === 'active') {
+            $course = Course::with([
+                'sections.lessons.documents',
+                'sections.lessons.codings',
+                'sections.lessons.videos',
+                'sections.lessons.quizzes.questions',
+            ])
+                ->where('status', 'published')
+                ->findOrFail($courseId);
 
-                return response()->json([
-                    'course' => $course,
-                    'progress_percent' => $progressPercent,
-                ], Response::HTTP_OK);
+            return response()->json([
+                'course' => $course,
+                'progress_percent' => $progressPercent,
+            ], Response::HTTP_OK);
 
-            case 'canceled':
-                return response()->json(['message' => 'Khóa học này đã bị hủy.'], Response::HTTP_BAD_REQUEST);
+        } elseif ($enrollment->status === 'canceled') {
+            return response()->json(['message' => 'Khóa học này đã bị hủy.'], Response::HTTP_BAD_REQUEST);
 
-            case 'completed':
-                $course = Course::where('status', 'published')->find($courseId);
-                if (!$course) {
-                    return response()->json(['message' => 'Khóa học này chưa được đẩy lên.'], Response::HTTP_NOT_FOUND);
-                }
-                return response()->json(['message' => 'Khóa học này đã hoàn thành.'], Response::HTTP_OK);
+        } elseif ($enrollment->status === 'completed') {
+            $course = Course::where('status', 'published')->find($courseId);
+            if (!$course) {
+                return response()->json(['message' => 'Khóa học này chưa được đẩy lên.'], Response::HTTP_NOT_FOUND);
+            }
+            return response()->json(['message' => 'Khóa học này đã hoàn thành.'], Response::HTTP_OK);
 
-            default:
-                return response()->json(['message' => 'Trạng thái khóa học không hợp lệ.'], Response::HTTP_BAD_REQUEST);
+        } else {
+            return response()->json(['message' => 'Trạng thái khóa học không hợp lệ.'], Response::HTTP_BAD_REQUEST);
         }
     }
+
 }
