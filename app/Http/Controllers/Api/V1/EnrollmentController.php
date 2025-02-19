@@ -4,28 +4,27 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Enrollment;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class EnrollmentController extends Controller
 {
     /**
      * Lấy danh sách khóa học đã đăng ký của học viên cùng tiến độ
      */
-    public function getUserCoursesWithProgress()
+    public function getUserCoursesWithProgress(Request $request)
     {
-        $userId = Auth::id(); // Lấy ID user đang đăng nhập
+        $userId = $request->user()->id; // Lấy user_id từ request
 
+        // Lấy danh sách các khóa học mà user đã đăng ký với 3 trạng thái
         $enrollments = Enrollment::where('user_id', $userId)
+            ->whereIn('status', ['active', 'canceled', 'completed'])
             ->with(['course', 'progress'])
-            ->get();
+            ->get()
+            ->unique('course_id'); // Chỉ lấy 1 bản ghi duy nhất cho mỗi khóa học
 
-        if ($enrollments->isEmpty()) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'User has no enrolled courses',
-                'data' => []
-            ]);
-        }
+        return response()->json([
+            'status' => 'success',
+            'data' => $enrollments->values() // Reset lại key để tránh lỗi index
+        ]);
     }
 }

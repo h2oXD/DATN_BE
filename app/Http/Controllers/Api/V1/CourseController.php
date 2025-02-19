@@ -271,7 +271,9 @@ class CourseController extends Controller
                 'sections.lessons.documents',
                 'sections.lessons.videos',
                 'sections.lessons.codings',
-                'sections.lessons.quizzes',
+                'sections.lessons.quizzes' => function ($query) { // Thêm eager loading cho quizzes
+                    $query->with('questions.answers'); // Eager load questions và answers của quiz
+                },
                 'category'
             ])->find($course_id);
 

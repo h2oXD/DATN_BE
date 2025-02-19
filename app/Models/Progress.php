@@ -14,11 +14,8 @@ class Progress extends Model
         'user_id',
         'course_id',
         'status',
-        'progress_percentage',
-        'started_at',
-        'completed_at',
+        'progress_percent',
     ];
-
     public function course()
     {
         return $this->belongsTo(Course::class, 'course_id');
