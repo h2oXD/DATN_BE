@@ -19,9 +19,9 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade')->comment('id của Người mua');
             $table->foreignIdFor(Course::class)->constrained()->onDelete('cascade')->comment('id của Khoá học');
             $table->decimal('amount',10, 2);
-            $table->enum('payment_method', ['credit_card','paypal','bank_transfer','wallet']);
+            $table->enum('payment_method', ['credit_card','paypal','bank_transfer','wallet'])->comment('Phương thức thanh toán');
+            $table->enum('status', ['pending', 'success', 'failed'])->default('pending')->comment('Trạng thái giao dịch');
             $table->datetime('transaction_date');
-            $table->string('wallet_id')->nullable()->default(NULL);
         
             $table->timestamps();
         });

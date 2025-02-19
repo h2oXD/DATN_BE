@@ -16,8 +16,9 @@ return new class extends Migration {
 
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->integer('balance')->comment('Số dư trong ví của người dùng');
-            $table->timestamp('updated_at')->nullable()->default(NULL);
             $table->json('transaction_history')->nullable()->comment('Trường này sẽ lưu trữ lịch sử giao dịch của ví dưới dạng JSON. Mỗi phần tử trong JSON array sẽ đại diện cho một giao dịch');
+
+            $table->timestamps();
         });
     }
 

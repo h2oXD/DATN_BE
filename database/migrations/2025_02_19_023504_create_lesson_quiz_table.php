@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Lesson;
+use App\Models\Quiz;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,12 +13,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('quizzes', function (Blueprint $table) {
-            $table->id();
-            $table->string('title')->comment('Tên bộ câu hỏi');
-            $table->text('description')->nullable();
-
-            $table->timestamps();
+        Schema::create('lesson_quiz', function (Blueprint $table) {
+            $table->foreignIdFor(Lesson::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Quiz::class)->constrained()->onDelete('cascade');
         });
     }
 
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('quizzes');
+        Schema::dropIfExists('lesson_quiz');
     }
 };

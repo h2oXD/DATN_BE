@@ -16,8 +16,9 @@ return new class extends Migration
             $table->id();
 
             $table->foreignIdFor(Question::class)->constrained()->onDelete('cascade');
-            $table->text('answer_text');
+            $table->text('answer_text')->comment('Đáp án');
             $table->tinyInteger('is_correct');
+            $table->string('note')->nullable()->comment('Chú thích hoặc giải thích cho đáp án');
             $table->integer('order');
             
             $table->timestamps();

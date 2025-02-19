@@ -21,6 +21,8 @@ return new class extends Migration
             $table->enum('status', ['active','canceled','completed']);
             $table->timestamp('enrolled_at')->nullable();
             $table->timestamp('completed_at')->nullable();
+
+            $table->timestamps();
         });
     }
 
