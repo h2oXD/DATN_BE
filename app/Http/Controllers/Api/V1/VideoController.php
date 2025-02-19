@@ -22,7 +22,7 @@ class VideoController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos",
+     *     path="api/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos",
      *     summary="Lấy danh sách video của bài học",
      *     description="API này trả về danh sách video thuộc về bài học cụ thể",
      *     tags={"Videos"},
@@ -127,7 +127,7 @@ class VideoController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos",
+     *     path="api/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos",
      *     summary="Thêm video mới vào bài học",
      *     description="Tải lên và lưu trữ video cho một bài học cụ thể",
      *     operationId="storeVideo",
@@ -302,7 +302,7 @@ class VideoController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}",
+     *     path="api/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}",
      *     summary="Lấy thông tin chi tiết của một video",
      *     description="API này trả về thông tin chi tiết của một video thuộc về bài học cụ thể",
      *     tags={"Videos"},
@@ -413,7 +413,7 @@ class VideoController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}",
+     *     path="api/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}",
      *     summary="Cập nhật video của bài học",
      *     description="API này cho phép giảng viên cập nhật video cho một bài học",
      *     tags={"Videos"},
@@ -605,7 +605,7 @@ class VideoController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}",
+     *     path="api/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}",
      *     summary="Xóa video của bài học",
      *     description="API này cho phép giảng viên xóa một video khỏi bài học",
      *     tags={"Videos"},
