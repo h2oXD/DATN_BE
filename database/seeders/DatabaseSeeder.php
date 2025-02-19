@@ -64,7 +64,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Wallet::create([
             'user_id' => $student->id,
-            'balance' => 0
+            'balance' => 999000
         ]);
         $roleStudent = Role::select('id')->where('name', 'student')->first();
         UserRole::create([
@@ -166,7 +166,7 @@ class DatabaseSeeder extends Seeder
         $courseID = Course::create([
             'user_id' => 3,
             'category_id' => 3,
-            'price_regular' => 109000,
+            'price_regular' => 199000,
             'price_sale' => 99000,
             'title' => 'Khoá học Laravel',
             'status' => 'pending',
@@ -175,6 +175,8 @@ class DatabaseSeeder extends Seeder
         Course::create([
             'user_id' => 3,
             'category_id' => 1,
+            'price_regular' => 500000,
+            'price_sale' => 399000,
             'title' => 'Khoá học React',
             'status' => 'pending',
             'admin_commission_rate' => 30
@@ -182,6 +184,8 @@ class DatabaseSeeder extends Seeder
         Course::create([
             'user_id' => 3,
             'category_id' => 4,
+            'price_regular' => 99000,
+            'price_sale' => 89000,
             'title' => 'Khoá học PHP cơ bản',
             'status' => 'pending',
             'is_free' => true,
