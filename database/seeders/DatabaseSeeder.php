@@ -60,7 +60,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'hocvien1@gmail.com',
             'password' => Hash::make('123123123'),
             'phone_number' => '0333444555',
-            'profile_picture' => '/profile_pictures/EtUIcPlzMJiTg9JiTQl1Lm6XSY3RRTJ0mmZHC1Xx.jpg',
+
         ]);
         Wallet::create([
             'user_id' => $student->id,
