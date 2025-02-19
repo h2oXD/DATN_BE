@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\LecturerController;
 use App\Http\Controllers\Api\V1\LessonCodingController;
 use App\Http\Controllers\Api\V1\LessonController;
+use App\Http\Controllers\Api\V1\OverviewController;
 use App\Http\Controllers\Api\V1\QuizController;
 use App\Http\Controllers\Api\V1\SectionController;
 use App\Http\Controllers\Api\V1\TagController;
@@ -67,6 +68,8 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/dashboard', function (Request $request) {
         return response()->json(['message' => 'Chào mừng Học viên']);
     });
+
+    Route::get('/student/home',[OverviewController::class, 'overview']);
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function () {
     Route::get('/admin/dashboard', function (Request $request) {
