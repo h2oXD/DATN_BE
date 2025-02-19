@@ -204,6 +204,7 @@ class LessonController extends Controller
             $validator = Validator::make($request->all(), [
                 'title' => 'required',
                 'description' => 'nullable|string',
+                'type' => 'nullable'
             ]);
 
             if ($validator->fails()) {
@@ -319,13 +320,12 @@ class LessonController extends Controller
                 }
             ])->find($course_id);
 
-            if (!$course || !$course->sections->first() || !$lesson = $course->sections->first()->lessons->first()) {
+            if (!$course || !$course->sections->first() || !$lesson = $course->sections->first()->lessons->find($lesson_id)) {
                 return response()->json(['message' => 'Không tìm thấy tài nguyên'], Response::HTTP_NOT_FOUND); // Combined check
             }
-
             return response()->json([
                 'message' => 'Lấy dữ liệu thành công',
-                'lesson' => $lesson
+                'lesson' => $lesson->with(['videos','codings','documents','quizzes'])->find($lesson_id)
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([
@@ -569,6 +569,22 @@ class LessonController extends Controller
                 'message' => 'Lỗi server',
                 'error' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function updateOrder()
+    {
+        try {
+            $orders = request()->all();
+            foreach ($orders as $order) {
+                $lesson = Lesson::find($order['id']);
+                $lesson->update([
+                    'order' => $order['order']
+                ]);
+            }
+            return response()->json($lesson);
+        } catch (\Throwable $th) {
+            return response()->json($th, 500);
         }
     }
 }

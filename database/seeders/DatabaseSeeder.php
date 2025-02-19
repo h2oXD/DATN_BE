@@ -10,6 +10,7 @@ use App\Models\Enrollment;
 use App\Models\Lesson;
 use App\Models\Question;
 use App\Models\Quiz;
+use App\Models\Review;
 use App\Models\Role;
 use App\Models\Section;
 use App\Models\Tag;
@@ -66,7 +67,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Wallet::create([
             'user_id' => $student->id,
-            'balance' => 0
+            'balance' => 999000
         ]);
         $roleStudent = Role::select('id')->where('name', 'student')->first();
         UserRole::create([
@@ -168,7 +169,7 @@ class DatabaseSeeder extends Seeder
         $courseID = Course::create([
             'user_id' => 3,
             'category_id' => 3,
-            'price_regular' => 109000,
+            'price_regular' => 199000,
             'price_sale' => 99000,
             'title' => 'Khoá học Laravel',
             'status' => 'published',
@@ -177,6 +178,8 @@ class DatabaseSeeder extends Seeder
         Course::create([
             'user_id' => 3,
             'category_id' => 1,
+            'price_regular' => 500000,
+            'price_sale' => 399000,
             'title' => 'Khoá học React',
             'status' => 'pending',
             'admin_commission_rate' => 30
@@ -184,8 +187,38 @@ class DatabaseSeeder extends Seeder
         Course::create([
             'user_id' => 3,
             'category_id' => 4,
+            'price_regular' => 99000,
+            'price_sale' => 89000,
             'title' => 'Khoá học PHP cơ bản',
             'status' => 'pending',
+            'is_free' => true,
+            'admin_commission_rate' => 30
+        ]);
+
+        Course::create([
+            'user_id' => 4,
+            'category_id' => 4,
+            'title' => 'Khoá học PHP nâng cao',
+            'status' => 'published',
+            'is_free' => true,
+            'admin_commission_rate' => 30
+        ]);
+
+        Course::create([
+            'user_id' => 4,
+            'category_id' => 3,
+            'title' => 'Khoá học Laravel cơ bản',
+            'status' => 'published',
+            'is_free' => true,
+            'admin_commission_rate' => 30
+        ]);
+
+        Course::create([
+            'user_id' => 4,
+            'category_id' => 5,
+            'title' => 'Khoá học Js nâng cao',
+            'status' => 'published',
+            'is_free' => true,
             'admin_commission_rate' => 30
         ]);
 
@@ -281,11 +314,9 @@ class DatabaseSeeder extends Seeder
 
         $quizzes = [
             [
-                'lesson_id' => 1,
                 'title' => 'cách cài đặt laragon?'
             ],
             [
-                'lesson_id' => 2,
                 'title' => 'cấu trúc thư mục của laragon như thế nào?'
             ]
         ];
@@ -311,6 +342,36 @@ class DatabaseSeeder extends Seeder
         ];
         foreach ($questions as $question) {
             Question::create($question);
+
+        $reviews = [
+            [
+            	'user_id'      =>   4,
+                'course_id'    =>   3,
+                'rating'       =>   5,
+                'review_text'  =>   'Good job'
+            ],
+            [
+                'user_id'      =>   3,
+                'course_id'    =>   2,
+                'rating'       =>   2,
+                'review_text'  =>   'Very bad'
+            ],
+            [
+                'user_id'      =>   4,
+                'course_id'    =>   4,
+                'rating'       =>   4,
+                'review_text'  =>   'Very good'
+            ],
+            [
+                'user_id'      =>   4,
+                'course_id'    =>   5,
+                'rating'       =>   5,
+                'review_text'  =>   'Dinh noc kich tran'
+            ]
+        ];
+
+        foreach ($reviews as $review) {
+            Review::create($review);
         }
     }
 }
