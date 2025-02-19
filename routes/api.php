@@ -32,15 +32,17 @@ use L5Swagger\Http\Controllers\SwaggerController;
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', [AuthController::class, 'getUser']);
-    Route::apiResource('user', UserController::class)->only(['show', 'update']);
+    Route::apiResource('users', UserController::class)->only(['show', 'update']);
     Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
     //wallet in user
-    Route::get('/user/wallet', [WalletController::class, 'show']);
-    Route::put('/user/wallet/{wallet_id}', [WalletController::class, 'update']);
+    Route::get('/user/wallets', [WalletController::class, 'show']);
+    Route::put('/user/wallets', [WalletController::class, 'update']);
 
-    // Payment
-    Route::post('/user/create-payment', [VNPayAPIController::class, 'createPayment']);
-    Route::get('/user/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
+    // Pay by VNPay
+    Route::post('/user/courses/{course_id}/create-payment', [VNPayAPIController::class, 'createPayment']);
+    Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
+    // Pay by wallet
+    Route::post('/user/courses/{course_id}/wallet-payment', [WalletController::class, 'payment']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });

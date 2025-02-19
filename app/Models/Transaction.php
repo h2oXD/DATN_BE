@@ -10,15 +10,12 @@ class Transaction extends Model
     use HasFactory;
 
     protected $fillable = [
-        'student_id',
+        'user_id',
         'course_id',
-        'lecturer_id',
         'amount',
-        'type',
-        'status',
         'payment_method',
+        'status',
         'transaction_date',
-        'reference_id',
     ];
 
     public function course()
