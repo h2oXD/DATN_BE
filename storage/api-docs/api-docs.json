@@ -3523,6 +3523,638 @@
                 ]
             }
         },
+        "/api/lecturers/overview": {
+            "get": {
+                "tags": [
+                    "Overview"
+                ],
+                "summary": "Get Top Lecturers",
+                "description": "Lấy danh sách giảng viên có điểm đánh giá cao nhất, bao gồm thông tin giảng viên, các khóa học và đánh giá của khóa học.",
+                "operationId": "27df41a9d7d0c096e774a9664ba8537f",
+                "responses": {
+                    "200": {
+                        "description": "Danh sách giảng viên với thông tin khóa học và đánh giá",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "topLectures": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "lecturer": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "description": "ID của giảng viên",
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "description": "Tên giảng viên",
+                                                                "type": "string"
+                                                            },
+                                                            "email": {
+                                                                "description": "Email giảng viên",
+                                                                "type": "string"
+                                                            },
+                                                            "email_verified_at": {
+                                                                "description": "Thời gian xác thực email giảng viên",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "phone_number": {
+                                                                "description": "Số điện thoại giảng viên",
+                                                                "type": "string"
+                                                            },
+                                                            "profile_picture": {
+                                                                "description": "Đường dẫn ảnh đại diện giảng viên",
+                                                                "type": "string"
+                                                            },
+                                                            "bio": {
+                                                                "description": "Giới thiệu giảng viên",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "google_id": {
+                                                                "description": "ID Google của giảng viên",
+                                                                "type": "integer",
+                                                                "nullable": true
+                                                            },
+                                                            "linkedin_url": {
+                                                                "description": "URL LinkedIn của giảng viên",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "website_url": {
+                                                                "description": "URL Website của giảng viên",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "created_at": {
+                                                                "description": "Thời gian tạo giảng viên",
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            },
+                                                            "updated_at": {
+                                                                "description": "Thời gian cập nhật giảng viên",
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "courses": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "description": "ID của khóa học",
+                                                                    "type": "integer"
+                                                                },
+                                                                "user_id": {
+                                                                    "description": "ID của giảng viên sở hữu khóa học",
+                                                                    "type": "integer"
+                                                                },
+                                                                "category_id": {
+                                                                    "description": "ID danh mục khóa học",
+                                                                    "type": "integer"
+                                                                },
+                                                                "price_regular": {
+                                                                    "description": "Giá gốc khóa học",
+                                                                    "type": "number",
+                                                                    "format": "float",
+                                                                    "nullable": true
+                                                                },
+                                                                "price_sale": {
+                                                                    "description": "Giá giảm khóa học",
+                                                                    "type": "number",
+                                                                    "format": "float",
+                                                                    "nullable": true
+                                                                },
+                                                                "title": {
+                                                                    "description": "Tiêu đề khóa học",
+                                                                    "type": "string"
+                                                                },
+                                                                "thumbnail": {
+                                                                    "description": "Ảnh thumbnail của khóa học",
+                                                                    "type": "string",
+                                                                    "nullable": true
+                                                                },
+                                                                "video_preview": {
+                                                                    "description": "Video giới thiệu khóa học",
+                                                                    "type": "string",
+                                                                    "nullable": true
+                                                                },
+                                                                "description": {
+                                                                    "description": "Mô tả khóa học",
+                                                                    "type": "string",
+                                                                    "nullable": true
+                                                                },
+                                                                "primary_content": {
+                                                                    "description": "Nội dung chính khóa học",
+                                                                    "type": "string",
+                                                                    "nullable": true
+                                                                },
+                                                                "status": {
+                                                                    "description": "Trạng thái của khóa học",
+                                                                    "type": "string"
+                                                                },
+                                                                "is_show_home": {
+                                                                    "description": "Có hiển thị khóa học trên trang chủ hay không",
+                                                                    "type": "boolean",
+                                                                    "nullable": true
+                                                                },
+                                                                "target_students": {
+                                                                    "description": "Đối tượng học viên khóa học",
+                                                                    "type": "string",
+                                                                    "nullable": true
+                                                                },
+                                                                "learning_outcomes": {
+                                                                    "description": "Kết quả học tập của khóa học",
+                                                                    "type": "string",
+                                                                    "nullable": true
+                                                                },
+                                                                "prerequisites": {
+                                                                    "description": "Điều kiện tiên quyết của khóa học",
+                                                                    "type": "string",
+                                                                    "nullable": true
+                                                                },
+                                                                "who_is_this_for": {
+                                                                    "description": "Đối tượng khóa học dành cho ai",
+                                                                    "type": "string",
+                                                                    "nullable": true
+                                                                },
+                                                                "is_free": {
+                                                                    "description": "Khóa học miễn phí hay không",
+                                                                    "type": "boolean"
+                                                                },
+                                                                "language": {
+                                                                    "description": "Ngôn ngữ của khóa học",
+                                                                    "type": "string",
+                                                                    "nullable": true
+                                                                },
+                                                                "level": {
+                                                                    "description": "Trình độ của khóa học",
+                                                                    "type": "string",
+                                                                    "nullable": true
+                                                                },
+                                                                "created_at": {
+                                                                    "description": "Thời gian tạo khóa học",
+                                                                    "type": "string",
+                                                                    "format": "date-time"
+                                                                },
+                                                                "updated_at": {
+                                                                    "description": "Thời gian cập nhật khóa học",
+                                                                    "type": "string",
+                                                                    "format": "date-time"
+                                                                },
+                                                                "reviews": {
+                                                                    "properties": {
+                                                                        "average_rating": {
+                                                                            "type": "number",
+                                                                            "format": "float"
+                                                                        }
+                                                                    },
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "properties": {
+                                                                            "id": {
+                                                                                "description": "ID của đánh giá",
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "user_id": {
+                                                                                "description": "ID của người dùng đánh giá",
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "course_id": {
+                                                                                "description": "ID của khóa học đánh giá",
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "rating": {
+                                                                                "description": "Điểm đánh giá khóa học",
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "review_text": {
+                                                                                "description": "Nội dung đánh giá khóa học",
+                                                                                "type": "string",
+                                                                                "nullable": true
+                                                                            },
+                                                                            "created_at": {
+                                                                                "description": "Thời gian tạo đánh giá",
+                                                                                "type": "string",
+                                                                                "format": "date-time",
+                                                                                "nullable": true
+                                                                            }
+                                                                        },
+                                                                        "type": "object"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "topCourses": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "course": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "description": "ID của khóa học",
+                                                                "type": "integer"
+                                                            },
+                                                            "user_id": {
+                                                                "description": "ID của giảng viên sở hữu khóa học",
+                                                                "type": "integer"
+                                                            },
+                                                            "category_id": {
+                                                                "description": "ID danh mục khóa học",
+                                                                "type": "integer"
+                                                            },
+                                                            "price_regular": {
+                                                                "description": "Giá gốc khóa học",
+                                                                "type": "number",
+                                                                "format": "float",
+                                                                "nullable": true
+                                                            },
+                                                            "price_sale": {
+                                                                "description": "Giá giảm khóa học",
+                                                                "type": "number",
+                                                                "format": "float",
+                                                                "nullable": true
+                                                            },
+                                                            "title": {
+                                                                "description": "Tiêu đề khóa học",
+                                                                "type": "string"
+                                                            },
+                                                            "thumbnail": {
+                                                                "description": "Ảnh thumbnail của khóa học",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "video_preview": {
+                                                                "description": "Video giới thiệu khóa học",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "description": {
+                                                                "description": "Mô tả khóa học",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "primary_content": {
+                                                                "description": "Nội dung chính khóa học",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "status": {
+                                                                "description": "Trạng thái của khóa học",
+                                                                "type": "string"
+                                                            },
+                                                            "is_show_home": {
+                                                                "description": "Có hiển thị khóa học trên trang chủ hay không",
+                                                                "type": "boolean",
+                                                                "nullable": true
+                                                            },
+                                                            "target_students": {
+                                                                "description": "Đối tượng học viên khóa học",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "learning_outcomes": {
+                                                                "description": "Kết quả học tập của khóa học",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "prerequisites": {
+                                                                "description": "Điều kiện tiên quyết của khóa học",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "who_is_this_for": {
+                                                                "description": "Đối tượng khóa học dành cho ai",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "is_free": {
+                                                                "description": "Khóa học miễn phí hay không",
+                                                                "type": "boolean"
+                                                            },
+                                                            "language": {
+                                                                "description": "Ngôn ngữ của khóa học",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "level": {
+                                                                "description": "Trình độ của khóa học",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "created_at": {
+                                                                "description": "Thời gian tạo khóa học",
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            },
+                                                            "updated_at": {
+                                                                "description": "Thời gian cập nhật khóa học",
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            },
+                                                            "reviews": {
+                                                                "properties": {
+                                                                    "average_rating": {
+                                                                        "type": "number",
+                                                                        "format": "float"
+                                                                    }
+                                                                },
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "description": "ID của đánh giá",
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "user_id": {
+                                                                            "description": "ID của người dùng đánh giá",
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "course_id": {
+                                                                            "description": "ID của khóa học đánh giá",
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "rating": {
+                                                                            "description": "Điểm đánh giá khóa học",
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "review_text": {
+                                                                            "description": "Nội dung đánh giá khóa học",
+                                                                            "type": "string",
+                                                                            "nullable": true
+                                                                        },
+                                                                        "created_at": {
+                                                                            "description": "Thời gian tạo đánh giá",
+                                                                            "type": "string",
+                                                                            "format": "date-time",
+                                                                            "nullable": true
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "user": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "description": "ID của giảng viên",
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "description": "Tên giảng viên",
+                                                                "type": "string"
+                                                            },
+                                                            "email": {
+                                                                "description": "Email giảng viên",
+                                                                "type": "string"
+                                                            },
+                                                            "email_verified_at": {
+                                                                "description": "Thời gian xác thực email giảng viên",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "phone_number": {
+                                                                "description": "Số điện thoại giảng viên",
+                                                                "type": "string"
+                                                            },
+                                                            "profile_picture": {
+                                                                "description": "Đường dẫn ảnh đại diện giảng viên",
+                                                                "type": "string"
+                                                            },
+                                                            "bio": {
+                                                                "description": "Giới thiệu giảng viên",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "google_id": {
+                                                                "description": "ID Google của giảng viên",
+                                                                "type": "integer",
+                                                                "nullable": true
+                                                            },
+                                                            "linkedin_url": {
+                                                                "description": "URL LinkedIn của giảng viên",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "website_url": {
+                                                                "description": "URL Website của giảng viên",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "created_at": {
+                                                                "description": "Thời gian tạo giảng viên",
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            },
+                                                            "updated_at": {
+                                                                "description": "Thời gian cập nhật giảng viên",
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "highest_rating": {
+                                                        "description": "Điểm đánh giá cao nhất của khóa học",
+                                                        "type": "number",
+                                                        "format": "float"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "courseFree": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "ID của khóa học",
+                                                        "type": "integer"
+                                                    },
+                                                    "user_id": {
+                                                        "description": "ID của giảng viên sở hữu khóa học",
+                                                        "type": "integer"
+                                                    },
+                                                    "category_id": {
+                                                        "description": "ID danh mục khóa học",
+                                                        "type": "integer"
+                                                    },
+                                                    "price_regular": {
+                                                        "description": "Giá gốc khóa học",
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "nullable": true
+                                                    },
+                                                    "price_sale": {
+                                                        "description": "Giá giảm khóa học",
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "nullable": true
+                                                    },
+                                                    "title": {
+                                                        "description": "Tiêu đề khóa học",
+                                                        "type": "string"
+                                                    },
+                                                    "thumbnail": {
+                                                        "description": "Ảnh thumbnail của khóa học",
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "video_preview": {
+                                                        "description": "Video giới thiệu khóa học",
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "description": {
+                                                        "description": "Mô tả khóa học",
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "primary_content": {
+                                                        "description": "Nội dung chính khóa học",
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "status": {
+                                                        "description": "Trạng thái của khóa học",
+                                                        "type": "string"
+                                                    },
+                                                    "is_show_home": {
+                                                        "description": "Có hiển thị khóa học trên trang chủ hay không",
+                                                        "type": "boolean",
+                                                        "nullable": true
+                                                    },
+                                                    "target_students": {
+                                                        "description": "Đối tượng học viên khóa học",
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "learning_outcomes": {
+                                                        "description": "Kết quả học tập của khóa học",
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "prerequisites": {
+                                                        "description": "Điều kiện tiên quyết của khóa học",
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "who_is_this_for": {
+                                                        "description": "Đối tượng khóa học dành cho ai",
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "is_free": {
+                                                        "description": "Khóa học miễn phí hay không",
+                                                        "type": "boolean"
+                                                    },
+                                                    "language": {
+                                                        "description": "Ngôn ngữ của khóa học",
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "level": {
+                                                        "description": "Trình độ của khóa học",
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "created_at": {
+                                                        "description": "Thời gian tạo khóa học",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Thời gian cập nhật khóa học",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "reviews": {
+                                                        "properties": {
+                                                            "average_rating": {
+                                                                "type": "number",
+                                                                "format": "float"
+                                                            }
+                                                        },
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "description": "ID của đánh giá",
+                                                                    "type": "integer"
+                                                                },
+                                                                "user_id": {
+                                                                    "description": "ID của người dùng đánh giá",
+                                                                    "type": "integer"
+                                                                },
+                                                                "course_id": {
+                                                                    "description": "ID của khóa học đánh giá",
+                                                                    "type": "integer"
+                                                                },
+                                                                "rating": {
+                                                                    "description": "Điểm đánh giá khóa học",
+                                                                    "type": "integer"
+                                                                },
+                                                                "review_text": {
+                                                                    "description": "Nội dung đánh giá khóa học",
+                                                                    "type": "string",
+                                                                    "nullable": true
+                                                                },
+                                                                "created_at": {
+                                                                    "description": "Thời gian tạo đánh giá",
+                                                                    "type": "string",
+                                                                    "format": "date-time",
+                                                                    "nullable": true
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi server",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Thông báo lỗi",
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "description": "Chi tiết lỗi",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/courses/{course_id}/sections": {
             "get": {
                 "tags": [
@@ -4253,13 +4885,25 @@
                 ]
             }
         },
-        "/user/create-payment": {
+        "/user/courses/{course_id}/create-payment": {
             "post": {
                 "tags": [
-                    "Thanh toán"
+                    "VNPay"
                 ],
-                "summary": "Tạo yêu cầu thanh toán VNPAY",
-                "operationId": "24611da80307761e4aff72e190138cee",
+                "summary": "Tạo yêu cầu thanh toán VNPay cho khóa học",
+                "description": "API này cho phép người dùng tạo yêu cầu thanh toán VNPay cho khóa học (trừ khóa học miễn phí).",
+                "operationId": "ab888fd94789f724a945ee809e3444d1",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -4267,7 +4911,7 @@
                             "schema": {
                                 "properties": {
                                     "amount": {
-                                        "description": "Số tiền thanh toán (ví dụ: 10000 VND)",
+                                        "description": "Số tiền cần thanh toán",
                                         "type": "integer",
                                         "example": 10000
                                     },
@@ -4283,7 +4927,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Tạo yêu cầu thanh toán thành công",
                         "content": {
                             "application/json": {
@@ -4294,8 +4938,25 @@
                                             "example": "success"
                                         },
                                         "payment_url": {
+                                            "description": "URL thanh toán VNPay",
                                             "type": "string",
-                                            "example": "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?..."
+                                            "example": "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Khóa học miễn phí, đã tự động đăng ký",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Khóa học miễn phí, đã tự động đăng ký"
                                         }
                                     },
                                     "type": "object"
@@ -4304,14 +4965,18 @@
                         }
                     },
                     "400": {
-                        "description": "Lỗi",
+                        "description": "Lỗi validation hoặc đã tham gia khóa học",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
+                                        "errors": {
+                                            "description": "Các lỗi validation",
+                                            "type": "object"
+                                        },
+                                        "error": {
                                             "type": "string",
-                                            "example": "Lỗi tạo yêu cầu thanh toán"
+                                            "example": "Bạn đã tham gia khóa học"
                                         }
                                     },
                                     "type": "object"
@@ -4319,15 +4984,39 @@
                             }
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized - Chưa đăng nhập hoặc token không hợp lệ",
+                    "404": {
+                        "description": "Không tìm thấy khóa học",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
                                         "message": {
                                             "type": "string",
-                                            "example": "Unauthenticated."
+                                            "example": "Không tìm thấy khóa học cần thanh toán"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "423": {
+                        "description": "Khóa học đã sở hữu hoặc trạng thái khóa học không hợp lệ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Khóa học đã sở hữu không cần thanh toán"
                                         }
                                     },
                                     "type": "object"
@@ -4336,19 +5025,51 @@
                         }
                     },
                     "500": {
-                        "description": "Lỗi máy chủ"
+                        "description": "Lỗi server",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi server"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Chi tiết lỗi"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
             }
         },
-        "/user/payment-callback": {
+        "/user/courses/{course_id}/payment-callback": {
             "get": {
                 "tags": [
-                    "Thanh toán"
+                    "VNPay"
                 ],
-                "summary": "Xử lý callback từ VNPAY",
-                "operationId": "b9329b58ef996649b136b1041b535a52",
+                "summary": "Xử lý callback từ VNPay",
+                "description": "API này nhận kết quả thanh toán từ VNPay và cập nhật trạng thái giao dịch.",
+                "operationId": "7b91c8d1dba32b6fab8580beb6abe4b3",
                 "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
                     {
                         "name": "vnp_Amount",
                         "in": "query",
@@ -4416,7 +5137,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Callback xử lý thành công",
+                        "description": "Thanh toán thành công",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -4432,7 +5153,7 @@
                         }
                     },
                     "400": {
-                        "description": "Callback xử lý thất bại",
+                        "description": "Thanh toán thất bại hoặc đã tham gia vào khóa học",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -4446,18 +5167,43 @@
                                 }
                             }
                         }
+                    },
+                    "500": {
+                        "description": "Lỗi server",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi server"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Chi tiết lỗi"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
             }
         },
-        "/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos": {
+        "api/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos": {
             "get": {
                 "tags": [
                     "Videos"
                 ],
                 "summary": "Lấy danh sách video của bài học",
                 "description": "API này trả về danh sách video thuộc về bài học cụ thể",
-                "operationId": "ac8fd02bf39034af2ddc2615b77eb3fa",
+                "operationId": "4dbf93fcc62d350a150cf5e48020bc40",
                 "parameters": [
                     {
                         "name": "course_id",
@@ -4587,9 +5333,7 @@
                         "sanctum": []
                     }
                 ]
-            }
-        },
-        "/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos": {
+            },
             "post": {
                 "tags": [
                     "Videos"
@@ -4801,14 +5545,14 @@
                 ]
             }
         },
-        "/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}": {
+        "api/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos/{video_id}": {
             "get": {
                 "tags": [
                     "Videos"
                 ],
                 "summary": "Lấy thông tin chi tiết của một video",
                 "description": "API này trả về thông tin chi tiết của một video thuộc về bài học cụ thể",
-                "operationId": "39df77e52876b9a1fede66d23a55168d",
+                "operationId": "9c315225051714615c2d1ffc0365e309",
                 "parameters": [
                     {
                         "name": "course_id",
@@ -4952,7 +5696,7 @@
                 ],
                 "summary": "Cập nhật video của bài học",
                 "description": "API này cho phép giảng viên cập nhật video cho một bài học",
-                "operationId": "656bdd0d6ca8845e2f0781192d8bf8b1",
+                "operationId": "85c3d84984b756f3d6aacebef91052ba",
                 "parameters": [
                     {
                         "name": "course_id",
@@ -5175,7 +5919,7 @@
                 ],
                 "summary": "Xóa video của bài học",
                 "description": "API này cho phép giảng viên xóa một video khỏi bài học",
-                "operationId": "f79604e4039018a48ce02dd519a63bd0",
+                "operationId": "28a57fce6a1999262be0704f9f68e8d7",
                 "parameters": [
                     {
                         "name": "course_id",
@@ -5277,6 +6021,386 @@
                     }
                 ]
             }
+        },
+        "/user/wallets": {
+            "get": {
+                "tags": [
+                    "Wallet"
+                ],
+                "summary": "Lấy thông tin ví của người dùng",
+                "description": "API này trả về thông tin chi tiết về ví của người dùng đã xác thực.",
+                "operationId": "9de98690b074c425a4d29fa111faf535",
+                "responses": {
+                    "200": {
+                        "description": "Thành công - Trả về thông tin ví",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "wallet": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "user_id": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "balance": {
+                                                    "type": "number",
+                                                    "example": 999000
+                                                },
+                                                "transaction_history": {
+                                                    "type": "string",
+                                                    "example": null
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": null
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": null
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy ví",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy ví của người dùng này."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi server",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi server"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Chi tiết lỗi"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Wallet"
+                ],
+                "summary": "Cập nhật thông tin ví của người dùng",
+                "description": "API này cho phép người dùng cập nhật số dư trong ví của mình.",
+                "operationId": "019604316db58c03c60ad10c71b6059f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "balance": {
+                                        "description": "Số dư mới của ví",
+                                        "type": "integer",
+                                        "example": 15000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ví được cập nhật",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "Ví được cập nhật"
+                                        },
+                                        "wallet": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "user_id": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "balance": {
+                                                    "type": "number",
+                                                    "example": 99000
+                                                },
+                                                "transaction_history": {
+                                                    "type": "string",
+                                                    "example": null
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": null
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": null
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Lỗi validation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "description": "Các lỗi validation",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy ví",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy ví của người dùng này."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi server",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi server"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Chi tiết lỗi"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/courses/{course_id}/wallet-payment": {
+            "post": {
+                "tags": [
+                    "Wallet"
+                ],
+                "summary": "Thanh toán khóa học bằng ví",
+                "description": "API này cho phép người dùng thanh toán khóa học bằng số dư trong ví (trừ khóa học miễn phí).",
+                "operationId": "f0a907c10ddd4991e6e6f9ff011c041f",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "amount": {
+                                        "description": "Số tiền cần thanh toán",
+                                        "type": "integer",
+                                        "example": 10000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Thanh toán thành công / Khóa học miễn phí, đã tự động đăng ký",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Thanh toán thành công / Khóa học miễn phí, đã tự động đăng ký"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Lỗi validation / Số dư ví không đủ / Đã tham gia khóa học",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "description": "Các lỗi validation",
+                                            "type": "object"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Số dư ví không đủ / Bạn đã tham gia khóa học"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy ví hoặc khóa học",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy ví của người dùng này"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "423": {
+                        "description": "Khóa học đã sở hữu hoặc trạng thái khóa học không hợp lệ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Khóa học đã sở hữu không cần thanh toán"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi server",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi server"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Chi tiết lỗi"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "tags": [
@@ -5305,16 +6429,24 @@
             "description": "Lesson"
         },
         {
+            "name": "Overview",
+            "description": "Overview"
+        },
+        {
             "name": "Section",
             "description": "Section"
         },
         {
-            "name": "Thanh toán",
-            "description": "Thanh toán"
+            "name": "VNPay",
+            "description": "VNPay"
         },
         {
             "name": "Videos",
             "description": "Videos"
+        },
+        {
+            "name": "Wallet",
+            "description": "Wallet"
         }
     ]
 }
