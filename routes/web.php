@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\DashBoardController;
+use App\Http\Controllers\Admin\LecturerRegisterController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\VoucherController;
@@ -68,6 +69,9 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::post('courses/{id}/reject', [CourseController::class, 'reject'])->name('courses.reject');
         Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
         Route::get('courses/censor', [CourseController::class, 'censorCourseList'])->name('censor.courses.list');
+
+        Route::resource('lecturer_registers', LecturerRegisterController::class);
+        
     });
 });
 
