@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('lecturer_registers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id'); // Khóa ngoại
-            $table->json('lecturer_answers')->nullable();
+            $table->text('answer1')->nullable()->comment('câu trả lời 1');
+            $table->text('answer2')->nullable()->comment('câu trả lời 2');
+            $table->text('answer3')->nullable()->comment('câu trả lời 3');
+
             $table->text('admin_rejection_reason')->nullable();
             $table->enum('status', ['pending', 'rejected', 'approved'])->default('pending');
             $table->timestamps();

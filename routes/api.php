@@ -35,6 +35,13 @@ use L5Swagger\Http\Controllers\SwaggerController;
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', [AuthController::class, 'getUser']);
+    Route::post('users', [UserController::class, 'update']);
+    Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
+    //wallet in user
+    Route::get('/user/wallet', [WalletController::class, 'show']);
+    Route::put('/user/wallet/{wallet_id}', [WalletController::class, 'update']);
+    Route::post('register/answers', [LecturerRegisterController::class, 'submitAnswers']);
+
     Route::apiResource('users', UserController::class)->only(['show', 'update']);
     Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
     //wallet in user

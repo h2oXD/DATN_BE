@@ -66,12 +66,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Course::class);
     }
-    public function lecturerRegister() {
-    return $this->hasOne(LecturerRegister::class); 
-}
 
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
+    public function lecturerRegister() {
+    return $this->hasOne(LecturerRegister::class); 
+}
 }
