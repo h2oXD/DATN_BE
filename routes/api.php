@@ -5,11 +5,13 @@ use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\LecturerController;
+use App\Http\Controllers\Api\V1\LecturerRegisterController;
 use App\Http\Controllers\Api\V1\LessonCodingController;
 use App\Http\Controllers\Api\V1\LessonController;
 use App\Http\Controllers\Api\V1\OverviewController;
 use App\Http\Controllers\Api\V1\QuizController;
 use App\Http\Controllers\Api\V1\SectionController;
+use App\Http\Controllers\Api\V1\StudyController;
 use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\VideoController;
@@ -35,17 +37,22 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', [AuthController::class, 'getUser']);
     Route::apiResource('users', UserController::class)->only(['show', 'update']);
     Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
+
+    Route::post('register/answers', [LecturerRegisterController::class, 'submitAnswers']);
+
     //wallet in user
     Route::get('/user/wallets', [WalletController::class, 'show']);
     Route::put('/user/wallets', [WalletController::class, 'update']); //test
-    Route::put('/user/wallets/deposit', [WalletController::class, 'depositPayment']);
-    Route::get('/user/wallets/result', [WalletController::class, 'resultPaymemt']);
-
+    Route::post('/user/wallets/deposit', [WalletController::class, 'depositPayment']); // nạp tiền vào ví
+    Route::get('/user/wallets/result', [WalletController::class, 'resultPaymemt']); // trả kết quả thanh toán
     // Pay by VNPay
     Route::post('/user/courses/{course_id}/create-payment', [VNPayAPIController::class, 'createPayment']);
     Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
     // Pay by wallet
     Route::post('/user/courses/{course_id}/wallet-payment', [WalletController::class, 'payment']);
+
+    //Study
+    Route::get('student/{user_id}/study/{courseId}', [StudyController::class, 'getCourseInfo']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
