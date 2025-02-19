@@ -374,4 +374,6 @@ class DatabaseSeeder extends Seeder
             Review::create($review);
         }
     }
+    
+}
 }
