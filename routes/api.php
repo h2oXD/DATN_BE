@@ -8,8 +8,10 @@ use App\Http\Controllers\Api\V1\LecturerController;
 use App\Http\Controllers\Api\V1\LecturerRegisterController;
 use App\Http\Controllers\Api\V1\LessonCodingController;
 use App\Http\Controllers\Api\V1\LessonController;
+use App\Http\Controllers\Api\V1\OverviewController;
 use App\Http\Controllers\Api\V1\QuizController;
 use App\Http\Controllers\Api\V1\SectionController;
+use App\Http\Controllers\Api\V1\StudyController;
 use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\VideoController;
@@ -44,6 +46,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/user/create-payment', [VNPayAPIController::class, 'createPayment']);
     Route::get('/user/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
 
+    //Study
+    Route::get('student/{user_id}/study/{courseId}', [StudyController::class, 'getCourseInfo']);
+
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
@@ -69,6 +74,8 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/dashboard', function (Request $request) {
         return response()->json(['message' => 'Chào mừng Học viên']);
     });
+
+    Route::get('/student/home',[OverviewController::class, 'overview']);
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function () {
     Route::get('/admin/dashboard', function (Request $request) {

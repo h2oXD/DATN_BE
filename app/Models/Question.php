@@ -18,4 +18,8 @@ class Question extends Model
         'order',
     ];
 
+    public function quiz()
+    {
+        return $this->belongsTo(Quiz::class);
+    }
 }
