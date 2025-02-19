@@ -141,13 +141,10 @@ class CourseController extends Controller
             'sections.lessons.quizzes'
         ])->find($course_id);
 
-
-        $totalLessons = $course->sections->flatMap(function ($section) {
-            return $section->lessons;
-        })->count();
+        
+        $totalLessons = $course->lessons()->count();
 
         // dd($totalLessons);
-        return view(self::PATH_VIEW . 'check-course', compact('course','totalLessons'));
-
+        return view(self::PATH_VIEW . 'check-course', compact('course', 'totalLessons'));
     }
 }

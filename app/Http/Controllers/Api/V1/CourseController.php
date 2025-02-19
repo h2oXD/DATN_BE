@@ -5,6 +5,11 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreCourseRequest;
 use App\Http\Requests\Api\UpdateCourseRequest;
+use App\Models\Course;
+use App\Models\Enrollment;
+use App\Models\Lesson;
+use App\Models\Review;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -136,7 +141,6 @@ class CourseController extends Controller
             return response()->json([
                 'course_id' => $course->id,
             ], Response::HTTP_CREATED);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => $th,
@@ -579,6 +583,143 @@ class CourseController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => $th,
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+ * @OA\Get(
+ *     path="/courses/{course_id}/public",
+ *     summary="Lấy chi tiết khoá học",
+ *     description="API này trả về thông tin chi tiết của một khoá học đã được xuất bản, bao gồm giảng viên, số học viên, số bài học, rating trung bình và nội dung khoá học.",
+ *     tags={"Courses"},
+ *     @OA\Parameter(
+ *         name="course_id",
+ *         in="path",
+ *         required=true,
+ *         description="ID của khoá học",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Chi tiết khoá học",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="data", type="object",
+ *                 @OA\Property(property="course", type="object",
+ *                     @OA\Property(property="id", type="integer", example=1),
+ *                     @OA\Property(property="title", type="string", example="Lập trình Web từ A-Z"),
+ *                     @OA\Property(property="thumbnail", type="string", example="https://example.com/thumbnail.jpg"),
+ *                     @OA\Property(property="video_preview", type="string", example="https://example.com/preview.mp4"),
+ *                     @OA\Property(property="description", type="string", example="Khoá học lập trình Web toàn diện cho người mới."),
+ *                     @OA\Property(property="primary_content", type="string", example="Các kiến thức về HTML, CSS, JS, PHP, Laravel."),
+ *                     @OA\Property(property="price_regular", type="number", example=199.99),
+ *                     @OA\Property(property="price_sale", type="number", example=99.99),
+ *                     @OA\Property(property="status", type="string", example="published"),
+ *                     @OA\Property(property="language", type="string", example="Tiếng Việt"),
+ *                     @OA\Property(property="level", type="string", example="Beginner"),
+ *                     @OA\Property(property="created_at", type="string", format="date-time", example="2025-02-16T16:44:38.000000Z"),
+ *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-02-16T16:44:38.000000Z")
+ *                 ),
+ *                 @OA\Property(property="lecturer", type="object",
+ *                     @OA\Property(property="id", type="integer", example=1),
+ *                     @OA\Property(property="name", type="string", example="Nguyễn Văn A"),
+ *                     @OA\Property(property="email", type="string", example="nguyenvana@example.com")
+ *                 ),
+ *                 @OA\Property(property="student_count", type="integer", example=150),
+ *                 @OA\Property(property="total_lessons", type="integer", example=35),
+ *                 @OA\Property(property="average_rating", type="number", example=4.7)
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Không tìm thấy khoá học",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Không tìm thấy khoá học")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Lỗi hệ thống",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Lỗi hệ thống"),
+ *             @OA\Property(property="error", type="string", example="Chi tiết lỗi từ server")
+ *         )
+ *     )
+ * )
+ */
+
+    public function publicCourseDetail($course_id)
+    {
+        try {
+            $course = Course::with([
+                'user:id,name,email', // Lấy thông tin giảng viên
+                'sections' => function ($query) {
+                    $query->orderBy('order');
+                },
+                'sections.lessons' => function ($query) {
+                    $query->orderBy('order')->select('id', 'section_id', 'title', 'description');
+                },
+                'sections.lessons.videos:id,lesson_id,video_url',
+                'sections.lessons.documents:id,lesson_id,document_url',
+                'sections.lessons.codings:id,lesson_id,problem_title,problem_description',
+                'sections.lessons.quizzes:id,lesson_id,title,description',
+                'category:id,name'
+            ])
+                ->where('status', 'published')
+                ->select([
+                    'id',
+                    'user_id',
+                    'category_id',
+                    'price_regular',
+                    'price_sale',
+                    'title',
+                    'thumbnail',
+                    'video_preview',
+                    'description',
+                    'primary_content',
+                    'status',
+                    'is_show_home',
+                    'target_students',
+                    'learning_outcomes',
+                    'prerequisites',
+                    'who_is_this_for',
+                    'language',
+                    'level',
+                    'created_at',
+                    'updated_at'
+                ])
+                ->find($course_id);
+
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Không tìm thấy khoá học'
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            // Đếm số học viên đã đăng ký khóa học
+            $studentCount = $course->enrollments()->count(DB::raw('DISTINCT(user_id)'));
+
+            // Đếm tổng số bài học trong khóa học
+            $totalLessons = $course->lessons()->count();
+
+            // Tính trung bình rating của khóa học
+            $averageRating = $course->reviews()->avg('rating') ?? 0;
+
+            return response()->json([
+                'data' => [
+                    'course' => $course,
+                    'instructor' => $course->user, // Trả về thông tin giảng viên
+                    'student_count' => $studentCount,
+                    'total_lessons' => $totalLessons,
+                    'average_rating' => round($averageRating, 1),
+                ]
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Lỗi hệ thống',
+                'error' => $th
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

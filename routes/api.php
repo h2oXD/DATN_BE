@@ -63,7 +63,6 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}/questions',QuizController::class)->parameters(['questions' => 'question_id']);
 
     Route::post('lessons/order',[LessonController::class, 'updateOrder']);
-
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/dashboard', function (Request $request) {
@@ -81,6 +80,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function () {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/courses/{course_id}/public', [CourseController::class, 'publicCourseDetail']);
 Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id']);
 
 Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.default.api');
