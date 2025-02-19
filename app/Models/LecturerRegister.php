@@ -16,7 +16,9 @@ class LecturerRegister extends Model
      */
     protected $fillable = [
         'user_id',
-        'lecturer_answers',
+        'answer1',
+        'answer2',
+        'answer3',
         'admin_rejection_reason',
         'status',
     ];
