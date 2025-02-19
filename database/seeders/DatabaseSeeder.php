@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Lesson;
+use App\Models\Progress;
 use App\Models\Question;
 use App\Models\Quiz;
 use App\Models\Role;
@@ -166,7 +167,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $courseID = Course::create([
-            'user_id' => 3,
+            'user_id' => 2,
             'category_id' => 3,
             'price_regular' => 109000,
             'price_sale' => 99000,
@@ -311,6 +312,26 @@ class DatabaseSeeder extends Seeder
         ];
         foreach ($questions as $question) {
             Question::create($question);
+        }
+        
+
+        $progressData = [
+            [
+                'user_id' => 2,
+                'course_id' => 1,
+                'status' => 'in_progress',
+                'progress_percent' => 45.5
+            ],
+            [
+                'user_id' => 3,
+                'course_id' => 2,
+                'status' => 'completed',
+                'progress_percent' => 100.0
+            ],
+        ];
+
+        foreach ($progressData as $data) {
+            Progress::create($data);
         }
     }
 }

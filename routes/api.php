@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
+use App\Http\Controllers\Api\V1\EnrollmentController;
 use App\Http\Controllers\Api\V1\LecturerController;
 use App\Http\Controllers\Api\V1\LessonCodingController;
 use App\Http\Controllers\Api\V1\LessonController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Api\V1\VNPayAPIController;
 use App\Http\Controllers\Api\V1\WalletController;
 use App\Http\Controllers\Api\V1\WishListController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use L5Swagger\Http\Controllers\SwaggerController;
 
@@ -41,6 +43,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     // Payment
     Route::post('/user/create-payment', [VNPayAPIController::class, 'createPayment']);
     Route::get('/user/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
+
+    Route::get('/user/courses', [EnrollmentController::class, 'getUserCoursesWithProgress']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
@@ -76,5 +80,14 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/courses/{course_id}/public', [CourseController::class, 'publicCourseDetail']);
 Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id']);
+
+Route::get('/debug', function () {
+    $user = Auth::user();
+    return response()->json([
+        'status' => $user ? 'success' : 'error',
+        'user_id' => $user ? $user->id : 'Not authenticated',
+    ]);
+});
+
 
 Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.default.api');
