@@ -15,6 +15,7 @@ class Lesson extends Model
         'title',
         'description',
         'order',
+        'type',
     ];
 
     public function course()
@@ -42,8 +43,7 @@ class Lesson extends Model
         return $this->hasMany(Coding::class);
     }
 
-    public function quizzes()
-    {
-        return $this->hasMany(Quiz::class);
+    public function quizzes() {
+        return $this->belongsToMany(Quiz::class, 'lesson_quiz');
     }
 }
