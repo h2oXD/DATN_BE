@@ -107,7 +107,7 @@ class StudyController extends Controller
 
             $completion->status = 'in_progress';
             $completion->save();
-            return response()->json(['message' => 'Học viên bắt đầu bài học.'], Response::HTTP_OK);
+            return response()->json(['message' => 'Tiến độ bài học được khởi tạo.'], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json(['message' => 'Lỗi hệ thống: ' . $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR); // Thêm $th->getMessage() để debug
         }
@@ -115,61 +115,78 @@ class StudyController extends Controller
     public function completeLesson(Request $request, $user_id, $course_id, $section_id, $lesson_id)
     {
         try {
-            if ($request->user()->id!= $user_id) {
+            if ($request->user()->id != $user_id) {
                 return response()->json(['message' => 'Unauthorized.'], Response::HTTP_FORBIDDEN);
             }
-
+    
             // Kiểm tra đăng ký khóa học
             $enrollment = Enrollment::where('user_id', $user_id)
                 ->where('course_id', $course_id)
                 ->first();
-
+    
             if (!$enrollment) {
                 return response()->json(['message' => 'Bạn chưa đăng ký khóa học này.'], Response::HTTP_NOT_FOUND);
             }
-
+    
             // Kiểm tra section có thuộc course không
             $section = Section::where('course_id', $course_id)
                 ->where('id', $section_id)
                 ->first();
+    
             if (!$section) {
                 return response()->json(['message' => 'Section không tồn tại hoặc không thuộc khóa học này.'], Response::HTTP_NOT_FOUND);
             }
-
+    
             // Kiểm tra lesson có thuộc section không
             $lesson = Lesson::where('section_id', $section_id)
                 ->where('id', $lesson_id)
                 ->first();
+    
             if (!$lesson) {
                 return response()->json(['message' => 'Lesson không tồn tại hoặc không thuộc section này.'], Response::HTTP_NOT_FOUND);
             }
-
+    
             // Cập nhật trạng thái hoàn thành bài học
             $completion = Completion::where('user_id', $user_id)
                 ->where('course_id', $course_id)
                 ->where('lesson_id', $lesson_id)
                 ->firstOrFail();
-
+    
             if ($completion->status === 'completed') {
                 return response()->json(['message' => 'Bài học đã hoàn thành.'], Response::HTTP_OK);
             }
-
+    
             $completion->status = 'completed';
             $completion->completed_at = now();
             $completion->save();
-
-            // Tính toán và cập nhật % hoàn thành khóa học 
-            $totalLessons = Lesson::whereHas('section', function ($query) use ($course_id) {
-                $query->where('course_id', $course_id);
-            })->count();
-
+    
+            // Tính toán và cập nhật % hoàn thành khóa học
+    
+            // Lần 1: Lấy total_lessons để tính toán ban đầu
+            $totalLessons = Section::where('course_id', $course_id)->sum('total_lessons');
+    
             $completedLessons = Completion::where('user_id', $user_id)
                 ->where('course_id', $course_id)
                 ->where('status', 'completed')
                 ->count();
-
-            $progressPercent = ($completedLessons / $totalLessons) * 100;
-
+    
+            // Tính toán progressPercent lần 1
+            if ($totalLessons > 0) {
+                $progressPercent = ($completedLessons / $totalLessons) * 100;
+            } else {
+                $progressPercent = 0;
+            }
+    
+            // Lần 2: Kiểm tra lại total_lessons sau khi cập nhật trạng thái hoàn thành
+            $totalLessons = Section::where('course_id', $course_id)->sum('total_lessons'); 
+    
+            // Tính toán lại progressPercent (nếu cần)
+            if ($totalLessons > 0) {
+                $progressPercent = ($completedLessons / $totalLessons) * 100;
+            } else {
+                $progressPercent = 0;
+            }
+    
             Progress::updateOrCreate(
                 [
                     'user_id' => $user_id,
@@ -177,14 +194,14 @@ class StudyController extends Controller
                 ],
                 [
                     'progress_percent' => $progressPercent,
-                    'status' => $progressPercent == 100? 'completed': 'in_progress'
+                    'status' => $progressPercent == 100 ? 'completed' : 'in_progress'
                 ]
             );
-
-            return response()->json(['message' => 'Hoàn thành bài học thành công.'], Response::HTTP_OK);
-
+    
+            return response()->json(['message' => 'Học viên hoàn thành bài học.'], Response::HTTP_OK);
+    
         } catch (\Throwable $th) {
-            return response()->json(['message' => 'Lỗi hệ thống: '. $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['message' => 'Lỗi hệ thống: ' . $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
