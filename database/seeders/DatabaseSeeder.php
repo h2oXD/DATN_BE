@@ -227,6 +227,7 @@ class DatabaseSeeder extends Seeder
             'title' => 'Cài đặt môi trường Laravel',
             'order' => 1
         ]);
+        
         $lessonID = Lesson::create([
             'section_id' => $sectionID->id,
             'title' => 'Cài đặt laragon',
@@ -247,6 +248,7 @@ class DatabaseSeeder extends Seeder
             'title' => 'Biến và Kiểu dữ liệu (Variables and Data types)',
             'order' => 2
         ]);
+        $sectionID->update(['total_lessons' => $sectionID->lessons()->count()]); 
 
         // Tạo phiếu giảm giá
         $vouchers = [
