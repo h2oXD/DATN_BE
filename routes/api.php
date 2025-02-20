@@ -52,7 +52,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/user/courses/{course_id}/wallet-payment', [WalletController::class, 'payment']);
 
     //Study
-    Route::get('student/{user_id}/study/{courseId}', [StudyController::class, 'getCourseInfo']);
+    Route::get('student/{user_id}/courses/{course_id}', [StudyController::class, 'getCourseInfo']);
+    Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/starts', [StudyController::class, 'startLesson']);
+    Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/completes', [StudyController::class, 'completeLesson']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
@@ -71,7 +73,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes',QuizController::class)->parameters(['quizzes' => 'quiz_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}/questions',QuizController::class)->parameters(['questions' => 'question_id']);
 
-    Route::post('lessons/order',[LessonController::class, 'updateOrder']);
+    Route::post('lessons/order', [LessonController::class, 'updateOrder']);
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/dashboard', function (Request $request) {
