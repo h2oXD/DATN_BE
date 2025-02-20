@@ -70,7 +70,13 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
         Route::get('courses/censor', [CourseController::class, 'censorCourseList'])->name('censor.courses.list');
 
-        Route::resource('lecturer_registers', LecturerRegisterController::class);
+        Route::post('/lecturer-approvals/{user_id}/reject', [LecturerRegisterController::class, 'reject'])->name('lecturer-approvals.reject');
+        Route::post('/lecturer-approvals/{user_id}/approve', [LecturerRegisterController::class, 'approve'])->name('lecturer-approvals.approve');
+        Route::get('lecturer_registers', [LecturerRegisterController::class, 'index'])->name('lecturer_registers.index');
+        Route::get('lecturer_registers/{user_id}', [LecturerRegisterController::class, 'show'])->name('lecturer_registers.show');
+        // Route::post('lecturer_registers/{user_id}', [LecturerRegisterController::class, 'show'])->name('lecturer_registers.show');
+        
+        
         
     });
 });

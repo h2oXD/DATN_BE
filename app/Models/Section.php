@@ -15,6 +15,7 @@ class Section extends Model
         'title',
         'description',
         'order',
+        'total_lessons'
     ];
 
     public function course()
