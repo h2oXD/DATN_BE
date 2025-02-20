@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
+use App\Http\Controllers\Api\V1\EnrollmentController;
 use App\Http\Controllers\Api\V1\LecturerController;
 use App\Http\Controllers\Api\V1\LecturerRegisterController;
 use App\Http\Controllers\Api\V1\LessonCodingController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\Api\V1\VNPayAPIController;
 use App\Http\Controllers\Api\V1\WalletController;
 use App\Http\Controllers\Api\V1\WishListController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use L5Swagger\Http\Controllers\SwaggerController;
 
@@ -55,6 +57,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('student/{user_id}/courses/{course_id}', [StudyController::class, 'getCourseInfo']);
     Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/starts', [StudyController::class, 'startLesson']);
     Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/completes', [StudyController::class, 'completeLesson']);
+
+    // danh sách khóa học đã đăng ký 
+    Route::get('/user/courses', [EnrollmentController::class, 'getUserCoursesWithProgress']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
