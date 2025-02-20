@@ -76,6 +76,23 @@ class DatabaseSeeder extends Seeder
             'role_id' => $roleStudent->id,
         ]);
 
+        User::create([
+            'name' => 'Học viên 2',
+            'email' => 'hocvien2@gmail.com',
+            'password' => Hash::make('123123123'),
+            'phone_number' => '0333444555',
+
+        ]);
+        Wallet::create([
+            'user_id' => 3,
+            'balance' => 999000
+        ]);
+        $roleStudent = Role::select('id')->where('name', 'student')->first();
+        UserRole::create([
+            'user_id' => 3,
+            'role_id' => 1,
+        ]);
+
         //Tạo giảng viên
         $lecturer = User::create([
             'name' => 'Giảng viên A',
@@ -228,7 +245,7 @@ class DatabaseSeeder extends Seeder
             'title' => 'Cài đặt môi trường Laravel',
             'order' => 1
         ]);
-        
+
         $lessonID = Lesson::create([
             'section_id' => $sectionID->id,
             'title' => 'Cài đặt laragon',
@@ -249,7 +266,7 @@ class DatabaseSeeder extends Seeder
             'title' => 'Biến và Kiểu dữ liệu (Variables and Data types)',
             'order' => 2
         ]);
-        $sectionID->update(['total_lessons' => $sectionID->lessons()->count()]); 
+        $sectionID->update(['total_lessons' => $sectionID->lessons()->count()]);
 
         // Tạo phiếu giảm giá
         $vouchers = [
@@ -346,57 +363,56 @@ class DatabaseSeeder extends Seeder
         foreach ($questions as $question) {
             Question::create($question);
 
-        $reviews = [
-            [
-            	'user_id'      =>   4,
-                'course_id'    =>   3,
-                'rating'       =>   5,
-                'review_text'  =>   'Good job'
-            ],
-            [
-                'user_id'      =>   3,
-                'course_id'    =>   2,
-                'rating'       =>   2,
-                'review_text'  =>   'Very bad'
-            ],
-            [
-                'user_id'      =>   4,
-                'course_id'    =>   4,
-                'rating'       =>   4,
-                'review_text'  =>   'Very good'
-            ],
-            [
-                'user_id'      =>   4,
-                'course_id'    =>   5,
-                'rating'       =>   5,
-                'review_text'  =>   'Dinh noc kich tran'
-            ]
-        ];
+            $reviews = [
+                [
+                    'user_id'      =>   4,
+                    'course_id'    =>   3,
+                    'rating'       =>   5,
+                    'review_text'  =>   'Good job'
+                ],
+                [
+                    'user_id'      =>   3,
+                    'course_id'    =>   2,
+                    'rating'       =>   2,
+                    'review_text'  =>   'Very bad'
+                ],
+                [
+                    'user_id'      =>   4,
+                    'course_id'    =>   4,
+                    'rating'       =>   4,
+                    'review_text'  =>   'Very good'
+                ],
+                [
+                    'user_id'      =>   4,
+                    'course_id'    =>   5,
+                    'rating'       =>   5,
+                    'review_text'  =>   'Dinh noc kich tran'
+                ]
+            ];
 
-        foreach ($reviews as $review) {
-            Review::create($review);
-        }
-        
+            foreach ($reviews as $review) {
+                Review::create($review);
+            }
 
-        $progressData = [
-            [
-                'user_id' => 2,
-                'course_id' => 1,
-                'status' => 'in_progress',
-                'progress_percent' => 45.5
-            ],
-            [
-                'user_id' => 3,
-                'course_id' => 2,
-                'status' => 'completed',
-                'progress_percent' => 100.0
-            ],
-        ];
 
-        foreach ($progressData as $data) {
-            Progress::create($data);
+            $progressData = [
+                [
+                    'user_id' => 2,
+                    'course_id' => 1,
+                    'status' => 'in_progress',
+                    'progress_percent' => 45.5
+                ],
+                [
+                    'user_id' => 3,
+                    'course_id' => 2,
+                    'status' => 'completed',
+                    'progress_percent' => 100.0
+                ],
+            ];
+
+            foreach ($progressData as $data) {
+                Progress::create($data);
+            }
         }
     }
-    
-}
 }
