@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->integer('order');
+            $table->integer('total_lessons')->default(0);
 
             $table->timestamps();
         });
