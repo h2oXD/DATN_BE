@@ -13,9 +13,6 @@
         {
             "url": "http://my-default-host.com",
             "description": "API Server"
-        },
-        {
-            "url": "/api"
         }
     ],
     "paths": {
@@ -5009,13 +5006,445 @@
                 ]
             }
         },
+        "/api/users/{user_id}/courses/{course_id}": {
+            "get": {
+                "tags": [
+                    "Study"
+                ],
+                "summary": "Lấy thông tin khóa học của người dùng",
+                "description": "Lấy thông tin chi tiết của khóa học mà người dùng đã đăng ký, bao gồm tiến độ và nội dung khóa học.",
+                "operationId": "82e2e9eac23261b60b7f5869e0dbbfc0",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "ID của người dùng",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Thành công. Trả về thông tin khóa học và tiến độ.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "course": {
+                                            "$ref": "#/components/schemas/Course"
+                                        },
+                                        "progress_percent": {
+                                            "type": "integer",
+                                            "example": 50
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Yêu cầu không hợp lệ.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Khóa học này đã bị hủy. Hoặc Trạng thái khóa học không hợp lệ."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Chưa đăng nhập hoặc token không hợp lệ.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Không có quyền truy cập.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy khóa học hoặc người dùng chưa đăng ký khóa học.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bạn chưa đăng ký khóa học này. Hoặc Khóa học này chưa được đẩy lên."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi máy chủ nội bộ.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi hệ thống."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/users/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/start": {
+            "post": {
+                "tags": [
+                    "Study"
+                ],
+                "summary": "Bắt đầu học một bài học",
+                "description": "API cho phép người dùng bắt đầu học một bài học trong một khóa học cụ thể.",
+                "operationId": "57673a4f75d38cbe78dc94774a0f61ca",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "ID của người dùng",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "section_id",
+                        "in": "path",
+                        "description": "ID của section",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "lesson_id",
+                        "in": "path",
+                        "description": "ID của lesson",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bắt đầu bài học thành công.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tiến độ bài học được khởi tạo."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bài học đã hoàn thành.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bài học đã hoàn thành."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Chưa đăng nhập hoặc token không hợp lệ.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Không có quyền truy cập.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy khóa học, section hoặc lesson.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bạn chưa đăng ký khóa học này. Hoặc Section không tồn tại hoặc không thuộc khóa học này. Hoặc Lesson không tồn tại hoặc không thuộc section này."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi máy chủ nội bộ.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi hệ thống: [Exception message]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/users/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/complete": {
+            "post": {
+                "tags": [
+                    "Study"
+                ],
+                "summary": "Hoàn thành một bài học",
+                "description": "API cho phép người dùng hoàn thành một bài học trong một khóa học cụ thể.",
+                "operationId": "87918326d7f847731e415443d27eceb6",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "ID của người dùng",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "section_id",
+                        "in": "path",
+                        "description": "ID của section",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "lesson_id",
+                        "in": "path",
+                        "description": "ID của lesson",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Hoàn thành bài học thành công.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Học viên hoàn thành bài học."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Chưa đăng nhập hoặc token không hợp lệ.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Không có quyền truy cập.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy khóa học, section, lesson hoặc completion.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bạn chưa đăng ký khóa học này. Hoặc Section không tồn tại hoặc không thuộc khóa học này. Hoặc Lesson không tồn tại hoặc không thuộc section này."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi máy chủ nội bộ.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi hệ thống: [Exception message]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/user/courses/{course_id}/create-payment": {
             "post": {
                 "tags": [
                     "VNPay"
                 ],
                 "summary": "Tạo yêu cầu thanh toán VNPay cho khóa học",
-                "description": "API này cho phép người dùng tạo yêu cầu thanh toán VNPay cho khóa học.",
+                "description": "API này cho phép người dùng tạo yêu cầu thanh toán VNPay cho khóa học (trừ khóa học miễn phí).",
                 "operationId": "ab888fd94789f724a945ee809e3444d1",
                 "parameters": [
                     {
@@ -5040,7 +5469,7 @@
                                         "example": 10000
                                     },
                                     "bank_code": {
-                                        "description": "Mã ngân hàng (ví dụ: NCB, VISA, JSC)",
+                                        "description": "Mã ngân hàng (ví dụ: NCB, VISA, JCB)",
                                         "type": "string",
                                         "example": "NCB"
                                     }
@@ -5072,8 +5501,24 @@
                             }
                         }
                     },
+                    "200": {
+                        "description": "Khóa học miễn phí, đã tự động đăng ký",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Khóa học miễn phí, đã tự động đăng ký"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
                     "400": {
-                        "description": "Lỗi validation",
+                        "description": "Lỗi validation hoặc đã tham gia khóa học",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -5081,6 +5526,10 @@
                                         "errors": {
                                             "description": "Các lỗi validation",
                                             "type": "object"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Bạn đã tham gia khóa học"
                                         }
                                     },
                                     "type": "object"
@@ -6367,7 +6816,7 @@
                     "Wallet"
                 ],
                 "summary": "Thanh toán khóa học bằng ví",
-                "description": "API này cho phép người dùng thanh toán khóa học bằng số dư trong ví.",
+                "description": "API này cho phép người dùng thanh toán khóa học bằng số dư trong ví (trừ khóa học miễn phí).",
                 "operationId": "f0a907c10ddd4991e6e6f9ff011c041f",
                 "parameters": [
                     {
@@ -6399,7 +6848,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Thanh toán thành công",
+                        "description": "Thanh toán thành công / Khóa học miễn phí, đã tự động đăng ký",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -6410,7 +6859,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Thanh toán thành công"
+                                            "example": "Thanh toán thành công / Khóa học miễn phí, đã tự động đăng ký"
                                         }
                                     },
                                     "type": "object"
@@ -6419,7 +6868,7 @@
                         }
                     },
                     "400": {
-                        "description": "Lỗi validation hoặc số dư không đủ",
+                        "description": "Lỗi validation / Số dư ví không đủ / Đã tham gia khóa học",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -6430,7 +6879,7 @@
                                         },
                                         "error": {
                                             "type": "string",
-                                            "example": "Số dư ví không đủ"
+                                            "example": "Số dư ví không đủ / Bạn đã tham gia khóa học"
                                         }
                                     },
                                     "type": "object"
@@ -6450,7 +6899,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Không tìm thấy khóa học cần thanh toán"
+                                            "example": "Không tìm thấy ví của người dùng này"
                                         }
                                     },
                                     "type": "object"
@@ -6507,6 +6956,180 @@
             }
         }
     },
+    "components": {
+        "schemas": {
+            "Course": {
+                "title": "Course Model",
+                "description": "Thông tin chi tiết của khóa học.",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Khóa học Laravel"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Mô tả khóa học Laravel"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "published"
+                    },
+                    "sections": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Section"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Section": {
+                "title": "Section Model",
+                "description": "Thông tin chi tiết của section.",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Giới thiệu"
+                    },
+                    "lessons": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Lesson"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Lesson": {
+                "title": "Lesson Model",
+                "description": "Thông tin chi tiết của lesson.",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Bài 1"
+                    },
+                    "documents": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Document"
+                        }
+                    },
+                    "codings": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Coding"
+                        }
+                    },
+                    "videos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Video"
+                        }
+                    },
+                    "quizzes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Quiz"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Document": {
+                "title": "Document Model",
+                "description": "Thông tin chi tiết của document.",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Tài liệu 1"
+                    }
+                },
+                "type": "object"
+            },
+            "Coding": {
+                "title": "Coding Model",
+                "description": "Thông tin chi tiết của coding.",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Coding 1"
+                    }
+                },
+                "type": "object"
+            },
+            "Video": {
+                "title": "Video Model",
+                "description": "Thông tin chi tiết của video.",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Video 1"
+                    }
+                },
+                "type": "object"
+            },
+            "Quiz": {
+                "title": "Quiz Model",
+                "description": "Thông tin chi tiết của quiz.",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Quiz 1"
+                    },
+                    "questions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Question"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Question": {
+                "title": "Question Model",
+                "description": "Thông tin chi tiết của question.",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Câu hỏi 1"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
     "tags": [
         {
             "name": "Authentication",
@@ -6543,6 +7166,10 @@
         {
             "name": "Section",
             "description": "Section"
+        },
+        {
+            "name": "Study",
+            "description": "Study"
         },
         {
             "name": "VNPay",
