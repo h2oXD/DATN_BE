@@ -310,10 +310,10 @@ class DatabaseSeeder extends Seeder
 
         // Tạo lịch sử sử dụng voucher
         VoucherUse::create([
-            'voucher_id'    => 1,
-            'user_id'       => $student->id,
-            'course_id'     => $courseID->id,
-            'time_used'     => Carbon::now(),
+            'voucher_id' => 1,
+            'user_id' => $student->id,
+            'course_id' => $courseID->id,
+            'time_used' => Carbon::now(),
         ]);
 
         $enrollments = [

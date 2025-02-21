@@ -27,13 +27,24 @@
                     <tbody>
                         @foreach ($courses as $course)
                             <tr>
-                                <td class="border-end"><img src="https://files.fullstack.edu.vn/f8-prod/courses/7.png"
-                                        width="100px" alt="">
+                                <td class="border-end"><img src="{{ Storage::url($course->thumbnail) }}" width="100px"
+                                        alt="">
                                 </td>
                                 <td class="border-end">{{ $course->title }}</td>
-                                <td class="border-end">{{ $course->category->name}}</td>
-                                <td class="border-end">{{ $course->user->name}}</td>
-                                <td class="border-end">{{ $course->price }} </td>
+                                <td class="border-end">{{ $course->category->name }}</td>
+                                <td class="border-end">{{ $course->user->name }}</td>
+                                @if ($course->is_free)
+                                    <td class="border-end">Miễn phí</td>
+                                @elseif($course->price_sale)
+                                    <td class="border-end">
+                                        <span
+                                            style="text-decoration: line-through; color: gray;">{{ $course->price_regular }}
+                                            VNĐ</span>
+                                        {{ $course->price_sale }} VNĐ
+                                    </td>
+                                @else
+                                    <td class="border-end">{{ $course->price_regular }} VNĐ</td>
+                                @endif
                                 <td class="border-end">{{ $course->submited_at }}</td>
                                 <td class="border-end">
                                     @if ($course->status == 'pending')

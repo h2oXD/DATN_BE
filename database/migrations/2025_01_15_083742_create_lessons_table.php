@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->integer('order');
             $table->string('type')->nullable();
+            $table->boolean('is_preview')->default(false);
 
             $table->timestamps();
         });
