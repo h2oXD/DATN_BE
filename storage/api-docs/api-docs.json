@@ -13,6 +13,9 @@
         {
             "url": "http://my-default-host.com",
             "description": "API Server"
+        },
+        {
+            "url": "/api"
         }
     ],
     "paths": {
@@ -1890,14 +1893,14 @@
                 }
             }
         },
-        "/api/v1/lecturer-register/submit-answers": {
+        "api/register/answers": {
             "post": {
                 "tags": [
                     "Lecturer Registration"
                 ],
                 "summary": "Submit answers for lecturer registration",
                 "description": "Gửi câu trả lời đăng ký giảng viên",
-                "operationId": "ab1c38b1494dd16ddb60d64146a1cb83",
+                "operationId": "b2f818c0321fc9f529f7e2de294855cd",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -5438,6 +5441,192 @@
                 ]
             }
         },
+        "/api/users": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Cập nhật thông tin người dùng",
+                "description": "Cập nhật thông tin cá nhân của người dùng đang đăng nhập.",
+                "operationId": "9bfc5b3c628dcd63bc38f26df7947a8a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Nguyễn Văn A"
+                                    },
+                                    "phone_number": {
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "0987654321"
+                                    },
+                                    "profile_picture": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "bio": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Lập trình viên web."
+                                    },
+                                    "linkedin_url": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://linkedin.com/in/username"
+                                    },
+                                    "website_url": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://example.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Thông tin người dùng cập nhật thành công",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User info updated successfully"
+                                        },
+                                        "message_success": {
+                                            "type": "string",
+                                            "example": "Thông tin đã được cập nhật thành công."
+                                        },
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Nguyễn Văn A"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "nguyenvana@example.com"
+                                                },
+                                                "phone_number": {
+                                                    "type": "string",
+                                                    "example": "0987654321"
+                                                },
+                                                "profile_picture": {
+                                                    "type": "string",
+                                                    "example": "profile_pictures/abc123.jpg"
+                                                },
+                                                "bio": {
+                                                    "type": "string",
+                                                    "example": "Lập trình viên web."
+                                                },
+                                                "linkedin_url": {
+                                                    "type": "string",
+                                                    "example": "https://linkedin.com/in/username"
+                                                },
+                                                "website_url": {
+                                                    "type": "string",
+                                                    "example": "https://example.com"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-02-21T12:34:56Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-02-21T12:45:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy người dùng",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Lỗi xác thực đầu vào",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "properties": {
+                                                "name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The name field is required."
+                                                    }
+                                                },
+                                                "phone_number": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The phone number field must not be greater than 20 characters."
+                                                    }
+                                                },
+                                                "profile_picture": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The profile picture must be an image."
+                                                    }
+                                                },
+                                                "bio": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The bio must not be greater than 255 characters."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/user/courses/{course_id}/create-payment": {
             "post": {
                 "tags": [
@@ -7359,6 +7548,10 @@
         {
             "name": "Study",
             "description": "Study"
+        },
+        {
+            "name": "Users",
+            "description": "Users"
         },
         {
             "name": "VNPay",
