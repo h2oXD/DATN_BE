@@ -544,7 +544,6 @@ class WalletController extends Controller
             // Kiểm tra dữ liệu truyền lên
             $validator = Validator::make($request->all(), [
                 'amount'    => 'required|int',
-                'bank_code' => 'required|string'
             ]);
             if ($validator->fails()) {
                 return response()->json([
