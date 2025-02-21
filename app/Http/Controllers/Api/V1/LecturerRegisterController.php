@@ -13,7 +13,7 @@ class LecturerRegisterController extends Controller
 {
      /**
      * @OA\Post(
-     *     path="/api/v1/lecturer-register/submit-answers",
+     *     path="api/register/answers",
      *     summary="Submit answers for lecturer registration",
      *     description="Gửi câu trả lời đăng ký giảng viên",
      *     tags={"Lecturer Registration"},
