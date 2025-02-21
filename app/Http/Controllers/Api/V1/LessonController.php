@@ -109,83 +109,85 @@ class LessonController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/courses/{course_id}/sections/{section_id}/lessons",
-     *     tags={"Lesson"},
-     *     summary="Tạo mới một lesson cho section",
-     *     description="API cho phép giảng viên tạo mới một lesson cho một section cụ thể thuộc một khóa học.",
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(
-     *         name="course_id",
-     *         in="path",
-     *         description="ID của khóa học",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer",
-     *             example=1
-     *         )
-     *     ),
-     *     @OA\Parameter(
-     *         name="section_id",
-     *         in="path",
-     *         description="ID của section",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer",
-     *             example=1
-     *         )
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="title", type="string", example="Bài 1: Giới thiệu Laravel"),
-     *             @OA\Property(property="description", type="string", example=null, nullable=true)
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="Tạo mới lesson thành công",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="lesson", type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="section_id", type="integer", example=1),
-     *                 @OA\Property(property="title", type="string", example="Bài 1: Giới thiệu Laravel"),
-     *                 @OA\Property(property="description", type="string", example=null, nullable=true),
-     *                 @OA\Property(property="order", type="integer", example=1),
-     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-02-17T09:00:00.000000Z"),
-     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2025-02-17T09:00:00.000000Z")
-     *             ),
-     *             @OA\Property(property="message", type="string", example="Tạo mới lesson thành công")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Lỗi validation",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="errors", type="object", example={"title": {"The title field is required."}})
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized - Chưa đăng nhập hoặc token không hợp lệ",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Không tìm thấy tài nguyên",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Không tìm thấy tài nguyên")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Lỗi server",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Lỗi server"),
-     *             @OA\Property(property="error", type="string", example="Exception message")
-     *         )
-     *     )
+     * path="/api/courses/{course_id}/sections/{section_id}/lessons",
+     * tags={"Lesson"},
+     * summary="Tạo mới một lesson cho section",
+     * description="API cho phép giảng viên tạo mới một lesson cho một section cụ thể thuộc một khóa học. API này cũng sẽ cập nhật tổng số lessons trong section.",
+     * security={{"sanctum":{}}},
+     * @OA\Parameter(
+     * name="course_id",
+     * in="path",
+     * description="ID của khóa học",
+     * required=true,
+     * @OA\Schema(
+     * type="integer",
+     * example=1
+     * )
+     * ),
+     * @OA\Parameter(
+     * name="section_id",
+     * in="path",
+     * description="ID của section",
+     * required=true,
+     * @OA\Schema(
+     * type="integer",
+     * example=1
+     * )
+     * ),
+     * @OA\RequestBody(
+     * required=true,
+     * @OA\JsonContent(
+     * @OA\Property(property="title", type="string", example="Bài 1: Giới thiệu Laravel"),
+     * @OA\Property(property="description", type="string", example=null, nullable=true),
+     * @OA\Property(property="type", type="string", example="video", nullable=true)
+     * )
+     * ),
+     * @OA\Response(
+     * response=201,
+     * description="Tạo mới lesson thành công",
+     * @OA\JsonContent(
+     * @OA\Property(property="lesson", type="object",
+     * @OA\Property(property="id", type="integer", example=1),
+     * @OA\Property(property="section_id", type="integer", example=1),
+     * @OA\Property(property="title", type="string", example="Bài 1: Giới thiệu Laravel"),
+     * @OA\Property(property="description", type="string", example=null, nullable=true),
+     * @OA\Property(property="order", type="integer", example=1),
+     * @OA\Property(property="type", type="string", example="video"),
+     * @OA\Property(property="created_at", type="string", format="date-time", example="2025-02-17T09:00:00.000000Z"),
+     * @OA\Property(property="updated_at", type="string", format="date-time", example="2025-02-17T09:00:00.000000Z")
+     * ),
+     * @OA\Property(property="message", type="string", example="Tạo mới lesson thành công")
+     * )
+     * ),
+     * @OA\Response(
+     * response=400,
+     * description="Lỗi validation",
+     * @OA\JsonContent(
+     * @OA\Property(property="errors", type="object", example={"title": {"The title field is required."}})
+     * )
+     * ),
+     * @OA\Response(
+     * response=401,
+     * description="Unauthorized - Chưa đăng nhập hoặc token không hợp lệ",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Unauthenticated.")
+     * )
+     * ),
+     * @OA\Response(
+     * response=404,
+     * description="Không tìm thấy tài nguyên",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Không tìm thấy tài nguyên")
+     * )
+     * ),
+     * @OA\Response(
+     * response=500,
+     * description="Lỗi server",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Lỗi server"),
+     * @OA\Property(property="error", type="string", example="Exception message")
+     * )
+     * )
      * )
      */
     public function store(Request $request, $course_id, $section_id)
@@ -216,6 +218,11 @@ class LessonController extends Controller
             // Lấy order lớn nhất hiện tại trong section và tăng thêm 1
             $maxOrder = $section->lessons()->max('order') ?? 0;
             $data['order'] = $maxOrder + 1;
+
+            $totalLessons = $section->lessons()->count();
+            $section->update(['total_lessons' => $totalLessons]);
+            $section->increment('total_lessons');
+
             // Tạo mới Lesson
             $lesson = $section->lessons()->create($data);
 
@@ -325,7 +332,7 @@ class LessonController extends Controller
             }
             return response()->json([
                 'message' => 'Lấy dữ liệu thành công',
-                'lesson' => $lesson->with(['videos','codings','documents','quizzes'])->find($lesson_id)
+                'lesson' => $lesson->with(['videos', 'codings', 'documents', 'quizzes'])->find($lesson_id)
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([
@@ -471,67 +478,67 @@ class LessonController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}",
-     *     tags={"Lesson"},
-     *     summary="Xóa một lesson",
-     *     description="API cho phép giảng viên xóa một lesson cụ thể thuộc một section của một khóa học.",
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(
-     *         name="course_id",
-     *         in="path",
-     *         description="ID của khóa học",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer",
-     *             example=1
-     *         )
-     *     ),
-     *     @OA\Parameter(
-     *         name="section_id",
-     *         in="path",
-     *         description="ID của section",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer",
-     *             example=1
-     *         )
-     *     ),
-     *     @OA\Parameter(
-     *         name="lesson_id",
-     *         in="path",
-     *         description="ID của lesson",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer",
-     *             example=1
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=204,
-     *         description="Xóa lesson thành công"
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized - Chưa đăng nhập hoặc token không hợp lệ",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Không tìm thấy tài nguyên",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Không tìm thấy tài nguyên")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Lỗi server",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Lỗi server"),
-     *             @OA\Property(property="error", type="string", example="Exception message")
-     *         )
-     *     )
+     * path="/api/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}",
+     * tags={"Lesson"},
+     * summary="Xóa một lesson",
+     * description="API cho phép giảng viên xóa một lesson cụ thể thuộc một section của một khóa học. API này cũng sẽ cập nhật tổng số lessons (total_lessons) trong section.",
+     * security={{"sanctum":{}}},
+     * @OA\Parameter(
+     * name="course_id",
+     * in="path",
+     * description="ID của khóa học",
+     * required=true,
+     * @OA\Schema(
+     * type="integer",
+     * example=1
+     * )
+     * ),
+     * @OA\Parameter(
+     * name="section_id",
+     * in="path",
+     * description="ID của section",
+     * required=true,
+     * @OA\Schema(
+     * type="integer",
+     * example=1
+     * )
+     * ),
+     * @OA\Parameter(
+     * name="lesson_id",
+     * in="path",
+     * description="ID của lesson",
+     * required=true,
+     * @OA\Schema(
+     * type="integer",
+     * example=1
+     * )
+     * ),
+     * @OA\Response(
+     * response=204,
+     * description="Xóa lesson thành công"
+     * ),
+     * @OA\Response(
+     * response=401,
+     * description="Unauthorized - Chưa đăng nhập hoặc token không hợp lệ",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Unauthenticated.")
+     * )
+     * ),
+     * @OA\Response(
+     * response=404,
+     * description="Không tìm thấy tài nguyên",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Không tìm thấy tài nguyên")
+     * )
+     * ),
+     * @OA\Response(
+     * response=500,
+     * description="Lỗi server",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Lỗi server"),
+     * @OA\Property(property="error", type="string", example="Exception message")
+     * )
+     * )
      * )
      */
     public function destroy(Request $request, $course_id, $section_id, $lesson_id)
@@ -555,6 +562,18 @@ class LessonController extends Controller
             DB::beginTransaction();
             // Xóa lesson
             $lesson->delete();
+
+            // Xóa lesson
+            $lesson->delete();
+
+            // Lấy section để cập nhật total_lessons
+            $section = Section::find($section_id);
+
+            // Đếm số lessons hiện tại trong section
+            $currentLessonCount = $section->lessons()->count();
+
+            // Cập nhật total_lessons với số lessons vừa đếm được
+            $section->update(['total_lessons' => $currentLessonCount]);
 
             // Cập nhật lại thứ tự order cho các lesson còn lại trong section
             Lesson::where('section_id', $section_id)

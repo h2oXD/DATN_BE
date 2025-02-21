@@ -4,12 +4,15 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
+use App\Http\Controllers\Api\V1\EnrollmentController;
 use App\Http\Controllers\Api\V1\LecturerController;
+use App\Http\Controllers\Api\V1\LecturerRegisterController;
 use App\Http\Controllers\Api\V1\LessonCodingController;
 use App\Http\Controllers\Api\V1\LessonController;
 use App\Http\Controllers\Api\V1\OverviewController;
 use App\Http\Controllers\Api\V1\QuizController;
 use App\Http\Controllers\Api\V1\SectionController;
+use App\Http\Controllers\Api\V1\StudyController;
 use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\VideoController;
@@ -17,6 +20,7 @@ use App\Http\Controllers\Api\V1\VNPayAPIController;
 use App\Http\Controllers\Api\V1\WalletController;
 use App\Http\Controllers\Api\V1\WishListController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use L5Swagger\Http\Controllers\SwaggerController;
 
@@ -35,15 +39,27 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', [AuthController::class, 'getUser']);
     Route::apiResource('users', UserController::class)->only(['show', 'update']);
     Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
+
+    Route::post('register/answers', [LecturerRegisterController::class, 'submitAnswers']);
+
     //wallet in user
     Route::get('/user/wallets', [WalletController::class, 'show']);
-    Route::put('/user/wallets', [WalletController::class, 'update']);
-
+    Route::put('/user/wallets', [WalletController::class, 'update']); //test
+    Route::post('/user/wallets/deposit', [WalletController::class, 'depositPayment']); // nạp tiền vào ví
+    Route::get('/user/wallets/result', [WalletController::class, 'resultPaymemt']); // trả kết quả thanh toán
     // Pay by VNPay
     Route::post('/user/courses/{course_id}/create-payment', [VNPayAPIController::class, 'createPayment']);
     Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
     // Pay by wallet
     Route::post('/user/courses/{course_id}/wallet-payment', [WalletController::class, 'payment']);
+
+    //Study
+    Route::get('student/{user_id}/courses/{course_id}', [StudyController::class, 'getCourseInfo']);
+    Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/starts', [StudyController::class, 'startLesson']);
+    Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/completes', [StudyController::class, 'completeLesson']);
+
+    // danh sách khóa học đã đăng ký 
+    Route::get('/user/courses', [EnrollmentController::class, 'getUserCoursesWithProgress']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
@@ -64,7 +80,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes',QuizController::class)->parameters(['quizzes' => 'quiz_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}/questions',QuizController::class)->parameters(['questions' => 'question_id']);
 
-    Route::post('lessons/order',[LessonController::class, 'updateOrder']);
+    Route::post('lessons/order', [LessonController::class, 'updateOrder']);
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/dashboard', function (Request $request) {

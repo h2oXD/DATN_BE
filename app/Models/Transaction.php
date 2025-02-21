@@ -23,8 +23,8 @@ class Transaction extends Model
         return $this->belongsTo(Course::class, 'course_id');
     }
 
-    public function student()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'student_id');
+        return $this->belongsTo(User::class, 'user_id');
     }   
 }

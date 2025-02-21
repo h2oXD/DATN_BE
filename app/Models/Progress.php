@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Progress extends Model
 {
     use HasFactory;
+    public $timestamps = false;
 
     protected $fillable = [
         'user_id',
@@ -15,4 +16,13 @@ class Progress extends Model
         'status',
         'progress_percent',
     ];
+    public function course()
+    {
+        return $this->belongsTo(Course::class, 'course_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

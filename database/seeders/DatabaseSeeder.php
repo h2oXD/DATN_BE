@@ -8,12 +8,14 @@ use App\Models\Category;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Lesson;
+use App\Models\Progress;
 use App\Models\Question;
 use App\Models\Quiz;
 use App\Models\Review;
 use App\Models\Role;
 use App\Models\Section;
 use App\Models\Tag;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Models\Video;
@@ -63,7 +65,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'hocvien1@gmail.com',
             'password' => Hash::make('123123123'),
             'phone_number' => '0333444555',
-            'profile_picture' => '/profile_pictures/EtUIcPlzMJiTg9JiTQl1Lm6XSY3RRTJ0mmZHC1Xx.jpg',
+
         ]);
         Wallet::create([
             'user_id' => $student->id,
@@ -73,6 +75,23 @@ class DatabaseSeeder extends Seeder
         UserRole::create([
             'user_id' => $student->id,
             'role_id' => $roleStudent->id,
+        ]);
+
+        User::create([
+            'name' => 'Học viên 2',
+            'email' => 'hocvien2@gmail.com',
+            'password' => Hash::make('123123123'),
+            'phone_number' => '0333444555',
+
+        ]);
+        Wallet::create([
+            'user_id' => 3,
+            'balance' => 999000
+        ]);
+        $roleStudent = Role::select('id')->where('name', 'student')->first();
+        UserRole::create([
+            'user_id' => 3,
+            'role_id' => 1,
         ]);
 
         //Tạo giảng viên
@@ -167,7 +186,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $courseID = Course::create([
-            'user_id' => 3,
+            'user_id' => 4,
             'category_id' => 3,
             'price_regular' => 199000,
             'price_sale' => 99000,
@@ -176,7 +195,7 @@ class DatabaseSeeder extends Seeder
             'admin_commission_rate' => 30
         ]);
         Course::create([
-            'user_id' => 3,
+            'user_id' => 4,
             'category_id' => 1,
             'price_regular' => 500000,
             'price_sale' => 399000,
@@ -185,18 +204,17 @@ class DatabaseSeeder extends Seeder
             'admin_commission_rate' => 30
         ]);
         Course::create([
-            'user_id' => 3,
+            'user_id' => 4,
             'category_id' => 4,
             'price_regular' => 99000,
             'price_sale' => 89000,
             'title' => 'Khoá học PHP cơ bản',
             'status' => 'pending',
-            'is_free' => true,
             'admin_commission_rate' => 30
         ]);
 
         Course::create([
-            'user_id' => 4,
+            'user_id' => 5,
             'category_id' => 4,
             'title' => 'Khoá học PHP nâng cao',
             'status' => 'published',
@@ -205,7 +223,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Course::create([
-            'user_id' => 4,
+            'user_id' => 5,
             'category_id' => 3,
             'title' => 'Khoá học Laravel cơ bản',
             'status' => 'published',
@@ -214,7 +232,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Course::create([
-            'user_id' => 4,
+            'user_id' => 5,
             'category_id' => 5,
             'title' => 'Khoá học Js nâng cao',
             'status' => 'published',
@@ -227,6 +245,7 @@ class DatabaseSeeder extends Seeder
             'title' => 'Cài đặt môi trường Laravel',
             'order' => 1
         ]);
+
         $lessonID = Lesson::create([
             'section_id' => $sectionID->id,
             'title' => 'Cài đặt laragon',
@@ -247,6 +266,7 @@ class DatabaseSeeder extends Seeder
             'title' => 'Biến và Kiểu dữ liệu (Variables and Data types)',
             'order' => 2
         ]);
+        $sectionID->update(['total_lessons' => $sectionID->lessons()->count()]);
 
         // Tạo phiếu giảm giá
         $vouchers = [
@@ -298,15 +318,17 @@ class DatabaseSeeder extends Seeder
 
         $enrollments = [
             [
-                'user_id' => 2,
-                'course_id' => 1,
-                'status' => 'active',
+                'user_id'       => 2,
+                'course_id'     => 1,
+                'status'        => 'active',
+                'enrolled_at'   => Carbon::now('Asia/Ho_Chi_Minh')
             ],
             [
-                'user_id' => 3,
-                'course_id' => 1,
-                'status' => 'completed',
-            ]
+                'user_id'       => 3,
+                'course_id'     => 1,
+                'status'        => 'active',
+                'enrolled_at'   => Carbon::now('Asia/Ho_Chi_Minh')
+            ],
         ];
         foreach ($enrollments as $enrollment) {
             Enrollment::create($enrollment);
@@ -345,28 +367,28 @@ class DatabaseSeeder extends Seeder
 
             $reviews = [
                 [
-                    'user_id' => 4,
-                    'course_id' => 3,
-                    'rating' => 5,
-                    'review_text' => 'Good job'
+                    'user_id'      =>   4,
+                    'course_id'    =>   3,
+                    'rating'       =>   5,
+                    'review_text'  =>   'Good job'
                 ],
                 [
-                    'user_id' => 3,
-                    'course_id' => 2,
-                    'rating' => 2,
-                    'review_text' => 'Very bad'
+                    'user_id'      =>   3,
+                    'course_id'    =>   2,
+                    'rating'       =>   2,
+                    'review_text'  =>   'Very bad'
                 ],
                 [
-                    'user_id' => 4,
-                    'course_id' => 4,
-                    'rating' => 4,
-                    'review_text' => 'Very good'
+                    'user_id'      =>   4,
+                    'course_id'    =>   4,
+                    'rating'       =>   4,
+                    'review_text'  =>   'Very good'
                 ],
                 [
-                    'user_id' => 4,
-                    'course_id' => 5,
-                    'rating' => 5,
-                    'review_text' => 'Dinh noc kich tran'
+                    'user_id'      =>   4,
+                    'course_id'    =>   5,
+                    'rating'       =>   5,
+                    'review_text'  =>   'Dinh noc kich tran'
                 ]
             ];
 
@@ -374,5 +396,46 @@ class DatabaseSeeder extends Seeder
                 Review::create($review);
             }
         }
+
+        $progressData = [
+            [
+                'user_id'           => 2,
+                'course_id'         => 1,
+                'status'            => 'in_progress',
+                'progress_percent'  => 0
+            ],
+            [
+                'user_id'           => 3,
+                'course_id'         => 1,
+                'status'            => 'in_progress',
+                'progress_percent'  => 0
+            ],
+        ];
+        foreach ($progressData as $data) {
+            Progress::create($data);
+        }
+
+        $transactions = [
+            [
+                'user_id'           => 2,
+                'course_id'         => 1,
+                'amount'            => 99000,
+                'payment_method'    => 'wallet',
+                'status'            => 'success',
+                'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+            ],
+            [
+                'user_id'           => 3,
+                'course_id'         => 1,
+                'amount'            => 99000,
+                'payment_method'    => 'bank_transfer',
+                'status'            => 'success',
+                'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+            ],
+        ];
+        foreach ($transactions as $data) {
+            Transaction::create($data);
+        }
+
     }
 }
