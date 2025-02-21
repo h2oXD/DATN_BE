@@ -15,6 +15,7 @@ use App\Models\Review;
 use App\Models\Role;
 use App\Models\Section;
 use App\Models\Tag;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Models\Video;
@@ -185,7 +186,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $courseID = Course::create([
-            'user_id' => 2,
+            'user_id' => 4,
             'category_id' => 3,
             'price_regular' => 199000,
             'price_sale' => 99000,
@@ -194,7 +195,7 @@ class DatabaseSeeder extends Seeder
             'admin_commission_rate' => 30
         ]);
         Course::create([
-            'user_id' => 3,
+            'user_id' => 4,
             'category_id' => 1,
             'price_regular' => 500000,
             'price_sale' => 399000,
@@ -203,18 +204,17 @@ class DatabaseSeeder extends Seeder
             'admin_commission_rate' => 30
         ]);
         Course::create([
-            'user_id' => 3,
+            'user_id' => 4,
             'category_id' => 4,
             'price_regular' => 99000,
             'price_sale' => 89000,
             'title' => 'Khoá học PHP cơ bản',
             'status' => 'pending',
-            'is_free' => true,
             'admin_commission_rate' => 30
         ]);
 
         Course::create([
-            'user_id' => 4,
+            'user_id' => 5,
             'category_id' => 4,
             'title' => 'Khoá học PHP nâng cao',
             'status' => 'published',
@@ -223,7 +223,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Course::create([
-            'user_id' => 4,
+            'user_id' => 5,
             'category_id' => 3,
             'title' => 'Khoá học Laravel cơ bản',
             'status' => 'published',
@@ -232,7 +232,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Course::create([
-            'user_id' => 4,
+            'user_id' => 5,
             'category_id' => 5,
             'title' => 'Khoá học Js nâng cao',
             'status' => 'published',
@@ -318,14 +318,16 @@ class DatabaseSeeder extends Seeder
 
         $enrollments = [
             [
-                'user_id' => 2,
-                'course_id' => 1,
-                'status' => 'active',
+                'user_id'       => 2,
+                'course_id'     => 1,
+                'status'        => 'active',
+                'enrolled_at'   => Carbon::now('Asia/Ho_Chi_Minh')
             ],
             [
-                'user_id' => 3,
-                'course_id' => 1,
-                'status' => 'completed',
+                'user_id'       => 3,
+                'course_id'     => 1,
+                'status'        => 'active',
+                'enrolled_at'   => Carbon::now('Asia/Ho_Chi_Minh')
             ],
         ];
         foreach ($enrollments as $enrollment) {
@@ -393,26 +395,47 @@ class DatabaseSeeder extends Seeder
             foreach ($reviews as $review) {
                 Review::create($review);
             }
-
-
-            $progressData = [
-                [
-                    'user_id' => 2,
-                    'course_id' => 1,
-                    'status' => 'in_progress',
-                    'progress_percent' => 45.5
-                ],
-                [
-                    'user_id' => 3,
-                    'course_id' => 2,
-                    'status' => 'completed',
-                    'progress_percent' => 100.0
-                ],
-            ];
-
-            foreach ($progressData as $data) {
-                Progress::create($data);
-            }
         }
+
+        $progressData = [
+            [
+                'user_id'           => 2,
+                'course_id'         => 1,
+                'status'            => 'in_progress',
+                'progress_percent'  => 0
+            ],
+            [
+                'user_id'           => 3,
+                'course_id'         => 1,
+                'status'            => 'in_progress',
+                'progress_percent'  => 0
+            ],
+        ];
+        foreach ($progressData as $data) {
+            Progress::create($data);
+        }
+
+        $transactions = [
+            [
+                'user_id'           => 2,
+                'course_id'         => 1,
+                'amount'            => 99000,
+                'payment_method'    => 'wallet',
+                'status'            => 'success',
+                'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+            ],
+            [
+                'user_id'           => 3,
+                'course_id'         => 1,
+                'amount'            => 99000,
+                'payment_method'    => 'bank_transfer',
+                'status'            => 'success',
+                'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+            ],
+        ];
+        foreach ($transactions as $data) {
+            Transaction::create($data);
+        }
+
     }
 }

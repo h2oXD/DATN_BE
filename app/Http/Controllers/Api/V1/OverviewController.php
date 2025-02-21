@@ -248,6 +248,7 @@ class OverviewController extends Controller
 
             $courses = Course::with(['user', 'reviews']) // Lấy thông tin user sở hữu khóa học và reviews
                 ->select('id', 'user_id', 'category_id', 'price_regular', 'price_sale', 'title', 'thumbnail', 'video_preview', 'description', 'primary_content', 'status', 'is_show_home', 'target_students', 'learning_outcomes', 'prerequisites', 'who_is_this_for', 'is_free', 'language', 'level', 'created_at', 'updated_at') // Chỉ chọn các trường cần thiết
+                ->where('status', 'published') // Thêm điều kiện chỉ lấy khóa học đã được duyệt
                 ->whereHas('reviews') // Chỉ lấy khóa học có đánh giá
                 ->get()
                 ->map(function ($course) {
