@@ -9,8 +9,52 @@ use Illuminate\Http\Request;
 class EnrollmentController extends Controller
 {
     /**
-     * Lấy danh sách khóa học đã đăng ký của học viên cùng tiến độ
-     */
+ * @OA\Get(
+ *     path="/user/courses",
+ *     summary="Lấy danh sách khoá học đã đăng ký của người dùng kèm tiến độ",
+ *     description="API này trả về danh sách các khoá học mà người dùng đã đăng ký, bao gồm thông tin khoá học và tiến độ học tập.",
+ *     tags={"User Courses"},
+ *     security={{ "bearerAuth":{} }},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Danh sách khoá học của người dùng",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="status", type="string", example="success"),
+ *             @OA\Property(property="data", type="array",
+ *                 @OA\Items(type="object",
+ *                     @OA\Property(property="id", type="integer", example=1),
+ *                     @OA\Property(property="user_id", type="integer", example=10),
+ *                     @OA\Property(property="course_id", type="integer", example=5),
+ *                     @OA\Property(property="status", type="string", example="active"),
+ *                     @OA\Property(property="course", type="object",
+ *                         @OA\Property(property="id", type="integer", example=5),
+ *                         @OA\Property(property="title", type="string", example="Khoá học Laravel từ cơ bản đến nâng cao"),
+ *                         @OA\Property(property="thumbnail", type="string", example="https://example.com/thumbnail.jpg"),
+ *                         @OA\Property(property="description", type="string", example="Khoá học Laravel chi tiết."),
+ *                         @OA\Property(property="price_regular", type="number", example=199.99),
+ *                         @OA\Property(property="price_sale", type="number", example=99.99),
+ *                         @OA\Property(property="status", type="string", example="published")
+ *                     ),
+ *                     @OA\Property(property="progress", type="object",
+ *                         @OA\Property(property="completed_lessons", type="integer", example=15),
+ *                         @OA\Property(property="total_lessons", type="integer", example=30),
+ *                         @OA\Property(property="progress_percentage", type="number", example=50.0)
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthorized - Người dùng chưa đăng nhập hoặc token không hợp lệ",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Unauthorized")
+ *         )
+ *     )
+ * )
+ */
+
     public function getUserCoursesWithProgress(Request $request)
     {
         $userId = $request->user()->id; // Lấy user_id từ request
