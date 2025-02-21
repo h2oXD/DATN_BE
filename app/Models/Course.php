@@ -17,6 +17,7 @@ class Course extends Model
         'price_regular',
         'price_sale',
         'status',
+        'is_free',
 
         'target_students',
         'learning_outcomes',

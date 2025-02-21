@@ -47,27 +47,22 @@
 @section('content')
     <div class="m-3">
         <div class="card">
-            <div class="card-body pb-1 pt-3 px-3">
-                <li class="list-group-item bg-transparent pb-2">
+            <div class="card-body p-3">
+                <li class="list-group-item bg-transparent">
                     <div class="row align-items-center">
                         <div class="col">
                             <a href="#">
                                 <div class="d-flex align-items-center flex-row gap-3">
-                                    @if ($course->thumbnail)
-                                        <img src="{{ Storage::url($course->thumbnail) }}" alt=""
-                                            class="avatar-lg rounded">
-                                    @else
-                                        <img src="/avatar-1.jpg" alt="" class="avatar-lg rounded">
-                                    @endif
-
-                                    <div class="text-body">
+                                    <div class="text-body d-flex">
                                         <p class="mb-0">
+                                            <img src="/avatar-1.jpg" alt="" class="avatar-md rounded-circle">
+                                        <div class="d-flex flex-column ms-2">
                                             <span class="fw-bold mb-0 h5">{{ $course->user->name }}</span>
-                                            <span class="ms-1 fs-6">{{ $course->user->email }}</span>
+                                            <span class="fs-6">
+                                                <span class="">Thời gian gửi: {{ $course->submited_at }}</span>
+                                            </span>
+                                        </div>
                                         </p>
-                                        <span class="fs-6">
-                                            <span class="ms-1">Thời gian gửi: {{ $course->submited_at }}</span>
-                                        </span>
                                     </div>
                                 </div>
                             </a>
@@ -78,27 +73,27 @@
                         </div>
                     </div>
                 </li>
-                <ul class="nav nav-lb-tab border-bottom-0 pb-2 pt-2 border-top" id="tab" role="tablist">
-                    <li class="nav-item my-1" role="presentation">
-                        <a class="nav-link p-0 active" id="courses-tab" data-bs-toggle="pill" href="#courses" role="tab"
-                            aria-controls="courses" aria-selected="true">Nội dung các bài</a>
-                    </li>
-                    <li class="nav-item my-1" role="presentation">
-                        <a class="nav-link p-0" id="approved-tab" data-bs-toggle="pill" href="#approved" role="tab"
-                            aria-controls="approved" aria-selected="false">Tổng quan</a>
-                    </li>
-                    <li class="nav-item my-1" role="presentation">
-                        <a class="nav-link p-0" id="pending-tab" data-bs-toggle="pill" href="#pending" role="tab"
-                            aria-controls="pending" aria-selected="false">Thông tin</a>
-                    </li>
-                    <li class="nav-item my-1" role="presentation">
-                        <a class="nav-link p-0" id="kiemtra-tab" data-bs-toggle="pill" href="#kiemtra" role="tab"
-                            aria-controls="kiemtra" aria-selected="false">Kiểm tra</a>
-                    </li>
-                </ul>
+
             </div>
         </div>
-
+        <ul class="nav nav-lb-tab border-bottom-0 pt-3 border-top" id="tab" role="tablist">
+            <li class="nav-item my-1" role="presentation">
+                <a class="nav-link p-0 active" id="courses-tab" data-bs-toggle="pill" href="#courses" role="tab"
+                    aria-controls="courses" aria-selected="true">Nội dung các bài</a>
+            </li>
+            <li class="nav-item my-1" role="presentation">
+                <a class="nav-link p-0" id="approved-tab" data-bs-toggle="pill" href="#approved" role="tab"
+                    aria-controls="approved" aria-selected="false">Tổng quan</a>
+            </li>
+            <li class="nav-item my-1" role="presentation">
+                <a class="nav-link p-0" id="pending-tab" data-bs-toggle="pill" href="#pending" role="tab"
+                    aria-controls="pending" aria-selected="false">Thông tin</a>
+            </li>
+            <li class="nav-item my-1" role="presentation">
+                <a class="nav-link p-0" id="kiemtra-tab" data-bs-toggle="pill" href="#kiemtra" role="tab"
+                    aria-controls="kiemtra" aria-selected="false">Kiểm tra</a>
+            </li>
+        </ul>
         <div class="card mt-2" id="tabContent">
             <div class="tab-content">
                 <!-- Tab All -->
@@ -192,89 +187,83 @@
                     <div class="card">
                         <div class="card-body">
                             <!-- Phan nay la tong quan-->
-
-                            <div class="bg-light py-5">
-                                <div class="container">
-                                    <div class="row g-4">
-                                        <!-- Phần Video Preview + Mô Tả (70%) -->
-                                        <div class="col-md-8">
-                                            <!-- Video Preview -->
-                                            <div id="video-container" class="card mb-4" style="display: none;">
-                                                <div class="card-body p-0">
-                                                    <video id="video-preview" class="w-100 rounded-top" controls>
-                                                        <source src="video_url.mp4" type="video/mp4">
-                                                        Trình duyệt của bạn không hỗ trợ video.
-                                                    </video>
-                                                </div>
+                            <div class="container">
+                                <div class="row g-4">
+                                    <!-- Phần Video Preview + Mô Tả (70%) -->
+                                    <div class="col-md-8">
+                                        <!-- Video Preview -->
+                                        <div class="d-flex gap-3 flex-row">
+                                            <div class="w-50">
+                                                <label class="fw-bold" for="">Video quảng cáo</label>
+                                                <video controls class="w-100 rounded"
+                                                    src="{{ Storage::url($course->video_preview) }}"></video>
                                             </div>
-                                            <!-- Mô Tả -->
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <!-- Tiêu đề Mô tả -->
-                                                    <h2 class="card-title h4 fw-bold mb-3">MÔ TẢ</h2>
-                                                    <!-- Nội dung Mô tả với gạch chân -->
-                                                    <div class="border-bottom pb-3 mb-3">
-                                                        <p class="card-text text-muted">Mô tả nội dung khóa học sẽ hiển thị
-                                                            ở đây...</p>
-                                                    </div>
-                                                    <!-- Phần bổ sung (nếu cần) -->
-                                                    <p class="card-text text-muted">Thêm thông tin bổ sung (nếu có).</p>
+                                            <div class="w-50">
+                                                <label class="fw-bold" for="">Ảnh bìa</label>
+                                                <img src="{{ Storage::url($course->thumbnail) }}" class="w-100 rounded"
+                                                    alt="">
+                                            </div>
+                                        </div>
+                                        <!-- Mô Tả -->
+                                        <div class="card mt-2 shadow-none rounded">
+                                            <div class="card-body">
+                                                <!-- Tiêu đề Mô tả -->
+                                                <h2 class="card-title h4 fw-bold mb-3">MÔ TẢ</h2>
+                                                <!-- Nội dung Mô tả với gạch chân -->
+                                                <div class=" pb-3 mb-3">
+                                                    <p class="card-text text-muted">Mô tả nội dung khóa học sẽ hiển thị
+                                                        ở đây...</p>
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
 
-                                        <!-- Phần Tổng Quan Khóa Học (30%) -->
-                                        <div class="col-md-4">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <!-- Tiêu đề Tổng quan khóa học -->
-                                                    <h2 class="card-title h4 fw-bold mb-3 border-bottom pb-3">Tổng quan
-                                                        khóa học</h2>
-                                                    <!-- Nội dung Tổng quan khóa học -->
-                                                    <ul class="list-unstyled text-muted">
-                                                        <li class="d-flex justify-content-between mb-3">
-                                                            <span><strong>Thời gian video:</strong></span>
-                                                            <span>30 Phút</span>
-                                                        </li>
-                                                        <li class="d-flex justify-content-between mb-3">
-                                                            <span><strong>Bài giảng:</strong></span>
-                                                            <span>{{ $totalLessons }}</span>
-                                                        </li>
-                                                        <li class="d-flex justify-content-between mb-3">
-                                                            <span><strong>Bài kiểm tra:</strong></span>
-                                                            <span>2</span>
-                                                        </li>
-                                                        <li class="d-flex justify-content-between mb-3">
-                                                            <span><strong>Trình độ:</strong></span>
-                                                            <span>Sơ cấp</span>
-                                                        </li>
-                                                        <li class="d-flex justify-content-between mb-3">
-                                                            <span><strong>Học viên:</strong></span>
-                                                            <span>0</span>
-                                                        </li>
-                                                        <li class="d-flex justify-content-between mb-3">
-                                                            <span><strong>Price:</strong></span>
-                                                            <span class="badge bg-success">Free</span>
-                                                        </li>
-                                                    </ul>
-                                                </div>
+                                    <!-- Phần Tổng Quan Khóa Học (30%) -->
+                                    <div class="col-md-4">
+                                        <div class="card shadow-none">
+                                            <div class="card-body">
+                                                <!-- Tiêu đề Tổng quan khóa học -->
+                                                <h2 class="card-title h4 fw-bold mb-3 border-bottom pb-3">Tổng quan
+                                                    khóa học</h2>
+                                                <!-- Nội dung Tổng quan khóa học -->
+                                                <ul class="list-unstyled text-muted">
+                                                    <li class="d-flex justify-content-between mb-3">
+                                                        <span><strong>Thời gian video:</strong></span>
+                                                        <span>30 Phút</span>
+                                                    </li>
+                                                    <li class="d-flex justify-content-between mb-3">
+                                                        <span><strong>Bài giảng:</strong></span>
+                                                        <span>{{ $totalLessons }}</span>
+                                                    </li>
+                                                    <li class="d-flex justify-content-between mb-3">
+                                                        <span><strong>Bài kiểm tra:</strong></span>
+                                                        <span>2</span>
+                                                    </li>
+                                                    <li class="d-flex justify-content-between mb-3">
+                                                        <span><strong>Trình độ:</strong></span>
+                                                        <span>{{ $course->level }}</span>
+                                                    </li>
+                                                    <li class="d-flex justify-content-between mb-3">
+                                                        <span class="fw-bold">Giá: </span>
+                                                        @if ($course->is_free)
+                                                            <td class="border-end">Miễn phí</td>
+                                                        @elseif($course->price_sale)
+                                                            <td class="border-end">
+                                                                <span
+                                                                    style="text-decoration: line-through; color: gray;">{{ $course->price_regular }}
+                                                                    VNĐ</span>
+                                                                {{ $course->price_sale }} VNĐ
+                                                            </td>
+                                                        @else
+                                                            <td class="border-end">{{ $course->price_regular }} VNĐ</td>
+                                                        @endif
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Bootstrap JS và Popper.js -->
-                            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-                            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-
-                            <script>
-                                // Kiểm tra nếu có video hay không
-                                const video = document.getElementById('video-preview');
-                                if (video && video.querySelector('source').getAttribute('src') !== "") {
-                                    document.getElementById('video-container').style.display = 'block';
-                                }
-                            </script>
                         </div>
                     </div>
                 </div>
@@ -282,12 +271,9 @@
                 <!-- Tab Pending -->
                 <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
                     <div class="card">
-                        <div class="card-header">
-                            <h3 class="m-3">Danh sách các khóa học chờ duyệt</h3>
-                        </div>
-                        <div class="card-body">
-                            
-                        </div>
+                        <ul class="p-5">
+                            <li>H1</li>
+                        </ul>
                     </div>
                 </div>
 

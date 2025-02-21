@@ -290,10 +290,10 @@ class DatabaseSeeder extends Seeder
 
         // Tạo lịch sử sử dụng voucher
         VoucherUse::create([
-            'voucher_id'    => 1,
-            'user_id'       => $student->id,
-            'course_id'     => $courseID->id,
-            'time_used'     => Carbon::now(),
+            'voucher_id' => 1,
+            'user_id' => $student->id,
+            'course_id' => $courseID->id,
+            'time_used' => Carbon::now(),
         ]);
 
         $enrollments = [
@@ -343,35 +343,36 @@ class DatabaseSeeder extends Seeder
         foreach ($questions as $question) {
             Question::create($question);
 
-        $reviews = [
-            [
-            	'user_id'      =>   4,
-                'course_id'    =>   3,
-                'rating'       =>   5,
-                'review_text'  =>   'Good job'
-            ],
-            [
-                'user_id'      =>   3,
-                'course_id'    =>   2,
-                'rating'       =>   2,
-                'review_text'  =>   'Very bad'
-            ],
-            [
-                'user_id'      =>   4,
-                'course_id'    =>   4,
-                'rating'       =>   4,
-                'review_text'  =>   'Very good'
-            ],
-            [
-                'user_id'      =>   4,
-                'course_id'    =>   5,
-                'rating'       =>   5,
-                'review_text'  =>   'Dinh noc kich tran'
-            ]
-        ];
+            $reviews = [
+                [
+                    'user_id' => 4,
+                    'course_id' => 3,
+                    'rating' => 5,
+                    'review_text' => 'Good job'
+                ],
+                [
+                    'user_id' => 3,
+                    'course_id' => 2,
+                    'rating' => 2,
+                    'review_text' => 'Very bad'
+                ],
+                [
+                    'user_id' => 4,
+                    'course_id' => 4,
+                    'rating' => 4,
+                    'review_text' => 'Very good'
+                ],
+                [
+                    'user_id' => 4,
+                    'course_id' => 5,
+                    'rating' => 5,
+                    'review_text' => 'Dinh noc kich tran'
+                ]
+            ];
 
-        foreach ($reviews as $review) {
-            Review::create($review);
+            foreach ($reviews as $review) {
+                Review::create($review);
+            }
         }
     }
 }

@@ -16,6 +16,7 @@ class Lesson extends Model
         'description',
         'order',
         'type',
+        'is_preview'
     ];
 
     public function course()
