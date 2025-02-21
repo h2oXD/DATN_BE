@@ -49,7 +49,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/wallets/result', [WalletController::class, 'resultPaymemt']); // trả kết quả thanh toán
     // Pay by VNPay
     Route::post('/user/courses/{course_id}/create-payment', [VNPayAPIController::class, 'createPayment']);
-    Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
     // Pay by wallet
     Route::post('/user/courses/{course_id}/wallet-payment', [WalletController::class, 'payment']);
 
@@ -63,6 +62,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+    // Callback payment
+    Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
+
 Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::get('/lecturer/dashboard', [LecturerController::class, 'dashboard']);
     Route::get('/lecturer', [LecturerController::class, 'getLecturerInfo']);

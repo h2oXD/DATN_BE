@@ -147,7 +147,6 @@ class VNPayAPIController extends Controller
                 // Kiểm tra dữ liệu truyền lên
                 $validator = Validator::make($request->all(), [
                     'amount'    => 'required|int',
-                    'bank_code' => 'required|string'
                 ]);
                 if ($validator->fails()) {
                     return response()->json([
@@ -183,7 +182,7 @@ class VNPayAPIController extends Controller
                     "vnp_OrderInfo"     => $vnp_OrderInfo,
                     "vnp_OrderType"     => $vnp_OrderType,
                     "vnp_ReturnUrl"     => $vnp_Returnurl,
-                    "vnp_TxnRef"        => $vnp_TxnRef,
+                    "vnp_TxnRef"        => $request->user()->id,
                 ];
 
                 if (!empty($vnp_BankCode)) {
@@ -409,8 +408,10 @@ class VNPayAPIController extends Controller
 
         try {
 
+            $user_id = $request->query('vnp_TxnRef');
+
             // Kiểm tra người dùng đã tham gia khóa học chưa
-            $Enrolled = Enrollment::where('user_id', $request->user()->id)
+            $Enrolled = Enrollment::where('user_id', $user_id)
                 ->where('course_id', $course_id)
                 ->first();
             if ($Enrolled) {
@@ -419,7 +420,7 @@ class VNPayAPIController extends Controller
                 ], Response::HTTP_BAD_REQUEST);
             }
             // Kiểm tra giao dịch có bị trùng lặp không
-            $existingTransaction = Transaction::where('user_id', $request->user()->id)
+            $existingTransaction = Transaction::where('user_id', $user_id)
                 ->where('course_id', $course_id)
                 ->whereIn('status', ['pending', 'success'])
                 ->first();
@@ -438,7 +439,7 @@ class VNPayAPIController extends Controller
             if ($request->query('vnp_ResponseCode') == "00") {
 
                 Transaction::create([
-                    'user_id' => $request->user()->id,
+                    'user_id' => $user_id,
                     'course_id' => $course_id,
                     'amount' => $amount,
                     'payment_method' => 'bank_transfer',
@@ -446,13 +447,13 @@ class VNPayAPIController extends Controller
                     'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
                 ]);
                 Enrollment::create([
-                    'user_id' => $request->user()->id,
+                    'user_id' => $user_id,
                     'course_id' => $course_id,
                     'status' => 'active',
                     'enrolled_at' => Carbon::now('Asia/Ho_Chi_Minh')
                 ]);
                 Progress::create([
-                    'user_id' => $request->user()->id,
+                    'user_id' => $user_id,
                     'course_id' => $course_id,
                     'status' => 'in_progress',
                     'progress_percent' => 0
