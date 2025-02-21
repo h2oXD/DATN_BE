@@ -389,10 +389,7 @@ class WalletController extends Controller
                     'progress_percent'  => 0
                 ]);
 
-                return response()->json([
-                    'status'    => 'success',
-                    'message'   => 'Thanh toán thành công'
-                ], Response::HTTP_OK);
+                return redirect('http://localhost:5173/student/home?status=success');
 
             } else {
 
@@ -459,10 +456,7 @@ class WalletController extends Controller
                     'progress_percent'  => 0
                 ]);
 
-                return response()->json([
-                    'status'    => 'success',
-                    'message'   => 'Thanh toán thành công'
-                ], Response::HTTP_OK);
+                return redirect('http://localhost:5173/student/home?status=success');
 
             }
 
