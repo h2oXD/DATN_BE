@@ -1890,6 +1890,129 @@
                 }
             }
         },
+        "/user/courses": {
+            "get": {
+                "tags": [
+                    "User Courses"
+                ],
+                "summary": "Lấy danh sách khoá học đã đăng ký của người dùng kèm tiến độ",
+                "description": "API này trả về danh sách các khoá học mà người dùng đã đăng ký, bao gồm thông tin khoá học và tiến độ học tập.",
+                "operationId": "145dd66697d4dbcaf3eafddb39b4cc3c",
+                "responses": {
+                    "200": {
+                        "description": "Danh sách khoá học của người dùng",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "user_id": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "course_id": {
+                                                        "type": "integer",
+                                                        "example": 5
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "active"
+                                                    },
+                                                    "course": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 5
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "example": "Khoá học Laravel từ cơ bản đến nâng cao"
+                                                            },
+                                                            "thumbnail": {
+                                                                "type": "string",
+                                                                "example": "https://example.com/thumbnail.jpg"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "Khoá học Laravel chi tiết."
+                                                            },
+                                                            "price_regular": {
+                                                                "type": "number",
+                                                                "example": 199.99
+                                                            },
+                                                            "price_sale": {
+                                                                "type": "number",
+                                                                "example": 99.99
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "example": "published"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "progress": {
+                                                        "properties": {
+                                                            "completed_lessons": {
+                                                                "type": "integer",
+                                                                "example": 15
+                                                            },
+                                                            "total_lessons": {
+                                                                "type": "integer",
+                                                                "example": 30
+                                                            },
+                                                            "progress_percentage": {
+                                                                "type": "number",
+                                                                "example": 50
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Người dùng chưa đăng nhập hoặc token không hợp lệ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/lecturer-register/submit-answers": {
             "post": {
                 "tags": [
@@ -7335,6 +7458,10 @@
         {
             "name": "Document",
             "description": "Document"
+        },
+        {
+            "name": "User Courses",
+            "description": "User Courses"
         },
         {
             "name": "Lecturer Registration",
