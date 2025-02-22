@@ -389,10 +389,7 @@ class WalletController extends Controller
                     'progress_percent'  => 0
                 ]);
 
-                return response()->json([
-                    'status'    => 'success',
-                    'message'   => 'Thanh toán thành công'
-                ], Response::HTTP_OK);
+                return redirect('http://localhost:5173/student/home?status=success');
 
             } else {
 
@@ -459,10 +456,7 @@ class WalletController extends Controller
                     'progress_percent'  => 0
                 ]);
 
-                return response()->json([
-                    'status'    => 'success',
-                    'message'   => 'Thanh toán thành công'
-                ], Response::HTTP_OK);
+                return redirect('http://localhost:5173/student/home?status=success');
 
             }
 
@@ -544,7 +538,6 @@ class WalletController extends Controller
             // Kiểm tra dữ liệu truyền lên
             $validator = Validator::make($request->all(), [
                 'amount'    => 'required|int',
-                'bank_code' => 'required|string'
             ]);
             if ($validator->fails()) {
                 return response()->json([

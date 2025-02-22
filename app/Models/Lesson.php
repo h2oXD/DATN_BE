@@ -16,6 +16,7 @@ class Lesson extends Model
         'description',
         'order',
         'type',
+        'is_preview'
     ];
 
     public function course()
@@ -30,17 +31,17 @@ class Lesson extends Model
 
     public function documents()
     {
-        return $this->hasMany(Document::class);
+        return $this->hasOne(Document::class);
     }
 
     public function videos()
     {
-        return $this->hasMany(Video::class);
+        return $this->hasOne(Video::class);
     }
 
     public function codings()
     {
-        return $this->hasMany(Coding::class);
+        return $this->hasOne(Coding::class);
     }
 
     public function quizzes() {

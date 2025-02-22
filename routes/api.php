@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\VideoController;
 use App\Http\Controllers\Api\V1\VNPayAPIController;
+use App\Http\Controllers\Api\V1\VoucherController;
 use App\Http\Controllers\Api\V1\WalletController;
 use App\Http\Controllers\Api\V1\WishListController;
 use Illuminate\Http\Request;
@@ -49,9 +50,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/wallets/result', [WalletController::class, 'resultPaymemt']); // trả kết quả thanh toán
     // Pay by VNPay
     Route::post('/user/courses/{course_id}/create-payment', [VNPayAPIController::class, 'createPayment']);
-    Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
     // Pay by wallet
     Route::post('/user/courses/{course_id}/wallet-payment', [WalletController::class, 'payment']);
+
+    // Voucher in user
+    Route::get('/user/vouchers', [VoucherController::class, 'index']);
+    Route::get('/user/voucher/{voucher_id}', [VoucherController::class, 'show']);
+    Route::post('/user/course/{course_id}/voucher/{voucher_id}/uses', [VoucherController::class, 'useVoucher']); // Sử dụng voucher
 
     //Study
     Route::get('student/{user_id}/courses/{course_id}', [StudyController::class, 'getCourseInfo']);
@@ -63,10 +68,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+    // Callback payment
+    Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
+    
+
 Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::get('/lecturer/dashboard', [LecturerController::class, 'dashboard']);
     Route::get('/lecturer', [LecturerController::class, 'getLecturerInfo']);
-
+    Route::get('lecturer/courses/{course_id}/check',[CourseController::class , 'check']);
+    Route::get('lecturer/courses/{course_id}/pending',[CourseController::class , 'checkPending']);
+    // Route::post('lecturer/courses/{course_id}/sections/{section_id}/lessonsCreateVideo',[CourseController::class , 'lessonCreateVideo']);
     Route::apiResource('/lecturer/courses', CourseController::class)->parameters(['courses' => 'course_id']);
     Route::post('/lecturer/courses/{course_id}/pending', [CourseController::class, 'pending']);
     Route::apiResource('lecturer/courses/{course_id}/sections', SectionController::class)->parameters(['sections' => 'section_id']);
@@ -100,4 +111,3 @@ Route::get('/courses/{course_id}/public', [CourseController::class, 'publicCours
 Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id']);
 
 Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.default.api');
-

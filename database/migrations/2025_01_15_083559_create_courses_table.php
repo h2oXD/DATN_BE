@@ -29,9 +29,9 @@ return new class extends Migration {
                 $table->enum('status', ['draft', 'pending', 'published']);
                 $table->tinyInteger('is_show_home')->nullable();
 
-                $table->text('target_students')->nullable();
+                $table->json('target_students')->nullable();
                 $table->json('learning_outcomes')->nullable()->comment("Học viên sẽ học được gì trong khóa học của bạn?");
-                $table->text('prerequisites')->nullable()->comment("Yêu cầu hoặc điều kiện tiên quyết để tham gia khóa học của bạn là gì?");
+                $table->json('prerequisites')->nullable()->comment("Yêu cầu hoặc điều kiện tiên quyết để tham gia khóa học của bạn là gì?");
                 $table->text('who_is_this_for')->nullable()->comment("Khóa học này dành cho đối tượng nào?");
                 $table->boolean('is_free')->default(false)->comment("Khoá học này có miễn phí hay không?"); 
 

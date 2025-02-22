@@ -324,7 +324,7 @@ class LessonController extends Controller
                 },
                 'sections.lessons' => function ($query) use ($lesson_id) {
                     $query->where('id', $lesson_id);
-                }
+                },
             ])->find($course_id);
 
             if (!$course || !$course->sections->first() || !$lesson = $course->sections->first()->lessons->find($lesson_id)) {
