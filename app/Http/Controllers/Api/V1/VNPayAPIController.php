@@ -458,9 +458,13 @@ class VNPayAPIController extends Controller
                     'status' => 'in_progress',
                     'progress_percent' => 0
                 ]);
+
                 return redirect('http://localhost:5173/student/home?status=success');
+
             } else {
+
                 return redirect("http://localhost:5173/student/home/$course_id/coursedetail?status=error");
+                
             }
         } catch (\Throwable $th) {
             return response()->json([
