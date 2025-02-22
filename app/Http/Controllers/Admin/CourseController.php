@@ -141,10 +141,15 @@ class CourseController extends Controller
             'sections.lessons.quizzes'
         ])->find($course_id);
 
-        
+        $learning_outcomes = json_decode($course->learning_outcomes, true);
+        $target_students = json_decode($course->target_students, true);
+        $prerequisites = json_decode($course->prerequisites, true);
+
         $totalLessons = $course->lessons()->count();
 
+        // dd($course->toArray());
+
         // dd($totalLessons);
-        return view(self::PATH_VIEW . 'check-course', compact('course', 'totalLessons'));
+        return view(self::PATH_VIEW . 'check-course', compact('course', 'totalLessons','learning_outcomes','target_students','prerequisites'));
     }
 }

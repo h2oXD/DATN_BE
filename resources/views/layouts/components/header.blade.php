@@ -30,8 +30,8 @@
                         </button>
                     </li>
                     <li>
-                        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark"
-                            aria-pressed="false">
+                        <button type="button" class="dropdown-item d-flex align-items-center"
+                            data-bs-theme-value="dark" aria-pressed="false">
                             <i class="bi theme-icon bi-moon-stars-fill"></i>
                             <span class="ms-2">Dark</span>
                         </button>
@@ -47,8 +47,9 @@
             </div>
             <ul class="navbar-nav navbar-right-wrap ms-2 d-flex nav-top-wrap">
                 <li class="dropdown stopevent">
-                    <a class="btn btn-light btn-icon rounded-circle indicator indicator-primary" href="#" role="button"
-                        id="dropdownNotification" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="btn btn-light btn-icon rounded-circle indicator indicator-primary" href="#"
+                        role="button" id="dropdownNotification" data-bs-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
                         <i class="fe fe-bell"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end dropdown-menu-lg"
@@ -192,10 +193,11 @@
                 </li>
                 <!-- List -->
                 <li class="dropdown ms-2">
-                    <a class="rounded-circle" href="#" role="button" id="dropdownUser" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                    <a class="rounded-circle" href="#" role="button" id="dropdownUser"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="avatar avatar-md avatar-indicators avatar-online">
-                            <img alt="avatar" src="../../assets/images/avatar/avatar-1.jpg" class="rounded-circle" />
+                            <img alt="avatar" src="../../assets/images/avatar/avatar-1.jpg"
+                                class="rounded-circle" />
                         </div>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
@@ -279,3 +281,4 @@
         </div>
     </nav>
 </div>
+
