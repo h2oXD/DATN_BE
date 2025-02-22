@@ -224,13 +224,19 @@ class OverviewController extends Controller
 
             $lecturers = User::with(['courses' => function ($query) {
                 $query->with('reviews')
+                    ->where('status', 'published') // Chỉ lấy khóa học đã xuất bản
                     ->select('id', 'user_id', 'category_id', 'price_regular', 'price_sale', 'title', 'thumbnail', 'video_preview', 'description', 'primary_content', 'status', 'is_show_home', 'target_students', 'learning_outcomes', 'prerequisites', 'who_is_this_for', 'is_free', 'language', 'level', 'created_at', 'updated_at');
             }])
-                ->whereHas('courses.reviews') // Lọc chỉ lấy những giảng viên có khóa học có đánh giá
+                ->whereHas('courses', function ($query) {
+                    $query->where('status', 'published') // Chỉ lấy giảng viên có khóa học đã xuất bản
+                        ->whereHas('reviews'); // Chỉ lấy khóa học có đánh giá
+                })
                 ->get()
                 ->map(function ($user) {
-                    // Tính điểm trung bình của các khóa học từ các đánh giá
-                    $averageRating = $user->courses->flatMap(function ($course) {
+                    // Chỉ tính điểm trung bình của các khóa học có trạng thái "published"
+                    $publishedCourses = $user->courses->where('status', 'published'); // Lọc khóa học đã xuất bản
+
+                    $averageRating = $publishedCourses->flatMap(function ($course) {
                         return $course->reviews->pluck('rating'); // Lấy tất cả các đánh giá của các khóa học
                     })->avg(); // Tính trung bình điểm rating
 
@@ -276,8 +282,8 @@ class OverviewController extends Controller
             return response()->json(
                 [
                     'topLectures' => $lecturers,
-                    'topCourses'  => $courses,
-                    'courseFree'  => $coursesFree
+                    // 'topCourses'  => $courses,
+                    // 'courseFree'  => $coursesFree
                 ],
                 200
             );

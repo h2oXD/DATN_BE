@@ -21,8 +21,8 @@ class LecturerRegisterController extends Controller
         }
 
 
-        $lecturerRegisters = $lecturerRegisters->paginate(10);
-        // dd($lecturerRegisters);
+        $lecturerRegisters = $lecturerRegisters->orderByDesc('id')->paginate(10);
+        // dd($lecturerRegisters->items());
         return view(self::PATH_VIEW . 'index', compact('lecturerRegisters'));
     }
 
