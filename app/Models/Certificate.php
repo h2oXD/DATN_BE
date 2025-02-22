@@ -24,4 +24,10 @@ class Certificate extends Model
     {
         return $this->belongsTo(Course::class);
     }
+    public function progress()
+    {
+        return $this->hasOne(Progress::class, 'user_id', 'user_id')
+                    ->whereColumn('course_id', 'course_id')
+                    ->where('status', 'completed');
+    }
 }
