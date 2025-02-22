@@ -49,7 +49,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/wallets/result', [WalletController::class, 'resultPaymemt']); // trả kết quả thanh toán
     // Pay by VNPay
     Route::post('/user/courses/{course_id}/create-payment', [VNPayAPIController::class, 'createPayment']);
-
     // Pay by wallet
     Route::post('/user/courses/{course_id}/wallet-payment', [WalletController::class, 'payment']);
 
@@ -106,4 +105,3 @@ Route::get('/courses/{course_id}/public', [CourseController::class, 'publicCours
 Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id']);
 
 Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.default.api');
-
