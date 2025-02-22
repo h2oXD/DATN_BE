@@ -10,9 +10,18 @@ class Certificate extends Model
     use HasFactory;
 
     protected $fillable = [
-        'student_id',
+        'user_id',
         'course_id',
         'certificate_url',
         'issued_at',
     ];
+    public $timestamps = false;
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
 }
