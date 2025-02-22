@@ -34,15 +34,19 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4>Lý do từ chối khoá học này</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
             </div>
             <div class="modal-body px-1">
                 <form method="post" class="d-flex flex-column">
                     <div class="">
                         <label class="fw-bold" for="">Lý do</label>
-                        <textarea placeholder="Nhập lý do từ chối" name="" id="" class="form-control" cols="30" rows="5"></textarea>
+
+                        <textarea placeholder="Nhập lý do từ chối" name="" id="" class="form-control" cols="30"
+                            rows="5"></textarea>
                     </div>
                     <div class="mt-2 d-flex justify-content-end gap-2 me-1">
-                        <button data-bs-dismiss="modal" class="btn btn-sm btn-danger">Huỷ</button>
+                        <button data-bs-dismiss="modal" type="button" class="btn btn-sm btn-danger">Huỷ</button>
                         <button class="btn btn-sm btn-primary">Gửi</button>
                     </div>
                 </form>
@@ -53,9 +57,9 @@
 <script>
     const guiPheDuyet = async () => {
         try {
-            
+
         } catch (error) {
-            
+
         }
     }
 </script>

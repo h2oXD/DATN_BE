@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\CourseApprovalRequested;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreCourseRequest;
 use App\Http\Requests\Api\UpdateCourseRequest;
@@ -865,6 +866,8 @@ class CourseController extends Controller
             'status' => 'pending',
             'submited_at' => Carbon::now()
         ]);
+        $user_id = request()->user()->id;
+        broadcast(new CourseApprovalRequested($course_id, $user_id));
         return response()->json([
             'status' => 'success',
             'message' => 'Gửi yêu cầu phê duyệt thành công'

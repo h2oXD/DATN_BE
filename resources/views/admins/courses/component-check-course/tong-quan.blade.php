@@ -23,9 +23,12 @@
                         <!-- Mô Tả -->
                         <div class="card mt-2 shadow-none rounded p-3">
                             <!-- Tiêu đề Mô tả -->
-                            <h4 class="card-title h4 fw-bold mb-3">MÔ TẢ</h4>
+                            <h4 class="card-title h4 fw-bold">{{$course->title}}</h4>
+                            <label class="fw-bold" for="">Nội dung chính</label>
+                            <p class="mb-3">{{$course->primary_content}}</p>
                             <!-- Nội dung Mô tả với gạch chân -->
                             <div class=" pb-13 mb-3">
+                                <label class="fw-bold" for="">Mô tả</label>
                                 <p class="card-text text-muted">{{ $course->description }}</p>
                             </div>
                         </div>
@@ -47,10 +50,6 @@
                                     <li class="d-flex justify-content-between mb-3">
                                         <span><strong>Bài giảng:</strong></span>
                                         <span>{{ $totalLessons }}</span>
-                                    </li>
-                                    <li class="d-flex justify-content-between mb-3">
-                                        <span><strong>Bài kiểm tra:</strong></span>
-                                        <span>2</span>
                                     </li>
                                     <li class="d-flex justify-content-between mb-3">
                                         <span><strong>Trình độ:</strong></span>
