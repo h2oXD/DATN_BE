@@ -21,16 +21,16 @@
                     <strong>Danh mục:</strong> {{ $course->category->name }}
                 </div>
                 <div class="mb-3">
-                    <strong>Giảng viên:</strong> {{ $course->lecturer->name }}
+                    <strong>Giảng viên:</strong> {{ $course->user->name }}
                 </div>
                 <div class="mb-3">
                     <strong>Trạng thái:</strong>
                     @if ($course->status == 'pending')
-                        Chờ duyệt
+                        <span class="badge bg-warning">Chờ duyệt</span>
                     @elseif($course->status == 'published')
-                        Đã phê duyệt
+                        <span class="badge bg-success">Đã phê duyệt</span>
                     @elseif($course->status == 'rejected')
-                        Đã từ chối
+                        <span class="badge bg-danger">Đã từ chối</span>
                     @endif
                 </div>
                 <div class="mb-3">
@@ -40,7 +40,7 @@
                     <strong>Ảnh:</strong>
                     <img src="{{ Storage::url($course->thumbnail) }}" alt="thumbnail" height="100" width="100">
                 </div>
-                <a href="{{ route('courses.index') }}" class="btn btn-secondary">Quay lại danh sách khóa học</a>
+                <a href="{{ route('admin.courses.index') }}" class="btn btn-secondary">Quay lại danh sách khóa học</a>
             </div>
         </div>
     </div>

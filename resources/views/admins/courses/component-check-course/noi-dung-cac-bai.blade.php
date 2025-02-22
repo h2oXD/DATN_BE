@@ -13,65 +13,95 @@
                     @else
                         <ul class="list-group list-group-flush" id="section{{ $section->id }}">
                             @foreach ($section->lessons as $lesson)
-                                <li class="list-group-item px-0">
-                                    <!-- Toggle -->
-                                    <a class="h5 mb-0 d-flex align-items-center" data-bs-toggle="collapse"
-                                        href="#lesson{{ $lesson->id }}" aria-expanded="false"
-                                        aria-controls="lesson{{ $lesson->id }}">
-                                        <div class="me-auto">Bài {{ $loop->iteration }}:
-                                            {{ $lesson->title }}</div>
-                                        <span class="chevron-arrow ms-4">
-                                            <i class="fe fe-chevron-down fs-4"></i>
-                                        </span>
-                                    </a>
+                                <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <b>Bài {{ $loop->iteration }}:</b>
+                                        @if ($lesson->type == 'document')
+                                            <i class="fe fe-file-text"></i>
+                                        @endif
+                                        @if ($lesson->type == 'quiz')
+                                            <i class="fe fe-help-circle"></i>
+                                        @endif
+                                        @if ($lesson->type == 'video')
+                                            <i class="fe fe-video"></i>
+                                        @endif
+                                        @if ($lesson->type == 'coding')
+                                            <i class="fe fe-code"></i>
+                                        @endif
+                                        {{ $lesson->title }}
+                                    </div>
+                                    <div>
+                                        @if ($lesson->type == 'document')
+                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#{{ $lesson->type }}-{{ $lesson->id }}">
+                                                Xem
+                                            </button>
+                                            <div class="modal fade" id="{{ $lesson->type }}-{{ $lesson->id }}"
+                                                tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close">
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <a href="{{ Storage::url($lesson->documents->document_url) }}"
+                                                                download="{{ basename($lesson->documents->document_url) }}">
+                                                                Tải xuống tài liệu
+                                                            </a>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-sm btn-danger"
+                                                                data-bs-dismiss="modal" aria-label="Close">
+                                                                Đóng
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        @if ($lesson->type == 'quiz')
+                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#{{ $lesson->type }}-{{ $lesson->id }}">
+                                                Xem
+                                            </button>
+                                        @endif
+                                        @if ($lesson->type == 'video')
+                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#{{ $lesson->type }}-{{ $lesson->id }}">
+                                                Xem
+                                            </button>
+                                            <div class="modal fade gd-example-modal-lg" tabindex="-1" role="dialog"
+                                                aria-labelledby="myLargeModalLabel"
+                                                id="{{ $lesson->type }}-{{ $lesson->id }}" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close">
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <video controls class="w-100"
+                                                                src="{{ Storage::url($lesson->videos->video_url) }}"></video>
+                                                            <button type="button" class="btn btn-sm btn-danger"
+                                                                data-bs-dismiss="modal" aria-label="Close">
+                                                                Đóng
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        @if ($lesson->type == 'coding')
+                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#{{ $lesson->type }}-{{ $lesson->id }}">
+                                                Xem
+                                            </button>
+                                        @endif
 
-                                    <!-- Collapse -->
-                                    <div class="collapse mt-2" id="lesson{{ $lesson->id }}"
-                                        data-bs-parent="#section{{ $section->id }}">
-                                        <div class="p-3 ">
-                                            <!-- Tài liệu -->
-                                            <h6 class="mb-1">Tài liệu:</h6>
-                                            <ul class="mb-2">
-                                                @forelse ($lesson->documents as $document)
-                                                    <li><a href="{{ $document->url }}"
-                                                            target="_blank">{{ $document->name }}</a></li>
-                                                @empty
-                                                    <li class="text-muted">Không có tài liệu</li>
-                                                @endforelse
-                                            </ul>
-
-                                            <!-- Video -->
-                                            <h6 class="mb-1">Video:</h6>
-                                            <ul class="mb-2">
-                                                @forelse ($lesson->videos as $video)
-                                                    <li><a href="{{ $video->url }}"
-                                                            target="_blank">{{ $video->title }}</a></li>
-                                                @empty
-                                                    <li class="text-muted">Không có video</li>
-                                                @endforelse
-                                            </ul>
-
-                                            <!-- Code mẫu -->
-                                            <h6 class="mb-1">Code mẫu:</h6>
-                                            <ul class="mb-2">
-                                                @forelse ($lesson->codings as $coding)
-                                                    <li><a href="{{ $coding->url }}"
-                                                            target="_blank">{{ $coding->title }}</a></li>
-                                                @empty
-                                                    <li class="text-muted">Không có bài code</li>
-                                                @endforelse
-                                            </ul>
-
-                                            <!-- Quiz -->
-                                            <h6 class="mb-1">Bài Quiz:</h6>
-                                            <ul class="mb-0">
-                                                @forelse ($lesson->quizzes as $quiz)
-                                                    <li>{{ $quiz->title }}</li>
-                                                @empty
-                                                    <li class="text-muted">Không có bài quiz</li>
-                                                @endforelse
-                                            </ul>
-                                        </div>
                                     </div>
                                 </li>
                             @endforeach

@@ -32,6 +32,7 @@
     </div>
     @yield('script')
     @include('layouts.partials.script')
+    @vite('resources/js/public.js')
 </body>
 
 
