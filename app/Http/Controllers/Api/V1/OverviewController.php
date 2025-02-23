@@ -13,7 +13,7 @@ class OverviewController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/lecturers/overview",
+     *     path="/api/student/home",
      *     summary="Get Top Lecturers",
      *     description="Lấy danh sách giảng viên có điểm đánh giá cao nhất, bao gồm thông tin giảng viên, các khóa học và đánh giá của khóa học.",
      *     tags={"Overview"},
@@ -217,7 +217,7 @@ class OverviewController extends Controller
      * )
      */
 
-    public function overview()
+    public function overview(Request $request)
     {
 
         try {
@@ -252,10 +252,15 @@ class OverviewController extends Controller
 
 
 
+            $userId = $request->user()->id;
+
             $courses = Course::with(['user', 'reviews']) // Lấy thông tin user sở hữu khóa học và reviews
                 ->select('id', 'user_id', 'category_id', 'price_regular', 'price_sale', 'title', 'thumbnail', 'video_preview', 'description', 'primary_content', 'status', 'is_show_home', 'target_students', 'learning_outcomes', 'prerequisites', 'who_is_this_for', 'is_free', 'language', 'level', 'created_at', 'updated_at') // Chỉ chọn các trường cần thiết
                 ->where('status', 'published') // Thêm điều kiện chỉ lấy khóa học đã được duyệt
                 ->whereHas('reviews') // Chỉ lấy khóa học có đánh giá
+                ->whereDoesntHave('enrollments', function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                }) // Loại bỏ các khóa học mà người dùng hiện tại đã tham gia
                 ->get()
                 ->map(function ($course) {
                     // Lấy điểm đánh giá cao nhất từ tất cả đánh giá của khóa học
@@ -274,15 +279,19 @@ class OverviewController extends Controller
 
 
 
+
             $coursesFree = Course::with(['user', 'reviews'])
                 ->where('is_free', true) // Lọc khóa học miễn phí
                 ->where('status', 'published') // Lọc khóa học đã xuất bản
+                ->whereDoesntHave('enrollments', function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                }) // Loại bỏ các khóa học mà người dùng hiện tại đã tham gia
                 ->get();
 
             return response()->json(
                 [
-                    'topLectures' => $lecturers,
-                    // 'topCourses'  => $courses,
+                    // 'topLectures' => $lecturers,
+                    'topCourses'  => $courses,
                     // 'courseFree'  => $coursesFree
                 ],
                 200

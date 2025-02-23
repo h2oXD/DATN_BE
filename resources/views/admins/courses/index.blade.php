@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <div class="card">
+    <div class="card m-3">
         <div class="card-header d-flex justify-content-between align-content-center">
             <h2 class="m-0">Danh sách khoá học</h2>
         </div>
@@ -66,7 +66,7 @@
                         @foreach ($courses as $course)
                             <tr>
                                 <td>
-                                    <img src="{{ Storage::url($course->thumbnail) }}" alt="avatar"
+                                    <img src="{{ Storage::url($course->thumbnail) }}" alt="ảNH"
                                         class="w-50 h-50 avatar-md">
                                 </td>
                                 <td>
@@ -122,7 +122,7 @@
                                                 Xem
                                             </a>
 
-                                            <a href="{{ route('courses.edit', $course->id) }}" class="dropdown-item">
+                                            {{-- <a href="{{ route('courses.edit', $course->id) }}" class="dropdown-item"> --}}
                                                 <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                                     class="size-6">
