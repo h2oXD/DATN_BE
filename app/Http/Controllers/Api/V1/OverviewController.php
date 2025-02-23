@@ -221,6 +221,10 @@ class OverviewController extends Controller
     {
 
         try {
+            // $user = request()->user();
+            // if($user){
+            //     $courses_id = $user->enrollments()->course_id;
+            // }
 
             $lecturers = User::with(['courses' => function ($query) {
                 $query->with('reviews')
