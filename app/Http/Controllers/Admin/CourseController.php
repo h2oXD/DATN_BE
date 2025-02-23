@@ -53,14 +53,15 @@ class CourseController extends Controller
         $course->submited_at = now();
         $course->save();
 
-        return redirect()->route('admin.courses.index')->with('success', 'Khóa học đã được phê duyệt');
+        return redirect()->route('admin.censor.courses.list')->with('success', 'Khóa học đã được phê duyệt');
     }
     public function reject(Request $request, $id)
     {
         $course = Course::findOrFail($id);
-        $course->status = 'pending';
+        $course->status = 'draft';
+        $course->admin_comment = 'Từ chối';
         $course->save();
-        return redirect()->route('admin.courses.index')->with('success', 'Khóa học đã bị từ chối');
+        return redirect()->route('admin.censor.courses.list')->with('success', 'Khóa học đã bị từ chối');
     }
 
     public function edit($id)
@@ -141,15 +142,45 @@ class CourseController extends Controller
             'sections.lessons.quizzes'
         ])->find($course_id);
 
+        if($course->status != 'pending'){
+            return redirect()->route('admin.censor.courses.list');
+        }
+
         $learning_outcomes = json_decode($course->learning_outcomes, true);
         $target_students = json_decode($course->target_students, true);
         $prerequisites = json_decode($course->prerequisites, true);
 
         $totalLessons = $course->lessons()->count();
 
+        $totalVideoDuration = 0;
+
+        if ($course) {
+            foreach ($course->sections as $section) {
+                if ($section->lessons) {
+                    foreach ($section->lessons as $lesson) {
+                        if ($lesson->videos) {
+                            $totalVideoDuration += $lesson->videos->duration;
+                        }
+                    }
+                }
+            }
+        }
+        if ($course) {
+            foreach ($course->sections as $section) {
+                if ($section->lessons) {
+                    foreach ($section->lessons as $lesson) {
+                        if ($lesson->videos) {
+                            $lesson->videos->duration = round($lesson->videos->duration / 60,1);
+                        }
+                    }
+                }
+            }
+        }
+        $thoiluongvideo = $totalVideoDuration / 60;
+        $totalVideoDurationMinutes = round($thoiluongvideo, 1);
         // dd($course->toArray());
 
         // dd($totalLessons);
-        return view(self::PATH_VIEW . 'check-course', compact('course', 'totalLessons','learning_outcomes','target_students','prerequisites'));
+        return view(self::PATH_VIEW . 'check-course', compact('totalVideoDurationMinutes', 'course', 'totalLessons', 'learning_outcomes', 'target_students', 'prerequisites'));
     }
 }

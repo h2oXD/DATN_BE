@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreCourseRequest;
 use App\Http\Requests\Api\UpdateCourseRequest;
 use App\Models\Course;
+use App\Models\Role;
+use App\Notifications\CourseApprovalRequestedNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -825,10 +827,18 @@ class CourseController extends Controller
         ) {
             $data['tong_quan'] = 'Thông tin của trang tổng quan chưa đầy đủ';
         }
-        if(!$course->thumbnail){$data['thumbnail'] = 'Cần tải lên ảnh bìa của khoá học';}
-        if(!$course->video_preview){$data['video_preview'] = 'Cần tải lên video quảng cáo khoá học';}
-        if(!$course->level){$data['level'] = 'Chưa chọn trình độ dành cho học viên';}
-        if(!$course->description){$data['description'] = 'Cần có mô tả cho khoá học';}
+        if (!$course->thumbnail) {
+            $data['thumbnail'] = 'Cần tải lên ảnh bìa của khoá học';
+        }
+        if (!$course->video_preview) {
+            $data['video_preview'] = 'Cần tải lên video quảng cáo khoá học';
+        }
+        if (!$course->level) {
+            $data['level'] = 'Chưa chọn trình độ dành cho học viên';
+        }
+        if (!$course->description) {
+            $data['description'] = 'Cần có mô tả cho khoá học';
+        }
         if (!$course->is_free) {
             if (!$course->price_regular) {
                 $data['price_regular'] = 'Chưa có giá bán';
@@ -841,9 +851,15 @@ class CourseController extends Controller
         ) {
             $data['muc_tieu'] = 'Thông tin của trang MỤC TIÊU chưa đầy đủ';
         }
-        if(!$course->target_students){$data['target_students'] = 'Chưa điền khoá học này dành cho đối tượng nào';}
-        if(!$course->learning_outcomes){$data['learning_outcomes'] = 'Chưa điền học viên học được gì trong khoá học';}
-        if(!$course->prerequisites){$data['prerequisites'] = 'Yêu cầu tiên quyết để tham gia khoá học';}
+        if (!$course->target_students) {
+            $data['target_students'] = 'Chưa điền khoá học này dành cho đối tượng nào';
+        }
+        if (!$course->learning_outcomes) {
+            $data['learning_outcomes'] = 'Chưa điền học viên học được gì trong khoá học';
+        }
+        if (!$course->prerequisites) {
+            $data['prerequisites'] = 'Yêu cầu tiên quyết để tham gia khoá học';
+        }
         if (
             !count($course->sections)
         ) {
@@ -866,8 +882,20 @@ class CourseController extends Controller
             'status' => 'pending',
             'submited_at' => Carbon::now()
         ]);
-        $user_id = request()->user()->id;
-        broadcast(new CourseApprovalRequested($course_id, $user_id));
+        // $user_id = request()->user()->id;
+        // broadcast(new CourseApprovalRequested($course_id, $user_id));
+
+
+        $user = request()->user();
+        $adminRole = Role::where('name', 'admin')->first();
+        if ($adminRole) {
+            // Lấy tất cả người dùng có role 'admin'
+            $admins = $adminRole->users;
+            // Gửi thông báo cho từng admin
+            foreach ($admins as $admin) {
+                $admin->notify(new CourseApprovalRequestedNotification($course, $user, $admin->id));
+            }
+        }
         return response()->json([
             'status' => 'success',
             'message' => 'Gửi yêu cầu phê duyệt thành công'
