@@ -250,6 +250,12 @@ class OverviewController extends Controller
                 ->values(); // Reset lại key index của collection
 
 
+            $coursesPublished = Course::with(['user', 'reviews']) // Eager loading user và reviews
+                ->where('status', 'published') // Lọc khóa học đã xuất bản
+                ->where('is_show_home', 1) // Lọc khóa học hiển thị trên trang chủ
+                ->get();
+
+
 
 
             $userId = $request->user()->id;
@@ -293,6 +299,7 @@ class OverviewController extends Controller
                     // 'topLectures' => $lecturers,
                     'topCourses'  => $courses,
                     // 'courseFree'  => $coursesFree
+                    'coursesPublished' => $coursesPublished
                 ],
                 200
             );
