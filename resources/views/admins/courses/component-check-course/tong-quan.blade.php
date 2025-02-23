@@ -44,8 +44,8 @@
                                 <!-- Nội dung Tổng quan khóa học -->
                                 <ul class="list-unstyled text-muted">
                                     <li class="d-flex justify-content-between mb-3">
-                                        <span><strong>Thời gian video:</strong></span>
-                                        <span>30 Phút</span>
+                                        <span><strong>Tổng thời gian của các video:</strong></span>
+                                        <span>{{$totalVideoDurationMinutes}} Phút</span>
                                     </li>
                                     <li class="d-flex justify-content-between mb-3">
                                         <span><strong>Bài giảng:</strong></span>

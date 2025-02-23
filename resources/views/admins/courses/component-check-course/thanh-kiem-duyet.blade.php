@@ -38,28 +38,20 @@
                 </button>
             </div>
             <div class="modal-body px-1">
-                <form method="post" class="d-flex flex-column">
+                <form method="post" action="{{route('admin.courses.reject',$course->id)}}" class="d-flex flex-column mx-2">
                     <div class="">
+                        @csrf
                         <label class="fw-bold" for="">Lý do</label>
 
-                        <textarea placeholder="Nhập lý do từ chối" name="" id="" class="form-control" cols="30"
+                        <textarea placeholder="Nhập lý do từ chối" name="reason" id="reason" class="form-control" cols="30"
                             rows="5"></textarea>
                     </div>
                     <div class="mt-2 d-flex justify-content-end gap-2 me-1">
                         <button data-bs-dismiss="modal" type="button" class="btn btn-sm btn-danger">Huỷ</button>
-                        <button class="btn btn-sm btn-primary">Gửi</button>
+                        <button class="btn btn-sm btn-primary" id="submitApproval" data-course-id="{{ $course->id }}" data-action="reject">Gửi</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-<script>
-    const guiPheDuyet = async () => {
-        try {
-
-        } catch (error) {
-
-        }
-    }
-</script>
