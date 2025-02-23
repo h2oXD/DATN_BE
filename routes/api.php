@@ -68,15 +68,15 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
-    // Callback payment
-    Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
-    
+// Callback payment
+Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
+
 
 Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::get('/lecturer/dashboard', [LecturerController::class, 'dashboard']);
     Route::get('/lecturer', [LecturerController::class, 'getLecturerInfo']);
-    Route::get('lecturer/courses/{course_id}/check',[CourseController::class , 'check']);
-    Route::get('lecturer/courses/{course_id}/pending',[CourseController::class , 'checkPending']);
+    Route::get('lecturer/courses/{course_id}/check', [CourseController::class, 'check']);
+    Route::get('lecturer/courses/{course_id}/pending', [CourseController::class, 'checkPending']);
     // Route::post('lecturer/courses/{course_id}/sections/{section_id}/lessonsCreateVideo',[CourseController::class , 'lessonCreateVideo']);
     Route::apiResource('/lecturer/courses', CourseController::class)->parameters(['courses' => 'course_id']);
     Route::post('/lecturer/courses/{course_id}/pending', [CourseController::class, 'pending']);
@@ -86,8 +86,25 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', DocumentController::class)->parameters(['documents' => 'document_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', LessonCodingController::class)->parameters(['codings' => 'coding_id']);
 
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes',QuizController::class)->parameters(['quizzes' => 'quiz_id']);
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}/questions',QuizController::class)->parameters(['questions' => 'question_id']);
+    // Quản lý Quiz trong một bài học (Lesson)
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes', QuizController::class)
+        ->parameters(['quizzes' => 'quiz_id']);
+
+    // Quản lý câu hỏi (Questions) trong một Quiz
+    Route::apiResource('/lecturer/lessons/{lesson_id}/quizzes/{quiz_id}/questions', QuizController::class)
+        ->parameters(['questions' => 'question_id']);
+
+    // Lấy danh sách câu hỏi của một Quiz
+    Route::get('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'getQuestions']);
+    Route::post('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'storeQuestion']);
+    Route::post('/lecturer/questions/{question_id}/answers', [QuizController::class, 'storeAnswer']);
+
+    // Nộp bài Quiz
+    Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);
+
+    // Cập nhật thứ tự câu hỏi trong Quiz
+    Route::post('/user/quizzes/{quiz_id}/update-order', [QuizController::class, 'updateQuizOrder']);
+
 
     Route::post('lessons/order', [LessonController::class, 'updateOrder']);
 });
@@ -96,7 +113,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
         return response()->json(['message' => 'Chào mừng Học viên']);
     });
 
-    Route::get('/student/home',[OverviewController::class, 'overview']);
+    Route::get('/student/home', [OverviewController::class, 'overview']);
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function () {
     Route::get('/admin/dashboard', function (Request $request) {

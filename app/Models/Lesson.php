@@ -44,7 +44,8 @@ class Lesson extends Model
         return $this->hasOne(Coding::class);
     }
 
-    public function quizzes() {
-        return $this->belongsToMany(Quiz::class, 'lesson_quiz');
+    public function quizzes()
+    {
+        return $this->hasMany(Quiz::class, 'lesson_id');
     }
 }

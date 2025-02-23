@@ -336,9 +336,11 @@ class DatabaseSeeder extends Seeder
 
         $quizzes = [
             [
+                'lesson_id' => 1,
                 'title' => 'cách cài đặt laragon?'
             ],
             [
+                'lesson_id' => 2,
                 'title' => 'cấu trúc thư mục của laragon như thế nào?'
             ]
         ];
