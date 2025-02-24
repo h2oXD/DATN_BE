@@ -40,6 +40,10 @@ use L5Swagger\Http\Controllers\SwaggerController;
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', [AuthController::class, 'getUser']);
+    Route::apiResource('users', UserController::class)->only(['show', 'update']);
+    Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
+    Route::get('/courseNew', [OverviewController::class, 'courseNew']);
+
 
     Route::put('users', [UserController::class, 'update']);
     Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
@@ -102,17 +106,9 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::post('lessons/order', [LessonController::class, 'updateOrder']);
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
-    Route::get('/student/dashboard', function (Request $request) {
-        return response()->json(['message' => 'Chào mừng Học viên']);
-    });
-
     Route::get('/student/home', [OverviewController::class, 'overview']);
 });
-Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function () {
-    Route::get('/admin/dashboard', function (Request $request) {
-        return response()->json(['message' => 'Chào mừng Quản trị viên']);
-    });
-});
+
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);

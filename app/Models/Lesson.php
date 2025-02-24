@@ -45,6 +45,6 @@ class Lesson extends Model
     }
 
     public function quizzes() {
-        return $this->belongsToMany(Quiz::class, 'lesson_quiz');
+        return $this->hasOne(Quiz::class);
     }
 }
