@@ -16,7 +16,7 @@ class StudyController extends Controller
 {
     /**
      * @OA\Get(
-     * path="/api/users/{user_id}/courses/{course_id}",
+     * path="/api/student/{user_id}/courses/{course_id}",
      * tags={"Study"},
      * summary="Lấy thông tin khóa học của người dùng",
      * description="Lấy thông tin chi tiết của khóa học mà người dùng đã đăng ký, bao gồm tiến độ và nội dung khóa học.",
@@ -214,7 +214,7 @@ class StudyController extends Controller
      *     summary="Bắt đầu bài học",
      *     description="API này cho phép người dùng bắt đầu một bài học trong khóa học mà họ đã đăng ký.",
      *     tags={"Study"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"sanctum":{}}},
      *     @OA\Parameter(
      *         name="user_id",
      *         in="path",
@@ -346,7 +346,7 @@ class StudyController extends Controller
      *     summary="Hoàn thành bài học",
      *     description="API này cho phép người dùng đánh dấu một bài học là đã hoàn thành.",
      *     tags={"Study"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"sanctum":{}}},
      *     @OA\Parameter(
      *         name="user_id",
      *         in="path",
