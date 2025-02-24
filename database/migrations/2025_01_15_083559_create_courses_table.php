@@ -27,7 +27,7 @@ return new class extends Migration {
                 $table->string('primary_content')->nullable()->comment("Nội dung chính trong khoá học này là");
                 
                 $table->enum('status', ['draft', 'pending', 'published']);
-                $table->tinyInteger('is_show_home')->nullable();
+                $table->tinyInteger('is_show_home')->default(1);
 
                 $table->json('target_students')->nullable();
                 $table->json('learning_outcomes')->nullable()->comment("Học viên sẽ học được gì trong khóa học của bạn?");

@@ -2016,7 +2016,7 @@
                 ]
             }
         },
-        "/api/v1/lecturer-register/submit-answers": {
+        "api/register/answers": {
             "post": {
                 "tags": [
                     "Lecturer Registration"

@@ -41,6 +41,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', [AuthController::class, 'getUser']);
     Route::apiResource('users', UserController::class)->only(['show', 'update']);
     Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
+    Route::get('/courseNew', [OverviewController::class, 'courseNew']);
+
 
     Route::post('register/answers', [LecturerRegisterController::class, 'submitAnswers']);
 
@@ -75,15 +77,15 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::delete('/notifications/{notification:id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
     Route::delete('/notifications', [NotificationController::class, 'destroyAll'])->name('notifications.destroyAll');
 });
-    // Callback payment
-    Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
-    
+// Callback payment
+Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
+
 
 Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::get('/lecturer/dashboard', [LecturerController::class, 'dashboard']);
     Route::get('/lecturer', [LecturerController::class, 'getLecturerInfo']);
-    Route::get('lecturer/courses/{course_id}/check',[CourseController::class , 'check']);
-    Route::get('lecturer/courses/{course_id}/pending',[CourseController::class , 'checkPending']);
+    Route::get('lecturer/courses/{course_id}/check', [CourseController::class, 'check']);
+    Route::get('lecturer/courses/{course_id}/pending', [CourseController::class, 'checkPending']);
     // Route::post('lecturer/courses/{course_id}/sections/{section_id}/lessonsCreateVideo',[CourseController::class , 'lessonCreateVideo']);
     Route::apiResource('/lecturer/courses', CourseController::class)->parameters(['courses' => 'course_id']);
     Route::post('/lecturer/courses/{course_id}/pending', [CourseController::class, 'pending']);
@@ -93,23 +95,15 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', DocumentController::class)->parameters(['documents' => 'document_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', LessonCodingController::class)->parameters(['codings' => 'coding_id']);
 
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes',QuizController::class)->parameters(['quizzes' => 'quiz_id']);
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}/questions',QuizController::class)->parameters(['questions' => 'question_id']);
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes', QuizController::class)->parameters(['quizzes' => 'quiz_id']);
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}/questions', QuizController::class)->parameters(['questions' => 'question_id']);
 
     Route::post('lessons/order', [LessonController::class, 'updateOrder']);
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
-    Route::get('/student/dashboard', function (Request $request) {
-        return response()->json(['message' => 'Chào mừng Học viên']);
-    });
+    Route::get('/student/home', [OverviewController::class, 'overview']);
+});
 
-    Route::get('/student/home',[OverviewController::class, 'overview']);
-});
-Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function () {
-    Route::get('/admin/dashboard', function (Request $request) {
-        return response()->json(['message' => 'Chào mừng Quản trị viên']);
-    });
-});
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);

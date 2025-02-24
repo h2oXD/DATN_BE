@@ -19,10 +19,15 @@
                         </div>
                     </a>
                 </div>
-                <div class="col-auto text-center">
-                    <button class="btn btn-outline-primary btn-sm">Chấp nhận</button>
-                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
-                        data-bs-target=".gd-example-modal-lg">Từ chối</button>
+                <div class="col-auto text-center d-flex gap-2">
+                    <form action="{{ route('admin.courses.approve', $course->id) }}" method="POST">
+                        @csrf
+                        <button class="btn btn-outline-primary btn-sm">Chấp nhận</button>
+                    </form>
+                    <div>
+                        <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                            data-bs-target=".gd-example-modal-lg">Từ chối</button>
+                    </div>
                 </div>
             </div>
         </li>
@@ -38,7 +43,8 @@
                 </button>
             </div>
             <div class="modal-body px-1">
-                <form method="post" action="{{route('admin.courses.reject',$course->id)}}" class="d-flex flex-column mx-2">
+                <form method="post" action="{{ route('admin.courses.reject', $course->id) }}"
+                    class="d-flex flex-column mx-2">
                     <div class="">
                         @csrf
                         <label class="fw-bold" for="">Lý do</label>
@@ -48,7 +54,8 @@
                     </div>
                     <div class="mt-2 d-flex justify-content-end gap-2 me-1">
                         <button data-bs-dismiss="modal" type="button" class="btn btn-sm btn-danger">Huỷ</button>
-                        <button class="btn btn-sm btn-primary" id="submitApproval" data-course-id="{{ $course->id }}" data-action="reject">Gửi</button>
+                        <button class="btn btn-sm btn-primary" id="submitApproval" data-course-id="{{ $course->id }}"
+                            data-action="reject">Gửi</button>
                     </div>
                 </form>
             </div>
