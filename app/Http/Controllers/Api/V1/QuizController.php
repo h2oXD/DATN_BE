@@ -114,21 +114,21 @@ class QuizController extends Controller
     /**
      * Nộp bài quiz
      */
-    public function submitQuiz(Request $request, $user_id, $quiz_id)
+    public function submitQuiz(Request $request, $quiz_id)
     {
+        $user_id = auth()->id(); // Lấy user ID từ authentication
+
         $request->validate([
             'answers' => 'required|array|min:1',
             'answers.*.question_id' => 'required|exists:questions,id',
             'answers.*.answer_id' => 'required|exists:answers,id',
         ]);
 
-        // Kiểm tra quiz có tồn tại không
         $quiz = Quiz::with('questions')->find($quiz_id);
         if (!$quiz) {
             return response()->json(['status' => 'error', 'message' => 'Quiz not found'], 404);
         }
 
-        // Đếm tổng số câu hỏi trong quiz
         $totalQuestions = $quiz->questions->count();
         if ($totalQuestions == 0) {
             return response()->json(['status' => 'error', 'message' => 'This quiz has no questions'], 400);
@@ -136,18 +136,15 @@ class QuizController extends Controller
 
         $correctAnswers = 0;
 
-        // Bọc trong transaction để đảm bảo dữ liệu đồng nhất
         $submission = DB::transaction(function () use ($request, $quiz, $user_id, &$correctAnswers, $totalQuestions) {
-            // Tạo bản ghi submissions (ban đầu score = 0)
             $submission = Submission::create([
                 'quiz_id' => $quiz->id,
-                'user_id' => $user_id,
+                'user_id' => $user_id, // Lấy user_id từ auth
                 'score' => 0,
                 'total_questions' => $totalQuestions,
                 'correct_answers' => 0,
             ]);
 
-            // Xử lý từng câu trả lời
             foreach ($request->answers as $answer) {
                 $question = $quiz->questions->where('id', $answer['question_id'])->first();
 
@@ -164,10 +161,8 @@ class QuizController extends Controller
                 }
             }
 
-            // Tính điểm (thang điểm 10)
-            $score = $totalQuestions > 0 ? round(($correctAnswers / $totalQuestions) * 10, 2) : 0;
+            $score = round(($correctAnswers / $totalQuestions) * 10, 2);
 
-            // Cập nhật điểm cho submission vừa tạo
             $submission->update([
                 'score' => $score,
                 'correct_answers' => $correctAnswers,
@@ -258,17 +253,23 @@ class QuizController extends Controller
             ], 404);
         }
 
+        // Lấy thứ tự mới dựa trên số lượng câu trả lời hiện có của câu hỏi này
+        $order = Answer::where('question_id', $question_id)->count() + 1;
+
         // Validate dữ liệu đầu vào
         $validated = $request->validate([
             'answer_text' => 'required|string|max:255',
-            'is_correct' => 'required|boolean' // 1 nếu đúng, 0 nếu sai
+            'is_correct' => 'required|boolean', // 1 nếu đúng, 0 nếu sai
+            'note' => 'nullable|string|max:500' // Chú thích (có thể null)
         ]);
 
-        // Tạo câu trả lời mới
+        // Tạo câu trả lời mới với order tự động
         $answer = Answer::create([
             'question_id' => $question_id,
             'answer_text' => $validated['answer_text'],
             'is_correct' => $validated['is_correct'],
+            'note' => $validated['note'] ?? null, // Nếu không có thì để null
+            'order' => $order
         ]);
 
         return response()->json([

@@ -107,8 +107,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::post('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'storeQuestion']);
     Route::post('/lecturer/questions/{question_id}/answers', [QuizController::class, 'storeAnswer']);
 
-    // Nộp bài Quiz
-    Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);
+    
 
     // Cập nhật thứ tự câu hỏi trong Quiz
     Route::post('/user/quizzes/{quiz_id}/update-order', [QuizController::class, 'updateQuizOrder']);
@@ -122,6 +121,9 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     });
 
     Route::get('/student/home', [OverviewController::class, 'overview']);
+
+    // Nộp bài Quiz
+    Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function () {
     Route::get('/admin/dashboard', function (Request $request) {
