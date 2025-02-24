@@ -124,8 +124,9 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     // Cập nhật thứ tự câu hỏi trong Quiz
     Route::post('/user/quizzes/{quiz_id}/update-order', [QuizController::class, 'updateQuizOrder']);
 
-
     Route::post('lessons/order', [LessonController::class, 'updateOrder']);
+
+    Route::post('/user/wallets/withdraw', [WalletController::class, 'withdraw']); // rút tiền ví giảng viên
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/home', [OverviewController::class, 'overview']);
