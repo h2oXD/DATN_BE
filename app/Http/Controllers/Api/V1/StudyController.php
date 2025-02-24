@@ -210,89 +210,77 @@ class StudyController extends Controller
     }
     /**
      * @OA\Post(
-     * path="/api/users/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/start",
-     * tags={"Study"},
-     * summary="Bắt đầu học một bài học",
-     * description="API cho phép người dùng bắt đầu học một bài học trong một khóa học cụ thể.",
-     * security={{"sanctum":{}}},
-     * @OA\Parameter(
-     * name="user_id",
-     * in="path",
-     * description="ID của người dùng",
-     * required=true,
-     * @OA\Schema(type="integer", example=1)
-     * ),
-     * @OA\Parameter(
-     * name="course_id",
-     * in="path",
-     * description="ID của khóa học",
-     * required=true,
-     * @OA\Schema(type="integer", example=1)
-     * ),
-     * @OA\Parameter(
-     * name="section_id",
-     * in="path",
-     * description="ID của section",
-     * required=true,
-     * @OA\Schema(type="integer", example=1)
-     * ),
-     * @OA\Parameter(
-     * name="lesson_id",
-     * in="path",
-     * description="ID của lesson",
-     * required=true,
-     * @OA\Schema(type="integer", example=1)
-     * ),
-     * @OA\Response(
-     * response=200,
-     * description="Bắt đầu bài học thành công.",
-     * @OA\JsonContent(
-     * @OA\Property(property="message", type="string", example="Tiến độ bài học được khởi tạo.")
-     * )
-     * ),
-     * @OA\Response(
-     * response=400,
-     * description="Bài học đã hoàn thành.",
-     * @OA\JsonContent(
-     * @OA\Property(property="message", type="string", example="Bài học đã hoàn thành.")
-     * )
-     * ),
-     * @OA\Response(
-     * response=401,
-     * description="Unauthorized - Chưa đăng nhập hoặc token không hợp lệ.",
-     * @OA\JsonContent(
-     * @OA\Property(property="message", type="string", example="Unauthenticated.")
-     * )
-     * ),
-     * @OA\Response(
-     * response=403,
-     * description="Không có quyền truy cập.",
-     * @OA\JsonContent(
-     * @OA\Property(property="message", type="string", example="Unauthorized.")
-     * )
-     * ),
-     * @OA\Response(
-     * response=404,
-     * description="Không tìm thấy khóa học, section hoặc lesson.",
-     * @OA\JsonContent(
-     * @OA\Property(property="message", type="string", example="Bạn chưa đăng ký khóa học này. Hoặc Section không tồn tại hoặc không thuộc khóa học này. Hoặc Lesson không tồn tại hoặc không thuộc section này.")
-     * )
-     * ),
-     * @OA\Response(
-     * response=500,
-     * description="Lỗi máy chủ nội bộ.",
-     * @OA\JsonContent(
-     * @OA\Property(property="message", type="string", example="Lỗi hệ thống: [Exception message]")
-     * )
-     * )
+     *      path="/api/student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/starts",
+     *     summary="Bắt đầu bài học",
+     *     description="API này cho phép người dùng bắt đầu một bài học trong khóa học mà họ đã đăng ký.",
+     *     tags={"Study"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của người dùng",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="course_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của khóa học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="section_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của section",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="lesson_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của bài học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Tiến độ bài học được khởi tạo hoặc bài học đã hoàn thành.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Không có quyền hoặc chưa hoàn thành bài học trước đó.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Không tìm thấy khóa học, section hoặc bài học.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Lỗi hệ thống.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     )
      * )
      */
+
     public function startLesson(Request $request, $user_id, $course_id, $section_id, $lesson_id)
     {
         try {
             if ($request->user()->id != $user_id) {
                 return response()->json(['message' => 'Unauthorized.'], Response::HTTP_FORBIDDEN);
             }
+
             $enrollment = Enrollment::where('user_id', $user_id)
                 ->where('course_id', $course_id)
                 ->first();
@@ -300,18 +288,39 @@ class StudyController extends Controller
             if (!$enrollment) {
                 return response()->json(['message' => 'Bạn chưa đăng ký khóa học này.'], Response::HTTP_NOT_FOUND);
             }
+
             $section = Section::where('course_id', $course_id)
                 ->where('id', $section_id)
                 ->first();
             if (!$section) {
                 return response()->json(['message' => 'Section không tồn tại hoặc không thuộc khóa học này.'], Response::HTTP_NOT_FOUND);
             }
+
             $lesson = Lesson::where('section_id', $section_id)
                 ->where('id', $lesson_id)
                 ->first();
             if (!$lesson) {
                 return response()->json(['message' => 'Lesson không tồn tại hoặc không thuộc section này.'], Response::HTTP_NOT_FOUND);
             }
+
+            // Tìm bài học trước 
+            $previousLesson = Lesson::where('section_id', $section_id)
+                ->where('id', '<', $lesson_id)
+                ->orderBy('id', 'desc')
+                ->first();
+
+            if ($previousLesson) {
+                $previousCompletion = Completion::where('user_id', $user_id)
+                    ->where('course_id', $course_id)
+                    ->where('lesson_id', $previousLesson->id)
+                    ->where('status', 'completed')
+                    ->first();
+
+                if (!$previousCompletion) {
+                    return response()->json(['message' => 'Bạn cần hoàn thành bài trước đó trước khi bắt đầu học bài này.'], Response::HTTP_FORBIDDEN);
+                }
+            }
+
             $completion = Completion::firstOrNew([
                 'user_id' => $user_id,
                 'course_id' => $course_id,
@@ -324,81 +333,76 @@ class StudyController extends Controller
 
             $completion->status = 'in_progress';
             $completion->save();
+
             return response()->json(['message' => 'Tiến độ bài học được khởi tạo.'], Response::HTTP_OK);
         } catch (\Throwable $th) {
-            return response()->json(['message' => 'Lỗi hệ thống: ' . $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR); // Thêm $th->getMessage() để debug
+            return response()->json(['message' => 'Lỗi hệ thống: ' . $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
     /**
      * @OA\Post(
-     * path="/api/users/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/complete",
-     * tags={"Study"},
-     * summary="Hoàn thành một bài học",
-     * description="API cho phép người dùng hoàn thành một bài học trong một khóa học cụ thể.",
-     * security={{"sanctum":{}}},
-     * @OA\Parameter(
-     * name="user_id",
-     * in="path",
-     * description="ID của người dùng",
-     * required=true,
-     * @OA\Schema(type="integer", example=1)
-     * ),
-     * @OA\Parameter(
-     * name="course_id",
-     * in="path",
-     * description="ID của khóa học",
-     * required=true,
-     * @OA\Schema(type="integer", example=1)
-     * ),
-     * @OA\Parameter(
-     * name="section_id",
-     * in="path",
-     * description="ID của section",
-     * required=true,
-     * @OA\Schema(type="integer", example=1)
-     * ),
-     * @OA\Parameter(
-     * name="lesson_id",
-     * in="path",
-     * description="ID của lesson",
-     * required=true,
-     * @OA\Schema(type="integer", example=1)
-     * ),
-     * @OA\Response(
-     * response=200,
-     * description="Hoàn thành bài học thành công.",
-     * @OA\JsonContent(
-     * @OA\Property(property="message", type="string", example="Học viên hoàn thành bài học.")
-     * )
-     * ),
-     * @OA\Response(
-     * response=401,
-     * description="Unauthorized - Chưa đăng nhập hoặc token không hợp lệ.",
-     * @OA\JsonContent(
-     * @OA\Property(property="message", type="string", example="Unauthenticated.")
-     * )
-     * ),
-     * @OA\Response(
-     * response=403,
-     * description="Không có quyền truy cập.",
-     * @OA\JsonContent(
-     * @OA\Property(property="message", type="string", example="Unauthorized.")
-     * )
-     * ),
-     * @OA\Response(
-     * response=404,
-     * description="Không tìm thấy khóa học, section, lesson hoặc completion.",
-     * @OA\JsonContent(
-     * @OA\Property(property="message", type="string", example="Bạn chưa đăng ký khóa học này. Hoặc Section không tồn tại hoặc không thuộc khóa học này. Hoặc Lesson không tồn tại hoặc không thuộc section này.")
-     * )
-     * ),
-     * @OA\Response(
-     * response=500,
-     * description="Lỗi máy chủ nội bộ.",
-     * @OA\JsonContent(
-     * @OA\Property(property="message", type="string", example="Lỗi hệ thống: [Exception message]")
-     * )
-     * )
+     *      path="/api/student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/completes",
+     *     summary="Hoàn thành bài học",
+     *     description="API này cho phép người dùng đánh dấu một bài học là đã hoàn thành.",
+     *     tags={"Study"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của người dùng",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="course_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của khóa học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="section_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của section",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="lesson_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của bài học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Học viên hoàn thành bài học.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Không có quyền hoàn thành bài học.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Không tìm thấy khóa học, section hoặc bài học.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Lỗi hệ thống.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     )
      * )
      */
     public function completeLesson(Request $request, $user_id, $course_id, $section_id, $lesson_id)
@@ -408,34 +412,27 @@ class StudyController extends Controller
                 return response()->json(['message' => 'Unauthorized.'], Response::HTTP_FORBIDDEN);
             }
 
-            // Kiểm tra đăng ký khóa học
             $enrollment = Enrollment::where('user_id', $user_id)
                 ->where('course_id', $course_id)
                 ->first();
-
             if (!$enrollment) {
                 return response()->json(['message' => 'Bạn chưa đăng ký khóa học này.'], Response::HTTP_NOT_FOUND);
             }
 
-            // Kiểm tra section có thuộc course không
             $section = Section::where('course_id', $course_id)
                 ->where('id', $section_id)
                 ->first();
-
             if (!$section) {
                 return response()->json(['message' => 'Section không tồn tại hoặc không thuộc khóa học này.'], Response::HTTP_NOT_FOUND);
             }
 
-            // Kiểm tra lesson có thuộc section không
             $lesson = Lesson::where('section_id', $section_id)
                 ->where('id', $lesson_id)
                 ->first();
-
             if (!$lesson) {
                 return response()->json(['message' => 'Lesson không tồn tại hoặc không thuộc section này.'], Response::HTTP_NOT_FOUND);
             }
 
-            // Cập nhật trạng thái hoàn thành bài học
             $completion = Completion::where('user_id', $user_id)
                 ->where('course_id', $course_id)
                 ->where('lesson_id', $lesson_id)
@@ -449,32 +446,30 @@ class StudyController extends Controller
             $completion->completed_at = now();
             $completion->save();
 
-            // Tính toán và cập nhật % hoàn thành khóa học
+            //  Tìm bài học tiếp theo
+            $nextLesson = Lesson::where('section_id', $section_id)
+                ->where('id', '>', $lesson_id)
+                ->orderBy('id', 'asc')
+                ->first();
 
-            // Lần 1: Lấy total_lessons để tính toán ban đầu
-            $totalLessons = Section::where('course_id', $course_id)->sum('total_lessons');
+            if ($nextLesson) {
+                Completion::firstOrCreate([
+                    'user_id' => $user_id,
+                    'course_id' => $course_id,
+                    'lesson_id' => $nextLesson->id,
+                ], [
+                    'status' => 'in_progress'
+                ]);
+            }
 
+            // Cập nhật tiến độ khóa học
+            $totalLessons = Lesson::whereIn('section_id', Section::where('course_id', $course_id)->pluck('id'))->count();
             $completedLessons = Completion::where('user_id', $user_id)
                 ->where('course_id', $course_id)
                 ->where('status', 'completed')
                 ->count();
 
-            // Tính toán progressPercent lần 1
-            if ($totalLessons > 0) {
-                $progressPercent = ($completedLessons / $totalLessons) * 100;
-            } else {
-                $progressPercent = 0;
-            }
-
-            // Lần 2: Kiểm tra lại total_lessons sau khi cập nhật trạng thái hoàn thành
-            $totalLessons = Section::where('course_id', $course_id)->sum('total_lessons');
-
-            // Tính toán lại progressPercent (nếu cần)
-            if ($totalLessons > 0) {
-                $progressPercent = ($completedLessons / $totalLessons) * 100;
-            } else {
-                $progressPercent = 0;
-            }
+            $progressPercent = $totalLessons > 0 ? ($completedLessons / $totalLessons) * 100 : 0;
 
             Progress::updateOrCreate(
                 [
@@ -493,4 +488,5 @@ class StudyController extends Controller
             return response()->json(['message' => 'Lỗi hệ thống: ' . $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
 }

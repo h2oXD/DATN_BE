@@ -40,10 +40,15 @@ use L5Swagger\Http\Controllers\SwaggerController;
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', [AuthController::class, 'getUser']);
+    Route::apiResource('users', UserController::class)->only(['show', 'update']);
+    Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
+    Route::get('/courseNew', [OverviewController::class, 'courseNew']);
+
 
     Route::put('users', [UserController::class, 'update']);
     Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
     Route::post('register/answers', [LecturerRegisterController::class, 'submitAnswers']);
+    Route::get('/lecturer-registrations', [LecturerRegisterController::class, 'getLecturerRegistrations']);
 
     //wallet in user
     Route::get('/user/wallets', [WalletController::class, 'show']);
@@ -59,6 +64,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/vouchers', [VoucherController::class, 'index']);
     Route::get('/user/voucher/{voucher_id}', [VoucherController::class, 'show']);
     Route::post('/user/course/{course_id}/voucher/{voucher_id}/uses', [VoucherController::class, 'useVoucher']); // Sử dụng voucher
+    Route::get('/user/vouchers/history', [VoucherController::class, 'history']); // Lịch sử dùng voucher của người dùng
 
     //Study
     Route::get('student/{user_id}/courses/{course_id}', [StudyController::class, 'getCourseInfo']);
@@ -100,17 +106,9 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::post('lessons/order', [LessonController::class, 'updateOrder']);
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
-    Route::get('/student/dashboard', function (Request $request) {
-        return response()->json(['message' => 'Chào mừng Học viên']);
-    });
-
     Route::get('/student/home', [OverviewController::class, 'overview']);
 });
-Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function () {
-    Route::get('/admin/dashboard', function (Request $request) {
-        return response()->json(['message' => 'Chào mừng Quản trị viên']);
-    });
-});
+
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);

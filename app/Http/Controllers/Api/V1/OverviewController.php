@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +14,7 @@ class OverviewController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/lecturers/overview",
+     *     path="/api/student/home",
      *     summary="Get Top Lecturers",
      *     description="Lấy danh sách giảng viên có điểm đánh giá cao nhất, bao gồm thông tin giảng viên, các khóa học và đánh giá của khóa học.",
      *     tags={"Overview"},
@@ -217,7 +218,7 @@ class OverviewController extends Controller
      * )
      */
 
-    public function overview()
+    public function overview(Request $request)
     {
 
         try {
@@ -228,16 +229,22 @@ class OverviewController extends Controller
 
             $lecturers = User::with(['courses' => function ($query) {
                 $query->with('reviews')
+                    ->where('status', 'published') // Chỉ lấy khóa học đã xuất bản
                     ->select('id', 'user_id', 'category_id', 'price_regular', 'price_sale', 'title', 'thumbnail', 'video_preview', 'description', 'primary_content', 'status', 'is_show_home', 'target_students', 'learning_outcomes', 'prerequisites', 'who_is_this_for', 'is_free', 'language', 'level', 'created_at', 'updated_at');
             }])
-                ->whereHas('courses.reviews') // Lọc chỉ lấy những giảng viên có khóa học có đánh giá
+                ->whereHas('courses', function ($query) {
+                    $query->where('status', 'published') // Chỉ lấy giảng viên có khóa học đã xuất bản
+                        ->whereHas('reviews'); // Chỉ lấy khóa học có đánh giá
+                })
                 ->get()
                 ->map(function ($user) {
-                    // Tính điểm trung bình của các khóa học từ các đánh giá
-                    $averageRating = $user->courses->flatMap(function ($course) {
+                    // Chỉ tính điểm trung bình của các khóa học có trạng thái "published"
+                    $publishedCourses = $user->courses->where('status', 'published'); // Lọc khóa học đã xuất bản
+
+                    $averageRating = $publishedCourses->flatMap(function ($course) {
                         return $course->reviews->pluck('rating'); // Lấy tất cả các đánh giá của các khóa học
                     })->avg(); // Tính trung bình điểm rating
-
+    
                     return [
                         'lecturer' => $user,
                         'average_rating' => $averageRating ?? 0 // Gán điểm trung bình vào
@@ -248,12 +255,23 @@ class OverviewController extends Controller
                 ->values(); // Reset lại key index của collection
 
 
+            $coursesPublished = Course::with(['user', 'reviews']) // Eager loading user và reviews
+                ->where('status', 'published') // Lọc khóa học đã xuất bản
+                ->where('is_show_home', 1) // Lọc khóa học hiển thị trên trang chủ
+                ->get();
 
+
+
+
+            $userId = $request->user()->id;
 
             $courses = Course::with(['user', 'reviews']) // Lấy thông tin user sở hữu khóa học và reviews
                 ->select('id', 'user_id', 'category_id', 'price_regular', 'price_sale', 'title', 'thumbnail', 'video_preview', 'description', 'primary_content', 'status', 'is_show_home', 'target_students', 'learning_outcomes', 'prerequisites', 'who_is_this_for', 'is_free', 'language', 'level', 'created_at', 'updated_at') // Chỉ chọn các trường cần thiết
                 ->where('status', 'published') // Thêm điều kiện chỉ lấy khóa học đã được duyệt
                 ->whereHas('reviews') // Chỉ lấy khóa học có đánh giá
+                ->whereDoesntHave('enrollments', function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                }) // Loại bỏ các khóa học mà người dùng hiện tại đã tham gia
                 ->get()
                 ->map(function ($course) {
                     // Lấy điểm đánh giá cao nhất từ tất cả đánh giá của khóa học
@@ -272,16 +290,21 @@ class OverviewController extends Controller
 
 
 
+
             $coursesFree = Course::with(['user', 'reviews'])
                 ->where('is_free', true) // Lọc khóa học miễn phí
                 ->where('status', 'published') // Lọc khóa học đã xuất bản
+                ->whereDoesntHave('enrollments', function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                }) // Loại bỏ các khóa học mà người dùng hiện tại đã tham gia
                 ->get();
 
             return response()->json(
                 [
-                    'topLectures' => $lecturers,
+                    // 'topLectures' => $lecturers,
                     'topCourses'  => $courses,
-                    'courseFree'  => $coursesFree
+                    // 'courseFree'  => $coursesFree
+                    'coursesPublished' => $coursesPublished
                 ],
                 200
             );
@@ -291,5 +314,48 @@ class OverviewController extends Controller
                 'error' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public function courseNew()
+    {
+        $user = request()->user();
+
+        $courses = Course::with(['user', 'category', 'reviews'])
+            ->where('is_show_home', '1')
+            ->where('status', 'published')
+            ->withAvg('reviews as average_rating', 'rating')
+            ->latest('id')
+            ->get();
+
+        if (count($courses) == 0) {
+            return response()->json([
+                'message' => 'Không có khoá học nào'
+            ], 200);
+        }
+        foreach ($courses as $course) {
+            $isLecturer = $user ? ($course->user_id === $user->id) : false;
+            $isEnrollment = $user
+                ? Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->exists()
+                : false;
+            $newCourse[] = [
+                'id' => $course->id,
+                'user_id' => $course->user_id,
+                'category_name' => $course->category->name,
+                'lecturer_name' => $course->user->name,
+                'title' => $course->title,
+                'thumbnail' => $course->thumbnail,
+                'price_regular' => $course->price_regular,
+                'price_sale' => $course->price_sale,
+                'is_free' => $course->is_free,
+                'status' => $course->status,
+                'average_rating' => number_format($course->average_rating, 1) ?? 0,
+                'level' => $course->level,
+                'is_lecturer' => $isLecturer,
+                'is_enrollment' => $isEnrollment
+            ];
+        }
+        return response()->json([
+            'data' => $newCourse
+        ], 200);
     }
 }
