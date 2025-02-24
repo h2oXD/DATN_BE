@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LecturerRegisterController extends Controller
 {
-     /**
+    /**
      * @OA\Post(
      *     path="api/register/answers",
      *     summary="Submit answers for lecturer registration",
@@ -103,5 +103,65 @@ class LecturerRegisterController extends Controller
             'message' => 'Answers submitted successfully'
 
         ], Response::HTTP_OK);
+    }
+
+
+    /**
+     * Lấy danh sách người dùng đăng ký làm giảng viên.
+     *
+     * @OA\Get(
+     *     path="/api/lecturer-registrations",
+     *     summary="Lấy danh sách giảng viên đăng ký",
+     *     tags={"Lecturer Registration"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Danh sách giảng viên đăng ký",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="data", type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="user_id", type="integer", example=5),
+     *                     @OA\Property(property="answer1", type="string", example="Tôi có kinh nghiệm 5 năm giảng dạy"),
+     *                     @OA\Property(property="answer2", type="string", example="Tôi muốn chia sẻ kiến thức về lập trình"),
+     *                     @OA\Property(property="answer3", type="string", example="Tôi đã từng dạy tại các trung tâm"),
+     *                     @OA\Property(property="admin_rejection_reason", type="string", nullable=true, example=null),
+     *                     @OA\Property(property="status", type="string", example="pending"),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2025-02-22T10:00:00.000000Z"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-02-22T10:30:00.000000Z"),
+     *                     @OA\Property(property="user", type="object",
+     *                         @OA\Property(property="id", type="integer", example=5),
+     *                         @OA\Property(property="name", type="string", example="Nguyễn Văn Thuyết"),
+     *                         @OA\Property(property="email", type="string", example="thuyet@example.com"),
+     *                         @OA\Property(property="phone_number", type="string", nullable=true, example="0987654321"),
+     *                         @OA\Property(property="profile_picture", type="string", nullable=true, example="https://example.com/avatar.jpg"),
+     *                         @OA\Property(property="bio", type="string", nullable=true, example="Lập trình viên web với 5 năm kinh nghiệm"),
+     *                         @OA\Property(property="created_at", type="string", format="date-time", example="2024-11-01T09:00:00.000000Z"),
+     *                         @OA\Property(property="updated_at", type="string", format="date-time", example="2025-02-20T08:00:00.000000Z")
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Không tìm thấy giảng viên đăng ký",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy giảng viên đăng ký.")
+     *         )
+     *     )
+     * )
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getLecturerRegistrations(Request $request)
+    {
+        $lecturers = LecturerRegister::with('user')->get();
+
+        return response()->json([
+            'data' => $lecturers
+        ]);
     }
 }

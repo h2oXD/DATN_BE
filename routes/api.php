@@ -44,6 +44,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('users', [UserController::class, 'update']);
     Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
     Route::post('register/answers', [LecturerRegisterController::class, 'submitAnswers']);
+    Route::get('/lecturer-registrations', [LecturerRegisterController::class, 'getLecturerRegistrations']);
 
     //wallet in user
     Route::get('/user/wallets', [WalletController::class, 'show']);
