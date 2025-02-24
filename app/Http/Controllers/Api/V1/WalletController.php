@@ -11,6 +11,7 @@ use App\Models\TransactionWallet;
 use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
@@ -284,6 +285,10 @@ class WalletController extends Controller
      */
     public function payment(Request $request, $course_id)
     {
+
+        // Bắt đầu transaction để đảm bảo tính toàn vẹn dữ liệu
+        DB::beginTransaction();
+
         try {
 
             $wallet = $request->user()->wallet;
@@ -389,6 +394,8 @@ class WalletController extends Controller
                     'progress_percent'  => 0
                 ]);
 
+                DB::commit(); // Commit transaction
+
                 return redirect('http://localhost:5173/student/home?status=success');
 
             } else {
@@ -456,11 +463,14 @@ class WalletController extends Controller
                     'progress_percent'  => 0
                 ]);
 
+                DB::commit(); // Commit transaction
+
                 return redirect('http://localhost:5173/student/home?status=success');
 
             }
 
         } catch (\Throwable $th) {
+            DB::rollBack(); // Rollback transaction nếu có lỗi
             return response()->json([
                 'message'   => 'Lỗi server',
                 'error'     => $th->getMessage(),
@@ -652,6 +662,10 @@ class WalletController extends Controller
     // Trả về kết quả thanh toán
     public function resultPaymemt(Request $request)
     {
+
+        // Bắt đầu transaction để đảm bảo tính toàn vẹn dữ liệu
+        DB::beginTransaction();
+
         try {
 
             $wallet = $request->user()->wallet;
@@ -694,18 +708,22 @@ class WalletController extends Controller
                     'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
                 ]);
 
+                DB::commit(); // Commit transaction
+
                 return response()->json([
                     'message' => 'Thanh toán thành công!',
                     'Số tiền giao dịch' => number_format($amount) . ' VND'
                 ], Response::HTTP_OK);
 
             } else {
+                DB::rollBack(); // Rollback transaction nếu có lỗi
                 return response()->json([
                     'message' => 'Thanh toán thất bại!'
                 ], Response::HTTP_BAD_REQUEST);
             }
 
         } catch (\Throwable $th) {
+            DB::rollBack(); // Rollback transaction nếu có lỗi
             return response()->json([
                 'message'   => 'Lỗi server',
                 'error'     => $th->getMessage(),
