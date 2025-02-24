@@ -14,7 +14,32 @@ use Illuminate\Support\Facades\DB;
 class QuizController extends Controller
 {
     /**
-     * Lấy danh sách quiz
+     * @OA\Get(
+     *     path="/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes",
+     *     summary="Lấy danh sách tất cả bài kiểm tra",
+     *     description="API này trả về danh sách tất cả các bài kiểm tra có kèm thông tin bài học liên quan.",
+     *     tags={"Quizzes"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Danh sách tất cả bài kiểm tra",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="lesson", type="object",
+     *                         @OA\Property(property="id", type="integer", example=10),
+     *                         @OA\Property(property="title", type="string", example="Lập trình PHP cơ bản")
+     *                     ),
+     *                     @OA\Property(property="title", type="string", example="Bài kiểm tra Laravel"),
+     *                     @OA\Property(property="description", type="string", example="Kiểm tra kiến thức về Laravel cơ bản"),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2025-02-24T12:34:56Z"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-02-24T13:45:10Z")
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
      */
     public function index()
     {
@@ -25,7 +50,52 @@ class QuizController extends Controller
     }
 
     /**
-     * Tạo mới quiz
+     * @OA\Post(
+     *     path="/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes",
+     *     summary="Tạo một bài kiểm tra mới",
+     *     description="API này tạo một bài kiểm tra mới cho một bài học cụ thể.",
+     *     tags={"Quizzes"},
+     *     @OA\Parameter(
+     *         name="lesson_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của bài học",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"title"},
+     *             @OA\Property(property="title", type="string", example="Bài kiểm tra PHP")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Bài kiểm tra được tạo thành công",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="lesson_id", type="integer", example=1),
+     *                 @OA\Property(property="title", type="string", example="Bài kiểm tra PHP"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-02-24T12:34:56Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2025-02-24T12:34:56Z")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Dữ liệu không hợp lệ",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="The title field is required."),
+     *             @OA\Property(property="errors", type="object",
+     *                 @OA\Property(property="title", type="array",
+     *                     @OA\Items(type="string", example="The title field is required.")
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
      */
     public function store(Request $request, $lesson_id)
     {
@@ -37,7 +107,54 @@ class QuizController extends Controller
     }
 
     /**
-     * Hiển thị thông tin quiz
+     * @OA\Get(
+     *     path="/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}",
+     *     summary="Lấy thông tin chi tiết của một bài kiểm tra",
+     *     description="API này trả về thông tin chi tiết của một bài kiểm tra, bao gồm danh sách câu hỏi và các đáp án.",
+     *     tags={"Quizzes"},
+     *     @OA\Parameter(
+     *         name="quiz_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của bài kiểm tra",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Thông tin bài kiểm tra",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="title", type="string", example="Bài kiểm tra Laravel"),
+     *                 @OA\Property(property="questions", type="array",
+     *                     @OA\Items(type="object",
+     *                         @OA\Property(property="id", type="integer", example=1),
+     *                         @OA\Property(property="quiz_id", type="integer", example=1),
+     *                         @OA\Property(property="question_text", type="string", example="Laravel là gì?"),
+     *                         @OA\Property(property="answers", type="array",
+     *                             @OA\Items(type="object",
+     *                                 @OA\Property(property="id", type="integer", example=1),
+     *                                 @OA\Property(property="question_id", type="integer", example=1),
+     *                                 @OA\Property(property="answer_text", type="string", example="Laravel là một framework PHP"),
+     *                                 @OA\Property(property="is_correct", type="boolean", example=true)
+     *                             )
+     *                         )
+     *                     )
+     *                 ),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-02-24T12:34:56Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2025-02-24T12:34:56Z")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Không tìm thấy bài kiểm tra",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy bài kiểm tra")
+     *         )
+     *     )
+     * )
      */
     public function show(Quiz $quiz)
     {
@@ -48,7 +165,81 @@ class QuizController extends Controller
     }
 
     /**
-     * Cập nhật quiz
+     * @OA\Put(
+     *     path="/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}",
+     *     summary="Cập nhật thông tin của một bài kiểm tra",
+     *     description="API này cho phép cập nhật tiêu đề của một bài kiểm tra.",
+     *     tags={"Quizzes"},
+     *     @OA\Parameter(
+     *         name="course_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của khóa học",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="section_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của phần học",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="lesson_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của bài học",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="quiz_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của bài kiểm tra",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"title"},
+     *             @OA\Property(property="title", type="string", example="Bài kiểm tra nâng cao về Laravel")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Bài kiểm tra được cập nhật thành công",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="lesson_id", type="integer", example=1),
+     *                 @OA\Property(property="title", type="string", example="Bài kiểm tra nâng cao về Laravel"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-02-24T12:34:56Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2025-02-24T12:34:56Z")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Không tìm thấy bài kiểm tra",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Quiz not found")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Lỗi xác thực dữ liệu đầu vào",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="The title field is required."),
+     *             @OA\Property(property="errors", type="object",
+     *                 @OA\Property(property="title", type="array",
+     *                     @OA\Items(type="string", example="The title field is required.")
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
      */
     public function update(Request $request, $course_id, $section_id, $lesson_id, $quiz_id)
     {
@@ -73,7 +264,35 @@ class QuizController extends Controller
     }
 
     /**
-     * Xóa quiz
+     * @OA\Delete(
+     *     path="/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}",
+     *     summary="Xóa bài kiểm tra",
+     *     description="API này cho phép xóa một bài kiểm tra cùng với tất cả các câu hỏi liên quan.",
+     *     tags={"Quizzes"},
+     *     @OA\Parameter(
+     *         name="quiz_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của bài kiểm tra cần xóa",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Bài kiểm tra đã được xóa thành công",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Quiz deleted successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Không tìm thấy bài kiểm tra",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Quiz not found")
+     *         )
+     *     )
+     * )
      */
     public function destroy($quiz_id)
     {
@@ -202,6 +421,7 @@ class QuizController extends Controller
         return response()->json(['status' => 'success', 'message' => 'Quiz order updated']);
     }
 
+    // tạo câu hỏi trong question
     public function storeQuestion(Request $request, $quiz_id)
     {
         // Kiểm tra xem Quiz có tồn tại không
@@ -242,6 +462,8 @@ class QuizController extends Controller
         }
     }
 
+
+    // tạo đáp án
     public function storeAnswer(Request $request, $question_id)
     {
         // Kiểm tra câu hỏi có tồn tại không
