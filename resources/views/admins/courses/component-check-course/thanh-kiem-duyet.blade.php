@@ -19,13 +19,16 @@
                         </div>
                     </a>
                 </div>
-                <div class="col-auto text-center">
-                    <form action="{{route("admin.courses.approve", $course->id)}}" method="POST">
+
+                <div class="col-auto text-center d-flex gap-2">
+                    <form action="{{ route('admin.courses.approve', $course->id) }}" method="POST">
                         @csrf
                         <button class="btn btn-outline-primary btn-sm">Chấp nhận</button>
                     </form>
-                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
-                        data-bs-target=".gd-example-modal-lg">Từ chối</button>
+                    <div>
+                        <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                            data-bs-target=".gd-example-modal-lg">Từ chối</button>
+                    </div>
                 </div>
             </div>
         </li>
