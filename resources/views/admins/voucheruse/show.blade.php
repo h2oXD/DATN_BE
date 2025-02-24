@@ -83,7 +83,7 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-4"><strong>Giá gốc:</strong></div>
-                            <div class="col-md-8">{{ number_format($item->course->price) }} VND</div>
+                            <div class="col-md-8">{{ number_format($item->course->price_regular) }} VND</div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-4"><strong>Giá đã giảm:</strong></div>

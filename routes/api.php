@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\CertificateController;
 use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\CertificateController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
@@ -44,6 +44,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('users', [UserController::class, 'update']);
     Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
     Route::post('register/answers', [LecturerRegisterController::class, 'submitAnswers']);
+    Route::get('/lecturer-registrations', [LecturerRegisterController::class, 'getLecturerRegistrations']);
 
     //wallet in user
     Route::get('/user/wallets', [WalletController::class, 'show']);
@@ -59,6 +60,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/vouchers', [VoucherController::class, 'index']);
     Route::get('/user/voucher/{voucher_id}', [VoucherController::class, 'show']);
     Route::post('/user/course/{course_id}/voucher/{voucher_id}/uses', [VoucherController::class, 'useVoucher']); // Sử dụng voucher
+    Route::get('/user/vouchers/history', [VoucherController::class, 'history']); // Lịch sử dùng voucher của người dùng
 
     //Study
     Route::get('student/{user_id}/courses/{course_id}', [StudyController::class, 'getCourseInfo']);

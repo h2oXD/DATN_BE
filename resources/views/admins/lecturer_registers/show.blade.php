@@ -45,9 +45,9 @@
 @endsection
 
 @section('content')
-<div class="position-fixed top-0 end-0 p-3" style="z-index: 1050">
-    <div id="toastWrapper"></div>
-</div>
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050">
+        <div id="toastWrapper"></div>
+    </div>
     <div class="m-3">
         <div class="card">
             <div class="card-body pb-1 pt-3 px-3">
@@ -115,12 +115,41 @@
                             <div class="col-md-6">
                                 <h5 class="text-primary"><i class="bi bi-person-circle me-2"></i> Thông tin giảng viên</h5>
                                 <hr>
-                                <p><strong>ID:</strong> {{ $lecturerRegister->id }}</p>
-                                <p><strong>Tên:</strong> {{ $lecturerRegister->user->name }}</p>
-                                <p><strong>Email:</strong> {{ $lecturerRegister->user->email }}</p>
-                                <p><strong>Tiểu sử:</strong> {{ $lecturerRegister->user->bio ?? 'Chưa cập nhật' }}</p>
-                                <p><strong>Ngày tạo:</strong> {{ $lecturerRegister->created_at->format('d-m-Y H:i') }}</p>
-                                <p><strong>Ngày cập nhật:</strong> {{ $lecturerRegister->updated_at->format('d-m-Y H:i') }}
+                                
+                                <div class="card bg-white ps-4 py-4 mx-auto" style="max-width: 600px;">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <p class="fs-5 d-flex align-items-center w-100">
+                                            <i class="bi bi-person-fill me-3 fs-4"></i>
+                                            <strong class="flex-shrink-0" style="width: 120px;">Tên:</strong>
+                                            <span class="flex-grow-1 text-start">{{ $lecturerRegister->user->name }}</span>
+                                        </p>
+                                        <p class="fs-5 d-flex align-items-center w-100">
+                                            <i class="bi bi-envelope-fill me-3 fs-4"></i>
+                                            <strong class="flex-shrink-0" style="width: 120px;">Email:</strong>
+                                            <span class="flex-grow-1 text-start">{{ $lecturerRegister->user->email }}</span>
+                                        </p>
+                                        <p class="fs-5 d-flex align-items-center w-100">
+                                            <i class="bi bi-card-text me-3 fs-4"></i>
+                                            <strong class="flex-shrink-0" style="width: 120px;">Tiểu sử:</strong>
+                                            <span class="flex-grow-1 text-start">{{ $lecturerRegister->user->bio ?? 'Chưa cập nhật' }}</span>
+                                        </p>
+                                        <p class="fs-5 d-flex align-items-center w-100">
+                                            <i class="bi bi-calendar2-date-fill me-3 fs-4"></i>
+                                            <strong class="flex-shrink-0" style="width: 120px;">Ngày tạo:</strong>
+                                            <span class="flex-grow-1 text-start">{{ $lecturerRegister->created_at->format('d-m-Y H:i') }}</span>
+                                        </p>
+                                        <p class="fs-5 d-flex align-items-center w-100">
+                                            <i class="bi bi-calendar2-plus-fill me-3 fs-4"></i>
+                                            <strong class="flex-shrink-0" style="width: 120px;">Ngày cập nhật:</strong>
+                                            <span class="flex-grow-1 text-start">{{ $lecturerRegister->updated_at->format('d-m-Y H:i') }}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                
+                                
+                                
+
                                 </p>
                             </div>
                             <div class="col-md-6">
@@ -241,12 +270,12 @@
 
     <!-- Script hiển thị thông báo -->
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             function showToast(message, type = "success") {
                 let icon = type === "success" ? "✔️" : "❌";
                 let borderColor = type === "success" ? "border-success" : "border-danger";
                 let progressColor = type === "success" ? "bg-success" : "bg-danger";
-    
+
                 let toast = document.createElement("div");
                 toast.className = `toast align-items-center show border ${borderColor} shadow-lg mb-2`;
                 toast.setAttribute("role", "alert");
@@ -254,7 +283,7 @@
                 toast.setAttribute("aria-atomic", "true");
                 toast.style.maxWidth = "350px"; // Giới hạn chiều rộng cho đẹp
                 toast.style.overflow = "hidden"; // Tránh bị tràn nội dung
-    
+
                 toast.innerHTML = `
                     <div class="d-flex p-3 bg-white rounded">
                         <div class="me-3 fs-4">${icon}</div>
@@ -268,32 +297,30 @@
                         <button type="button" class="btn-close ms-3" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                 `;
-    
+
                 document.getElementById("toastWrapper").appendChild(toast);
-    
+
                 // Giảm thanh tiến trình dần trong 3 giây
                 setTimeout(() => {
                     toast.querySelector(".progress-bar").style.transition = "width 3s linear";
                     toast.querySelector(".progress-bar").style.width = "0%";
                 }, 50);
-    
+
                 // Ẩn toast sau 3 giây
                 setTimeout(() => {
                     toast.classList.remove("show");
                     setTimeout(() => toast.remove(), 500);
                 }, 3000);
             }
-    
+
             // Kiểm tra session Laravel để hiển thị toast
-            @if(session('success'))
+            @if (session('success'))
                 showToast("{{ session('success') }}", "success");
             @endif
-    
-            @if(session('error'))
+
+            @if (session('error'))
                 showToast("{{ session('error') }}", "error");
             @endif
         });
     </script>
-    
-    
 @endsection

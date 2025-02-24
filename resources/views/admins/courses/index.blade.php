@@ -66,7 +66,7 @@
                         @foreach ($courses as $course)
                             <tr>
                                 <td>
-                                    <img src="{{ Storage::url($course->thumbnail) }}" alt="avatar"
+                                    <img src="{{ Storage::url($course->thumbnail) }}" alt="ảNH"
                                         class="w-50 h-50 avatar-md">
                                 </td>
                                 <td>

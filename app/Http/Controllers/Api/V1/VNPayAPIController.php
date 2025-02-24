@@ -9,6 +9,7 @@ use App\Models\Progress;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -95,6 +96,10 @@ class VNPayAPIController extends Controller
     // Tạo giao dịch
     public function createPayment(Request $request, $course_id)
     {
+
+        // Bắt đầu transaction để đảm bảo tính toàn vẹn dữ liệu
+        DB::beginTransaction();
+
         try {
 
             $own_course = $request->user()->courses()->find($course_id);
@@ -279,6 +284,8 @@ class VNPayAPIController extends Controller
                     'progress_percent' => 0
                 ]);
 
+                DB::commit(); // Commit transaction
+
                 return response()->json([
                     'message' => 'Thanh toán thành công!'
                 ], Response::HTTP_OK);
@@ -286,6 +293,7 @@ class VNPayAPIController extends Controller
             }
 
         } catch (\Throwable $th) {
+            DB::rollBack(); // Rollback transaction nếu có lỗi
             return response()->json([
                 'message' => 'Lỗi server',
                 'error' => $th->getMessage(),
@@ -406,6 +414,9 @@ class VNPayAPIController extends Controller
         //     return response()->json(['message' => 'Chữ ký không hợp lệ!'], 400);
         // }
 
+        // Bắt đầu transaction để đảm bảo tính toàn vẹn dữ liệu
+        DB::beginTransaction();
+
         try {
 
             $user_id = $request->query('vnp_TxnRef');
@@ -459,14 +470,18 @@ class VNPayAPIController extends Controller
                     'progress_percent' => 0
                 ]);
 
+                DB::commit(); // Commit transaction
+
                 return redirect('http://localhost:5173/student/home?status=success');
 
             } else {
 
+                DB::rollBack(); // Rollback transaction nếu có lỗi
                 return redirect("http://localhost:5173/student/home/$course_id/coursedetail?status=error");
                 
             }
         } catch (\Throwable $th) {
+            DB::rollBack(); // Rollback transaction nếu có lỗi
             return response()->json([
                 'message' => 'Lỗi server',
                 'error' => $th->getMessage(),
