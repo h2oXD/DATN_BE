@@ -8183,6 +8183,505 @@
                 ]
             }
         },
+        "/user/vouchers": {
+            "get": {
+                "tags": [
+                    "Voucher"
+                ],
+                "summary": "Lấy danh sách voucher có thể sử dụng",
+                "description": "API này trả về danh sách các voucher mà người dùng chưa sử dụng và đang hoạt động.",
+                "operationId": "eb1ed793e8e50bca13d93b4446b2ffae",
+                "responses": {
+                    "200": {
+                        "description": "Danh sách voucher khả dụng",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Danh sách voucher"
+                                        },
+                                        "vouchers": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Giảm giá 50%"
+                                                    },
+                                                    "code": {
+                                                        "type": "string",
+                                                        "example": "DISCOUNT50"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Giảm 50% cho đơn hàng trên 500.000 VND"
+                                                    },
+                                                    "type": {
+                                                        "type": "string",
+                                                        "example": "percent"
+                                                    },
+                                                    "discount_price": {
+                                                        "type": "integer",
+                                                        "example": 50000
+                                                    },
+                                                    "start_time": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-01-01T00:00:00Z"
+                                                    },
+                                                    "end_time": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-12-31T23:59:59Z"
+                                                    },
+                                                    "count": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "is_active": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy voucher khả dụng",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy voucher"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi server",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi server"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Chi tiết lỗi"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/voucher/{voucher_id}": {
+            "get": {
+                "tags": [
+                    "Voucher"
+                ],
+                "summary": "Lấy thông tin chi tiết của một voucher",
+                "description": "API này trả về thông tin chi tiết của một voucher dựa trên ID nếu voucher đang hoạt động.",
+                "operationId": "191446d123ff33a9597ace9005b8801f",
+                "parameters": [
+                    {
+                        "name": "voucher_id",
+                        "in": "path",
+                        "description": "ID của voucher cần lấy thông tin",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chi tiết voucher",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Chi tiết voucher"
+                                        },
+                                        "voucher": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Giảm giá 20%"
+                                                },
+                                                "code": {
+                                                    "type": "string",
+                                                    "example": "DISCOUNT20"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Giảm 20% khi mua khóa học bất kỳ"
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "example": "percent"
+                                                },
+                                                "discount_price": {
+                                                    "type": "integer",
+                                                    "example": 20000
+                                                },
+                                                "start_time": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-01-01T00:00:00Z"
+                                                },
+                                                "end_time": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-12-31T23:59:59Z"
+                                                },
+                                                "count": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Voucher không tồn tại hoặc không hoạt động",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không tìm thấy voucher"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi server",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi server"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Chi tiết lỗi"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/course/{course_id}/voucher/{voucher_id}/uses": {
+            "post": {
+                "tags": [
+                    "Voucher"
+                ],
+                "summary": "Sử dụng voucher cho khóa học",
+                "description": "API này cho phép người dùng áp dụng một voucher vào một khóa học. Voucher phải hợp lệ và chưa được sử dụng trước đó.",
+                "operationId": "f5554f52227e7ca383bc40ad424b8882",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học cần áp dụng voucher",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "voucher_id",
+                        "in": "path",
+                        "description": "ID của voucher cần sử dụng",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sử dụng voucher thành công",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sử dụng voucher thành công"
+                                        },
+                                        "voucherUse": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "voucher_id": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "user_id": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "course_id": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "time_used": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-02-25T10:30:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Voucher hoặc khóa học không hợp lệ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Voucher không tồn tại hoặc không hợp lệ / Khóa học không tồn tại hoặc không hợp lệ / Voucher không khả dụng"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi server",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi server"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Chi tiết lỗi"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/vouchers/history": {
+            "get": {
+                "tags": [
+                    "Voucher"
+                ],
+                "summary": "Lấy lịch sử sử dụng voucher của người dùng",
+                "description": "API này trả về danh sách các voucher mà người dùng đã sử dụng, kèm theo thông tin khóa học liên quan.",
+                "operationId": "7a809c6855807bfd6394300986fa1417",
+                "responses": {
+                    "200": {
+                        "description": "Lịch sử sử dụng voucher",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lịch sử sử dụng voucher"
+                                        },
+                                        "history": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "voucher_use_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "voucher": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 5
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Giảm giá 50%"
+                                                            },
+                                                            "code": {
+                                                                "type": "string",
+                                                                "example": "DISCOUNT50"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "Giảm 50% cho đơn hàng trên 500.000 VND"
+                                                            },
+                                                            "discount_price": {
+                                                                "type": "integer",
+                                                                "example": 50000
+                                                            },
+                                                            "start_time": {
+                                                                "type": "string",
+                                                                "format": "date-time",
+                                                                "example": "2024-01-01T00:00:00Z"
+                                                            },
+                                                            "end_time": {
+                                                                "type": "string",
+                                                                "format": "date-time",
+                                                                "example": "2024-12-31T23:59:59Z"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "course": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 3
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Khóa học lập trình PHP"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "example": "active"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "time_used": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-02-25T10:30:00Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Người dùng chưa sử dụng voucher nào",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bạn chưa sử dụng voucher nào"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi server",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi server"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Chi tiết lỗi"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
         "/user/wallets": {
             "get": {
                 "tags": [
@@ -9162,6 +9661,10 @@
         {
             "name": "Videos",
             "description": "Videos"
+        },
+        {
+            "name": "Voucher",
+            "description": "Voucher"
         },
         {
             "name": "Wallet",
