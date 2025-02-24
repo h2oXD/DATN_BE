@@ -244,19 +244,19 @@ class DatabaseSeeder extends Seeder
         //     'admin_commission_rate' => 30
         // ]);
 
-        $quizzes = [
-            [
-                'lesson_id' => 1,
-                'title' => 'cách cài đặt laragon?'
-            ],
-            [
-                'lesson_id' => 2,
-                'title' => 'cấu trúc thư mục của laragon như thế nào?'
-            ]
-        ];
-        foreach ($quizzes as $quiz) {
-            Quiz::create($quiz);
-        }
+        // $quizzes = [
+        //     [
+        //         'lesson_id' => 1,
+        //         'title' => 'cách cài đặt laragon?'
+        //     ],
+        //     [
+        //         'lesson_id' => 2,
+        //         'title' => 'cấu trúc thư mục của laragon như thế nào?'
+        //     ]
+        // ];
+        // foreach ($quizzes as $quiz) {
+        //     Quiz::create($quiz);
+        // }
       
         // Course::create([
         //     'user_id' => 5,

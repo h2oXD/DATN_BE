@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('transaction_code')->unique()->comment('Mã giao dịch');
             $table->decimal('amount', 15, 2)->comment('Số tiền thanh toán');
             $table->decimal('balance', 15, 2)->comment('Số dư trong ví của người dùng');
-            $table->enum('type', ['deposit', 'withdraw'])->comment('Nạp tiền hoặc rút tiền');
+            $table->enum('type', ['deposit', 'withdraw', 'profit', 'payment'])->comment('Nạp tiền, rút tiền, lợi nhuận, thanh toán');
             $table->enum('status', ['success', 'fail'])->comment('Trạng thái giao dịch');
             $table->timestamp('transaction_date')->comment('Ngày giao dịch');
 
