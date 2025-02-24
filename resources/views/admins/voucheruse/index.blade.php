@@ -75,7 +75,7 @@
                                 <td>{{ $item->email }}</td>
                                 <td>{{ $item->phone_number }}</td>
                                 <td>{{ $item->title }}</td>
-                                <td>{{ number_format($item->price) }} VND</td>
+                                <td>{{ number_format($item->price_regular) }} VND</td>
                                 <td>{{ number_format($item->price_sale) }} VND</td>
                                 <td>{{ \Carbon\Carbon::parse($item->time_used)->format('d/m/Y H:i:s') }}</td>
                                 <td>

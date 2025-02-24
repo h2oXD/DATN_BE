@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\CertificateController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
@@ -44,7 +45,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/courseNew', [OverviewController::class, 'courseNew']);
 
 
+    Route::put('users', [UserController::class, 'update']);
+    Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
     Route::post('register/answers', [LecturerRegisterController::class, 'submitAnswers']);
+    Route::get('/lecturer-registrations', [LecturerRegisterController::class, 'getLecturerRegistrations']);
 
     //wallet in user
     Route::get('/user/wallets', [WalletController::class, 'show']);
@@ -56,16 +60,17 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     // Pay by wallet
     Route::post('/user/courses/{course_id}/wallet-payment', [WalletController::class, 'payment']);
 
-    // Voucher in user
+    // Voucher in user 
     Route::get('/user/vouchers', [VoucherController::class, 'index']);
     Route::get('/user/voucher/{voucher_id}', [VoucherController::class, 'show']);
     Route::post('/user/course/{course_id}/voucher/{voucher_id}/uses', [VoucherController::class, 'useVoucher']); // Sử dụng voucher
+    Route::get('/user/vouchers/history', [VoucherController::class, 'history']); // Lịch sử dùng voucher của người dùng
 
     //Study
     Route::get('student/{user_id}/courses/{course_id}', [StudyController::class, 'getCourseInfo']);
     Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/starts', [StudyController::class, 'startLesson']);
     Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/completes', [StudyController::class, 'completeLesson']);
-
+    Route::post('/certificates/student/{user_id}/courses/{course_id}', [CertificateController::class, 'createCertificate']);
     // danh sách khóa học đã đăng ký 
     Route::get('/user/courses', [EnrollmentController::class, 'getUserCoursesWithProgress']);
 

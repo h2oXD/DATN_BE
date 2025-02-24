@@ -42,7 +42,7 @@ class CourseController extends Controller
 
     public function show($id)
     {
-        $course = Course::with(['category', 'tags', 'lecturer'])->findOrFail($id);
+        $course = Course::with(['category', 'tags', 'user'])->findOrFail($id);
         return view(self::PATH_VIEW . 'show', compact('course'));
     }
 

@@ -5,12 +5,12 @@
 @endsection
 
 @section('content')
-    <div class="card">
+    <div class="card m-3">
         <div class="card-header d-flex justify-content-between align-content-center">
             <h2 class="m-0">Danh sách khoá học</h2>
         </div>
         <div class="card-body p-0">
-            <form method="GET" action="{{ route('courses.index') }}" class="row gx-3 m-2">
+            <form method="GET" action="{{ route('admin.courses.index') }}" class="row gx-3 m-2">
                 <div class="col-lg-8 col-12 mb-2">
                     <input type="text" name="search" class="form-control" placeholder="Tìm kiếm khóa học"
                         value="{{ request('search') }}">
@@ -66,7 +66,7 @@
                         @foreach ($courses as $course)
                             <tr>
                                 <td>
-                                    <img src="{{ Storage::url($course->thumbnail) }}" alt="avatar"
+                                    <img src="{{ Storage::url($course->thumbnail) }}" alt="ảNH"
                                         class="w-50 h-50 avatar-md">
                                 </td>
                                 <td>
@@ -75,6 +75,7 @@
                                     </div>
                                 </td>
                                 <td>{{ $course->category->name }}</td>
+                                <td>{{ $course->user->name }}</td>
                                 {{-- <td>{{ $course->lecturer->name }}</td> --}}
                                 <td>
                                     @if ($course->status == 'pending')
@@ -85,8 +86,8 @@
                                         <span class="badge bg-danger">Đã từ chối</span>
                                     @endif
                                 </td>
-
-                                <td>
+                                
+                                {{-- <td>
                                     @if ($course->status == 'pending')
                                         <form action="{{ route('courses.approve', $course->id) }}" method="POST"
                                             style="display:inline-block;">
@@ -100,7 +101,8 @@
                                         </form>
                                     @endif
 
-                                </td>
+                                </td> --}}
+                                
                                 <td>
                                     <span class="dropdown dropstart">
                                         <a class="btn-icon btn btn-ghost btn-sm rounded-circle" href="#"
@@ -110,7 +112,7 @@
                                         </a>
                                         <span class="dropdown-menu">
                                             <span class="dropdown-header">Settings</span>
-                                            <a href="{{ route('courses.show', $course->id) }}" class="dropdown-item">
+                                            <a href="{{ route('admin.courses.show', $course->id) }}" class="dropdown-item">
                                                 <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                                     class="size-6">
@@ -122,7 +124,7 @@
                                                 Xem
                                             </a>
 
-                                            <a href="{{ route('courses.edit', $course->id) }}" class="dropdown-item">
+                                            {{-- <a href="{{ route('courses.edit', $course->id) }}" class="dropdown-item">
                                                 <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                                     class="size-6">
@@ -130,7 +132,7 @@
                                                         d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                                 </svg>
                                                 Sửa
-                                            </a>
+                                            </a> --}}
                                         </span>
                                     </span>
                                 </td>
