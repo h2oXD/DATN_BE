@@ -28,7 +28,7 @@ class VoucherUseController extends AdminBaseController
             'users.email',
             'users.phone_number',
             'courses.title',
-            'courses.price',
+            'courses.price_regular',
             'courses.price_sale',
             'voucher_uses.time_used'
         )
