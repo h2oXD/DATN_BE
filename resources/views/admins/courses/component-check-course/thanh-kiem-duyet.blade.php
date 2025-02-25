@@ -19,6 +19,7 @@
                         </div>
                     </a>
                 </div>
+
                 <div class="col-auto text-center d-flex gap-2">
                     <form action="{{ route('admin.courses.approve', $course->id) }}" method="POST">
                         @csrf
