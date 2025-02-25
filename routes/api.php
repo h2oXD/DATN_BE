@@ -130,6 +130,8 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/home', [OverviewController::class, 'overview']);
+    Route::get('/student/courses/{course_id}', [EnrollmentController::class, 'showUserEnrollmentCourse']);
+    Route::get('/lesson/{lesson_id}', [EnrollmentController::class, 'showLesson']);
 
     // Nộp bài Quiz
     Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);
