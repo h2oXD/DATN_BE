@@ -785,7 +785,7 @@ class CourseController extends Controller
             count($course->sections)
         ) {
             foreach ($course->sections as $section) {
-                if (!count($section->lessons) || count($section->lessons) <= 3) {
+                if (!count($section->lessons) || count($section->lessons) < 2) {
                     $data['giang_day'] = 'Các phần trong chương trình giảng dạy chưa có đủ bài giảng';
                 }
             }
@@ -869,8 +869,8 @@ class CourseController extends Controller
             count($course->sections)
         ) {
             foreach ($course->sections as $section) {
-                if (!count($section->lessons) || count($section->lessons) <= 3) {
-                    $data['lesson'] = 'Các phần trong chương trình giảng dạy phải có từ 4 bài trở lên bài giảng';
+                if (!count($section->lessons) || count($section->lessons) < 2) {
+                    $data['lesson'] = 'Các phần trong chương trình giảng dạy phải có từ 2 bài trở lên bài giảng';
                 }
             }
         }

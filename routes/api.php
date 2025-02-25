@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\V1\LessonController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\OverviewController;
 use App\Http\Controllers\Api\V1\QuizController;
+use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\SectionController;
 use App\Http\Controllers\Api\V1\StudyController;
 use App\Http\Controllers\Api\V1\TagController;
@@ -74,6 +75,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     // danh sách khóa học đã đăng ký 
     Route::get('/user/courses', [EnrollmentController::class, 'getUserCoursesWithProgress']);
 
+    // review
+    Route::post('/user/{user_id}/courses/{course_id}/reviews', [ReviewController::class, 'store']); // Thêm đánh giá
+    Route::put('/user/{user_id}/reviews/{review_id}', [ReviewController::class, 'update']);
+    Route::delete('/user/{user_id}/reviews/{review_id}', [ReviewController::class, 'destroy']);
+
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
@@ -100,13 +106,35 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', DocumentController::class)->parameters(['documents' => 'document_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', LessonCodingController::class)->parameters(['codings' => 'coding_id']);
 
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes', QuizController::class)->parameters(['quizzes' => 'quiz_id']);
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}/questions', QuizController::class)->parameters(['questions' => 'question_id']);
+    // Quản lý Quiz trong một bài học (Lesson)
+    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes', QuizController::class)
+        ->parameters(['quizzes' => 'quiz_id']);
+
+    // Quản lý câu hỏi (Questions) trong một Quiz
+    Route::apiResource('/lecturer/lessons/{lesson_id}/quizzes/{quiz_id}/questions', QuizController::class)
+        ->parameters(['questions' => 'question_id']);
+
+    // Lấy danh sách câu hỏi của một Quiz
+    Route::get('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'getQuestions']);
+    Route::post('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'storeQuestion']);
+    Route::post('/lecturer/questions/{question_id}/answers', [QuizController::class, 'storeAnswer']);
+
+
+
+    // Cập nhật thứ tự câu hỏi trong Quiz
+    Route::post('/user/quizzes/{quiz_id}/update-order', [QuizController::class, 'updateQuizOrder']);
 
     Route::post('lessons/order', [LessonController::class, 'updateOrder']);
+
+    Route::post('/user/wallets/withdraw', [WalletController::class, 'withdraw']); // rút tiền ví giảng viên
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/home', [OverviewController::class, 'overview']);
+    Route::get('/student/courses/{course_id}', [EnrollmentController::class, 'showUserEnrollmentCourse']);
+    Route::get('/lesson/{lesson_id}', [EnrollmentController::class, 'showLesson']);
+
+    // Nộp bài Quiz
+    Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);
 });
 
 
@@ -115,5 +143,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/courses/{course_id}/public', [CourseController::class, 'publicCourseDetail']);
 Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id']);
+//Xem đánh giá
+Route::get('/courses/{course_id}/reviews', [ReviewController::class, 'getReviewsByCourse']); // Lấy đánh giá của khóa học
+Route::get('/user/{user_id}/reviews', [ReviewController::class, 'getReviewsByUser']); // Lấy đánh giá của user
 
 Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.default.api');
