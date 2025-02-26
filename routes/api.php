@@ -42,6 +42,10 @@ use L5Swagger\Http\Controllers\SwaggerController;
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', [AuthController::class, 'getUser']);
+    Route::apiResource('users', UserController::class)->only(['show', 'update']);
+    Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
+    Route::get('/courseNew', [OverviewController::class, 'courseNew']);
+
 
     Route::put('users', [UserController::class, 'update']);
     Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
@@ -120,17 +124,19 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     // Tạo đáp án cho câu hỏi
     Route::post('/lecturer/questions/{question_id}/answers', [QuizController::class, 'storeAnswer']);
 
-    // Cập nhật thứ tự câu hỏi trong Quiz (chuyển từ /user sang /lecturer)
-    Route::post('/lecturer/quizzes/{quiz_id}/update-order', [QuizController::class, 'updateQuizOrder']);
+
+
+    // Cập nhật thứ tự câu hỏi trong Quiz
+    Route::post('/user/quizzes/{quiz_id}/update-order', [QuizController::class, 'updateQuizOrder']);
 
     Route::post('lessons/order', [LessonController::class, 'updateOrder']);
+
+    Route::post('/user/wallets/withdraw', [WalletController::class, 'withdraw']); // rút tiền ví giảng viên
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
-    Route::get('/student/dashboard', function (Request $request) {
-        return response()->json(['message' => 'Chào mừng Học viên']);
-    });
-
     Route::get('/student/home', [OverviewController::class, 'overview']);
+    Route::get('/student/courses/{course_id}', [EnrollmentController::class, 'showUserEnrollmentCourse']);
+    Route::get('/lesson/{lesson_id}', [EnrollmentController::class, 'showLesson']);
 
     // Nộp bài Quiz
     Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);
@@ -141,11 +147,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::put('/user/{user_id}/video/{video_id}/notes/{note}', [NoteController::class, 'update']); // Cập nhật ghi chú
     Route::delete('/user/{user_id}/video/{video_id}/notes/{note}', [NoteController::class, 'destroy']); // Xóa ghi chú
 });
-Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function () {
-    Route::get('/admin/dashboard', function (Request $request) {
-        return response()->json(['message' => 'Chào mừng Quản trị viên']);
-    });
-});
+
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);

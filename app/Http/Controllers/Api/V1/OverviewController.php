@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -243,7 +244,7 @@ class OverviewController extends Controller
                     $averageRating = $publishedCourses->flatMap(function ($course) {
                         return $course->reviews->pluck('rating'); // Lấy tất cả các đánh giá của các khóa học
                     })->avg(); // Tính trung bình điểm rating
-
+    
                     return [
                         'lecturer' => $user,
                         'average_rating' => $averageRating ?? 0 // Gán điểm trung bình vào
@@ -313,5 +314,48 @@ class OverviewController extends Controller
                 'error' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public function courseNew()
+    {
+        $user = request()->user();
+
+        $courses = Course::with(['user', 'category', 'reviews'])
+            ->where('is_show_home', '1')
+            ->where('status', 'published')
+            ->withAvg('reviews as average_rating', 'rating')
+            ->latest('id')
+            ->get();
+
+        if (count($courses) == 0) {
+            return response()->json([
+                'message' => 'Không có khoá học nào'
+            ], 200);
+        }
+        foreach ($courses as $course) {
+            $isLecturer = $user ? ($course->user_id === $user->id) : false;
+            $isEnrollment = $user
+                ? Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->exists()
+                : false;
+            $newCourse[] = [
+                'id' => $course->id,
+                'user_id' => $course->user_id,
+                'category_name' => $course->category->name,
+                'lecturer_name' => $course->user->name,
+                'title' => $course->title,
+                'thumbnail' => $course->thumbnail,
+                'price_regular' => $course->price_regular,
+                'price_sale' => $course->price_sale,
+                'is_free' => $course->is_free,
+                'status' => $course->status,
+                'average_rating' => number_format($course->average_rating, 1) ?? 0,
+                'level' => $course->level,
+                'is_lecturer' => $isLecturer,
+                'is_enrollment' => $isEnrollment
+            ];
+        }
+        return response()->json([
+            'data' => $newCourse
+        ], 200);
     }
 }
