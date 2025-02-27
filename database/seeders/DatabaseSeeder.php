@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Category;
+use App\Models\Comment;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Lesson;
@@ -198,51 +199,51 @@ class DatabaseSeeder extends Seeder
             Tag::create($tag);
         }
 
-        // $courseID = Course::create([
-        //     'user_id' => 4,
-        //     'category_id' => 3,
-        //     'price_regular' => 199000,
-        //     'price_sale' => 99000,
-        //     'title' => 'Khoá học Laravel',
-        //     'status' => 'published',
-        //     'admin_commission_rate' => 30
-        // ]);
-        // Course::create([
-        //     'user_id' => 4,
-        //     'category_id' => 1,
-        //     'price_regular' => 500000,
-        //     'price_sale' => 399000,
-        //     'title' => 'Khoá học React',
-        //     'status' => 'draft',
-        //     'admin_commission_rate' => 30
-        // ]);
-        // Course::create([
-        //     'user_id' => 4,
-        //     'category_id' => 4,
-        //     'price_regular' => 99000,
-        //     'price_sale' => 89000,
-        //     'title' => 'Khoá học PHP cơ bản',
-        //     'status' => 'draft',
-        //     'admin_commission_rate' => 30
-        // ]);
+        $courseID = Course::create([
+            'user_id' => 4,
+            'category_id' => 3,
+            'price_regular' => 199000,
+            'price_sale' => 99000,
+            'title' => 'Khoá học Laravel',
+            'status' => 'published',
+            'admin_commission_rate' => 30
+        ]);
+        Course::create([
+            'user_id' => 4,
+            'category_id' => 1,
+            'price_regular' => 500000,
+            'price_sale' => 399000,
+            'title' => 'Khoá học React',
+            'status' => 'draft',
+            'admin_commission_rate' => 30
+        ]);
+        Course::create([
+            'user_id' => 4,
+            'category_id' => 4,
+            'price_regular' => 99000,
+            'price_sale' => 89000,
+            'title' => 'Khoá học PHP cơ bản',
+            'status' => 'draft',
+            'admin_commission_rate' => 30
+        ]);
 
-        // Course::create([
-        //     'user_id' => 5,
-        //     'category_id' => 4,
-        //     'title' => 'Khoá học PHP nâng cao',
-        //     'status' => 'published',
-        //     'is_free' => true,
-        //     'admin_commission_rate' => 30
-        // ]);
+        Course::create([
+            'user_id' => 5,
+            'category_id' => 4,
+            'title' => 'Khoá học PHP nâng cao',
+            'status' => 'published',
+            'is_free' => true,
+            'admin_commission_rate' => 30
+        ]);
 
-        // Course::create([
-        //     'user_id' => 5,
-        //     'category_id' => 3,
-        //     'title' => 'Khoá học Laravel cơ bản',
-        //     'status' => 'published',
-        //     'is_free' => true,
-        //     'admin_commission_rate' => 30
-        // ]);
+        Course::create([
+            'user_id' => 5,
+            'category_id' => 3,
+            'title' => 'Khoá học Laravel cơ bản',
+            'status' => 'published',
+            'is_free' => true,
+            'admin_commission_rate' => 30
+        ]);
 
         // $quizzes = [
         //     [
@@ -258,111 +259,111 @@ class DatabaseSeeder extends Seeder
         //     Quiz::create($quiz);
         // }
       
-        // Course::create([
-        //     'user_id' => 5,
-        //     'category_id' => 5,
-        //     'title' => 'Khoá học Js nâng cao',
-        //     'status' => 'published',
-        //     'is_free' => true,
-        //     'admin_commission_rate' => 30
-        // ]);
+        Course::create([
+            'user_id' => 5,
+            'category_id' => 5,
+            'title' => 'Khoá học Js nâng cao',
+            'status' => 'published',
+            'is_free' => true,
+            'admin_commission_rate' => 30
+        ]);
 
-        // $sectionID = Section::create([
-        //     'course_id' => $courseID->id,
-        //     'title' => 'Cài đặt môi trường Laravel',
-        //     'order' => 1
-        // ]);
+        $sectionID = Section::create([
+            'course_id' => $courseID->id,
+            'title' => 'Cài đặt môi trường Laravel',
+            'order' => 1
+        ]);
 
-        // $lessonID = Lesson::create([
-        //     'section_id' => $sectionID->id,
-        //     'title' => 'Cài đặt laragon',
-        //     'order' => 1,
-        //     'type' => 'video'
-        // ]);
-        // Video::create([
-        //     'lesson_id' => $lessonID->id,
-        //     'video_url' => '',
-        //     'duration' => 1248
-        // ]);
+        $lessonID = Lesson::create([
+            'section_id' => $sectionID->id,
+            'title' => 'Cài đặt laragon',
+            'order' => 1,
+            'type' => 'video'
+        ]);
+        Video::create([
+            'lesson_id' => $lessonID->id,
+            'video_url' => '',
+            'duration' => 1248
+        ]);
 
-        // Lesson::create([
-        //     'section_id' => $sectionID->id,
-        //     'title' => 'Cấu trúc thư mục laravel',
-        //     'order' => 2,
-        //     'type' => 'video'
-        // ]);
-        // Section::create([
-        //     'course_id' => $courseID->id,
-        //     'title' => 'Biến và Kiểu dữ liệu (Variables and Data types)',
-        //     'order' => 2
-        // ]);
-        // $sectionID->update(['total_lessons' => $sectionID->lessons()->count()]);
+        Lesson::create([
+            'section_id' => $sectionID->id,
+            'title' => 'Cấu trúc thư mục laravel',
+            'order' => 2,
+            'type' => 'video'
+        ]);
+        Section::create([
+            'course_id' => $courseID->id,
+            'title' => 'Biến và Kiểu dữ liệu (Variables and Data types)',
+            'order' => 2
+        ]);
+        $sectionID->update(['total_lessons' => $sectionID->lessons()->count()]);
 
         // Tạo phiếu giảm giá
-        // $vouchers = [
-        //     [
-        //         'name' => 'Giảm giá thanh toán',
-        //         'code' => 'DVC10',
-        //         'description' => 'Giảm giá thanh toán 10k VND',
-        //         'type' => 'fix_amount',
-        //         'discount_price' => 10000,
-        //         'start_time' => Carbon::now(),
-        //         'end_time' => Carbon::now()->addDays(30),
-        //         'count' => '100',
-        //         'is_active' => '1',
-        //     ],
-        //     [
-        //         'name' => 'Giảm giá sản phẩm',
-        //         'code' => 'DSP10',
-        //         'description' => 'Giảm giá sản phẩm 10%',
-        //         'type' => 'percent',
-        //         'discount_price' => 10,
-        //         'start_time' => Carbon::now(),
-        //         'end_time' => Carbon::now()->addDays(30),
-        //         'count' => '99',
-        //         'is_active' => '1',
-        //     ],
-        //     [
-        //         'name' => 'Tặng khóa học đầu tiên',
-        //         'code' => 'FREE100',
-        //         'description' => 'Miễn phí thanh toán khi tham gia khóa học đầu tiên',
-        //         'type' => 'percent',
-        //         'discount_price' => 10,
-        //         'start_time' => Carbon::now(),
-        //         'end_time' => Carbon::now()->addDays(30),
-        //         'count' => '9999',
-        //         'is_active' => '0',
-        //     ],
-        // ];
-        // foreach ($vouchers as $voucher) {
-        //     Voucher::create($voucher);
-        // }
+        $vouchers = [
+            [
+                'name' => 'Giảm giá thanh toán',
+                'code' => 'DVC10',
+                'description' => 'Giảm giá thanh toán 10k VND',
+                'type' => 'fix_amount',
+                'discount_price' => 10000,
+                'start_time' => Carbon::now(),
+                'end_time' => Carbon::now()->addDays(30),
+                'count' => '100',
+                'is_active' => '1',
+            ],
+            [
+                'name' => 'Giảm giá sản phẩm',
+                'code' => 'DSP10',
+                'description' => 'Giảm giá sản phẩm 10%',
+                'type' => 'percent',
+                'discount_price' => 10,
+                'start_time' => Carbon::now(),
+                'end_time' => Carbon::now()->addDays(30),
+                'count' => '99',
+                'is_active' => '1',
+            ],
+            [
+                'name' => 'Tặng khóa học đầu tiên',
+                'code' => 'FREE100',
+                'description' => 'Miễn phí thanh toán khi tham gia khóa học đầu tiên',
+                'type' => 'percent',
+                'discount_price' => 10,
+                'start_time' => Carbon::now(),
+                'end_time' => Carbon::now()->addDays(30),
+                'count' => '9999',
+                'is_active' => '0',
+            ],
+        ];
+        foreach ($vouchers as $voucher) {
+            Voucher::create($voucher);
+        }
 
         // // // Tạo lịch sử sử dụng voucher
-        // // VoucherUse::create([
-        // //     'voucher_id' => 1,
-        // //     'user_id' => $student->id,
-        // //     'course_id' => $courseID->id,
-        // //     'time_used' => Carbon::now(),
-        // // ]);
+        // VoucherUse::create([
+        //     'voucher_id' => 1,
+        //     'user_id' => $student->id,
+        //     'course_id' => $courseID->id,
+        //     'time_used' => Carbon::now(),
+        // ]);
 
-        // // $enrollments = [
-        // //     [
-        // //         'user_id' => 2,
-        // //         'course_id' => 1,
-        // //         'status' => 'active',
-        // //         'enrolled_at' => Carbon::now('Asia/Ho_Chi_Minh')
-        // //     ],
-        // //     [
-        // //         'user_id' => 3,
-        // //         'course_id' => 1,
-        // //         'status' => 'active',
-        // //         'enrolled_at' => Carbon::now('Asia/Ho_Chi_Minh')
-        // //     ],
-        // // ];
-        // // foreach ($enrollments as $enrollment) {
-        // //     Enrollment::create($enrollment);
-        // // }
+        // $enrollments = [
+        //     [
+        //         'user_id' => 2,
+        //         'course_id' => 1,
+        //         'status' => 'active',
+        //         'enrolled_at' => Carbon::now('Asia/Ho_Chi_Minh')
+        //     ],
+        //     [
+        //         'user_id' => 3,
+        //         'course_id' => 1,
+        //         'status' => 'active',
+        //         'enrolled_at' => Carbon::now('Asia/Ho_Chi_Minh')
+        //     ],
+        // ];
+        // foreach ($enrollments as $enrollment) {
+        //     Enrollment::create($enrollment);
+        // }
 
         // $quizzes = [
         //     [
@@ -395,77 +396,124 @@ class DatabaseSeeder extends Seeder
         // foreach ($questions as $question) {
         //     Question::create($question);
 
-        //     $reviews = [
-        //         [
-        //             'user_id' => 4,
-        //             'course_id' => 3,
-        //             'rating' => 5,
-        //             'review_text' => 'Good job'
-        //         ],
-        //         [
-        //             'user_id' => 3,
-        //             'course_id' => 2,
-        //             'rating' => 2,
-        //             'review_text' => 'Very bad'
-        //         ],
-        //         [
-        //             'user_id' => 4,
-        //             'course_id' => 4,
-        //             'rating' => 4,
-        //             'review_text' => 'Very good'
-        //         ],
-        //         [
-        //             'user_id' => 4,
-        //             'course_id' => 5,
-        //             'rating' => 5,
-        //             'review_text' => 'Dinh noc kich tran'
-        //         ]
-        //     ];
+    //         $reviews = [
+    //             [
+    //                 'user_id' => 4,
+    //                 'course_id' => 3,
+    //                 'rating' => 5,
+    //                 'review_text' => 'Good job'
+    //             ],
+    //             [
+    //                 'user_id' => 3,
+    //                 'course_id' => 2,
+    //                 'rating' => 2,
+    //                 'review_text' => 'Very bad'
+    //             ],
+    //             [
+    //                 'user_id' => 4,
+    //                 'course_id' => 4,
+    //                 'rating' => 4,
+    //                 'review_text' => 'Very good'
+    //             ],
+    //             [
+    //                 'user_id' => 4,
+    //                 'course_id' => 5,
+    //                 'rating' => 5,
+    //                 'review_text' => 'Dinh noc kich tran'
+    //             ]
+    //         ];
 
-        //     foreach ($reviews as $review) {
-        //         Review::create($review);
-        //     }
-        // }
+    //         foreach ($reviews as $review) {
+    //             Review::create($review);
+    //         }
+        
 
-        // $progressData = [
-        //     [
-        //         'user_id' => 2,
-        //         'course_id' => 1,
-        //         'status' => 'in_progress',
-        //         'progress_percent' => 0
-        //     ],
-        //     [
-        //         'user_id' => 3,
-        //         'course_id' => 1,
-        //         'status' => 'in_progress',
-        //         'progress_percent' => 0
-        //     ],
-        // ];
-        // foreach ($progressData as $data) {
-        //     Progress::create($data);
-        // }
+    //     $progressData = [
+    //         [
+    //             'user_id' => 2,
+    //             'course_id' => 1,
+    //             'status' => 'in_progress',
+    //             'progress_percent' => 0
+    //         ],
+    //         [
+    //             'user_id' => 3,
+    //             'course_id' => 1,
+    //             'status' => 'in_progress',
+    //             'progress_percent' => 0
+    //         ],
+    //     ];
+    //     foreach ($progressData as $data) {
+    //         Progress::create($data);
+    //     }
 
-        // $transactions = [
-        //     [
-        //         'user_id' => 2,
-        //         'course_id' => 1,
-        //         'amount' => 99000,
-        //         'payment_method' => 'wallet',
-        //         'status' => 'success',
-        //         'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
-        //     ],
-        //     [
-        //         'user_id' => 3,
-        //         'course_id' => 1,
-        //         'amount' => 99000,
-        //         'payment_method' => 'bank_transfer',
-        //         'status' => 'success',
-        //         'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
-        //     ],
-        // ];
-        // foreach ($transactions as $data) {
-        //     Transaction::create($data);
-        // }
+    //     $transactions = [
+    //         [
+    //             'user_id' => 2,
+    //             'course_id' => 1,
+    //             'amount' => 99000,
+    //             'payment_method' => 'wallet',
+    //             'status' => 'success',
+    //             'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
+    //         ],
+    //         [
+    //             'user_id' => 3,
+    //             'course_id' => 1,
+    //             'amount' => 99000,
+    //             'payment_method' => 'bank_transfer',
+    //             'status' => 'success',
+    //             'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
+    //         ],
+    //     ];
+    //     foreach ($transactions as $data) {
+    //         Transaction::create($data);
+    //     }
+
+
+    //     Course::create([
+    //         'user_id' => 4,
+    //         'category_id' => 4,
+    //         'price_regular' => 100000,
+    //         'price_sale' => 70000,
+    //         'title' => 'Khoá học PHP cơ bản',
+    //         'status' => 'published',
+    //         'admin_commission_rate' => 30
+    //     ]);
+
+
+    //     $comments = [
+    //         [
+    //             'user_id' => 1,
+    //             'content' => 'Bài học rất hữu ích!',
+    //             'parent_id' => null,
+    //             'commentable_type' => 'App\Models\Lesson',
+    //             'commentable_id' => 2,
+    //         ],
+    //         [
+    //             'user_id' => 2,
+    //             'content' => 'Cảm ơn giảng viên!',
+    //             'parent_id' => null,
+    //             'commentable_type' => Lesson::class,
+    //             'commentable_id' => 1,
+    //         ],
+    //         [
+    //             'user_id' => 3,
+    //             'content' => 'Bạn có thể giải thích lại phần này không?',
+    //             'parent_id' => 1, // Bình luận trả lời
+    //             'commentable_type' => 'App\Models\Lesson',
+    //             'commentable_id' => 2,
+    //         ],
+    //         [
+    //             'user_id' => 4,
+    //             'content' => 'Mình đã hiểu rồi, cảm ơn!',
+    //             'parent_id' => 3, // Trả lời bình luận trên
+    //             'commentable_type' => 'App\Models\Lesson',
+    //             'commentable_id' => 2,
+    //         ],
+    //     ];
+
+    //     foreach ($comments as $comment) {
+    //         Comment::create($comment);
+    //     }
 
         // Course::create([
         //     'user_id' => 4,
@@ -476,6 +524,7 @@ class DatabaseSeeder extends Seeder
         //     'status' => 'published',
         //     'admin_commission_rate' => 30
         // ]);
+
     }
 
 }

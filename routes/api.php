@@ -3,6 +3,9 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CertificateController;
+
+use App\Http\Controllers\Api\V1\CommentController;
+use App\Http\Controllers\Api\V1\CodeSubmissionController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
@@ -10,6 +13,7 @@ use App\Http\Controllers\Api\V1\LecturerController;
 use App\Http\Controllers\Api\V1\LecturerRegisterController;
 use App\Http\Controllers\Api\V1\LessonCodingController;
 use App\Http\Controllers\Api\V1\LessonController;
+use App\Http\Controllers\Api\V1\NoteController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\OverviewController;
 use App\Http\Controllers\Api\V1\QuizController;
@@ -55,7 +59,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/wallets', [WalletController::class, 'show']);
     Route::put('/user/wallets', [WalletController::class, 'update']); //test
     Route::post('/user/wallets/deposit', [WalletController::class, 'depositPayment']); // nạp tiền vào ví
-    Route::get('/user/wallets/result', [WalletController::class, 'resultPaymemt']); // trả kết quả thanh toán
     // Pay by VNPay
     Route::post('/user/courses/{course_id}/create-payment', [VNPayAPIController::class, 'createPayment']);
     // Pay by wallet
@@ -71,6 +74,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('student/{user_id}/courses/{course_id}', [StudyController::class, 'getCourseInfo']);
     Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/starts', [StudyController::class, 'startLesson']);
     Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/completes', [StudyController::class, 'completeLesson']);
+    Route::get('student/courses/{course_id}/sections/{section_id}/lessons', [StudyController::class, 'getLessonsBySection']);
+
     Route::post('/certificates/student/{user_id}/courses/{course_id}', [CertificateController::class, 'createCertificate']);
     // danh sách khóa học đã đăng ký 
     Route::get('/user/courses', [EnrollmentController::class, 'getUserCoursesWithProgress']);
@@ -87,9 +92,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
     Route::delete('/notifications/{notification:id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
     Route::delete('/notifications', [NotificationController::class, 'destroyAll'])->name('notifications.destroyAll');
+
+    // Comment
+    Route::get('/courses/{course}/sections/{section}/lessons/{lesson}/comments', [CommentController::class, 'index']);
+    Route::post('/courses/{course}/sections/{section}/lessons/{lesson}/comments', [CommentController::class, 'store']);
+    Route::put('/courses/{course}/sections/{section}/lessons/{lesson}/comments/{comment}', [CommentController::class, 'update']);
+    Route::delete('/courses/{course}/sections/{section}/lessons/{lesson}/comments/{comment}', [CommentController::class, 'destroy']);
 });
 // Callback payment
 Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
+Route::get('/user/wallets/result', [WalletController::class, 'resultPaymemt']); // trả kết quả thanh toán nạp tiền vào ví
 
 
 Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
@@ -116,6 +128,8 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
 
     // Lấy danh sách câu hỏi của một Quiz
     Route::get('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'getQuestions']);
+
+    // Tạo câu hỏi trong Quiz
     Route::post('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'storeQuestion']);
     // Route::post('/lecturer/questions/{question_id}/answers', [QuizController::class, 'storeAnswer']);
 
@@ -132,9 +146,17 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/home', [OverviewController::class, 'overview']);
     Route::get('/student/courses/{course_id}', [EnrollmentController::class, 'showUserEnrollmentCourse']);
     Route::get('/lesson/{lesson_id}', [EnrollmentController::class, 'showLesson']);
+    Route::post('/students/codings/{coding_id}/submit', [CodeSubmissionController::class, 'submitSolution']);
+    Route::get('/students/codings/{coding_id}/submission/{token}', [CodeSubmissionController::class, 'getSubmissionResult']);
 
     // Nộp bài Quiz
     Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);
+
+    //chức năng ghi chú
+    Route::post('/user/{user_id}/video/{video_id}/notes', [NoteController::class, 'store']); // Tạo ghi chú
+    Route::get('/user/{user_id}/video/{video_id}/notes', [NoteController::class, 'index']); // Lấy danh sách ghi chú
+    Route::put('/user/{user_id}/video/{video_id}/notes/{note}', [NoteController::class, 'update']); // Cập nhật ghi chú
+    Route::delete('/user/{user_id}/video/{video_id}/notes/{note}', [NoteController::class, 'destroy']); // Xóa ghi chú
 });
 
 

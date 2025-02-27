@@ -47,11 +47,9 @@ class CertificateController extends Controller
 
             // Tạo nội dung chứng chỉ, sử dụng view Blade hoặc thư viện PDF.
             $pdf = Pdf::loadView('certificates.template', compact('user', 'course')); // Bạn cần tạo view 'certificates.template.blade.php'
-
             // Lưu trữ chứng chỉ vào storage.
             $certificateFileName = 'certificates/' . $user_id . '_' . $course_id . '_' . time() . '.pdf';
             Storage::disk('public')->put($certificateFileName, $pdf->output());
-
             // Tạo bản ghi chứng chỉ trong database.
             $certificate = Certificate::create([
                 'user_id' => $user_id,
