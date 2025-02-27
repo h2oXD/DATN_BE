@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Category;
+use App\Models\Comment;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Lesson;
@@ -142,61 +143,61 @@ class DatabaseSeeder extends Seeder
         $roles = Role::whereIn('name', ['student', 'lecturer'])->pluck('id');
         $lecturer->roles()->attach($roles);
 
-        $categories = [
-            [
-                'id' => 1,
-                'name' => 'Công nghệ thông tin',
-            ],
-            [
-                'id' => 2,
-                'name' => 'Thiết kế đồ hoạ',
-            ],
-            [
-                'name' => 'Laravel',
-                'parent_id' => 1
-            ],
-            [
-                'name' => 'PHP',
-                'parent_id' => 1
-            ],
-            [
-                'name' => 'JavaScript',
-                'parent_id' => 1
-            ],
-            [
-                'name' => 'Photoshop',
-                'parent_id' => 2
-            ],
-            [
-                'name' => 'Premiere',
-                'parent_id' => 2
-            ],
-            [
-                'name' => 'After Effect',
-                'parent_id' => 2
-            ],
-        ];
+        // $categories = [
+        //     [
+        //         'id' => 1,
+        //         'name' => 'Công nghệ thông tin',
+        //     ],
+        //     [
+        //         'id' => 2,
+        //         'name' => 'Thiết kế đồ hoạ',
+        //     ],
+        //     [
+        //         'name' => 'Laravel',
+        //         'parent_id' => 1
+        //     ],
+        //     [
+        //         'name' => 'PHP',
+        //         'parent_id' => 1
+        //     ],
+        //     [
+        //         'name' => 'JavaScript',
+        //         'parent_id' => 1
+        //     ],
+        //     [
+        //         'name' => 'Photoshop',
+        //         'parent_id' => 2
+        //     ],
+        //     [
+        //         'name' => 'Premiere',
+        //         'parent_id' => 2
+        //     ],
+        //     [
+        //         'name' => 'After Effect',
+        //         'parent_id' => 2
+        //     ],
+        // ];
 
-        $tags = [
-            [
-                'name' => 'php-laravel'
-            ],
-            [
-                'name' => 'c#-.NET'
-            ],
-            [
-                'name' => 'java-sp'
-            ],
-            [
-                'name' => 'reactjs-js'
-            ],
-        ];
-        foreach ($categories as $category) {
-            Category::create($category);
-        }
-        foreach ($tags as $tag) {
-            Tag::create($tag);
-        }
+        // $tags = [
+        //     [
+        //         'name' => 'php-laravel'
+        //     ],
+        //     [
+        //         'name' => 'c#-.NET'
+        //     ],
+        //     [
+        //         'name' => 'java-sp'
+        //     ],
+        //     [
+        //         'name' => 'reactjs-js'
+        //     ],
+        // ];
+        // foreach ($categories as $category) {
+        //     Category::create($category);
+        // }
+        // foreach ($tags as $tag) {
+        //     Tag::create($tag);
+        // }
 
         // $courseID = Course::create([
         //     'user_id' => 4,
@@ -284,7 +285,7 @@ class DatabaseSeeder extends Seeder
         // ]);
         // $sectionID->update(['total_lessons' => $sectionID->lessons()->count()]);
 
-        // Tạo phiếu giảm giá
+        // // Tạo phiếu giảm giá
         // $vouchers = [
         //     [
         //         'name' => 'Giảm giá thanh toán',
@@ -324,31 +325,31 @@ class DatabaseSeeder extends Seeder
         //     Voucher::create($voucher);
         // }
 
-        // // // Tạo lịch sử sử dụng voucher
-        // // VoucherUse::create([
-        // //     'voucher_id' => 1,
-        // //     'user_id' => $student->id,
-        // //     'course_id' => $courseID->id,
-        // //     'time_used' => Carbon::now(),
-        // // ]);
+        // // Tạo lịch sử sử dụng voucher
+        // VoucherUse::create([
+        //     'voucher_id' => 1,
+        //     'user_id' => $student->id,
+        //     'course_id' => $courseID->id,
+        //     'time_used' => Carbon::now(),
+        // ]);
 
-        // // $enrollments = [
-        // //     [
-        // //         'user_id' => 2,
-        // //         'course_id' => 1,
-        // //         'status' => 'active',
-        // //         'enrolled_at' => Carbon::now('Asia/Ho_Chi_Minh')
-        // //     ],
-        // //     [
-        // //         'user_id' => 3,
-        // //         'course_id' => 1,
-        // //         'status' => 'active',
-        // //         'enrolled_at' => Carbon::now('Asia/Ho_Chi_Minh')
-        // //     ],
-        // // ];
-        // // foreach ($enrollments as $enrollment) {
-        // //     Enrollment::create($enrollment);
-        // // }
+        // $enrollments = [
+        //     [
+        //         'user_id' => 2,
+        //         'course_id' => 1,
+        //         'status' => 'active',
+        //         'enrolled_at' => Carbon::now('Asia/Ho_Chi_Minh')
+        //     ],
+        //     [
+        //         'user_id' => 3,
+        //         'course_id' => 1,
+        //         'status' => 'active',
+        //         'enrolled_at' => Carbon::now('Asia/Ho_Chi_Minh')
+        //     ],
+        // ];
+        // foreach ($enrollments as $enrollment) {
+        //     Enrollment::create($enrollment);
+        // }
 
         // $quizzes = [
         //     [
@@ -381,87 +382,123 @@ class DatabaseSeeder extends Seeder
         // foreach ($questions as $question) {
         //     Question::create($question);
 
-        //     $reviews = [
-        //         [
-        //             'user_id' => 4,
-        //             'course_id' => 3,
-        //             'rating' => 5,
-        //             'review_text' => 'Good job'
-        //         ],
-        //         [
-        //             'user_id' => 3,
-        //             'course_id' => 2,
-        //             'rating' => 2,
-        //             'review_text' => 'Very bad'
-        //         ],
-        //         [
-        //             'user_id' => 4,
-        //             'course_id' => 4,
-        //             'rating' => 4,
-        //             'review_text' => 'Very good'
-        //         ],
-        //         [
-        //             'user_id' => 4,
-        //             'course_id' => 5,
-        //             'rating' => 5,
-        //             'review_text' => 'Dinh noc kich tran'
-        //         ]
-        //     ];
+    //         $reviews = [
+    //             [
+    //                 'user_id' => 4,
+    //                 'course_id' => 3,
+    //                 'rating' => 5,
+    //                 'review_text' => 'Good job'
+    //             ],
+    //             [
+    //                 'user_id' => 3,
+    //                 'course_id' => 2,
+    //                 'rating' => 2,
+    //                 'review_text' => 'Very bad'
+    //             ],
+    //             [
+    //                 'user_id' => 4,
+    //                 'course_id' => 4,
+    //                 'rating' => 4,
+    //                 'review_text' => 'Very good'
+    //             ],
+    //             [
+    //                 'user_id' => 4,
+    //                 'course_id' => 5,
+    //                 'rating' => 5,
+    //                 'review_text' => 'Dinh noc kich tran'
+    //             ]
+    //         ];
 
-        //     foreach ($reviews as $review) {
-        //         Review::create($review);
-        //     }
-        // }
+    //         foreach ($reviews as $review) {
+    //             Review::create($review);
+    //         }
+        
 
-        // $progressData = [
-        //     [
-        //         'user_id' => 2,
-        //         'course_id' => 1,
-        //         'status' => 'in_progress',
-        //         'progress_percent' => 0
-        //     ],
-        //     [
-        //         'user_id' => 3,
-        //         'course_id' => 1,
-        //         'status' => 'in_progress',
-        //         'progress_percent' => 0
-        //     ],
-        // ];
-        // foreach ($progressData as $data) {
-        //     Progress::create($data);
-        // }
+    //     $progressData = [
+    //         [
+    //             'user_id' => 2,
+    //             'course_id' => 1,
+    //             'status' => 'in_progress',
+    //             'progress_percent' => 0
+    //         ],
+    //         [
+    //             'user_id' => 3,
+    //             'course_id' => 1,
+    //             'status' => 'in_progress',
+    //             'progress_percent' => 0
+    //         ],
+    //     ];
+    //     foreach ($progressData as $data) {
+    //         Progress::create($data);
+    //     }
 
-        // $transactions = [
-        //     [
-        //         'user_id' => 2,
-        //         'course_id' => 1,
-        //         'amount' => 99000,
-        //         'payment_method' => 'wallet',
-        //         'status' => 'success',
-        //         'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
-        //     ],
-        //     [
-        //         'user_id' => 3,
-        //         'course_id' => 1,
-        //         'amount' => 99000,
-        //         'payment_method' => 'bank_transfer',
-        //         'status' => 'success',
-        //         'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
-        //     ],
-        // ];
-        // foreach ($transactions as $data) {
-        //     Transaction::create($data);
-        // }
+    //     $transactions = [
+    //         [
+    //             'user_id' => 2,
+    //             'course_id' => 1,
+    //             'amount' => 99000,
+    //             'payment_method' => 'wallet',
+    //             'status' => 'success',
+    //             'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
+    //         ],
+    //         [
+    //             'user_id' => 3,
+    //             'course_id' => 1,
+    //             'amount' => 99000,
+    //             'payment_method' => 'bank_transfer',
+    //             'status' => 'success',
+    //             'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
+    //         ],
+    //     ];
+    //     foreach ($transactions as $data) {
+    //         Transaction::create($data);
+    //     }
 
-        // Course::create([
-        //     'user_id' => 4,
-        //     'category_id' => 4,
-        //     'price_regular' => 100000,
-        //     'price_sale' => 70000,
-        //     'title' => 'Khoá học PHP cơ bản',
-        //     'status' => 'published',
-        //     'admin_commission_rate' => 30
-        // ]);
+    //     Course::create([
+    //         'user_id' => 4,
+    //         'category_id' => 4,
+    //         'price_regular' => 100000,
+    //         'price_sale' => 70000,
+    //         'title' => 'Khoá học PHP cơ bản',
+    //         'status' => 'published',
+    //         'admin_commission_rate' => 30
+    //     ]);
+
+
+    //     $comments = [
+    //         [
+    //             'user_id' => 1,
+    //             'content' => 'Bài học rất hữu ích!',
+    //             'parent_id' => null,
+    //             'commentable_type' => 'App\Models\Lesson',
+    //             'commentable_id' => 2,
+    //         ],
+    //         [
+    //             'user_id' => 2,
+    //             'content' => 'Cảm ơn giảng viên!',
+    //             'parent_id' => null,
+    //             'commentable_type' => Lesson::class,
+    //             'commentable_id' => 1,
+    //         ],
+    //         [
+    //             'user_id' => 3,
+    //             'content' => 'Bạn có thể giải thích lại phần này không?',
+    //             'parent_id' => 1, // Bình luận trả lời
+    //             'commentable_type' => 'App\Models\Lesson',
+    //             'commentable_id' => 2,
+    //         ],
+    //         [
+    //             'user_id' => 4,
+    //             'content' => 'Mình đã hiểu rồi, cảm ơn!',
+    //             'parent_id' => 3, // Trả lời bình luận trên
+    //             'commentable_type' => 'App\Models\Lesson',
+    //             'commentable_id' => 2,
+    //         ],
+    //     ];
+
+    //     foreach ($comments as $comment) {
+    //         Comment::create($comment);
+    //     }
     }
 
 }

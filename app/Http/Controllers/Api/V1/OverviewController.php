@@ -227,15 +227,6 @@ class OverviewController extends Controller
             //     $courses_id = $user->enrollments()->course_id;
             // }
 
-<<<<<<< HEAD
-            $lecturers = User::with([
-                'courses' => function ($query) {
-                    $query->with('reviews')
-                        ->select('id', 'user_id', 'category_id', 'price_regular', 'price_sale', 'title', 'thumbnail', 'video_preview', 'description', 'primary_content', 'status', 'is_show_home', 'target_students', 'learning_outcomes', 'prerequisites', 'who_is_this_for', 'is_free', 'language', 'level', 'created_at', 'updated_at');
-                }
-            ])
-                ->whereHas('courses.reviews') // Lọc chỉ lấy những giảng viên có khóa học có đánh giá
-=======
             $lecturers = User::with(['courses' => function ($query) {
                 $query->with('reviews')
                     ->where('status', 'published') // Chỉ lấy khóa học đã xuất bản
@@ -245,7 +236,6 @@ class OverviewController extends Controller
                     $query->where('status', 'published') // Chỉ lấy giảng viên có khóa học đã xuất bản
                         ->whereHas('reviews'); // Chỉ lấy khóa học có đánh giá
                 })
->>>>>>> 76fae7282b421f21efc9e3bdbc72aade704a42dc
                 ->get()
                 ->map(function ($user) {
                     // Chỉ tính điểm trung bình của các khóa học có trạng thái "published"
@@ -254,7 +244,7 @@ class OverviewController extends Controller
                     $averageRating = $publishedCourses->flatMap(function ($course) {
                         return $course->reviews->pluck('rating'); // Lấy tất cả các đánh giá của các khóa học
                     })->avg(); // Tính trung bình điểm rating
-    
+
                     return [
                         'lecturer' => $user,
                         'average_rating' => $averageRating ?? 0 // Gán điểm trung bình vào
@@ -264,41 +254,83 @@ class OverviewController extends Controller
                 ->take(10) // Lấy 10 giảng viên có điểm trung bình cao nhất
                 ->values(); // Reset lại key index của collection
 
+            if (!$lecturers) {
+                return response()->json([
+                    'message' => 'Không có người dùng nào'
+                ], 404);
+            }
 
-            $coursesPublished = Course::with(['user', 'reviews']) // Eager loading user và reviews
+
+            $coursesPublished = Course::with(['user', 'reviews', '']) // Eager loading user và reviews
                 ->where('status', 'published') // Lọc khóa học đã xuất bản
                 ->where('is_show_home', 1) // Lọc khóa học hiển thị trên trang chủ
                 ->get();
+
+            if (count($coursesPublished) == 0) {
+                return response()->json([
+                    'message' => 'Không có khoá học nào'
+                ], 200);
+            }
 
 
 
 
             $userId = $request->user()->id;
 
-            $courses = Course::with(['user', 'reviews']) // Lấy thông tin user sở hữu khóa học và reviews
-                ->select('id', 'user_id', 'category_id', 'price_regular', 'price_sale', 'title', 'thumbnail', 'video_preview', 'description', 'primary_content', 'status', 'is_show_home', 'target_students', 'learning_outcomes', 'prerequisites', 'who_is_this_for', 'is_free', 'language', 'level', 'created_at', 'updated_at') // Chỉ chọn các trường cần thiết
-                ->where('status', 'published') // Thêm điều kiện chỉ lấy khóa học đã được duyệt
-                ->whereHas('reviews') // Chỉ lấy khóa học có đánh giá
-                ->whereDoesntHave('enrollments', function ($query) use ($userId) {
-                    $query->where('user_id', $userId);
-                }) // Loại bỏ các khóa học mà người dùng hiện tại đã tham gia
+            $courses = Course::with(['user', 'category', 'reviews'])
+                ->select([
+                    'id',
+                    'user_id',
+                    'category_id',
+                    'price_regular',
+                    'price_sale',
+                    'title',
+                    'thumbnail',
+                    'video_preview',
+                    'description',
+                    'primary_content',
+                    'status',
+                    'is_show_home',
+                    'target_students',
+                    'learning_outcomes',
+                    'prerequisites',
+                    'who_is_this_for',
+                    'is_free',
+                    'language',
+                    'level',
+                    'created_at',
+                    'updated_at'
+                ])
+                ->where('status', 'published') // Chỉ lấy khóa học đã duyệt
                 ->get()
-                ->map(function ($course) {
-                    // Lấy điểm đánh giá cao nhất từ tất cả đánh giá của khóa học
+                ->map(function ($course) use ($userId) {
+                    // Lấy điểm đánh giá cao nhất của khóa học
                     $highestRating = $course->reviews->max('rating');
+
+                    // Kiểm tra người dùng có phải giảng viên không
+                    $isLecturer = $userId ? ($course->user_id === $userId) : false;
+
+                    // Kiểm tra người dùng đã đăng ký khóa học chưa
+                    $isEnrollment = $userId
+                        ? Enrollment::where('user_id', $userId)->where('course_id', $course->id)->exists()
+                        : false;
 
                     return [
                         'course' => $course,
-                        'highest_rating' => $highestRating,
-                        'user' => $course->user,
+                        'highest_rating' => number_format($highestRating, 1) ?? 0,
+                        'is_lecturer' => $isLecturer,
+                        'is_enrollment' => $isEnrollment,
                     ];
                 })
-                ->sortByDesc('highest_rating') // Sắp xếp giảm dần theo điểm đánh giá cao nhất
-                ->take(10) // Lấy 10 khóa học có đánh giá cao nhất
-                ->values(); // Reset key index để JSON đẹp hơn
+                ->sortByDesc('highest_rating') // Sắp xếp theo highest_rating giảm dần
+                ->take(10) // Lấy 10 khóa học có rating cao nhất
+                ->values(); // Reset index để JSON đẹp hơn
 
-
-
+            if (count($courses) == 0) {
+                return response()->json([
+                    'message' => 'Không có khoá học nào'
+                ], 200);
+            }
 
 
             $coursesFree = Course::with(['user', 'reviews'])
@@ -309,18 +341,19 @@ class OverviewController extends Controller
                 }) // Loại bỏ các khóa học mà người dùng hiện tại đã tham gia
                 ->get();
 
+            if (count($courses) == 0) {
+                return response()->json([
+                    'message' => 'Không có khoá học nào'
+                ], 200);
+            }
+
+
             return response()->json(
                 [
-<<<<<<< HEAD
                     'topLectures' => $lecturers,
-                    'topCourses' => $courses,
-                    'courseFree' => $coursesFree
-=======
-                    // 'topLectures' => $lecturers,
                     'topCourses'  => $courses,
-                    // 'courseFree'  => $coursesFree
+                    'courseFree'  => $coursesFree,
                     'coursesPublished' => $coursesPublished
->>>>>>> 76fae7282b421f21efc9e3bdbc72aade704a42dc
                 ],
                 200
             );

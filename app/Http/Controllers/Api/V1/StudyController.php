@@ -188,21 +188,17 @@ class StudyController extends Controller
                     'course' => $course,
                     'progress_percent' => $progressPercent,
                 ], Response::HTTP_OK);
-
             } elseif ($enrollment->status === 'canceled') {
                 return response()->json(['message' => 'Khóa học này đã bị hủy.'], Response::HTTP_BAD_REQUEST);
-
             } elseif ($enrollment->status === 'completed') {
                 $course = Course::where('status', 'published')->find($course_id);
                 if (!$course) {
                     return response()->json(['message' => 'Khóa học này chưa được đẩy lên.'], Response::HTTP_NOT_FOUND);
                 }
                 return response()->json(['message' => 'Khóa học này đã hoàn thành.'], Response::HTTP_OK);
-
             } else {
                 return response()->json(['message' => 'Trạng thái khóa học không hợp lệ.'], Response::HTTP_BAD_REQUEST);
             }
-
         } catch (\Throwable $th) {
 
             return response()->json(['message' => 'Lỗi hệ thống.'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -488,9 +484,44 @@ class StudyController extends Controller
             );
 
             return response()->json(['message' => 'Học viên hoàn thành bài học.'], Response::HTTP_OK);
-
         } catch (\Throwable $th) {
             return response()->json(['message' => 'Lỗi hệ thống: ' . $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+
+    public function getLessonsBySection(Request $request, $courseId, $sectionId)
+    {
+        $user = $request->user(); // Lấy người dùng hiện tại
+
+        // Tìm Section theo ID
+        $section = Section::where('id', $sectionId)->where('course_id', $courseId)->first();
+
+        // Nếu không tìm thấy section, trả về lỗi 404
+        if (!$section) {
+            return response()->json(['error' => 'Section not found'], 404);
+        }
+
+        // Kiểm tra người dùng có đăng ký khóa học không
+        $isEnrolled = Enrollment::where('user_id', $user->id)
+            ->where('course_id', $courseId)
+            ->exists();
+
+        if (!$isEnrolled) {
+            return response()->json(['error' => 'You have not enrolled in this course'], 403);
+        }
+
+        // Lấy danh sách bài học theo thứ tự order
+        $lessons = Lesson::where('section_id', $sectionId)
+            ->orderBy('order')
+            ->get();
+
+        return response()->json([
+            'section' => [
+                'id' => $section->id,
+                'title' => $section->title,
+            ],
+            'lessons' => $lessons
+        ]);
     }
 }
