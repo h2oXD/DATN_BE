@@ -18,4 +18,8 @@ class Coding extends Model
         'solution_code',
         'test_cases',
     ];
+    public function lesson()
+    {
+        return $this->belongsTo(Lesson::class);
+    }
 }

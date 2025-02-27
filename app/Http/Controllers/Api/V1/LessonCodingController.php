@@ -196,19 +196,17 @@ class LessonCodingController extends Controller
      * )
      */
     // Tạo bài tập lập trình mới
+
     public function store(Request $request, $course_id, $section_id, $lesson_id)
     {
+        // Kiểm tra lesson có tồn tại không
         $course = $request->user()->courses()->with([
-            'sections' => function ($query) use ($section_id) {
-                $query->where('id', $section_id);
-            },
-            'sections.lessons' => function ($query) use ($lesson_id) {
-                $query->where('id', $lesson_id);
-            }
+            'sections' => fn($query) => $query->where('id', $section_id),
+            'sections.lessons' => fn($query) => $query->where('id', $lesson_id)
         ])->find($course_id);
 
         if (!$course || !$course->sections->first() || !$lesson = $course->sections->first()->lessons->first()) {
-            return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404); // Combined check
+            return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404);
         }
 
         // Validate dữ liệu đầu vào
@@ -221,7 +219,6 @@ class LessonCodingController extends Controller
             'test_cases' => 'required|json',
         ]);
 
-        // Nếu dữ liệu không hợp lệ, trả về lỗi 422
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Dữ liệu không hợp lệ',
@@ -229,18 +226,16 @@ class LessonCodingController extends Controller
             ], 422);
         }
 
-        // Lấy dữ liệu đã được xác thực
+        // Lấy dữ liệu hợp lệ
         $data = $validator->validated();
 
-        // Nếu test_cases là mảng, chuyển sang JSON
-        if (!empty($data['test_cases']) && is_array($data['test_cases'])) {
-            $data['test_cases'] = json_encode($data['test_cases']);
-        }
+        // Chuyển test_cases sang JSON nếu cần
+        $data['test_cases'] = is_array($data['test_cases']) ? json_encode($data['test_cases']) : $data['test_cases'];
+     
 
-        // Lưu vào database với try-catch để xử lý lỗi
+        // Lưu vào database
         try {
             $coding = $lesson->codings()->create($data);
-
             return response()->json([
                 'message' => 'Bài tập lập trình đã được tạo thành công!',
                 'data' => $coding
@@ -252,6 +247,8 @@ class LessonCodingController extends Controller
             ], 500);
         }
     }
+
+
 
 
     /**

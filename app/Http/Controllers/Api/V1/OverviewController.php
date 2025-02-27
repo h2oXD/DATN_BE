@@ -350,6 +350,7 @@ class OverviewController extends Controller
 
             return response()->json(
                 [
+
                     'topLectures' => $lecturers,
                     'topCourses'  => $courses,
                     'courseFree'  => $coursesFree,

@@ -295,6 +295,23 @@ class WalletController extends Controller
             $own_course = $request->user()->courses()->find($course_id);
             $course = Course::findOrFail($course_id);
             $is_free = $course->is_free;
+            $lecturer_id = $course->user; // id giảng viên khóa học
+
+            // Kiểm tra giảng viên có tồn tại không
+            if (!$lecturer_id) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Không tìm thấy giảng viên của khóa học này'
+                ], Response::HTTP_NOT_FOUND);
+            }
+            // Lấy ví của giảng viên
+            $lecturer_wallet = $lecturer_id->wallet;
+            if (!$lecturer_wallet) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Không tìm thấy ví của giảng viên'
+                ], Response::HTTP_NOT_FOUND);
+            }
 
             if ($is_free == 0) {
                 
@@ -363,7 +380,7 @@ class WalletController extends Controller
                     ], Response::HTTP_BAD_REQUEST);
                 }
 
-                // Trừ tiền trong ví, ghi lịch sử giao dịch vào database và tham gia khóa học
+                // Trừ tiền trong ví sinh viên, ghi lịch sử giao dịch vào database và tham gia khóa học
                 $wallet->decrement('balance', $request->amount);
                 $wallet->update([
                     'transaction_history' => [
@@ -381,6 +398,15 @@ class WalletController extends Controller
                     'status'            => 'success',
                     'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
                 ]);
+                TransactionWallet::create([
+                    'wallet_id'         => $wallet->id,
+                    'transaction_code'  => Str::uuid(),
+                    'amount'            => $request->amount,
+                    'balance'           => $wallet->balance,
+                    'type'              => 'payment',
+                    'status'            => 'success',
+                    'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+                ]);
                 Enrollment::create([
                     'user_id'       => $request->user()->id,
                     'course_id'     => $course_id,
@@ -392,6 +418,28 @@ class WalletController extends Controller
                     'course_id'         => $course_id,
                     'status'            => 'in_progress',
                     'progress_percent'  => 0
+                ]);
+
+                
+                // Cộng tiền 70% lợi nhuận bán khóa học vào ví giảng viên, cập nhật lịch sử
+                $profit = $request->amount * 0.7;
+                $lecturer_wallet->increment('balance', $profit);
+                $lecturer_wallet->update([
+                    'transaction_history' => [
+                        'Loại giao dịch'        => 'Nhận lợi nhuận bán khóa học',
+                        'Số tiền nhận'          => number_format($profit) . ' VND',
+                        'Số dư'                 => number_format($lecturer_wallet->balance) . ' VND',
+                        'Ngày giao dịch'        => Carbon::now('Asia/Ho_Chi_Minh')
+                    ]
+                ]);
+                TransactionWallet::create([
+                    'wallet_id'         => $lecturer_wallet->id,
+                    'transaction_code'  => Str::uuid(),
+                    'amount'            => $profit,
+                    'balance'           => $lecturer_wallet->balance,
+                    'type'              => 'profit',
+                    'status'            => 'success',
+                    'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
                 ]);
 
                 DB::commit(); // Commit transaction
@@ -699,29 +747,192 @@ class WalletController extends Controller
 
                 // Tạo lịch sử giao dịch
                 TransactionWallet::create([
-                    'wallet_id' => $wallet->id,
-                    'transaction_code' => $transactionCode,
-                    'amount' => $amount,
-                    'balance' => $wallet->balance,
-                    'type' => 'deposit',
-                    'status' => 'success',
-                    'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
+                    'wallet_id'             => $wallet->id,
+                    'transaction_code'      => $transactionCode,
+                    'amount'                => $amount,
+                    'balance'               => $wallet->balance,
+                    'type'                  => 'deposit',
+                    'status'                => 'success',
+                    'transaction_date'      => Carbon::now('Asia/Ho_Chi_Minh')
                 ]);
 
                 DB::commit(); // Commit transaction
 
-                return response()->json([
-                    'message' => 'Thanh toán thành công!',
-                    'Số tiền giao dịch' => number_format($amount) . ' VND'
-                ], Response::HTTP_OK);
+                return redirect('http://localhost:5173/student/walletStudent?status=success');
 
             } else {
                 DB::rollBack(); // Rollback transaction nếu có lỗi
+                return redirect('http://localhost:5173/student/walletStudent?status=failed');
+            }
+
+        } catch (\Throwable $th) {
+            DB::rollBack(); // Rollback transaction nếu có lỗi
+            return response()->json([
+                'message'   => 'Lỗi server',
+                'error'     => $th->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/user/wallets/withdraw",
+     *   tags={"Wallet"},
+     *   summary="Rút tiền từ ví giảng viên",
+     *   description="API này cho phép giảng viên rút tiền từ ví về tài khoản ngân hàng của họ. Chỉ tài khoản có vai trò 'lecturer' mới được phép rút tiền.",
+     *   security={{"BearerAuth": {}}},
+     *   @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *       type="object",
+     *       required={"amount", "bank_code", "bank_nameUser", "bank_number"},
+     *       @OA\Property(property="amount", type="integer", example=500000, description="Số tiền cần rút (tối thiểu 10,000 VND)"),
+     *       @OA\Property(property="bank_code", type="string", example="VCB", description="Mã ngân hàng"),
+     *       @OA\Property(property="bank_nameUser", type="string", example="Nguyen Van A", description="Tên chủ tài khoản ngân hàng"),
+     *       @OA\Property(property="bank_number", type="integer", example=123456789, description="Số tài khoản ngân hàng")
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Rút tiền thành công",
+     *     @OA\JsonContent(
+     *       type="object",
+     *       @OA\Property(property="status", type="string", example="success"),
+     *       @OA\Property(property="message", type="string", example="Rút tiền thành công!")
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=403,
+     *     description="Không có quyền rút tiền",
+     *     @OA\JsonContent(
+     *       type="object",
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="message", type="string", example="Chỉ tài khoản giảng viên mới có thể rút tiền.")
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=404,
+     *     description="Không tìm thấy ví",
+     *     @OA\JsonContent(
+     *       type="object",
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="message", type="string", example="Không tìm thấy ví của người dùng này.")
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=400,
+     *     description="Lỗi số tiền rút hoặc số dư không đủ",
+     *     @OA\JsonContent(
+     *       type="object",
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="message", type="string", example="Số tiền rút ít nhất là 10,000 VND / Số dư không đủ để rút tiền.")
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=422,
+     *     description="Lỗi dữ liệu đầu vào không hợp lệ",
+     *     @OA\JsonContent(
+     *       type="object",
+     *       @OA\Property(property="errors", type="object", description="Danh sách các lỗi validation")
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=500,
+     *     description="Lỗi server",
+     *     @OA\JsonContent(
+     *       type="object",
+     *       @OA\Property(property="message", type="string", example="Lỗi server"),
+     *       @OA\Property(property="error", type="string", example="Chi tiết lỗi")
+     *     )
+     *   )
+     * )
+     */
+    public function withdraw(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            
+            $user = $request->user();
+            $wallet = $user->wallet;
+            $amount = $request->input('amount');
+            $bank_code = $request->input('bank_code');
+            $bank_nameUser = $request->input('bank_nameUser');
+            $bank_number = $request->input('bank_number');
+            
+            // Kiểm tra người dùng có vai trò giảng viên hay không
+            if (!$user->roles()->where('name', 'lecturer')->exists()) {
                 return response()->json([
-                    'message' => 'Thanh toán thất bại!'
+                    'status' => 'error',
+                    'message' => 'Chỉ tài khoản giảng viên mới có thể rút tiền.'
+                ], Response::HTTP_FORBIDDEN);
+            }
+            // Kiểm tra ví có tồn tại không
+            if (!$wallet) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Không tìm thấy ví của người dùng này.'
+                ], Response::HTTP_NOT_FOUND);
+            }
+            // Kiểm tra số tiền rút có hợp lệ không
+            if (!is_numeric($amount) || $amount <= 10000) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Số tiền rút ít nhất là 10,000 VND'
+                ], Response::HTTP_BAD_REQUEST);
+            }
+            // Kiểm tra số dư ví có đủ không
+            if ($wallet->balance < $amount) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Số dư không đủ để rút tiền.'
                 ], Response::HTTP_BAD_REQUEST);
             }
 
+            // Kiểm tra dữ liệu truyền lên
+            $validator = Validator::make($request->all(), [
+                'amount'    => 'required|int',
+                'bank_code'    => 'required|string',
+                'bank_nameUser'    => 'required|string',
+                'bank_number'    => 'required|int',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'errors' => $validator->errors()
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            // Trừ tiền khỏi ví và lưu thông tin tài khoản người dùng
+            $wallet->decrement('balance', $amount);
+            $wallet->update([
+                'transaction_history' => [
+                    'Loại giao dịch'        => 'Rút tiền',
+                    'Số tiền thanh toán'    => number_format($amount) . ' VND',
+                    'Số dư ví'              => number_format($wallet->balance) . ' VND',
+                    'Mã ngân hàng'          => $bank_code,
+                    'Tên người nhận'        => $bank_nameUser,
+                    'Số tài khoản'          => $bank_number,
+                    'Ngày giao dịch'        => Carbon::now('Asia/Ho_Chi_Minh')
+                ]
+            ]);
+
+            // Ghi lại lịch sử giao dịch
+            TransactionWallet::create([
+                'wallet_id'         => $wallet->id,
+                'transaction_code'  => Str::uuid(), // Mã giao dịch duy nhất
+                'amount'            => $amount,
+                'balance'           => $wallet->balance,
+                'type'              => 'withdraw',
+                'status'            => 'success',
+                'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+            ]);
+
+            DB::commit(); // Lưu thay đổi vào database
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Rút tiền thành công!'
+            ], Response::HTTP_OK);
+            
         } catch (\Throwable $th) {
             DB::rollBack(); // Rollback transaction nếu có lỗi
             return response()->json([
