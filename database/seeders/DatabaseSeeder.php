@@ -143,61 +143,61 @@ class DatabaseSeeder extends Seeder
         $roles = Role::whereIn('name', ['student', 'lecturer'])->pluck('id');
         $lecturer->roles()->attach($roles);
 
-        // $categories = [
-        //     [
-        //         'id' => 1,
-        //         'name' => 'Công nghệ thông tin',
-        //     ],
-        //     [
-        //         'id' => 2,
-        //         'name' => 'Thiết kế đồ hoạ',
-        //     ],
-        //     [
-        //         'name' => 'Laravel',
-        //         'parent_id' => 1
-        //     ],
-        //     [
-        //         'name' => 'PHP',
-        //         'parent_id' => 1
-        //     ],
-        //     [
-        //         'name' => 'JavaScript',
-        //         'parent_id' => 1
-        //     ],
-        //     [
-        //         'name' => 'Photoshop',
-        //         'parent_id' => 2
-        //     ],
-        //     [
-        //         'name' => 'Premiere',
-        //         'parent_id' => 2
-        //     ],
-        //     [
-        //         'name' => 'After Effect',
-        //         'parent_id' => 2
-        //     ],
-        // ];
+        $categories = [
+            [
+                'id' => 1,
+                'name' => 'Công nghệ thông tin',
+            ],
+            [
+                'id' => 2,
+                'name' => 'Thiết kế đồ hoạ',
+            ],
+            [
+                'name' => 'Laravel',
+                'parent_id' => 1
+            ],
+            [
+                'name' => 'PHP',
+                'parent_id' => 1
+            ],
+            [
+                'name' => 'JavaScript',
+                'parent_id' => 1
+            ],
+            [
+                'name' => 'Photoshop',
+                'parent_id' => 2
+            ],
+            [
+                'name' => 'Premiere',
+                'parent_id' => 2
+            ],
+            [
+                'name' => 'After Effect',
+                'parent_id' => 2
+            ],
+        ];
 
-        // $tags = [
-        //     [
-        //         'name' => 'php-laravel'
-        //     ],
-        //     [
-        //         'name' => 'c#-.NET'
-        //     ],
-        //     [
-        //         'name' => 'java-sp'
-        //     ],
-        //     [
-        //         'name' => 'reactjs-js'
-        //     ],
-        // ];
-        // foreach ($categories as $category) {
-        //     Category::create($category);
-        // }
-        // foreach ($tags as $tag) {
-        //     Tag::create($tag);
-        // }
+        $tags = [
+            [
+                'name' => 'php-laravel'
+            ],
+            [
+                'name' => 'c#-.NET'
+            ],
+            [
+                'name' => 'java-sp'
+            ],
+            [
+                'name' => 'reactjs-js'
+            ],
+        ];
+        foreach ($categories as $category) {
+            Category::create($category);
+        }
+        foreach ($tags as $tag) {
+            Tag::create($tag);
+        }
 
         $courseID = Course::create([
             'user_id' => 4,
