@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\LecturerController;
 use App\Http\Controllers\Api\V1\LecturerRegisterController;
 use App\Http\Controllers\Api\V1\LessonCodingController;
 use App\Http\Controllers\Api\V1\LessonController;
+use App\Http\Controllers\Api\V1\NoteController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\OverviewController;
 use App\Http\Controllers\Api\V1\QuizController;
@@ -116,7 +117,11 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
 
     // Lấy danh sách câu hỏi của một Quiz
     Route::get('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'getQuestions']);
+
+    // Tạo câu hỏi trong Quiz
     Route::post('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'storeQuestion']);
+
+    // Tạo đáp án cho câu hỏi
     Route::post('/lecturer/questions/{question_id}/answers', [QuizController::class, 'storeAnswer']);
 
 
@@ -135,6 +140,12 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
 
     // Nộp bài Quiz
     Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);
+
+    //chức năng ghi chú
+    Route::post('/user/{user_id}/video/{video_id}/notes', [NoteController::class, 'store']); // Tạo ghi chú
+    Route::get('/user/{user_id}/video/{video_id}/notes', [NoteController::class, 'index']); // Lấy danh sách ghi chú
+    Route::put('/user/{user_id}/video/{video_id}/notes/{note}', [NoteController::class, 'update']); // Cập nhật ghi chú
+    Route::delete('/user/{user_id}/video/{video_id}/notes/{note}', [NoteController::class, 'destroy']); // Xóa ghi chú
 });
 
 
