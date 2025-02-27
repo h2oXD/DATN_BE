@@ -444,7 +444,10 @@ class WalletController extends Controller
 
                 DB::commit(); // Commit transaction
 
-                return redirect('http://localhost:5173/student/home?status=success');
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Thanh toán thành công!'
+                ], Response::HTTP_OK);
 
             } else {
 
@@ -513,7 +516,10 @@ class WalletController extends Controller
 
                 DB::commit(); // Commit transaction
 
-                return redirect('http://localhost:5173/student/home?status=success');
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Thanh toán thành công!'
+                ], Response::HTTP_OK);
 
             }
 

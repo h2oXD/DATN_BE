@@ -299,70 +299,70 @@ class DatabaseSeeder extends Seeder
         $sectionID->update(['total_lessons' => $sectionID->lessons()->count()]);
 
         // Tạo phiếu giảm giá
-        // $vouchers = [
-        //     [
-        //         'name' => 'Giảm giá thanh toán',
-        //         'code' => 'DVC10',
-        //         'description' => 'Giảm giá thanh toán 10k VND',
-        //         'type' => 'fix_amount',
-        //         'discount_price' => 10000,
-        //         'start_time' => Carbon::now(),
-        //         'end_time' => Carbon::now()->addDays(30),
-        //         'count' => '100',
-        //         'is_active' => '1',
-        //     ],
-        //     [
-        //         'name' => 'Giảm giá sản phẩm',
-        //         'code' => 'DSP10',
-        //         'description' => 'Giảm giá sản phẩm 10%',
-        //         'type' => 'percent',
-        //         'discount_price' => 10,
-        //         'start_time' => Carbon::now(),
-        //         'end_time' => Carbon::now()->addDays(30),
-        //         'count' => '99',
-        //         'is_active' => '1',
-        //     ],
-        //     [
-        //         'name' => 'Tặng khóa học đầu tiên',
-        //         'code' => 'FREE100',
-        //         'description' => 'Miễn phí thanh toán khi tham gia khóa học đầu tiên',
-        //         'type' => 'percent',
-        //         'discount_price' => 10,
-        //         'start_time' => Carbon::now(),
-        //         'end_time' => Carbon::now()->addDays(30),
-        //         'count' => '9999',
-        //         'is_active' => '0',
-        //     ],
-        // ];
-        // foreach ($vouchers as $voucher) {
-        //     Voucher::create($voucher);
-        // }
+        $vouchers = [
+            [
+                'name' => 'Giảm giá thanh toán',
+                'code' => 'DVC10',
+                'description' => 'Giảm giá thanh toán 10k VND',
+                'type' => 'fix_amount',
+                'discount_price' => 10000,
+                'start_time' => Carbon::now(),
+                'end_time' => Carbon::now()->addDays(30),
+                'count' => '100',
+                'is_active' => '1',
+            ],
+            [
+                'name' => 'Giảm giá sản phẩm',
+                'code' => 'DSP10',
+                'description' => 'Giảm giá sản phẩm 10%',
+                'type' => 'percent',
+                'discount_price' => 10,
+                'start_time' => Carbon::now(),
+                'end_time' => Carbon::now()->addDays(30),
+                'count' => '99',
+                'is_active' => '1',
+            ],
+            [
+                'name' => 'Tặng khóa học đầu tiên',
+                'code' => 'FREE100',
+                'description' => 'Miễn phí thanh toán khi tham gia khóa học đầu tiên',
+                'type' => 'percent',
+                'discount_price' => 10,
+                'start_time' => Carbon::now(),
+                'end_time' => Carbon::now()->addDays(30),
+                'count' => '9999',
+                'is_active' => '0',
+            ],
+        ];
+        foreach ($vouchers as $voucher) {
+            Voucher::create($voucher);
+        }
 
         // // // Tạo lịch sử sử dụng voucher
-        // // VoucherUse::create([
-        // //     'voucher_id' => 1,
-        // //     'user_id' => $student->id,
-        // //     'course_id' => $courseID->id,
-        // //     'time_used' => Carbon::now(),
-        // // ]);
+        // VoucherUse::create([
+        //     'voucher_id' => 1,
+        //     'user_id' => $student->id,
+        //     'course_id' => $courseID->id,
+        //     'time_used' => Carbon::now(),
+        // ]);
 
-        // // $enrollments = [
-        // //     [
-        // //         'user_id' => 2,
-        // //         'course_id' => 1,
-        // //         'status' => 'active',
-        // //         'enrolled_at' => Carbon::now('Asia/Ho_Chi_Minh')
-        // //     ],
-        // //     [
-        // //         'user_id' => 3,
-        // //         'course_id' => 1,
-        // //         'status' => 'active',
-        // //         'enrolled_at' => Carbon::now('Asia/Ho_Chi_Minh')
-        // //     ],
-        // // ];
-        // // foreach ($enrollments as $enrollment) {
-        // //     Enrollment::create($enrollment);
-        // // }
+        // $enrollments = [
+        //     [
+        //         'user_id' => 2,
+        //         'course_id' => 1,
+        //         'status' => 'active',
+        //         'enrolled_at' => Carbon::now('Asia/Ho_Chi_Minh')
+        //     ],
+        //     [
+        //         'user_id' => 3,
+        //         'course_id' => 1,
+        //         'status' => 'active',
+        //         'enrolled_at' => Carbon::now('Asia/Ho_Chi_Minh')
+        //     ],
+        // ];
+        // foreach ($enrollments as $enrollment) {
+        //     Enrollment::create($enrollment);
+        // }
 
         // $quizzes = [
         //     [
@@ -467,15 +467,15 @@ class DatabaseSeeder extends Seeder
         //     Transaction::create($data);
         // }
 
-        Course::create([
-            'user_id' => 4,
-            'category_id' => 4,
-            'price_regular' => 100000,
-            'price_sale' => 70000,
-            'title' => 'Khoá học PHP cơ bản',
-            'status' => 'published',
-            'admin_commission_rate' => 30
-        ]);
+        // Course::create([
+        //     'user_id' => 4,
+        //     'category_id' => 4,
+        //     'price_regular' => 100000,
+        //     'price_sale' => 70000,
+        //     'title' => 'Khoá học PHP cơ bản',
+        //     'status' => 'published',
+        //     'admin_commission_rate' => 30
+        // ]);
     }
 
 }
