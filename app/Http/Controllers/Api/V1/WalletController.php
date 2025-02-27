@@ -616,7 +616,7 @@ class WalletController extends Controller
             $vnp_Returnurl  = env('VNP_RETURN_URL_FOR_DEPOSIT');
 
             // Tạo các tham số thanh toán
-            $vnp_TxnRef     = time() . ""; // Mã giao dịch duy nhất
+            $vnp_TxnRef     = $request->user()->id . "_" . time();
             $vnp_OrderInfo  = "Thanh toán khóa học";
             $vnp_OrderType  = "education";
             $vnp_Amount     = $request->input('amount', 0) * 100; // Số tiền (nhân với 100) để loại bỏ phần thập phân
@@ -722,13 +722,11 @@ class WalletController extends Controller
 
         try {
 
-            $wallet = $request->user()->wallet;
+            $user_id = $request->query('vnp_TxnRef');
+            list($user_id, $timestamp) = explode('_', $request->query('vnp_TxnRef'));
+            $wallet = Wallet::where('user_id', $user_id)->first();
             $amount = $request->query('vnp_Amount') / 100;
             $transactionCode = $request->query('vnp_BankTranNo').$request->query('vnp_PayDate').$request->query('vnp_SecureHash');
-            
-            response()->json([
-                $request->query('vnp_ResponseCode')
-            ]);
 
             if ($request->query('vnp_ResponseCode') == "00") {
 
