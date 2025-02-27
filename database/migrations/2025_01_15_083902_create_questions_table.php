@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('question_text');
             $table->string('image_url')->nullable();
             $table->tinyInteger('is_multiple_choice');
-            $table->json('correct_answers');
+            // $table->json('correct_answers');
             $table->integer('order');
 
             $table->timestamps();

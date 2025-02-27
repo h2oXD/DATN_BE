@@ -117,7 +117,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     // Lấy danh sách câu hỏi của một Quiz
     Route::get('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'getQuestions']);
     Route::post('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'storeQuestion']);
-    Route::post('/lecturer/questions/{question_id}/answers', [QuizController::class, 'storeAnswer']);
+    // Route::post('/lecturer/questions/{question_id}/answers', [QuizController::class, 'storeAnswer']);
 
 
 

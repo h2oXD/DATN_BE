@@ -315,7 +315,7 @@ class QuizController extends Controller
      */
     public function getQuestions($quiz_id)
     {
-        $quiz = Quiz::with('questions.answers')->find($quiz_id);
+        $quiz = Quiz::with('questions.answers')->where('lesson_id',$quiz_id)->first();
 
         if (!$quiz) {
             return response()->json([
@@ -425,7 +425,7 @@ class QuizController extends Controller
     public function storeQuestion(Request $request, $quiz_id)
     {
         // Kiểm tra xem Quiz có tồn tại không
-        $quiz = Quiz::find($quiz_id);
+        $quiz = Quiz::where('lesson_id', $quiz_id)->first();
         if (!$quiz) {
             return response()->json(['status' => 'error', 'message' => 'Quiz not found'], 404);
         }
@@ -433,32 +433,77 @@ class QuizController extends Controller
         // Validate dữ liệu đầu vào
         $request->validate([
             'question_text' => 'required|string',
-            'image_url' => 'nullable|string',
-            'is_multiple_choice' => 'required|boolean',
-            'correct_answers' => 'required|array',
-            'order' => 'required|integer',
+            'is_multiple_choice' => 'required|in:0,1',
+            'answers' => 'required|array',
         ]);
 
-        // Bắt đầu transaction để đảm bảo tính toàn vẹn dữ liệu
+        $questionData['quiz_id'] = $quiz->id;
+        $questionData['question_text'] = $request->question_text;
+        $questionData['is_multiple_choice'] = $request->is_multiple_choice;
+        $answersData = $request->answers;
+        // Lọc bỏ các answer rỗng
+        $answersData = array_filter($answersData, function ($answer) {
+            return isset($answer['text']) && trim($answer['text']) !== '';
+        });
+
+
+        // Lấy order lớn nhất hiện có cho quiz này
+        $maxOrder = Question::where('quiz_id', $quiz->id)->max('order');
+        $newOrder = $maxOrder ? $maxOrder + 1 : 1;
+        $questionData['order'] = $newOrder;
         DB::beginTransaction();
-
         try {
-            // Tạo câu hỏi mới
-            $question = Question::create([
-                'quiz_id' => $quiz->id,
-                'question_text' => $request->question_text,
-                'image_url' => $request->image_url,
-                'is_multiple_choice' => $request->is_multiple_choice,
-                'correct_answers' => json_encode($request->correct_answers), // Lưu dưới dạng JSON
-                'order' => $request->order,
-            ]);
-
+            if ($request->is_multiple_choice == 1) {
+                $question = Question::create($questionData);
+                foreach ($answersData as $index => $answers) {
+                    if (!isset($answers['is_correct'])) {
+                        Answer::create([
+                            'answer_text' => $answers['text'],
+                            'is_correct' => 0,
+                            'question_id' => $question->id,
+                            'order' => $index + 1
+                        ]);
+                    } else {
+                        Answer::create([
+                            'answer_text' => $answers['text'],
+                            'is_correct' => $answers['is_correct'][0],
+                            'question_id' => $question->id,
+                            'order' => $index + 1
+                        ]);
+                    }
+                }
+            }
+            if ($questionData['is_multiple_choice'] == 0) {
+                $correctIndex = $request->is_correct; // Lấy index của câu trả lời đúng
+                $answersData[$correctIndex]['is_correct'] = 1;
+                $question = Question::create($questionData);
+                foreach ($answersData as $index => $answers) {
+                    if (!isset($answers['is_correct'])) {
+                        Answer::create([
+                            'answer_text' => $answers['text'],
+                            'is_correct' => 0,
+                            'question_id' => $question->id,
+                            'order' => $index + 1
+                        ]);
+                    } else {
+                        Answer::create([
+                            'answer_text' => $answers['text'],
+                            'is_correct' => $answers['is_correct'],
+                            'question_id' => $question->id,
+                            'order' => $index + 1
+                        ]);
+                    }
+                }
+            }
             DB::commit();
-
-            return response()->json(['status' => 'success', 'data' => $question], 201);
-        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Thêm câu hỏi thành công',
+            ], 201);
+        } catch (\Throwable $th) {
             DB::rollBack();
-            return response()->json(['status' => 'error', 'message' => 'Failed to create question', 'error' => $e->getMessage()], 500);
+            return response()->json([
+                'message' => 'Lỗi hệ thống '.$th,
+            ], 500);
         }
     }
 
