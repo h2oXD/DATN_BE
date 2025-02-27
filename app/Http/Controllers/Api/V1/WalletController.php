@@ -758,16 +758,11 @@ class WalletController extends Controller
 
                 DB::commit(); // Commit transaction
 
-                return response()->json([
-                    'message' => 'Thanh toán thành công!',
-                    'Số tiền giao dịch' => number_format($amount) . ' VND'
-                ], Response::HTTP_OK);
+                return redirect('http://localhost:5173/student/walletStudent?status=success');
 
             } else {
                 DB::rollBack(); // Rollback transaction nếu có lỗi
-                return response()->json([
-                    'message' => 'Thanh toán thất bại!'
-                ], Response::HTTP_BAD_REQUEST);
+                return redirect('http://localhost:5173/student/walletStudent?status=failed');
             }
 
         } catch (\Throwable $th) {
