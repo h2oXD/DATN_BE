@@ -8,6 +8,7 @@ use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Lesson;
 use App\Models\Progress;
+use App\Models\Review;
 use App\Models\Section;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -183,11 +184,22 @@ class StudyController extends Controller
                 ])
                     ->where('status', 'published')
                     ->findOrFail($course_id);
+                // Tổng số bài học trong khóa học
+                $totalLessons = $course->sections->flatMap->lessons->count();
+
+                // Đếm số bài học đã hoàn thành từ bảng completions
+                $completedLessons = Completion::where('user_id', $user_id)
+                    ->where('course_id', $course_id)
+                    ->where('status', 'completed')
+                    ->count();
+
 
                 return response()->json([
                     'course' => $course,
                     'progress_percent' => $progressPercent,
+                    'completed_lessons' => "$completedLessons/$totalLessons",
                 ], Response::HTTP_OK);
+
 
             } elseif ($enrollment->status === 'canceled') {
                 return response()->json(['message' => 'Khóa học này đã bị hủy.'], Response::HTTP_BAD_REQUEST);
@@ -482,7 +494,11 @@ class StudyController extends Controller
                 ]
             );
 
-            return response()->json(['message' => 'Học viên hoàn thành bài học.'], Response::HTTP_OK);
+            return response()->json([
+                'message' => 'Học viên hoàn thành bài học.',
+                'completed_lessons' => "$completedLessons/$totalLessons",
+                'progress_percent' => round($progressPercent, 2) . '%'
+            ], Response::HTTP_OK);
 
         } catch (\Throwable $th) {
             return response()->json(['message' => 'Lỗi hệ thống: ' . $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
