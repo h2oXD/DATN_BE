@@ -3,9 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CertificateController;
-
 use App\Http\Controllers\Api\V1\CommentController;
-use App\Http\Controllers\Api\V1\CodeSubmissionController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
@@ -148,8 +146,6 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/home', [OverviewController::class, 'overview']);
     Route::get('/student/courses/{course_id}', [EnrollmentController::class, 'showUserEnrollmentCourse']);
     Route::get('/lesson/{lesson_id}', [EnrollmentController::class, 'showLesson']);
-    Route::post('/students/codings/{coding_id}/submit', [CodeSubmissionController::class, 'submitSolution']);
-    Route::get('/students/codings/{coding_id}/submission/{token}', [CodeSubmissionController::class, 'getSubmissionResult']);
 
     // Nộp bài Quiz
     Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);
