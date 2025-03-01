@@ -150,10 +150,10 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);
 
     //chức năng ghi chú
-    Route::post('/user/{user_id}/video/{video_id}/notes', [NoteController::class, 'store']); // Tạo ghi chú
-    Route::get('/user/{user_id}/video/{video_id}/notes', [NoteController::class, 'index']); // Lấy danh sách ghi chú
-    Route::put('/user/{user_id}/video/{video_id}/notes/{note}', [NoteController::class, 'update']); // Cập nhật ghi chú
-    Route::delete('/user/{user_id}/video/{video_id}/notes/{note}', [NoteController::class, 'destroy']); // Xóa ghi chú
+    Route::get('/user/video/{video_id}/notes', [NoteController::class, 'index']); // Lấy danh sách ghi chú
+    Route::post('/user/video/{video_id}/notes', [NoteController::class, 'store']); // Tạo ghi chú
+    Route::put('/user/video/{video_id}/notes/{note}', [NoteController::class, 'update']); // Cập nhật ghi chú
+    Route::delete('/user/video/{video_id}/notes/{note}', [NoteController::class, 'destroy']); // Xóa ghi chú
 
     // chức năng wish-list
     Route::get('/user/wishlist', [WishListController::class, 'index']); // Lấy toàn bộ wish-list
