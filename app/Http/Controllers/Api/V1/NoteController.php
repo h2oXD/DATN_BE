@@ -9,21 +9,13 @@ use Illuminate\Http\Request;
 
 class NoteController extends Controller
 {
-
     /**
      * @OA\Get(
-     *     path="/user/{user_id}/video/{video_id}/notes/{note_id}",
+     *     path="/video/{video_id}/notes",
      *     summary="Lấy danh sách ghi chú của video",
-     *     description="API này lấy danh sách ghi chú của một video do người dùng tạo.",
+     *     description="API này lấy danh sách ghi chú của một video do người dùng hiện tại tạo.",
      *     tags={"Notes"},
      *     security={{ "bearerAuth":{} }},
-     *     @OA\Parameter(
-     *         name="userId",
-     *         in="path",
-     *         required=true,
-     *         description="ID của người dùng",
-     *         @OA\Schema(type="integer", example=1)
-     *     ),
      *     @OA\Parameter(
      *         name="videoId",
      *         in="path",
@@ -46,13 +38,6 @@ class NoteController extends Controller
      *         )
      *     ),
      *     @OA\Response(
-     *         response=403,
-     *         description="Người dùng không có quyền truy cập",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Bạn không có quyền xem ghi chú của người dùng này")
-     *         )
-     *     ),
-     *     @OA\Response(
      *         response=404,
      *         description="Video không tồn tại",
      *         @OA\JsonContent(
@@ -61,22 +46,15 @@ class NoteController extends Controller
      *     )
      * )
      */
-
-
-    public function index($userId, $videoId)
+    public function index($videoId)
     {
-        // Kiểm tra user_id
-        if ($userId != auth()->id()) {
-            return response()->json(['message' => 'Bạn không có quyền xem ghi chú của người dùng này'], 403);
-        }
-
         // Kiểm tra video_id
         $video = Video::find($videoId);
         if (!$video) {
             return response()->json(['message' => 'Video không tồn tại'], 404);
         }
 
-        // Lấy danh sách ghi chú
+        // Lấy danh sách ghi chú của người dùng hiện tại
         $notes = Note::where('user_id', auth()->id())
             ->where('video_id', $videoId)
             ->orderBy('timestamp')
@@ -90,21 +68,13 @@ class NoteController extends Controller
         return response()->json($notes);
     }
 
-
     /**
      * @OA\Post(
-     *     path="/user/{user_id}/video/{video_id}/notes",
+     *     path="/video/{video_id}/notes",
      *     summary="Tạo ghi chú cho video",
-     *     description="API này tạo một ghi chú mới cho video do người dùng tạo.",
+     *     description="API này tạo một ghi chú mới cho video do người dùng hiện tại tạo.",
      *     tags={"Notes"},
      *     security={{ "bearerAuth":{} }},
-     *     @OA\Parameter(
-     *         name="userId",
-     *         in="path",
-     *         required=true,
-     *         description="ID của người dùng",
-     *         @OA\Schema(type="integer", example=1)
-     *     ),
      *     @OA\Parameter(
      *         name="videoId",
      *         in="path",
@@ -135,13 +105,6 @@ class NoteController extends Controller
      *         )
      *     ),
      *     @OA\Response(
-     *         response=403,
-     *         description="Người dùng không có quyền tạo ghi chú",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Bạn không có quyền tạo ghi chú cho người dùng này")
-     *         )
-     *     ),
-     *     @OA\Response(
      *         response=404,
      *         description="Video không tồn tại",
      *         @OA\JsonContent(
@@ -165,14 +128,8 @@ class NoteController extends Controller
      *     )
      * )
      */
-
-
-    public function store(Request $request, $userId, $videoId)
+    public function store(Request $request, $videoId)
     {
-        if ($userId != auth()->id()) {
-            return response()->json(['message' => 'Bạn không có quyền tạo ghi chú cho người dùng này'], 403);
-        }
-
         $request->validate([
             'content' => 'required|string|max:1000',
             'timestamp' => 'required|regex:/^\d+(:[0-5]\d)?$/', // Chấp nhận số (123) hoặc MM:SS (1:23)
@@ -195,18 +152,11 @@ class NoteController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/user/{user_id}/video/{video_id}/notes/{note_id}",
+     *     path="/video/{video_id}/notes/{note_id}",
      *     summary="Cập nhật ghi chú của video",
-     *     description="API này cập nhật nội dung của một ghi chú do người dùng tạo.",
+     *     description="API này cập nhật nội dung của một ghi chú do người dùng hiện tại tạo.",
      *     tags={"Notes"},
      *     security={{ "bearerAuth":{} }},
-     *     @OA\Parameter(
-     *         name="userId",
-     *         in="path",
-     *         required=true,
-     *         description="ID của người dùng",
-     *         @OA\Schema(type="integer", example=1)
-     *     ),
      *     @OA\Parameter(
      *         name="videoId",
      *         in="path",
@@ -252,7 +202,7 @@ class NoteController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Video không tồn tại",
+     *         description="Video hoặc ghi chú không tồn tại",
      *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="Video không tồn tại")
      *         )
@@ -281,10 +231,9 @@ class NoteController extends Controller
      *     )
      * )
      */
-
-    public function update(Request $request, $userId, $videoId, Note $note)
+    public function update(Request $request, $videoId, Note $note)
     {
-        if ($userId != auth()->id() || $note->user_id !== auth()->id()) {
+        if ($note->user_id !== auth()->id()) {
             return response()->json(['message' => 'Bạn không có quyền cập nhật ghi chú này'], 403);
         }
 
@@ -306,21 +255,13 @@ class NoteController extends Controller
         return response()->json(['message' => 'Ghi chú đã được cập nhật', 'note' => $note]);
     }
 
-
     /**
      * @OA\Delete(
-     *     path="/user/{user_id}/video/{video_id}/notes/{note_id}",
+     *     path="/video/{video_id}/notes/{note_id}",
      *     summary="Xóa ghi chú của video",
-     *     description="API này xóa một ghi chú của người dùng dựa trên ID của user, video và note.",
+     *     description="API này xóa một ghi chú của người dùng hiện tại dựa trên ID của video và note.",
      *     tags={"Notes"},
      *     security={{ "bearerAuth":{} }},
-     *     @OA\Parameter(
-     *         name="userId",
-     *         in="path",
-     *         required=true,
-     *         description="ID của người dùng",
-     *         @OA\Schema(type="integer", example=1)
-     *     ),
      *     @OA\Parameter(
      *         name="videoId",
      *         in="path",
@@ -351,7 +292,7 @@ class NoteController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Video không tồn tại",
+     *         description="Video hoặc ghi chú không tồn tại",
      *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="Video không tồn tại")
      *         )
@@ -365,22 +306,17 @@ class NoteController extends Controller
      *     )
      * )
      */
-
-
-    public function destroy($userId, $videoId, Note $note)
+    public function destroy($videoId, Note $note)
     {
-        // Kiểm tra user_id và quyền sở hữu ghi chú
-        if ($userId != auth()->id() || $note->user_id !== auth()->id()) {
+        if ($note->user_id !== auth()->id()) {
             return response()->json(['message' => 'Bạn không có quyền xóa ghi chú này'], 403);
         }
 
-        // Kiểm tra video_id
         $video = Video::find($videoId);
         if (!$video) {
             return response()->json(['message' => 'Video không tồn tại'], 404);
         }
 
-        // Kiểm tra ghi chú có thuộc video_id này không
         if ($note->video_id != $videoId) {
             return response()->json(['message' => 'Ghi chú không thuộc video này'], 400);
         }
