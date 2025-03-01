@@ -84,4 +84,9 @@ class User extends Authenticatable
     public function lecturerRegister() {
     return $this->hasOne(LecturerRegister::class); 
 }
+
+   public function comments()
+   {
+     return $this->hasMany(Comment::class);
+   }
 }
