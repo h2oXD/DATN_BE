@@ -413,32 +413,15 @@ class StudyController extends Controller
      *     )
      * )
      */
-    public function completeLesson(Request $request, $user_id, $course_id, $section_id, $lesson_id)
+    public function completeLesson(Request $request, $course_id, $lesson_id)
     {
         try {
-            if ($request->user()->id != $user_id) {
-                return response()->json(['message' => 'Unauthorized.'], Response::HTTP_FORBIDDEN);
-            }
-
+            $user_id = $request->user()->id;
             $enrollment = Enrollment::where('user_id', $user_id)
                 ->where('course_id', $course_id)
                 ->first();
             if (!$enrollment) {
                 return response()->json(['message' => 'Bạn chưa đăng ký khóa học này.'], Response::HTTP_NOT_FOUND);
-            }
-
-            $section = Section::where('course_id', $course_id)
-                ->where('id', $section_id)
-                ->first();
-            if (!$section) {
-                return response()->json(['message' => 'Section không tồn tại hoặc không thuộc khóa học này.'], Response::HTTP_NOT_FOUND);
-            }
-
-            $lesson = Lesson::where('section_id', $section_id)
-                ->where('id', $lesson_id)
-                ->first();
-            if (!$lesson) {
-                return response()->json(['message' => 'Lesson không tồn tại hoặc không thuộc section này.'], Response::HTTP_NOT_FOUND);
             }
 
             $completion = Completion::where('user_id', $user_id)
@@ -455,20 +438,20 @@ class StudyController extends Controller
             $completion->save();
 
             //  Tìm bài học tiếp theo
-            $nextLesson = Lesson::where('section_id', $section_id)
-                ->where('id', '>', $lesson_id)
-                ->orderBy('id', 'asc')
-                ->first();
+            // $nextLesson = Lesson::where('section_id', $section_id)
+            //     ->where('id', '>', $lesson_id)
+            //     ->orderBy('id', 'asc')
+            //     ->first();
 
-            if ($nextLesson) {
-                Completion::firstOrCreate([
-                    'user_id' => $user_id,
-                    'course_id' => $course_id,
-                    'lesson_id' => $nextLesson->id,
-                ], [
-                    'status' => 'in_progress'
-                ]);
-            }
+            // if ($nextLesson) {
+            //     Completion::firstOrCreate([
+            //         'user_id' => $user_id,
+            //         'course_id' => $course_id,
+            //         'lesson_id' => $nextLesson->id,
+            //     ], [
+            //         'status' => 'in_progress'
+            //     ]);
+            // }
 
             // Cập nhật tiến độ khóa học
             $totalLessons = Lesson::whereIn('section_id', Section::where('course_id', $course_id)->pluck('id'))->count();

@@ -14,6 +14,66 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CertificateController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/certificates/student/{user_id}/courses/{course_id}",
+     *     summary="Cấp chứng chỉ cho người dùng sau khi hoàn thành khóa học",
+     *     tags={"Certificate"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của người dùng",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="course_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của khóa học",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Chứng chỉ đã được cấp thành công",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Chứng chỉ đã được cấp."),
+     *             @OA\Property(property="certificate_url", type="string", example="/storage/certificates/1_101_1700000000.pdf")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Người dùng không được phép thực hiện hành động này",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthorized.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Không tìm thấy đăng ký khóa học",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Bạn chưa đăng ký khóa học này.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Người dùng chưa hoàn thành khóa học hoặc chứng chỉ đã được cấp",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Bạn chưa hoàn thành khóa học này."),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Lỗi hệ thống",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Lỗi hệ thống: [chi tiết lỗi]")
+     *         )
+     *     )
+     * )
+     */
+
     public function createCertificate(Request $request, $user_id, $course_id)
     {
         try {

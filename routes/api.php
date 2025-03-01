@@ -3,9 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CertificateController;
-
 use App\Http\Controllers\Api\V1\CommentController;
-use App\Http\Controllers\Api\V1\CodeSubmissionController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
@@ -73,12 +71,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //Study
     Route::get('student/{user_id}/courses/{course_id}', [StudyController::class, 'getCourseInfo']);
     Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/starts', [StudyController::class, 'startLesson']);
-    Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/completes', [StudyController::class, 'completeLesson']);
+
     Route::get('student/courses/{course_id}/sections/{section_id}/lessons', [StudyController::class, 'getLessonsBySection']);
 
     Route::post('/certificates/student/{user_id}/courses/{course_id}', [CertificateController::class, 'createCertificate']);
     // danh sách khóa học đã đăng ký 
     Route::get('/user/courses', [EnrollmentController::class, 'getUserCoursesWithProgress']);
+    Route::get('/user/courses/{course_id}', [EnrollmentController::class, 'getprogress']);
 
     // review
     Route::post('/user/{user_id}/courses/{course_id}/reviews', [ReviewController::class, 'store']); // Thêm đánh giá
@@ -146,8 +145,8 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/home', [OverviewController::class, 'overview']);
     Route::get('/student/courses/{course_id}', [EnrollmentController::class, 'showUserEnrollmentCourse']);
     Route::get('/lesson/{lesson_id}', [EnrollmentController::class, 'showLesson']);
-    Route::post('/students/codings/{coding_id}/submit', [CodeSubmissionController::class, 'submitSolution']);
-    Route::get('/students/codings/{coding_id}/submission/{token}', [CodeSubmissionController::class, 'getSubmissionResult']);
+    Route::get('course/{course_id}/lesson', [EnrollmentController::class, 'getStatusLesson']);
+    Route::post('student/courses/{course_id}/lessons/{lesson_id}/completes', [StudyController::class, 'completeLesson']);
 
     // Nộp bài Quiz
     Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);

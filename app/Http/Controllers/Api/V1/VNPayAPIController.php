@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Completion;
 use App\Models\Course;
 use App\Models\Enrollment;
+use App\Models\Lesson;
 use App\Models\Progress;
+use App\Models\Section;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -469,6 +472,21 @@ class VNPayAPIController extends Controller
                     'status' => 'in_progress',
                     'progress_percent' => 0
                 ]);
+                // Lấy tất cả sections của khóa học
+                $sections = Section::where('course_id', $course_id)->with('lessons')->get();
+
+                // Duyệt qua từng section và khởi tạo tiến trình cho từng lesson
+                foreach ($sections as $section) {
+                    foreach ($section->lessons as $lesson) {
+                        Completion::create([
+                            'user_id' => $user_id,
+                            'course_id' => $course_id,
+                            'lesson_id' => $lesson->id,
+                            'status' => 'in_progress',
+                            'created_at' => Carbon::now('Asia/Ho_Chi_Minh')
+                        ]);
+                    }
+                }
 
                 DB::commit(); // Commit transaction
 
@@ -478,7 +496,7 @@ class VNPayAPIController extends Controller
 
                 DB::rollBack(); // Rollback transaction nếu có lỗi
                 return redirect("http://localhost:5173/student/home/$course_id/coursedetail?status=error");
-                
+
             }
         } catch (\Throwable $th) {
             DB::rollBack(); // Rollback transaction nếu có lỗi
