@@ -74,7 +74,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get('student/courses/{course_id}/sections/{section_id}/lessons', [StudyController::class, 'getLessonsBySection']);
 
-    Route::post('/certificates/student/{user_id}/courses/{course_id}', [CertificateController::class, 'createCertificate']);
     // danh sách khóa học đã đăng ký 
     Route::get('/user/courses', [EnrollmentController::class, 'getUserCoursesWithProgress']);
     Route::get('/user/courses/{course_id}', [EnrollmentController::class, 'getprogress']);
@@ -147,6 +146,9 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/lesson/{lesson_id}', [EnrollmentController::class, 'showLesson']);
     Route::get('course/{course_id}/lesson', [EnrollmentController::class, 'getStatusLesson']);
     Route::post('student/courses/{course_id}/lessons/{lesson_id}/completes', [StudyController::class, 'completeLesson']);
+    Route::post('/certificates/student/courses/{course_id}', [CertificateController::class, 'createCertificate']);
+    Route::get('show/certificates/{course_id}', [CertificateController::class, 'showCertificate']);
+    Route::get('certificates/{certificate_id}', [CertificateController::class, 'certificate']);
 
     // Nộp bài Quiz
     Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);
