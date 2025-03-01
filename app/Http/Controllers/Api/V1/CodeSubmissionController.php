@@ -60,12 +60,11 @@ class CodeSubmissionController extends Controller
                 'expected_output' => isset($test['output']) ? trim($test['output']) : "",
             ];
         }
-        
+
         // Gửi bài lên Judge0
         $response = Http::withHeaders($this->judge0Headers)->post("{$this->judge0Url}/submissions/batch?base64_encoded=false&wait=false", [
             'submissions' => $submissions
         ]);
-        return response()->json($submissions);
         return response()->json($response->json(), 201);
     }
 

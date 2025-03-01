@@ -3,296 +3,349 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Course;
 use App\Models\WishList;
+use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class WishListController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/users/{userId}/wishlist",
-     *     summary="Lấy danh sách wishlist của người dùng",
+     *     path="/wishlist",
+     *     summary="Lấy danh sách khóa học trong wishlist",
      *     description="API này trả về danh sách các khóa học mà người dùng đã thêm vào wishlist.",
      *     tags={"WishList"},
      *     security={{ "bearerAuth":{} }},
-     *     @OA\Parameter(
-     *         name="userId",
-     *         in="path",
-     *         required=true,
-     *         description="ID của người dùng",
-     *         @OA\Schema(type="integer", example=1)
-     *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Danh sách wishlist của người dùng",
+     *         description="Danh sách khóa học trong wishlist",
      *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Lấy dữ liệu thành công"),
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
      *                 @OA\Items(
      *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="course_id", type="integer", example=10),
-     *                     @OA\Property(property="course_name", type="string", example="Laravel for Beginners"),
-     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2024-02-15T12:00:00Z")
+     *                     @OA\Property(property="course", type="object",
+     *                         @OA\Property(property="id", type="integer", example=10),
+     *                         @OA\Property(property="user_id", type="integer", example=2),
+     *                         @OA\Property(property="category_id", type="integer", example=3),
+     *                         @OA\Property(property="price_regular", type="number", example=200000),
+     *                         @OA\Property(property="price_sale", type="number", example=150000),
+     *                         @OA\Property(property="title", type="string", example="Lập trình Laravel"),
+     *                         @OA\Property(property="thumbnail", type="string", example="https://example.com/thumbnail.jpg"),
+     *                         @OA\Property(property="video_preview", type="string", example="https://example.com/preview.mp4"),
+     *                         @OA\Property(property="description", type="string", example="Mô tả khóa học Laravel"),
+     *                         @OA\Property(property="status", type="string", example="published"),
+     *                         @OA\Property(property="is_show_home", type="boolean", example=true),
+     *                         @OA\Property(property="target_students", type="string", example="Sinh viên CNTT"),
+     *                         @OA\Property(property="learning_outcomes", type="string", example="Hiểu về Laravel"),
+     *                         @OA\Property(property="prerequisites", type="string", example="Biết PHP cơ bản"),
+     *                         @OA\Property(property="who_is_this_for", type="string", example="Người mới học lập trình"),
+     *                         @OA\Property(property="is_free", type="boolean", example=false),
+     *                         @OA\Property(property="language", type="string", example="Vietnamese"),
+     *                         @OA\Property(property="level", type="string", example="Beginner"),
+     *                         @OA\Property(property="created_at", type="string", format="date-time", example="2024-02-25T10:00:00Z"),
+     *                         @OA\Property(property="updated_at", type="string", format="date-time", example="2024-02-26T12:00:00Z"),
+     *                         @OA\Property(property="category", type="object",
+     *                             @OA\Property(property="id", type="integer", example=3),
+     *                             @OA\Property(property="name", type="string", example="Lập trình Backend")
+     *                         ),
+     *                         @OA\Property(property="user", type="object",
+     *                             @OA\Property(property="id", type="integer", example=2),
+     *                             @OA\Property(property="name", type="string", example="Nguyễn Văn A")
+     *                         )
+     *                     )
      *                 )
      *             )
      *         )
      *     ),
      *     @OA\Response(
-     *         response=403,
-     *         description="Người dùng không có quyền truy cập wishlist này",
+     *         response=404,
+     *         description="Không tìm thấy khóa học trong wishlist",
      *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy khóa học trong wish-list")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Lỗi hệ thống",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Lỗi hệ thống"),
+     *             @OA\Property(property="error", type="string", example="Chi tiết lỗi hệ thống")
      *         )
      *     )
      * )
      */
-    public function index($user_id)
+
+    public function index()
     {
-        if (Auth::id() != $user_id) {
-            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
+        try {
+            $user_id = Auth::id();
+            $wishlist = WishList::where('user_id', $user_id)
+                ->with([
+                    'course' => function ($query) {
+                        $query->select([
+                            'id',
+                            'user_id',
+                            'category_id',
+                            'price_regular',
+                            'price_sale',
+                            'title',
+                            'thumbnail',
+                            'video_preview',
+                            'description',
+                            'primary_content',
+                            'status',
+                            'is_show_home',
+                            'target_students',
+                            'learning_outcomes',
+                            'prerequisites',
+                            'who_is_this_for',
+                            'is_free',
+                            'language',
+                            'level',
+                            'created_at',
+                            'updated_at',
+                        ]);
+                    },
+                    'course.category' => function ($query) {
+                        $query->select('id', 'name'); // Chỉ lấy id và name của category
+                    },
+                    'course.user' => function ($query) {
+                        $query->select('id', 'name'); // Chỉ lấy id và name của user (giảng viên)
+                    }
+                ])
+                ->get();
+
+            if ($wishlist->isEmpty()) {
+                return response()->json([
+                    'message' => 'Không tìm thấy khóa học trong wish-list'
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            return response()->json([
+                'message' => 'Lấy dữ liệu thành công',
+                'data' => $wishlist
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Lỗi hệ thống',
+                'error' => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $wishlist = WishList::where('user_id', $user_id)
-            ->with('course')
-            ->get();
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $wishlist->map(function ($item) {
-                return [
-                    'id' => $item->id,
-                    'course_id' => $item->course_id,
-                    'course_name' => $item->course->name,
-                    'created_at' => $item->created_at
-                ];
-            })
-        ]);
     }
 
     /**
      * @OA\Post(
-     *     path="/users/{userId}/wishlist/{courseId}",
-     *     summary="Thêm khóa học vào danh sách yêu thích",
-     *     description="API này cho phép người dùng thêm một khóa học vào wishlist.",
+     *     path="/api/wishlist/{course_id}",
+     *     summary="Thêm khóa học vào wish-list",
      *     tags={"WishList"},
-     *     security={{ "bearerAuth":{} }},
+     *     security={{"sanctum":{}}},
      *     @OA\Parameter(
-     *         name="userId",
+     *         name="course_id",
      *         in="path",
      *         required=true,
-     *         description="ID của người dùng",
-     *         @OA\Schema(type="integer", example=1)
-     *     ),
-     *     @OA\Parameter(
-     *         name="courseId",
-     *         in="path",
-     *         required=true,
-     *         description="ID của khóa học",
-     *         @OA\Schema(type="integer", example=10)
+     *         description="ID của khóa học cần thêm",
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Khóa học đã được thêm vào wishlist",
+     *         description="Thêm khóa học thành công",
      *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="message", type="string", example="khóa học đã được thêm vào danh sách ưu thích"),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="object",
+     *             @OA\Property(property="message", type="string", example="Khóa học đã được thêm vào danh sách yêu thích"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
      *                 @OA\Property(property="user_id", type="integer", example=1),
-     *                 @OA\Property(property="course_id", type="integer", example=10),
-     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2024-02-16T12:00:00Z")
+     *                 @OA\Property(property="course_id", type="integer", example=5),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-03-01T10:00:00Z")
      *             )
      *         )
      *     ),
      *     @OA\Response(
-     *         response=403,
-     *         description="Người dùng không có quyền truy cập",
+     *         response=400,
+     *         description="Khóa học đã có trong wish-list",
      *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *             @OA\Property(property="message", type="string", example="Khóa học này đã có trong danh sách yêu thích")
      *         )
      *     ),
      *     @OA\Response(
      *         response=404,
      *         description="Không tìm thấy khóa học",
      *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="không tìm thấy khóa học")
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy khóa học")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Lỗi hệ thống",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Lỗi hệ thống")
      *         )
      *     )
      * )
      */
-
-    public function store($user_id, $course_id)
+    public function store($course_id)
     {
-        if (Auth::id() != $user_id) {
-            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
+        try {
+            $user_id = Auth::id();
+
+            // Kiểm tra khóa học có tồn tại không
+            if (!Course::where('id', $course_id)->exists()) {
+                return response()->json([
+                    'message' => 'Không tìm thấy khóa học'
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            // Kiểm tra trùng lặp
+            if (WishList::where('user_id', $user_id)->where('course_id', $course_id)->exists()) {
+                return response()->json([
+                    'message' => 'Khóa học này đã có trong danh sách yêu thích'
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            $wishlist = WishList::create([
+                'user_id' => $user_id,
+                'course_id' => $course_id
+            ]);
+
+            return response()->json([
+                'message' => 'Khóa học đã được thêm vào danh sách yêu thích',
+                'data' => $wishlist
+            ], Response::HTTP_CREATED);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Lỗi hệ thống',
+                'error' => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        // Kiểm tra course_id có hợp lệ không
-        if (!Course::where('id', $course_id)->exists()) {
-            return response()->json(['status' => 'error', 'message' => 'không tìm thấy khóa học'], 404);
-        }
-
-        $wishlist = WishList::create([
-            'user_id' => $user_id,
-            'course_id' => $course_id
-        ]);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'khóa học đã được thêm vào danh sách ưu thích',
-            'data' => $wishlist
-        ], 201);
     }
 
     /**
      * @OA\Delete(
-     *     path="/users/{userId}/wishlist/{courseId}",
-     *     summary="Xóa khóa học khỏi danh sách yêu thích",
-     *     description="API này cho phép người dùng xóa một khóa học khỏi wishlist.",
+     *     path="/api/wishlist/{course_id}",
+     *     summary="Xóa khóa học khỏi wish-list",
      *     tags={"WishList"},
-     *     security={{ "bearerAuth":{} }},
+     *     security={{"sanctum":{}}},
      *     @OA\Parameter(
-     *         name="userId",
+     *         name="course_id",
      *         in="path",
      *         required=true,
-     *         description="ID của người dùng",
-     *         @OA\Schema(type="integer", example=1)
-     *     ),
-     *     @OA\Parameter(
-     *         name="courseId",
-     *         in="path",
-     *         required=true,
-     *         description="ID của khóa học",
-     *         @OA\Schema(type="integer", example=10)
+     *         description="ID của khóa học cần xóa",
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Xóa khóa học thành công",
      *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="success"),
      *             @OA\Property(property="message", type="string", example="Khóa học đã được xóa khỏi danh sách yêu thích")
      *         )
      *     ),
      *     @OA\Response(
-     *         response=403,
-     *         description="Người dùng không có quyền xóa khóa học",
+     *         response=404,
+     *         description="Không tìm thấy khóa học trong wish-list",
      *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *             @OA\Property(property="message", type="string", example="Khóa học không tồn tại trong danh sách yêu thích")
      *         )
      *     ),
      *     @OA\Response(
-     *         response=404,
-     *         description="Khóa học không tồn tại trong danh sách yêu thích",
+     *         response=500,
+     *         description="Lỗi hệ thống",
      *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="Khóa học không tồn tại trong danh sách yêu thích")
+     *             @OA\Property(property="message", type="string", example="Lỗi hệ thống")
      *         )
      *     )
      * )
      */
-
-    public function destroy($user_id, $course_id)
+    public function destroy($course_id)
     {
-        if (Auth::id() != $user_id) {
-            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
-        }
-
         try {
+            $user_id = Auth::id();
+
             $wishlist = WishList::where('user_id', $user_id)
                 ->where('course_id', $course_id)
-                ->firstOrFail();
+                ->first();
+
+            if (!$wishlist) {
+                return response()->json([
+                    'message' => 'Khóa học không tồn tại trong danh sách yêu thích'
+                ], Response::HTTP_NOT_FOUND);
+            }
 
             $wishlist->delete();
 
             return response()->json([
-                'status' => 'success',
                 'message' => 'Khóa học đã được xóa khỏi danh sách yêu thích'
-            ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Khóa học không tồn tại trong danh sách yêu thích'
-            ], 404);
+                'message' => 'Lỗi hệ thống',
+                'error' => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
      * @OA\Get(
-     *     path="/users/{userId}/wishlist/{courseId}/check",
-     *     summary="Kiểm tra khóa học có trong danh sách yêu thích",
-     *     description="API này kiểm tra xem khóa học có trong danh sách yêu thích của người dùng hay không.",
+     *     path="/api/wishlist/check/{course_id}",
+     *     summary="Kiểm tra khóa học trong wish-list",
      *     tags={"WishList"},
-     *     security={{ "bearerAuth":{} }},
+     *     security={{"sanctum":{}}},
      *     @OA\Parameter(
-     *         name="userId",
+     *         name="course_id",
      *         in="path",
      *         required=true,
-     *         description="ID của người dùng",
-     *         @OA\Schema(type="integer", example=1)
-     *     ),
-     *     @OA\Parameter(
-     *         name="courseId",
-     *         in="path",
-     *         required=true,
-     *         description="ID của khóa học",
-     *         @OA\Schema(type="integer", example=10)
+     *         description="ID của khóa học cần kiểm tra",
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Kết quả kiểm tra danh sách yêu thích",
+     *         description="Kết quả kiểm tra",
      *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="success"),
      *             @OA\Property(property="message", type="string", example="Khóa học đang nằm trong danh sách yêu thích")
      *         )
      *     ),
      *     @OA\Response(
-     *         response=200,
-     *         description="Khóa học không tồn tại trong danh sách yêu thích",
+     *         response=404,
+     *         description="Không tìm thấy khóa học trong wish-list",
      *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="success"),
      *             @OA\Property(property="message", type="string", example="Khóa học không tồn tại trong danh sách yêu thích")
      *         )
      *     ),
      *     @OA\Response(
-     *         response=403,
-     *         description="Người dùng không có quyền truy cập",
+     *         response=500,
+     *         description="Lỗi hệ thống",
      *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *             @OA\Property(property="message", type="string", example="Lỗi hệ thống")
      *         )
      *     )
      * )
      */
-
-    public function check($user_id, $course_id)
+    public function check($course_id)
     {
-        if (Auth::id() != $user_id) {
-            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
-        }
+        try {
+            $user_id = Auth::id();
 
-        $exists = WishList::where('user_id', $user_id)
-            ->where('course_id', $course_id)
-            ->exists();
+            $exists = WishList::where('user_id', $user_id)
+                ->where('course_id', $course_id)
+                ->exists();
 
-        if ($exists) {
+            if ($exists) {
+                return response()->json([
+                    'message' => 'Khóa học đang nằm trong danh sách yêu thích'
+                ], Response::HTTP_OK);
+            }
+
             return response()->json([
-                'status' => 'success',
-                'message' => 'Khóa học đang nằm trong danh sách yêu thích'
-            ]);
+                'message' => 'Khóa học không tồn tại trong danh sách yêu thích'
+            ], Response::HTTP_NOT_FOUND);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Lỗi hệ thống',
+                'error' => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Khóa học không tồn tại trong danh sách yêu thích'
-        ]);
     }
 }

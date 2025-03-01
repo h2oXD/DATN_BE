@@ -150,10 +150,10 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::delete('/user/{user_id}/video/{video_id}/notes/{note}', [NoteController::class, 'destroy']); // Xóa ghi chú
 
     // chức năng wish-list
-    Route::get('/users/{user_id}/wishlist', [WishListController::class, 'index']); // Lấy toàn bộ wish-list
-    Route::post('/users/{user_id}/wishlist/{course_id}', [WishListController::class, 'store']); // Thêm course vào wish-list
-    Route::delete('/users/{user_id}/wishlist/{course_id}', [WishListController::class, 'destroy']); // Xóa course khỏi wish-list
-    Route::get('/users/{user_id}/wishlist/check/{course_id}', [WishListController::class, 'check']); // Kiểm tra course
+    Route::get('/user/wishlist', [WishListController::class, 'index']); // Lấy toàn bộ wish-list
+    Route::post('/user/wishlist/{course_id}', [WishListController::class, 'store']); // Thêm course vào wish-list
+    Route::delete('/user/wishlist/{course_id}', [WishListController::class, 'destroy']); // Xóa course khỏi wish-list
+    Route::get('/user/wishlist/check/{course_id}', [WishListController::class, 'check']); // Kiểm tra course
 });
 
 
