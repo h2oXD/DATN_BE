@@ -490,7 +490,7 @@ class VNPayAPIController extends Controller
 
                 DB::commit(); // Commit transaction
 
-                return redirect('http://localhost:5173/student/home?status=success');
+                return redirect('http://localhost:5173/student/MyCourse');
 
             } else {
 

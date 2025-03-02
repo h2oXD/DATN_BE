@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('videos', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignIdFor(Lesson::class)->constrained()->onDelete('cascade');
+            $table->foreignUuid('lesson_id')->constrained('lessons')->onDelete('cascade');
             $table->string('video_url');
             $table->integer('duration')->nullable()->comment('Thời lượng video');
 
