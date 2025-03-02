@@ -3,9 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CertificateController;
-
 use App\Http\Controllers\Api\V1\CommentController;
-use App\Http\Controllers\Api\V1\CodeSubmissionController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
@@ -47,7 +45,6 @@ use L5Swagger\Http\Controllers\SwaggerController;
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', [AuthController::class, 'getUser']);
     Route::apiResource('users', UserController::class)->only(['show', 'update']);
-    Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
     Route::get('/courseNew', [OverviewController::class, 'courseNew']);
 
 
@@ -60,7 +57,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/wallets', [WalletController::class, 'show']);
     Route::put('/user/wallets', [WalletController::class, 'update']); //test
     Route::post('/user/wallets/deposit', [WalletController::class, 'depositPayment']); // nạp tiền vào ví
-    Route::get('/user/wallets/result', [WalletController::class, 'resultPaymemt']); // trả kết quả thanh toán
     // Pay by VNPay
     Route::post('/user/courses/{course_id}/create-payment', [VNPayAPIController::class, 'createPayment']);
     // Pay by wallet
@@ -117,6 +113,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 });
 // Callback payment
 Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
+Route::get('/user/wallets/result', [WalletController::class, 'resultPaymemt']); // trả kết quả thanh toán nạp tiền vào ví
 
 
 Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
@@ -163,17 +160,21 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/home', [OverviewController::class, 'overview']);
     Route::get('/student/courses/{course_id}', [EnrollmentController::class, 'showUserEnrollmentCourse']);
     Route::get('/lesson/{lesson_id}', [EnrollmentController::class, 'showLesson']);
-    Route::post('/students/codings/{coding_id}/submit', [CodeSubmissionController::class, 'submitSolution']);
-    Route::get('/students/codings/{coding_id}/submission/{token}', [CodeSubmissionController::class, 'getSubmissionResult']);
 
     // Nộp bài Quiz
     Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);
 
     //chức năng ghi chú
-    Route::post('/user/{user_id}/video/{video_id}/notes', [NoteController::class, 'store']); // Tạo ghi chú
-    Route::get('/user/{user_id}/video/{video_id}/notes', [NoteController::class, 'index']); // Lấy danh sách ghi chú
-    Route::put('/user/{user_id}/video/{video_id}/notes/{note}', [NoteController::class, 'update']); // Cập nhật ghi chú
-    Route::delete('/user/{user_id}/video/{video_id}/notes/{note}', [NoteController::class, 'destroy']); // Xóa ghi chú
+    Route::get('/user/video/{video_id}/notes', [NoteController::class, 'index']); // Lấy danh sách ghi chú
+    Route::post('/user/video/{video_id}/notes', [NoteController::class, 'store']); // Tạo ghi chú
+    Route::put('/user/video/{video_id}/notes/{note}', [NoteController::class, 'update']); // Cập nhật ghi chú
+    Route::delete('/user/video/{video_id}/notes/{note}', [NoteController::class, 'destroy']); // Xóa ghi chú
+
+    // chức năng wish-list
+    Route::get('/user/wishlist', [WishListController::class, 'index']); // Lấy toàn bộ wish-list
+    Route::post('/user/wishlist/{course_id}', [WishListController::class, 'store']); // Thêm course vào wish-list
+    Route::delete('/user/wishlist/{course_id}', [WishListController::class, 'destroy']); // Xóa course khỏi wish-list
+    Route::get('/user/wishlist/check/{course_id}', [WishListController::class, 'check']); // Kiểm tra course
 });
 
 
