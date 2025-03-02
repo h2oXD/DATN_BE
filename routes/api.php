@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CertificateController;
+
+use App\Http\Controllers\Api\V1\CommentController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
@@ -56,7 +58,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/wallets', [WalletController::class, 'show']);
     Route::put('/user/wallets', [WalletController::class, 'update']); //test
     Route::post('/user/wallets/deposit', [WalletController::class, 'depositPayment']); // nạp tiền vào ví
-    Route::get('/user/wallets/result', [WalletController::class, 'resultPaymemt']); // trả kết quả thanh toán
     // Pay by VNPay
     Route::post('/user/courses/{course_id}/create-payment', [VNPayAPIController::class, 'createPayment']);
     // Pay by wallet
@@ -72,6 +73,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('student/{user_id}/courses/{course_id}', [StudyController::class, 'getCourseInfo']);
     Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/starts', [StudyController::class, 'startLesson']);
     Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/completes', [StudyController::class, 'completeLesson']);
+    Route::get('student/courses/{course_id}/sections/{section_id}/lessons', [StudyController::class, 'getLessonsBySection']);
+
     Route::post('/certificates/student/{user_id}/courses/{course_id}', [CertificateController::class, 'createCertificate']);
     // danh sách khóa học đã đăng ký 
     Route::get('/user/courses', [EnrollmentController::class, 'getUserCoursesWithProgress']);
@@ -88,9 +91,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
     Route::delete('/notifications/{notification:id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
     Route::delete('/notifications', [NotificationController::class, 'destroyAll'])->name('notifications.destroyAll');
+
+    // Comment
+    Route::get('/courses/{course}/sections/{section}/lessons/{lesson}/comments', [CommentController::class, 'index']);
+    Route::post('/courses/{course}/sections/{section}/lessons/{lesson}/comments', [CommentController::class, 'store']);
+    Route::put('/courses/{course}/sections/{section}/lessons/{lesson}/comments/{comment}', [CommentController::class, 'update']);
+    Route::delete('/courses/{course}/sections/{section}/lessons/{lesson}/comments/{comment}', [CommentController::class, 'destroy']);
 });
 // Callback payment
 Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
+Route::get('/user/wallets/result', [WalletController::class, 'resultPaymemt']); // trả kết quả thanh toán nạp tiền vào ví
 
 
 Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {

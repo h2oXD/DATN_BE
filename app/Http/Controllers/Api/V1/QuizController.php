@@ -13,19 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class QuizController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes",
-     *     summary="Lấy danh sách tất cả bài kiểm tra",
-     *     description="API này trả về danh sách tất cả các bài kiểm tra có kèm thông tin bài học liên quan.",
-     *     tags={"Quizzes"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Danh sách tất cả bài kiểm tra",
-     *         @OA\JsonContent(...)
-     *     )
-     * )
-     */
+
     public function index($lesson_id)
     {
         return response()->json([
@@ -34,17 +22,6 @@ class QuizController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Post(
-     *     path="/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes",
-     *     summary="Tạo một bài kiểm tra mới",
-     *     description="API này tạo một bài kiểm tra mới cho một bài học cụ thể.",
-     *     tags={"Quizzes"},
-     *     @OA\Parameter(...),
-     *     @OA\RequestBody(...),
-     *     @OA\Response(...)
-     * )
-     */
     public function store(Request $request, $lesson_id)
     {
         $request->validate(['title' => 'required|string|max:255']);
@@ -57,16 +34,6 @@ class QuizController extends Controller
         }
     }
 
-    /**
-     * @OA\Get(
-     *     path="/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}",
-     *     summary="Lấy thông tin chi tiết của một bài kiểm tra",
-     *     description="API này trả về thông tin chi tiết của một bài kiểm tra, bao gồm danh sách câu hỏi và các đáp án.",
-     *     tags={"Quizzes"},
-     *     @OA\Parameter(...),
-     *     @OA\Response(...)
-     * )
-     */
     public function show(Quiz $quiz)
     {
         return response()->json([
@@ -75,17 +42,6 @@ class QuizController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Put(
-     *     path="/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}",
-     *     summary="Cập nhật thông tin của một bài kiểm tra",
-     *     description="API này cho phép cập nhật tiêu đề của một bài kiểm tra.",
-     *     tags={"Quizzes"},
-     *     @OA\Parameter(...),
-     *     @OA\RequestBody(...),
-     *     @OA\Response(...)
-     * )
-     */
     public function update(Request $request, Quiz $quiz)
     {
         $request->validate(['title' => 'required|string|max:255']);
@@ -98,16 +54,6 @@ class QuizController extends Controller
         }
     }
 
-    /**
-     * @OA\Delete(
-     *     path="/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}",
-     *     summary="Xóa bài kiểm tra",
-     *     description="API này cho phép xóa một bài kiểm tra cùng với tất cả các câu hỏi liên quan.",
-     *     tags={"Quizzes"},
-     *     @OA\Parameter(...),
-     *     @OA\Response(...)
-     * )
-     */
     public function destroy(Quiz $quiz)
     {
         try {
