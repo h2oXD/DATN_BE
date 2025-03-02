@@ -47,4 +47,17 @@ class Comment extends Model
     {
         return $this->morphTo();
     }
+
+
+
+    // protected static function boot()
+    // {
+    //     parent::boot();
+
+    //     static::deleting(function ($comment) {
+    //         $comment->replies->each(function ($reply) {
+    //             $reply->delete();
+    //         });
+    //     });
+    // }
 }

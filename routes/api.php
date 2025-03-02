@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\V1\LessonController;
 use App\Http\Controllers\Api\V1\NoteController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\OverviewController;
+use App\Http\Controllers\Api\V1\PostController;
 use App\Http\Controllers\Api\V1\QuizController;
 use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\SectionController;
@@ -94,11 +95,25 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::delete('/notifications/{notification:id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
     Route::delete('/notifications', [NotificationController::class, 'destroyAll'])->name('notifications.destroyAll');
 
+    //Post
+    Route::get('/posts', [PostController::class, 'index']); // Danh sách bài viết
+    Route::post('/posts', [PostController::class, 'store']); // Tạo bài viết mới
+    Route::get('/posts/{post}', [PostController::class, 'show']); // Xem chi tiết bài viết
+    Route::put('/posts/{post}', [PostController::class, 'update']); // Cập nhật bài viết
+    Route::delete('/posts/{post}', [PostController::class, 'destroy']); // Xóa bài viết
+
     // Comment
-    Route::get('/courses/{course}/sections/{section}/lessons/{lesson}/comments', [CommentController::class, 'index']);
-    Route::post('/courses/{course}/sections/{section}/lessons/{lesson}/comments', [CommentController::class, 'store']);
-    Route::put('/courses/{course}/sections/{section}/lessons/{lesson}/comments/{comment}', [CommentController::class, 'update']);
-    Route::delete('/courses/{course}/sections/{section}/lessons/{lesson}/comments/{comment}', [CommentController::class, 'destroy']);
+    Route::get('/courses/{course}/sections/{section}/lessons/{lesson}/comments', [CommentController::class, 'getLessonComment']);
+    Route::post('/courses/{course}/sections/{section}/lessons/{lesson}/comments', [CommentController::class, 'storeLessonComment']);
+    Route::put('/courses/{course}/sections/{section}/lessons/{lesson}/comments/{comment}', [CommentController::class, 'updateLessonComment']);
+    Route::delete('/courses/{course}/sections/{section}/lessons/{lesson}/comments/{comment}', [CommentController::class, 'destroyLessonComment']);
+
+    Route::get('/posts/{post_id}/comments/posts', [CommentController::class, 'getPostComments'])->name('post.comments.index');
+    Route::post('/posts/{post_id}/comments/', [CommentController::class, 'storePostComment'])->name('post.comments.store');
+    Route::put('/posts/{post_id}/comments/{comment_id}', [CommentController::class, 'updatePostComment'])->name('post.comments.update');
+    Route::delete('/posts/{post_id}/comments/{comment_id}', [CommentController::class, 'destroyPostComment'])->name('post.comments.destroy');
+
+    
 });
 // Callback payment
 Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);

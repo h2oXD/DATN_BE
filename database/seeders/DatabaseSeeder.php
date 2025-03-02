@@ -143,40 +143,40 @@ class DatabaseSeeder extends Seeder
         $roles = Role::whereIn('name', ['student', 'lecturer'])->pluck('id');
         $lecturer->roles()->attach($roles);
 
-        // $categories = [
-        //     [
-        //         'id' => 1,
-        //         'name' => 'Công nghệ thông tin',
-        //     ],
-        //     [
-        //         'id' => 2,
-        //         'name' => 'Thiết kế đồ hoạ',
-        //     ],
-        //     [
-        //         'name' => 'Laravel',
-        //         'parent_id' => 1
-        //     ],
-        //     [
-        //         'name' => 'PHP',
-        //         'parent_id' => 1
-        //     ],
-        //     [
-        //         'name' => 'JavaScript',
-        //         'parent_id' => 1
-        //     ],
-        //     [
-        //         'name' => 'Photoshop',
-        //         'parent_id' => 2
-        //     ],
-        //     [
-        //         'name' => 'Premiere',
-        //         'parent_id' => 2
-        //     ],
-        //     [
-        //         'name' => 'After Effect',
-        //         'parent_id' => 2
-        //     ],
-        // ];
+        $categories = [
+            [
+                'id' => 1,
+                'name' => 'Công nghệ thông tin',
+            ],
+            [
+                'id' => 2,
+                'name' => 'Thiết kế đồ hoạ',
+            ],
+            [
+                'name' => 'Laravel',
+                'parent_id' => 1
+            ],
+            [
+                'name' => 'PHP',
+                'parent_id' => 1
+            ],
+            [
+                'name' => 'JavaScript',
+                'parent_id' => 1
+            ],
+            [
+                'name' => 'Photoshop',
+                'parent_id' => 2
+            ],
+            [
+                'name' => 'Premiere',
+                'parent_id' => 2
+            ],
+            [
+                'name' => 'After Effect',
+                'parent_id' => 2
+            ],
+        ];
 
         // $tags = [
         //     [
@@ -192,9 +192,9 @@ class DatabaseSeeder extends Seeder
         //         'name' => 'reactjs-js'
         //     ],
         // ];
-        // foreach ($categories as $category) {
-        //     Category::create($category);
-        // }
+        foreach ($categories as $category) {
+            Category::create($category);
+        }
         // foreach ($tags as $tag) {
         //     Tag::create($tag);
         // }
@@ -238,7 +238,7 @@ class DatabaseSeeder extends Seeder
 
         Course::create([
             'user_id' => 5,
-            'category_id' => 3,
+            'category_id' => 2,
             'title' => 'Khoá học Laravel cơ bản',
             'status' => 'published',
             'is_free' => true,
