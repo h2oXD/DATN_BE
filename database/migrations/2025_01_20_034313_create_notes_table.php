@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
 
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade')->comment('id của học viên tạo ghi chú');
-            $table->foreignIdFor(Lesson::class)->comment('id của bài học ghi chú');
+            $table->foreignUuid('lesson_id')->constrained('lessons')->onDelete('cascade')->comment('id của bài học ghi chú');
             $table->string('content')->comment('Nội dung ghi chú');
             $table->integer('duration')->comment('Thời gian đánh dấu lúc tạo ghi chú');
             $table->timestamps();

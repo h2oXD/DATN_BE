@@ -14,7 +14,8 @@ return new class extends Migration
     {
         Schema::create('quizzes', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Lesson::class)->constrained()->onDelete('cascade');
+            
+            $table->foreignUuid('lesson_id')->constrained('lessons')->onDelete('cascade');
             $table->string('title')->comment('Tên bộ câu hỏi');
             $table->text('description')->nullable();
 

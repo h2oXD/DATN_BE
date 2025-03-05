@@ -7,16 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Note extends Model
 {
-    protected $fillable = ['user_id', 'video_id', 'content', 'timestamp'];
+    protected $fillable = ['user_id', 'lesson_id', 'content', 'duration'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function video()
+    public function lesson()
     {
-        return $this->belongsTo(Video::class);
+        return $this->belongsTo(Lesson::class);
     }
 
     // Accessor để định dạng timestamp
