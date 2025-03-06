@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Lesson;
+use App\Models\Quiz;
 use App\Models\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -225,6 +226,12 @@ class LessonController extends Controller
 
             // Tạo mới Lesson
             $lesson = $section->lessons()->create($data);
+            if($lesson->type == 'quiz'){
+                Quiz::create([
+                    'title' => $lesson->title,
+                    'lesson_id' => $lesson->id
+                ]);
+            }
 
             return response()->json([
                 'lesson' => $lesson,

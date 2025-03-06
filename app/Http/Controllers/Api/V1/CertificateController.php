@@ -74,12 +74,10 @@ class CertificateController extends Controller
      * )
      */
 
-    public function createCertificate(Request $request, $user_id, $course_id)
+    public function createCertificate(Request $request, $course_id)
     {
         try {
-            if ($request->user()->id != $user_id) {
-                return response()->json(['message' => 'Unauthorized.'], Response::HTTP_FORBIDDEN);
-            }
+            $user_id = $request->user()->id;
 
             $enrollment = Enrollment::where('user_id', $user_id)
                 ->where('course_id', $course_id)
@@ -127,5 +125,26 @@ class CertificateController extends Controller
         } catch (\Throwable $th) {
             return response()->json(['message' => 'Lỗi hệ thống: ' . $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public function showCertificate($course_id)
+    {
+        $user_id = request()->user()->id;
+        $certificate = Certificate::where('course_id', $course_id)->where('user_id', $user_id)->first();
+
+        return response()->json([
+            'data' => $certificate,
+            'message' => 'Lấy chứng chỉ thành công'
+        ], 200);
+    }
+
+    public function certificate($certificate_id)
+    {
+        $certificate = Certificate::find($certificate_id);
+
+        return response()->json([
+            'data' => $certificate,
+            'message' => 'Lấy chứng chỉ thành công'
+        ], 200);
     }
 }

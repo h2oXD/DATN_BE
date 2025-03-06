@@ -13,6 +13,9 @@
         {
             "url": "http://my-default-host.com",
             "description": "API Server"
+        },
+        {
+            "url": "/api"
         }
     ],
     "paths": {

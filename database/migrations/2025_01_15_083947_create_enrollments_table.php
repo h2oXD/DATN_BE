@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
 
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(Course::class)->constrained()->onDelete('cascade');
+            $table->foreignUuid('course_id')->constrained('courses')->onDelete('cascade');
             $table->enum('status', ['active','canceled','completed']);
             $table->timestamp('enrolled_at')->nullable();
             $table->timestamp('completed_at')->nullable();

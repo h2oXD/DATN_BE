@@ -19,7 +19,7 @@ return new class extends Migration
 
             $table->foreignIdFor(Voucher::class)->constrained()->onDelete('cascade')->comment('ID phiếu giảm giá được dùng');
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade')->comment('ID người sử dụng');
-            $table->foreignIdFor(Course::class)->constrained()->onDelete('cascade')->comment('ID khóa học được sử dụng');
+            $table->foreignUuid('course_id')->constrained('courses')->onDelete('cascade')->comment('ID khóa học được sử dụng');
             $table->timestamp('time_used')->comment('Thời gian sử dụng');
 
             $table->timestamps();
