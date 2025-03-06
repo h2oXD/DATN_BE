@@ -37,14 +37,13 @@
                         <!-- Card body -->
                         <div class="card-body p-6 d-flex flex-column gap-4">
                             <div>
-                                <a href="../index.html"><img src="/logo.png"
-                                        class="mb-4 w-50" alt="logo-icon" /></a>
+                                <a href="../index.html"><img src="/logo.png" class="mb-4 w-50" alt="logo-icon" /></a>
                                 <div class="d-flex flex-column gap-1">
                                     <h1 class="mb-0 fw-bold">Đăng nhập</h1>
                                 </div>
                             </div>
                             <!-- Form -->
-                            <form class="needs-validation" method="POST" action="{{route('login')}}">
+                            <form class="needs-validation" method="POST" action="{{ route('login') }}">
                                 <!-- Username -->
                                 @csrf
                                 <div class="mb-3">
@@ -56,16 +55,17 @@
                                 <!-- Password -->
                                 <div class="mb-3">
                                     <label for="signInPassword" class="form-label">Mật khẩu</label>
-                                    <input type="password" id="signInPassword" class="form-control"
-                                        name="password" placeholder="Nhập mật khẩu" required />
+                                    <input type="password" id="signInPassword" class="form-control" name="password"
+                                        placeholder="Nhập mật khẩu" required />
                                     <div class="invalid-feedback">Please enter valid password.</div>
-                                <div class="my-3">
-                                    <!-- Button -->
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-primary">Đăng nhập</button>
+                                    <div class="my-3">
+                                        <!-- Button -->
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary">Đăng nhập</button>
+                                        </div>
                                     </div>
-                                </div>
-                                <hr class="my-4" />
+
+                                    <hr class="my-4" />
                             </form>
                         </div>
                     </div>
@@ -87,4 +87,5 @@
         document.documentElement.setAttribute("data-bs-theme", "light");
     </script>
 </body>
+
 </html>
