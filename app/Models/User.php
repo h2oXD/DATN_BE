@@ -25,6 +25,8 @@ class User extends Authenticatable
         'profile_picture',
         'bio',
         'google_id',
+        'linkedin_url',
+        'website_url',
         'certificate_file',
     ];
 
@@ -46,7 +48,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        
+
     ];
 
     public function roles()
@@ -81,12 +83,13 @@ class User extends Authenticatable
         return $this->hasMany(VoucherUse::class);
     }
 
-    public function lecturerRegister() {
-    return $this->hasOne(LecturerRegister::class); 
-}
+    public function lecturerRegister()
+    {
+        return $this->hasOne(LecturerRegister::class);
+    }
 
-   public function comments()
-   {
-     return $this->hasMany(Comment::class);
-   }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

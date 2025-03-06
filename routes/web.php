@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\DashBoardController;
 use App\Http\Controllers\Admin\LecturerRegisterController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\VoucherController;
@@ -76,15 +77,15 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::get('lecturer_registers', [LecturerRegisterController::class, 'index'])->name('lecturer_registers.index');
         Route::get('lecturer_registers/{user_id}', [LecturerRegisterController::class, 'show'])->name('lecturer_registers.show');
         // Route::post('lecturer_registers/{user_id}', [LecturerRegisterController::class, 'show'])->name('lecturer_registers.show');
-        
-        
-        
+
+        // profile
+        Route::prefix('admins')->group(function () {
+            Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('admins.profile.edit');
+            Route::put('/profile/update', [ProfileController::class, 'update'])->name('admins.profile.update');
+            Route::get('/profile/social', [ProfileController::class, 'social'])->name('admins.profile.social');
+            Route::post('/profile/social/store', [ProfileController::class, 'storeSocial'])->name('admins.profile.social.store');
+            Route::get('/profile/delete', [ProfileController::class, 'delete'])->name('admins.profile.delete');
+            Route::delete('/profile/delete', [ProfileController::class, 'destroy'])->name('admins.profile.delete');
+        });
     });
 });
-
-
-
-
-
-
-

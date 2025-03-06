@@ -48,19 +48,19 @@
             <ul class="navbar-nav navbar-right-wrap ms-2 d-flex nav-top-wrap">
                 @include('layouts.components.notification')
                 <li class="dropdown ms-2">
-                    <a class="rounded-circle" href="#" role="button" id="dropdownUser"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="rounded-circle" href="#" role="button" id="dropdownUser" data-bs-toggle="dropdown"
+                        aria-expanded="false">
                         <div class="avatar avatar-md avatar-indicators avatar-online">
-                            <img alt="avatar" src="../../assets/images/avatar/avatar-1.jpg"
-                                class="rounded-circle" />
+                            <img src="{{ auth()->user()->profile_picture ? asset(auth()->user()->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
+                                class="avatar-md rounded-circle" alt="Current avatar" />
                         </div>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
                         <div class="dropdown-item">
                             <div class="d-flex">
                                 <div class="avatar avatar-md avatar-indicators avatar-online">
-                                    <img alt="avatar" src="../../assets/images/avatar/avatar-1.jpg"
-                                        class="rounded-circle" />
+                                    <img src="{{ auth()->user()->profile_picture ? asset(auth()->user()->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
+                                        class="avatar-md rounded-circle" alt="Current avatar" />
                                 </div>
                                 <div class="ms-3 lh-1">
                                     <h5 class="mb-1">Annette Black</h5>
@@ -103,7 +103,7 @@
                                 </ul>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="../profile-edit.html">
+                                <a class="dropdown-item" href="{{ route('admin.admins.profile.edit') }}">
                                     <i class="fe fe-user me-2"></i>
                                     Profile
                                 </a>
@@ -136,4 +136,3 @@
         </div>
     </nav>
 </div>
-
