@@ -789,9 +789,9 @@ class WalletController extends Controller
      *     required=true,
      *     @OA\JsonContent(
      *       type="object",
-     *       required={"amount", "bank_code", "bank_nameUser", "bank_number"},
+     *       required={"amount", "bank_name", "bank_nameUser", "bank_number"},
      *       @OA\Property(property="amount", type="integer", example=500000, description="Số tiền cần rút (tối thiểu 10,000 VND)"),
-     *       @OA\Property(property="bank_code", type="string", example="VCB", description="Mã ngân hàng"),
+     *       @OA\Property(property="bank_name", type="string", example="MBank", description="Tên ngân hàng"),
      *       @OA\Property(property="bank_nameUser", type="string", example="Nguyen Van A", description="Tên chủ tài khoản ngân hàng"),
      *       @OA\Property(property="bank_number", type="integer", example=123456789, description="Số tài khoản ngân hàng"),
      *       @OA\Property(property="qr_image", type="string", format="binary", description="Hình ảnh mã QR (tùy chọn, tối đa 2MB)")
