@@ -18,6 +18,40 @@ class ForgotPasswordController extends Controller
 {
     //
 
+    /**
+     * @OA\Post(
+     *     path="/forgot-password",
+     *     summary="Gửi email đặt lại mật khẩu",
+     *     description="Gửi email chứa liên kết đặt lại mật khẩu cho người dùng.",
+     *     tags={"Reset Password"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             example={"email": "user@example.com"}
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Liên kết đặt lại mật khẩu đã được gửi.",
+     *         @OA\JsonContent(
+     *             example={"message": "Liên kết đặt lại mật khẩu đã được gửi!"}
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Dữ liệu nhập vào không hợp lệ.",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "errors": {
+     *                     "email": {"Trường email là bắt buộc."}
+     *                 }
+     *             }
+     *         )
+     *     )
+     * )
+     */
+
+
     public function sendResetLinkEmail(Request $request)
     {
 
