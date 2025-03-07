@@ -793,16 +793,17 @@ class WalletController extends Controller
      *       @OA\Property(property="amount", type="integer", example=500000, description="Số tiền cần rút (tối thiểu 10,000 VND)"),
      *       @OA\Property(property="bank_code", type="string", example="VCB", description="Mã ngân hàng"),
      *       @OA\Property(property="bank_nameUser", type="string", example="Nguyen Van A", description="Tên chủ tài khoản ngân hàng"),
-     *       @OA\Property(property="bank_number", type="integer", example=123456789, description="Số tài khoản ngân hàng")
+     *       @OA\Property(property="bank_number", type="integer", example=123456789, description="Số tài khoản ngân hàng"),
+     *       @OA\Property(property="qr_image", type="string", format="binary", description="Hình ảnh mã QR (tùy chọn, tối đa 2MB)")
      *     )
      *   ),
      *   @OA\Response(
      *     response=200,
-     *     description="Rút tiền thành công",
+     *     description="Gửi yêu cầu rút tiền thành công",
      *     @OA\JsonContent(
      *       type="object",
      *       @OA\Property(property="status", type="string", example="success"),
-     *       @OA\Property(property="message", type="string", example="Rút tiền thành công!")
+     *       @OA\Property(property="message", type="string", example="Gửi yêu cầu rút tiền thành công!")
      *     )
      *   ),
      *   @OA\Response(
