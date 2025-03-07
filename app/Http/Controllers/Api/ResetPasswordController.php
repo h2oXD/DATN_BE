@@ -13,6 +13,60 @@ use Illuminate\Support\Facades\Validator;
 class ResetPasswordController extends Controller
 {
     //
+
+    /**
+     * @OA\Post(
+     *     path="/reset-password",
+     *     summary="Đặt lại mật khẩu",
+     *     description="Cho phép người dùng đặt lại mật khẩu bằng token đã gửi qua email.",
+     *     tags={"Reset Password"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             example={
+     *                 "email": "user@example.com",
+     *                 "token": "abc123",
+     *                 "password": "newpassword",
+     *                 "password_confirmation": "newpassword"
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Mật khẩu đã được đặt lại thành công.",
+     *         @OA\JsonContent(
+     *             example={"message": "Mật khẩu đã được đặt lại thành công!"}
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Token không hợp lệ hoặc đã hết hạn.",
+     *         @OA\JsonContent(
+     *             example={"error": "Token không hợp lệ hoặc đã hết hạn!"}
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Email không tồn tại.",
+     *         @OA\JsonContent(
+     *             example={"error": "Email không tồn tại!"}
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Dữ liệu nhập vào không hợp lệ.",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "errors": {
+     *                     "email": {"Trường email là bắt buộc."},
+     *                     "password": {"Mật khẩu phải có ít nhất 6 ký tự."}
+     *                 }
+     *             }
+     *         )
+     *     )
+     * )
+     */
+
     public function reset(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -55,6 +109,53 @@ class ResetPasswordController extends Controller
     }
 
 
+
+
+    /**
+     * @OA\Post(
+     *     path="/change-password",
+     *     summary="Đổi mật khẩu người dùng",
+     *     description="Cho phép người dùng đổi mật khẩu khi đã đăng nhập.",
+     *     tags={"Reset Password"},
+     *     security={{ "bearerAuth":{} }},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             example={
+     *                 "current_password": "oldpassword",
+     *                 "password": "newpassword",
+     *                 "password_confirmation": "newpassword"
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Đổi mật khẩu thành công.",
+     *         @OA\JsonContent(
+     *             example={"message": "Đổi mật khẩu thành công."}
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Mật khẩu hiện tại không đúng.",
+     *         @OA\JsonContent(
+     *             example={"error": "Mật khẩu hiện tại không đúng."}
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Dữ liệu nhập vào không hợp lệ.",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "errors": {
+     *                     "current_password": {"Trường mật khẩu hiện tại là bắt buộc."},
+     *                     "password": {"Mật khẩu phải có ít nhất 6 ký tự."}
+     *                 }
+     *             }
+     *         )
+     *     )
+     * )
+     */
 
 
     public function resetPassword(Request $request)
