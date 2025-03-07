@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\CommentController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
+use App\Http\Controllers\Api\V1\GoogleAuthController;
 use App\Http\Controllers\Api\V1\LecturerController;
 use App\Http\Controllers\Api\V1\LecturerRegisterController;
 use App\Http\Controllers\Api\V1\LessonCodingController;
@@ -29,6 +30,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use L5Swagger\Http\Controllers\SwaggerController;
+use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,6 +108,10 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::get('/lecturer', [LecturerController::class, 'getLecturerInfo']);
     Route::get('lecturer/courses/{course_id}/check', [CourseController::class, 'check']);
     Route::get('lecturer/courses/{course_id}/pending', [CourseController::class, 'checkPending']);
+    
+    // Thống kê giảng viên
+    Route::get('/lecturer/statistics', [LecturerController::class, 'statistics']);
+
     // Route::post('lecturer/courses/{course_id}/sections/{section_id}/lessonsCreateVideo',[CourseController::class , 'lessonCreateVideo']);
     Route::apiResource('/lecturer/courses', CourseController::class)->parameters(['courses' => 'course_id']);
     Route::post('/lecturer/courses/{course_id}/pending', [CourseController::class, 'pending']);
@@ -130,14 +136,14 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::post('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'storeQuestion']);
     // Route::post('/lecturer/questions/{question_id}/answers', [QuizController::class, 'storeAnswer']);
 
-
-
     // Cập nhật thứ tự câu hỏi trong Quiz
     Route::post('/user/quizzes/{quiz_id}/update-order', [QuizController::class, 'updateQuizOrder']);
 
     Route::post('lessons/order', [LessonController::class, 'updateOrder']);
 
     Route::post('/user/wallets/withdraw', [WalletController::class, 'withdraw']); // rút tiền ví giảng viên
+
+    
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/home', [OverviewController::class, 'overview']);
@@ -175,5 +181,9 @@ Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id
 //Xem đánh giá
 Route::get('/courses/{course_id}/reviews', [ReviewController::class, 'getReviewsByCourse']); // Lấy đánh giá của khóa học
 Route::get('/user/{user_id}/reviews', [ReviewController::class, 'getReviewsByUser']); // Lấy đánh giá của user
+
+
+Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 
 Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.default.api');
