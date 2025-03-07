@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
 use App\Models\Note;
+use App\Models\Section;
 use App\Models\Video;
 use Illuminate\Http\Request;
 
@@ -46,16 +48,49 @@ class NoteController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index($course_id)
     {
         $user_id = request()->user()->id;
         $notes = Note::where('user_id', $user_id)
+            ->whereHas('lesson.section.course', function ($query) use ($course_id) {
+                $query->where('id', $course_id);
+            })
             ->with(['lesson', 'lesson.section'])
             ->get();
 
         // Kiểm tra nếu không có ghi chú
         if ($notes->isEmpty()) {
             return response()->json(['message' => 'Hiện tại chưa có ghi chú nào cho video này'], 404);
+        }
+
+        return response()->json($notes);
+    }
+
+    public function noteInSection($course_id, $lesson_id)
+    {
+        $user_id = request()->user()->id;
+
+        // Lấy section_id từ lesson_id và kiểm tra nó có thuộc course không
+        $section = Section::whereHas('lessons', function ($query) use ($lesson_id) {
+            $query->where('id', $lesson_id);
+        })
+            ->where('course_id', $course_id) // Đảm bảo section thuộc course
+            ->first();
+
+        if (!$section) {
+            return response()->json(['message' => 'Không tìm thấy section cho bài học này hoặc không thuộc khóa học này'], 404);
+        }
+
+        // Lấy tất cả ghi chú trong section đó và thuộc khóa học
+        $notes = Note::where('user_id', $user_id)
+            ->whereHas('lesson', function ($query) use ($section) {
+                $query->where('section_id', $section->id);
+            })
+            ->with(['lesson', 'lesson.section'])
+            ->get();
+
+        if ($notes->isEmpty()) {
+            return response()->json(['message' => 'Hiện tại chưa có ghi chú nào trong section này'], 404);
         }
 
         return response()->json($notes);
