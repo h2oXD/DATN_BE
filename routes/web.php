@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\VoucherUseController;
+use App\Http\Controllers\Admin\WalletController;
+use App\Http\Controllers\GoogleAuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,7 +27,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [DashBoardController::class, 'index'])->name('admin.home');
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('login', [AuthController::class, 'login'])->name('login');
-
 
 Route::middleware(['auth', 'admin'])->group(function (): void {
     Route::prefix('admin')->name('admin.')->group(function () {
@@ -77,7 +78,11 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::get('lecturer_registers/{user_id}', [LecturerRegisterController::class, 'show'])->name('lecturer_registers.show');
         // Route::post('lecturer_registers/{user_id}', [LecturerRegisterController::class, 'show'])->name('lecturer_registers.show');
         
-        
+        // Kiểm duyệt yêu cầu rút tiền
+        Route::get('censor-withdraw', [WalletController::class, 'index'])->name('censor-withdraw.index');
+        Route::get('censor-withdraw/{id}', [WalletController::class, 'censor'])->name('censor-withdraw.show');
+        Route::put('censor-withdraw/{id}/accept', [WalletController::class, 'accept'])->name('censor-withdraw.accept');
+        Route::put('censor-withdraw/{id}/reject', [WalletController::class, 'reject'])->name('censor-withdraw.reject');
         
     });
 });

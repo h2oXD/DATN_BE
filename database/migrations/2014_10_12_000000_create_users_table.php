@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->string('phone_number', 20)->nullable();
             $table->string('profile_picture')->nullable();
             $table->text('bio')->nullable();
-            $table->integer('google_id')->nullable();
+            $table->string('google_id')->nullable();
 
             $table->string('linkedin_url')->nullable()->default(NULL);
             $table->string('website_url')->nullable()->default(NULL);

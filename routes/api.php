@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\CommentController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
+use App\Http\Controllers\Api\V1\GoogleAuthController;
 use App\Http\Controllers\Api\V1\LecturerController;
 use App\Http\Controllers\Api\V1\LecturerRegisterController;
 use App\Http\Controllers\Api\V1\LessonCodingController;
@@ -32,6 +33,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use L5Swagger\Http\Controllers\SwaggerController;
+use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,12 +75,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //Study
     Route::get('student/{user_id}/courses/{course_id}', [StudyController::class, 'getCourseInfo']);
     Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/starts', [StudyController::class, 'startLesson']);
-    Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/completes', [StudyController::class, 'completeLesson']);
+
     Route::get('student/courses/{course_id}/sections/{section_id}/lessons', [StudyController::class, 'getLessonsBySection']);
 
-    Route::post('/certificates/student/{user_id}/courses/{course_id}', [CertificateController::class, 'createCertificate']);
     // danh sách khóa học đã đăng ký 
     Route::get('/user/courses', [EnrollmentController::class, 'getUserCoursesWithProgress']);
+    Route::get('/user/courses/{course_id}', [EnrollmentController::class, 'getprogress']);
 
     // review
     Route::post('/user/{user_id}/courses/{course_id}/reviews', [ReviewController::class, 'store']); // Thêm đánh giá
@@ -130,6 +132,10 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::get('/lecturer', [LecturerController::class, 'getLecturerInfo']);
     Route::get('lecturer/courses/{course_id}/check', [CourseController::class, 'check']);
     Route::get('lecturer/courses/{course_id}/pending', [CourseController::class, 'checkPending']);
+    
+    // Thống kê giảng viên
+    Route::get('/lecturer/statistics', [LecturerController::class, 'statistics']);
+
     // Route::post('lecturer/courses/{course_id}/sections/{section_id}/lessonsCreateVideo',[CourseController::class , 'lessonCreateVideo']);
     Route::apiResource('/lecturer/courses', CourseController::class)->parameters(['courses' => 'course_id']);
     Route::post('/lecturer/courses/{course_id}/pending', [CourseController::class, 'pending']);
@@ -152,32 +158,35 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
 
     // Tạo câu hỏi trong Quiz
     Route::post('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'storeQuestion']);
-
-    // Tạo đáp án cho câu hỏi
-    Route::post('/lecturer/questions/{question_id}/answers', [QuizController::class, 'storeAnswer']);
-
-
+    // Route::post('/lecturer/questions/{question_id}/answers', [QuizController::class, 'storeAnswer']);
 
     // Cập nhật thứ tự câu hỏi trong Quiz
     Route::post('/user/quizzes/{quiz_id}/update-order', [QuizController::class, 'updateQuizOrder']);
 
     Route::post('lessons/order', [LessonController::class, 'updateOrder']);
 
-    Route::post('/user/wallets/withdraw', [WalletController::class, 'withdraw']); // rút tiền ví giảng viên
+    // rút tiền ví giảng viên
+    Route::post('/user/wallets/withdraw', [WalletController::class, 'withdraw']);
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/home', [OverviewController::class, 'overview']);
     Route::get('/student/courses/{course_id}', [EnrollmentController::class, 'showUserEnrollmentCourse']);
     Route::get('/lesson/{lesson_id}', [EnrollmentController::class, 'showLesson']);
+    Route::get('course/{course_id}/lesson', [EnrollmentController::class, 'getStatusLesson']);
+    Route::post('student/courses/{course_id}/lessons/{lesson_id}/completes', [StudyController::class, 'completeLesson']);
+    Route::post('/certificates/student/courses/{course_id}', [CertificateController::class, 'createCertificate']);
+    Route::get('show/certificates/{course_id}', [CertificateController::class, 'showCertificate']);
+    Route::get('certificates/{certificate_id}', [CertificateController::class, 'certificate']);
 
     // Nộp bài Quiz
     Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);
 
     //chức năng ghi chú
-    Route::get('/user/video/{video_id}/notes', [NoteController::class, 'index']); // Lấy danh sách ghi chú
-    Route::post('/user/video/{video_id}/notes', [NoteController::class, 'store']); // Tạo ghi chú
-    Route::put('/user/video/{video_id}/notes/{note}', [NoteController::class, 'update']); // Cập nhật ghi chú
-    Route::delete('/user/video/{video_id}/notes/{note}', [NoteController::class, 'destroy']); // Xóa ghi chú
+    Route::get('/learning/notes/{course_id}', [NoteController::class, 'index']); // Lấy danh sách ghi chú
+    Route::get('/learning/notes/{course_id}/{lesson_id}', [NoteController::class, 'noteInSection']); // Lấy danh sách ghi chú
+    Route::post('/learning/lesson/{lesson_id}/notes', [NoteController::class, 'store']); // Tạo ghi chú
+    Route::put('/learning/notes/{note}', [NoteController::class, 'update']); // Cập nhật ghi chú
+    Route::delete('/learning/notes/{note}', [NoteController::class, 'destroy']); // Xóa ghi chú
 
     // chức năng wish-list
     Route::get('/user/wishlist', [WishListController::class, 'index']); // Lấy toàn bộ wish-list
@@ -199,5 +208,9 @@ Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id
 //Xem đánh giá
 Route::get('/courses/{course_id}/reviews', [ReviewController::class, 'getReviewsByCourse']); // Lấy đánh giá của khóa học
 Route::get('/user/{user_id}/reviews', [ReviewController::class, 'getReviewsByUser']); // Lấy đánh giá của user
+
+
+Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 
 Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.default.api');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Video;
 use getID3;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -99,11 +100,14 @@ class VideoController extends Controller
         try {
 
             $course = $request->user()->courses()
-                ->with(['sections' => function ($query) use ($section_id) {
-                    $query->where('id', $section_id);
-                }, 'sections.lessons' => function ($query) use ($lesson_id) {
-                    $query->where('id', $lesson_id);
-                }])
+                ->with([
+                    'sections' => function ($query) use ($section_id) {
+                        $query->where('id', $section_id);
+                    },
+                    'sections.lessons' => function ($query) use ($lesson_id) {
+                        $query->where('id', $lesson_id);
+                    }
+                ])
                 ->find($course_id);
 
 
@@ -240,11 +244,14 @@ class VideoController extends Controller
     public function store(Request $request, $course_id, $section_id, $lesson_id)
     {
         try {
-            $course = $request->user()->courses()->with(['sections' => function ($query) use ($section_id) {
-                $query->where('id', $section_id);
-            }, 'sections.lessons' => function ($query) use ($lesson_id) {
-                $query->where('id', $lesson_id);
-            }])->find($course_id);
+            $course = $request->user()->courses()->with([
+                'sections' => function ($query) use ($section_id) {
+                    $query->where('id', $section_id);
+                },
+                'sections.lessons' => function ($query) use ($lesson_id) {
+                    $query->where('id', $lesson_id);
+                }
+            ])->find($course_id);
 
             if (!$course || !$course->sections->first() || !$lesson = $course->sections->first()->lessons->first()) {
                 return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404); // Combined check
@@ -382,11 +389,14 @@ class VideoController extends Controller
         try {
             // Lấy khóa học thuộc về người dùng hiện tại và kiểm tra section và lesson
             $course = $request->user()->courses()
-                ->with(['sections' => function ($query) use ($section_id) {
-                    $query->where('id', $section_id);
-                }, 'sections.lessons' => function ($query) use ($lesson_id) {
-                    $query->where('id', $lesson_id);
-                }])
+                ->with([
+                    'sections' => function ($query) use ($section_id) {
+                        $query->where('id', $section_id);
+                    },
+                    'sections.lessons' => function ($query) use ($lesson_id) {
+                        $query->where('id', $lesson_id);
+                    }
+                ])
                 ->find($course_id);
 
             // Kiểm tra xem course, section, và lesson có tồn tại không
@@ -527,23 +537,23 @@ class VideoController extends Controller
     public function update(Request $request, $course_id, $section_id, $lesson_id, $video_id)
     {
         try {
-            $course = $request->user()->courses()->with(['sections' => function ($query) use ($section_id) {
-                $query->where('id', $section_id);
-            }, 'sections.lessons' => function ($query) use ($lesson_id) {
-                $query->where('id', $lesson_id);
-            }, 'sections.lessons.videos' => function ($query) use ($video_id) {
-                $query->where('id', $video_id);
-            }])->find($course_id);
+            // $course = $request->user()->courses()->with(['sections' => function ($query) use ($section_id) {
+            //     $query->where('id', $section_id);
+            // }, 'sections.lessons' => function ($query) use ($lesson_id) {
+            //     $query->where('id', $lesson_id);
+            // }, 'sections.lessons.videos' => function ($query) use ($video_id) {
+            //     $query->where('id', $video_id);
+            // }])->find($course_id);
 
-            if (
-                !$course ||
-                !$course->sections->first() ||
-                !$course->sections->first()->lessons->first() ||
-                !$video = $course->sections->first()->lessons->first()->videos->first()
-            ) {
-                return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404); // Combined check
-            }
-
+            // if (
+            //     !$course ||
+            //     !$course->sections->first() ||
+            //     !$course->sections->first()->lessons->first() ||
+            //     !$video = $course->sections->first()->lessons->first()->videos->first()
+            // ) {
+            //     return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404); // Combined check
+            // }
+            $video = Video::where('lesson_id', $lesson_id)->find($video_id);
             $validator = Validator::make($request->all(), [
                 'video_url' => 'required|file|mimes:mp4,mov,avi',
             ]);
@@ -672,13 +682,17 @@ class VideoController extends Controller
     public function destroy(Request $request, $course_id, $section_id, $lesson_id, $video_id)
     {
         try {
-            $course = $request->user()->courses()->with(['sections' => function ($query) use ($section_id) {
-                $query->where('id', $section_id);
-            }, 'sections.lessons' => function ($query) use ($lesson_id) {
-                $query->where('id', $lesson_id);
-            }, 'sections.lessons.videos' => function ($query) use ($video_id) {
-                $query->where('id', $video_id);
-            }])->find($course_id);
+            $course = $request->user()->courses()->with([
+                'sections' => function ($query) use ($section_id) {
+                    $query->where('id', $section_id);
+                },
+                'sections.lessons' => function ($query) use ($lesson_id) {
+                    $query->where('id', $lesson_id);
+                },
+                'sections.lessons.videos' => function ($query) use ($video_id) {
+                    $query->where('id', $video_id);
+                }
+            ])->find($course_id);
 
             if (
                 !$course ||

@@ -793,16 +793,17 @@ class WalletController extends Controller
      *       @OA\Property(property="amount", type="integer", example=500000, description="Số tiền cần rút (tối thiểu 10,000 VND)"),
      *       @OA\Property(property="bank_code", type="string", example="VCB", description="Mã ngân hàng"),
      *       @OA\Property(property="bank_nameUser", type="string", example="Nguyen Van A", description="Tên chủ tài khoản ngân hàng"),
-     *       @OA\Property(property="bank_number", type="integer", example=123456789, description="Số tài khoản ngân hàng")
+     *       @OA\Property(property="bank_number", type="integer", example=123456789, description="Số tài khoản ngân hàng"),
+     *       @OA\Property(property="qr_image", type="string", format="binary", description="Hình ảnh mã QR (tùy chọn, tối đa 2MB)")
      *     )
      *   ),
      *   @OA\Response(
      *     response=200,
-     *     description="Rút tiền thành công",
+     *     description="Gửi yêu cầu rút tiền thành công",
      *     @OA\JsonContent(
      *       type="object",
      *       @OA\Property(property="status", type="string", example="success"),
-     *       @OA\Property(property="message", type="string", example="Rút tiền thành công!")
+     *       @OA\Property(property="message", type="string", example="Gửi yêu cầu rút tiền thành công!")
      *     )
      *   ),
      *   @OA\Response(
@@ -857,12 +858,12 @@ class WalletController extends Controller
 
         try {
             
-            $user = $request->user();
-            $wallet = $user->wallet;
-            $amount = $request->input('amount');
-            $bank_code = $request->input('bank_code');
-            $bank_nameUser = $request->input('bank_nameUser');
-            $bank_number = $request->input('bank_number');
+            $user           = $request->user();
+            $wallet         = $user->wallet;
+            $amount         = $request->input('amount');
+            $bank_code      = $request->input('bank_name');
+            $bank_nameUser  = $request->input('bank_nameUser');
+            $bank_number    = $request->input('bank_number');
             
             // Kiểm tra người dùng có vai trò giảng viên hay không
             if (!$user->roles()->where('name', 'lecturer')->exists()) {
@@ -895,15 +896,23 @@ class WalletController extends Controller
 
             // Kiểm tra dữ liệu truyền lên
             $validator = Validator::make($request->all(), [
-                'amount'    => 'required|int',
-                'bank_code'    => 'required|string',
-                'bank_nameUser'    => 'required|string',
-                'bank_number'    => 'required|int',
+                'amount'            => 'required|int',
+                'bank_name'         => 'required|string',
+                'bank_nameUser'     => 'required|string',
+                'bank_number'       => 'required|int',
+                'qr_image'          => 'nullable|image|max:2048',
             ]);
             if ($validator->fails()) {
                 return response()->json([
                     'errors' => $validator->errors()
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            // Upload mã QR code
+            $data = $request->all();
+            if ($request->hasFile('qr_image')) {
+                $path = $request->file('qr_image')->store('qr_images');
+                $data['qr_image'] = $path;
             }
 
             // Trừ tiền khỏi ví và lưu thông tin tài khoản người dùng
@@ -927,14 +936,18 @@ class WalletController extends Controller
                 'amount'            => $amount,
                 'balance'           => $wallet->balance,
                 'type'              => 'withdraw',
-                'status'            => 'success',
+                'status'            => 'pending',
+                'bank_name'         => $bank_code,
+                'bank_nameUser'     => $bank_nameUser,
+                'bank_number'       => $bank_number,
+                'qr_image'          => $data['qr_image'],
                 'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
             ]);
 
             DB::commit(); // Lưu thay đổi vào database
             return response()->json([
                 'status' => 'success',
-                'message' => 'Rút tiền thành công!'
+                'message' => 'Gửi yêu cầu rút tiền thành công!'
             ], Response::HTTP_OK);
             
         } catch (\Throwable $th) {
