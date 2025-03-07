@@ -55,6 +55,14 @@
                     </svg>
                    Kiểm duyệt người dùng
                 </a>
+                <a class="nav-link text-dark collapsed" href="{{ route('admin.censor-withdraw.index') }}" y>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
+                        stroke="currentColor" class="w-10 me-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" 
+                            d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm14 2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2a2 2 0 012-2z" />
+                    </svg>
+                   Kiểm duyệt rút tiền
+                </a>
             </li>
             <li class="nav-item">
                 <p class="text-dark text-uppercase mt-3 fw-bold fs-6 ms-3 m-0 mt-2">
