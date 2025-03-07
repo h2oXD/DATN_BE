@@ -13,6 +13,9 @@
         {
             "url": "http://my-default-host.com",
             "description": "API Server"
+        },
+        {
+            "url": "/api"
         }
     ],
     "paths": {
@@ -178,6 +181,126 @@
                         "description": "Thông tin đăng nhập không chính xác"
                     }
                 }
+            }
+        },
+        "/certificates/student/{user_id}/courses/{course_id}": {
+            "post": {
+                "tags": [
+                    "Certificate"
+                ],
+                "summary": "Cấp chứng chỉ cho người dùng sau khi hoàn thành khóa học",
+                "operationId": "70c1bca849ab8b79538699c3867a68a4",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "ID của người dùng",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "ID của khóa học",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Chứng chỉ đã được cấp thành công",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Chứng chỉ đã được cấp."
+                                        },
+                                        "certificate_url": {
+                                            "type": "string",
+                                            "example": "/storage/certificates/1_101_1700000000.pdf"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Người dùng không được phép thực hiện hành động này",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Không tìm thấy đăng ký khóa học",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bạn chưa đăng ký khóa học này."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Người dùng chưa hoàn thành khóa học hoặc chứng chỉ đã được cấp",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bạn chưa hoàn thành khóa học này."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Lỗi hệ thống",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lỗi hệ thống: [chi tiết lỗi]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "api/lecturer/courses": {
@@ -3896,6 +4019,594 @@
                 ]
             }
         },
+        "/user/{user_id}/video/{video_id}/notes/{note_id}": {
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Lấy danh sách ghi chú của video",
+                "description": "API này lấy danh sách ghi chú của một video do người dùng tạo.",
+                "operationId": "f7b60d147ca51051be85b1e8ff796973",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID của người dùng",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "videoId",
+                        "in": "path",
+                        "description": "ID của video",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Danh sách ghi chú",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "user_id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "video_id": {
+                                                "type": "integer",
+                                                "example": 10
+                                            },
+                                            "content": {
+                                                "type": "string",
+                                                "example": "Ghi chú quan trọng"
+                                            },
+                                            "timestamp": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "00:02:15"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Người dùng không có quyền truy cập",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bạn không có quyền xem ghi chú của người dùng này"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Video không tồn tại",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Video không tồn tại"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Cập nhật ghi chú của video",
+                "description": "API này cập nhật nội dung của một ghi chú do người dùng tạo.",
+                "operationId": "1434eb65091a8cc50b69b86aac2ae464",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID của người dùng",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "videoId",
+                        "in": "path",
+                        "description": "ID của video",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "noteId",
+                        "in": "path",
+                        "description": "ID của ghi chú",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "content",
+                                    "timestamp"
+                                ],
+                                "properties": {
+                                    "content": {
+                                        "type": "string",
+                                        "maxLength": 1000,
+                                        "example": "Nội dung mới của ghi chú"
+                                    },
+                                    "timestamp": {
+                                        "description": "Định dạng MM:SS hoặc số giây",
+                                        "type": "string",
+                                        "example": "02:30"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ghi chú đã được cập nhật thành công",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ghi chú đã được cập nhật"
+                                        },
+                                        "note": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "user_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "video_id": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "content": {
+                                                    "type": "string",
+                                                    "example": "Nội dung mới của ghi chú"
+                                                },
+                                                "timestamp": {
+                                                    "type": "string",
+                                                    "example": "02:30"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Người dùng không có quyền cập nhật ghi chú",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bạn không có quyền cập nhật ghi chú này"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Video không tồn tại",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Video không tồn tại"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ghi chú không thuộc video này",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ghi chú không thuộc video này"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Dữ liệu đầu vào không hợp lệ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dữ liệu không hợp lệ"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "content": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "Trường content là bắt buộc."
+                                                    }
+                                                },
+                                                "timestamp": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "Trường timestamp không đúng định dạng."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Xóa ghi chú của video",
+                "description": "API này xóa một ghi chú của người dùng dựa trên ID của user, video và note.",
+                "operationId": "bbc17493c1dd2ad941739d9bc926ef54",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID của người dùng",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "videoId",
+                        "in": "path",
+                        "description": "ID của video",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "noteId",
+                        "in": "path",
+                        "description": "ID của ghi chú cần xóa",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ghi chú đã được xóa thành công",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ghi chú đã được xóa"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Người dùng không có quyền xóa ghi chú này",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bạn không có quyền xóa ghi chú này"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Video không tồn tại",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Video không tồn tại"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ghi chú không thuộc video này",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ghi chú không thuộc video này"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/{user_id}/video/{video_id}/notes": {
+            "post": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Tạo ghi chú cho video",
+                "description": "API này tạo một ghi chú mới cho video do người dùng tạo.",
+                "operationId": "d6a78f9424ebdafa5bfcab28f3feac15",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID của người dùng",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "videoId",
+                        "in": "path",
+                        "description": "ID của video",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "content",
+                                    "timestamp"
+                                ],
+                                "properties": {
+                                    "content": {
+                                        "type": "string",
+                                        "maxLength": 1000,
+                                        "example": "Ghi chú quan trọng"
+                                    },
+                                    "timestamp": {
+                                        "description": "Định dạng MM:SS hoặc số giây",
+                                        "type": "string",
+                                        "example": "01:23"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Ghi chú đã được tạo thành công",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ghi chú đã được lưu"
+                                        },
+                                        "note": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "user_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "video_id": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "content": {
+                                                    "type": "string",
+                                                    "example": "Ghi chú quan trọng"
+                                                },
+                                                "timestamp": {
+                                                    "type": "string",
+                                                    "example": "01:23"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Người dùng không có quyền tạo ghi chú",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bạn không có quyền tạo ghi chú cho người dùng này"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Video không tồn tại",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Video không tồn tại"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Dữ liệu đầu vào không hợp lệ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dữ liệu không hợp lệ"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "content": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "Trường content là bắt buộc."
+                                                    }
+                                                },
+                                                "timestamp": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "Trường timestamp không đúng định dạng."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/student/home": {
             "get": {
                 "tags": [
@@ -4518,538 +5229,6 @@
                                         "error": {
                                             "description": "Chi tiết lỗi",
                                             "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes": {
-            "get": {
-                "tags": [
-                    "Quizzes"
-                ],
-                "summary": "Lấy danh sách tất cả bài kiểm tra",
-                "description": "API này trả về danh sách tất cả các bài kiểm tra có kèm thông tin bài học liên quan.",
-                "operationId": "a4c8ca10ed1fe504e62d4d4c988924c7",
-                "responses": {
-                    "200": {
-                        "description": "Danh sách tất cả bài kiểm tra",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "success"
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "lesson": {
-                                                        "properties": {
-                                                            "id": {
-                                                                "type": "integer",
-                                                                "example": 10
-                                                            },
-                                                            "title": {
-                                                                "type": "string",
-                                                                "example": "Lập trình PHP cơ bản"
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    },
-                                                    "title": {
-                                                        "type": "string",
-                                                        "example": "Bài kiểm tra Laravel"
-                                                    },
-                                                    "description": {
-                                                        "type": "string",
-                                                        "example": "Kiểm tra kiến thức về Laravel cơ bản"
-                                                    },
-                                                    "created_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2025-02-24T12:34:56Z"
-                                                    },
-                                                    "updated_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2025-02-24T13:45:10Z"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Quizzes"
-                ],
-                "summary": "Tạo một bài kiểm tra mới",
-                "description": "API này tạo một bài kiểm tra mới cho một bài học cụ thể.",
-                "operationId": "d3635413e837c6682f7e2c9420a45cb8",
-                "parameters": [
-                    {
-                        "name": "lesson_id",
-                        "in": "path",
-                        "description": "ID của bài học",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "title"
-                                ],
-                                "properties": {
-                                    "title": {
-                                        "type": "string",
-                                        "example": "Bài kiểm tra PHP"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Bài kiểm tra được tạo thành công",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "success"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "lesson_id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "title": {
-                                                    "type": "string",
-                                                    "example": "Bài kiểm tra PHP"
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2025-02-24T12:34:56Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2025-02-24T12:34:56Z"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Dữ liệu không hợp lệ",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "The title field is required."
-                                        },
-                                        "errors": {
-                                            "properties": {
-                                                "title": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string",
-                                                        "example": "The title field is required."
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}": {
-            "get": {
-                "tags": [
-                    "Quizzes"
-                ],
-                "summary": "Lấy thông tin chi tiết của một bài kiểm tra",
-                "description": "API này trả về thông tin chi tiết của một bài kiểm tra, bao gồm danh sách câu hỏi và các đáp án.",
-                "operationId": "bbf3cb1e9ff2940dff33730f2ced0cb1",
-                "parameters": [
-                    {
-                        "name": "quiz_id",
-                        "in": "path",
-                        "description": "ID của bài kiểm tra",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Thông tin bài kiểm tra",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "success"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "title": {
-                                                    "type": "string",
-                                                    "example": "Bài kiểm tra Laravel"
-                                                },
-                                                "questions": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "id": {
-                                                                "type": "integer",
-                                                                "example": 1
-                                                            },
-                                                            "quiz_id": {
-                                                                "type": "integer",
-                                                                "example": 1
-                                                            },
-                                                            "question_text": {
-                                                                "type": "string",
-                                                                "example": "Laravel là gì?"
-                                                            },
-                                                            "answers": {
-                                                                "type": "array",
-                                                                "items": {
-                                                                    "properties": {
-                                                                        "id": {
-                                                                            "type": "integer",
-                                                                            "example": 1
-                                                                        },
-                                                                        "question_id": {
-                                                                            "type": "integer",
-                                                                            "example": 1
-                                                                        },
-                                                                        "answer_text": {
-                                                                            "type": "string",
-                                                                            "example": "Laravel là một framework PHP"
-                                                                        },
-                                                                        "is_correct": {
-                                                                            "type": "boolean",
-                                                                            "example": true
-                                                                        }
-                                                                    },
-                                                                    "type": "object"
-                                                                }
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2025-02-24T12:34:56Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2025-02-24T12:34:56Z"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Không tìm thấy bài kiểm tra",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Không tìm thấy bài kiểm tra"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Quizzes"
-                ],
-                "summary": "Xóa bài kiểm tra",
-                "description": "API này cho phép xóa một bài kiểm tra cùng với tất cả các câu hỏi liên quan.",
-                "operationId": "7f7a8e7fd6c1518d9c741591cbae1a74",
-                "parameters": [
-                    {
-                        "name": "quiz_id",
-                        "in": "path",
-                        "description": "ID của bài kiểm tra cần xóa",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Bài kiểm tra đã được xóa thành công",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "success"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Quiz deleted successfully"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Không tìm thấy bài kiểm tra",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "error"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Quiz not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes/{quiz_id}": {
-            "put": {
-                "tags": [
-                    "Quizzes"
-                ],
-                "summary": "Cập nhật thông tin của một bài kiểm tra",
-                "description": "API này cho phép cập nhật tiêu đề của một bài kiểm tra.",
-                "operationId": "57811e78ded27391be0d4f6bca53254b",
-                "parameters": [
-                    {
-                        "name": "course_id",
-                        "in": "path",
-                        "description": "ID của khóa học",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    },
-                    {
-                        "name": "section_id",
-                        "in": "path",
-                        "description": "ID của phần học",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    },
-                    {
-                        "name": "lesson_id",
-                        "in": "path",
-                        "description": "ID của bài học",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    },
-                    {
-                        "name": "quiz_id",
-                        "in": "path",
-                        "description": "ID của bài kiểm tra",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "title"
-                                ],
-                                "properties": {
-                                    "title": {
-                                        "type": "string",
-                                        "example": "Bài kiểm tra nâng cao về Laravel"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Bài kiểm tra được cập nhật thành công",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "success"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "lesson_id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "title": {
-                                                    "type": "string",
-                                                    "example": "Bài kiểm tra nâng cao về Laravel"
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2025-02-24T12:34:56Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2025-02-24T12:34:56Z"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Không tìm thấy bài kiểm tra",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "error"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Quiz not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Lỗi xác thực dữ liệu đầu vào",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "The title field is required."
-                                        },
-                                        "errors": {
-                                            "properties": {
-                                                "title": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string",
-                                                        "example": "The title field is required."
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -9603,6 +9782,10 @@
             "description": "Authentication"
         },
         {
+            "name": "Certificate",
+            "description": "Certificate"
+        },
+        {
             "name": "Lecturer - Courses",
             "description": "Lecturer - Courses"
         },
@@ -9631,12 +9814,12 @@
             "description": "Lesson"
         },
         {
-            "name": "Overview",
-            "description": "Overview"
+            "name": "Notes",
+            "description": "Notes"
         },
         {
-            "name": "Quizzes",
-            "description": "Quizzes"
+            "name": "Overview",
+            "description": "Overview"
         },
         {
             "name": "Reviews",

@@ -70,12 +70,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //Study
     Route::get('student/{user_id}/courses/{course_id}', [StudyController::class, 'getCourseInfo']);
     Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/starts', [StudyController::class, 'startLesson']);
-    Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/completes', [StudyController::class, 'completeLesson']);
+
     Route::get('student/courses/{course_id}/sections/{section_id}/lessons', [StudyController::class, 'getLessonsBySection']);
 
-    Route::post('/certificates/student/{user_id}/courses/{course_id}', [CertificateController::class, 'createCertificate']);
     // danh sách khóa học đã đăng ký 
     Route::get('/user/courses', [EnrollmentController::class, 'getUserCoursesWithProgress']);
+    Route::get('/user/courses/{course_id}', [EnrollmentController::class, 'getprogress']);
 
     // review
     Route::post('/user/{user_id}/courses/{course_id}/reviews', [ReviewController::class, 'store']); // Thêm đánh giá
@@ -128,9 +128,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
 
     // Tạo câu hỏi trong Quiz
     Route::post('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'storeQuestion']);
-
-    // Tạo đáp án cho câu hỏi
-    Route::post('/lecturer/questions/{question_id}/answers', [QuizController::class, 'storeAnswer']);
+    // Route::post('/lecturer/questions/{question_id}/answers', [QuizController::class, 'storeAnswer']);
 
 
 
@@ -146,15 +144,20 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/home', [OverviewController::class, 'overview']);
     Route::get('/student/courses/{course_id}', [EnrollmentController::class, 'showUserEnrollmentCourse']);
     Route::get('/lesson/{lesson_id}', [EnrollmentController::class, 'showLesson']);
+    Route::get('course/{course_id}/lesson', [EnrollmentController::class, 'getStatusLesson']);
+    Route::post('student/courses/{course_id}/lessons/{lesson_id}/completes', [StudyController::class, 'completeLesson']);
+    Route::post('/certificates/student/courses/{course_id}', [CertificateController::class, 'createCertificate']);
+    Route::get('show/certificates/{course_id}', [CertificateController::class, 'showCertificate']);
+    Route::get('certificates/{certificate_id}', [CertificateController::class, 'certificate']);
 
     // Nộp bài Quiz
     Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);
 
     //chức năng ghi chú
-    Route::get('/user/video/{video_id}/notes', [NoteController::class, 'index']); // Lấy danh sách ghi chú
-    Route::post('/user/video/{video_id}/notes', [NoteController::class, 'store']); // Tạo ghi chú
-    Route::put('/user/video/{video_id}/notes/{note}', [NoteController::class, 'update']); // Cập nhật ghi chú
-    Route::delete('/user/video/{video_id}/notes/{note}', [NoteController::class, 'destroy']); // Xóa ghi chú
+    Route::get('/learning/notes', [NoteController::class, 'index']); // Lấy danh sách ghi chú
+    Route::post('/learning/lesson/{lesson_id}/notes', [NoteController::class, 'store']); // Tạo ghi chú
+    Route::put('/learning/notes/{note}', [NoteController::class, 'update']); // Cập nhật ghi chú
+    Route::delete('/learning/notes/{note}', [NoteController::class, 'destroy']); // Xóa ghi chú
 
     // chức năng wish-list
     Route::get('/user/wishlist', [WishListController::class, 'index']); // Lấy toàn bộ wish-list
