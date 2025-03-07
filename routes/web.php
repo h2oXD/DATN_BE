@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\VoucherUseController;
+use App\Http\Controllers\GoogleAuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,7 +26,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [DashBoardController::class, 'index'])->name('admin.home');
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('login', [AuthController::class, 'login'])->name('login');
-
 
 Route::middleware(['auth', 'admin'])->group(function (): void {
     Route::prefix('admin')->name('admin.')->group(function () {
@@ -76,9 +76,9 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::get('lecturer_registers', [LecturerRegisterController::class, 'index'])->name('lecturer_registers.index');
         Route::get('lecturer_registers/{user_id}', [LecturerRegisterController::class, 'show'])->name('lecturer_registers.show');
         // Route::post('lecturer_registers/{user_id}', [LecturerRegisterController::class, 'show'])->name('lecturer_registers.show');
-        
-        
-        
+
+
+
     });
 });
 
