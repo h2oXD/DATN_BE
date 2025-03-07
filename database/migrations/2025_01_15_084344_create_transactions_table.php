@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade')->comment('id của Người mua');
-            $table->foreignIdFor(Course::class)->constrained()->onDelete('cascade')->comment('id của Khoá học');
+            $table->foreignUuid('course_id')->constrained('courses')->onDelete('cascade')->comment('id của Khoá học');
             $table->decimal('amount',10, 2);
             $table->enum('payment_method', ['credit_card','paypal','bank_transfer','wallet'])->comment('Phương thức thanh toán');
             $table->enum('status', ['pending', 'success', 'failed'])->default('pending')->comment('Trạng thái giao dịch');

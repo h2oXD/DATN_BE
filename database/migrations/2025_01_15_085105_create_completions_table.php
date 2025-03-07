@@ -18,8 +18,8 @@ return new class extends Migration
             $table->id();
             
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(Course::class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(Lesson::class)->constrained()->onDelete('cascade');
+            $table->foreignUuid('course_id')->constrained('courses')->onDelete('cascade');
+            $table->foreignUuid('lesson_id')->constrained('lessons')->onDelete('cascade');
             $table->enum('status', ['in_progress','completed']);
             $table->timestamp('completed_at')->nullable()->default(NULL);
             $table->timestamp('created_at')->nullable();

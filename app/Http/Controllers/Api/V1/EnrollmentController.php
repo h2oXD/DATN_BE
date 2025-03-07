@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Completion;
 use App\Models\Enrollment;
 use App\Models\Lesson;
 use Illuminate\Http\Request;
@@ -90,7 +91,7 @@ class EnrollmentController extends Controller
             'sections.lessons.documents',
             'sections.lessons.codings',
             'sections.lessons.quizzes',
-            )->first();
+        )->first();
 
         return response()->json([
             'data' => $course
@@ -99,9 +100,33 @@ class EnrollmentController extends Controller
 
     public function showLesson($lesson_id)
     {
-        $lesson = Lesson::with('videos','documents','quizzes','codings')->find($lesson_id);
+        $lesson = Lesson::with(['videos', 'documents', 'quizzes.questions.answers', 'codings'])->find($lesson_id);
         return response()->json([
             'data' => $lesson
-        ],200);
+        ], 200);
+    }
+    public function getStatusLesson($course_id)
+    {
+        $user_id = request()->user()->id;
+        $lesson = Completion::where('user_id', $user_id)->where('course_id', $course_id)->get();
+        return response()->json([
+            'data' => $lesson
+        ], 200);
+    }
+
+    public function getprogress($courses_id)
+    {
+        $user = request()->user(); // Lấy user_id từ request
+
+        // Lấy danh sách các khóa học mà user đã đăng ký với 3 trạng thái
+        $enrollments = $user->enrollments()
+            ->where('course_id', $courses_id)
+            ->whereIn('status', ['active', 'canceled', 'completed'])
+            ->with(['course', 'progress'])
+            ->first();
+
+        return response()->json([
+            'data' => $enrollments
+        ], 200);
     }
 }

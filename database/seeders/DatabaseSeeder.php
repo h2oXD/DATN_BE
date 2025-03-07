@@ -178,72 +178,72 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
-        $tags = [
-            [
-                'name' => 'php-laravel'
-            ],
-            [
-                'name' => 'c#-.NET'
-            ],
-            [
-                'name' => 'java-sp'
-            ],
-            [
-                'name' => 'reactjs-js'
-            ],
-        ];
+        // $tags = [
+        //     [
+        //         'name' => 'php-laravel'
+        //     ],
+        //     [
+        //         'name' => 'c#-.NET'
+        //     ],
+        //     [
+        //         'name' => 'java-sp'
+        //     ],
+        //     [
+        //         'name' => 'reactjs-js'
+        //     ],
+        // ];
         foreach ($categories as $category) {
             Category::create($category);
         }
-        foreach ($tags as $tag) {
-            Tag::create($tag);
-        }
+        // foreach ($tags as $tag) {
+        //     Tag::create($tag);
+        // }
 
-        $courseID = Course::create([
-            'user_id' => 4,
-            'category_id' => 3,
-            'price_regular' => 199000,
-            'price_sale' => 99000,
-            'title' => 'Khoá học Laravel',
-            'status' => 'published',
-            'admin_commission_rate' => 30
-        ]);
-        Course::create([
-            'user_id' => 4,
-            'category_id' => 1,
-            'price_regular' => 500000,
-            'price_sale' => 399000,
-            'title' => 'Khoá học React',
-            'status' => 'draft',
-            'admin_commission_rate' => 30
-        ]);
-        Course::create([
-            'user_id' => 4,
-            'category_id' => 4,
-            'price_regular' => 99000,
-            'price_sale' => 89000,
-            'title' => 'Khoá học PHP cơ bản',
-            'status' => 'draft',
-            'admin_commission_rate' => 30
-        ]);
+        // $courseID = Course::create([
+        //     'user_id' => 4,
+        //     'category_id' => 3,
+        //     'price_regular' => 199000,
+        //     'price_sale' => 99000,
+        //     'title' => 'Khoá học Laravel',
+        //     'status' => 'published',
+        //     'admin_commission_rate' => 30
+        // ]);
+        // Course::create([
+        //     'user_id' => 4,
+        //     'category_id' => 1,
+        //     'price_regular' => 500000,
+        //     'price_sale' => 399000,
+        //     'title' => 'Khoá học React',
+        //     'status' => 'draft',
+        //     'admin_commission_rate' => 30
+        // ]);
+        // Course::create([
+        //     'user_id' => 4,
+        //     'category_id' => 4,
+        //     'price_regular' => 99000,
+        //     'price_sale' => 89000,
+        //     'title' => 'Khoá học PHP cơ bản',
+        //     'status' => 'draft',
+        //     'admin_commission_rate' => 30
+        // ]);
 
-        Course::create([
-            'user_id' => 5,
-            'category_id' => 4,
-            'title' => 'Khoá học PHP nâng cao',
-            'status' => 'published',
-            'is_free' => true,
-            'admin_commission_rate' => 30
-        ]);
+        // Course::create([
+        //     'user_id' => 5,
+        //     'category_id' => 4,
+        //     'title' => 'Khoá học PHP nâng cao',
+        //     'status' => 'published',
+        //     'is_free' => true,
+        //     'admin_commission_rate' => 30
+        // ]);
 
-        Course::create([
-            'user_id' => 5,
-            'category_id' => 3,
-            'title' => 'Khoá học Laravel cơ bản',
-            'status' => 'published',
-            'is_free' => true,
-            'admin_commission_rate' => 30
-        ]);
+        // Course::create([
+        //     'user_id' => 5,
+        //     'category_id' => 3,
+        //     'title' => 'Khoá học Laravel cơ bản',
+        //     'status' => 'published',
+        //     'is_free' => true,
+        //     'admin_commission_rate' => 30
+        // ]);
 
         // $quizzes = [
         //     [
@@ -259,45 +259,45 @@ class DatabaseSeeder extends Seeder
         //     Quiz::create($quiz);
         // }
       
-        Course::create([
-            'user_id' => 5,
-            'category_id' => 5,
-            'title' => 'Khoá học Js nâng cao',
-            'status' => 'published',
-            'is_free' => true,
-            'admin_commission_rate' => 30
-        ]);
+        // Course::create([
+        //     'user_id' => 5,
+        //     'category_id' => 5,
+        //     'title' => 'Khoá học Js nâng cao',
+        //     'status' => 'published',
+        //     'is_free' => true,
+        //     'admin_commission_rate' => 30
+        // ]);
 
-        $sectionID = Section::create([
-            'course_id' => $courseID->id,
-            'title' => 'Cài đặt môi trường Laravel',
-            'order' => 1
-        ]);
+        // $sectionID = Section::create([
+        //     'course_id' => $courseID->id,
+        //     'title' => 'Cài đặt môi trường Laravel',
+        //     'order' => 1
+        // ]);
 
-        $lessonID = Lesson::create([
-            'section_id' => $sectionID->id,
-            'title' => 'Cài đặt laragon',
-            'order' => 1,
-            'type' => 'video'
-        ]);
-        Video::create([
-            'lesson_id' => $lessonID->id,
-            'video_url' => '',
-            'duration' => 1248
-        ]);
+        // $lessonID = Lesson::create([
+        //     'section_id' => $sectionID->id,
+        //     'title' => 'Cài đặt laragon',
+        //     'order' => 1,
+        //     'type' => 'video'
+        // ]);
+        // Video::create([
+        //     'lesson_id' => $lessonID->id,
+        //     'video_url' => '',
+        //     'duration' => 1248
+        // ]);
 
-        Lesson::create([
-            'section_id' => $sectionID->id,
-            'title' => 'Cấu trúc thư mục laravel',
-            'order' => 2,
-            'type' => 'video'
-        ]);
-        Section::create([
-            'course_id' => $courseID->id,
-            'title' => 'Biến và Kiểu dữ liệu (Variables and Data types)',
-            'order' => 2
-        ]);
-        $sectionID->update(['total_lessons' => $sectionID->lessons()->count()]);
+        // Lesson::create([
+        //     'section_id' => $sectionID->id,
+        //     'title' => 'Cấu trúc thư mục laravel',
+        //     'order' => 2,
+        //     'type' => 'video'
+        // ]);
+        // Section::create([
+        //     'course_id' => $courseID->id,
+        //     'title' => 'Biến và Kiểu dữ liệu (Variables and Data types)',
+        //     'order' => 2
+        // ]);
+        // $sectionID->update(['total_lessons' => $sectionID->lessons()->count()]);
 
         // Tạo phiếu giảm giá
         $vouchers = [

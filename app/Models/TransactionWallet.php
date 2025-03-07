@@ -16,6 +16,10 @@ class TransactionWallet extends Model
         'balance',
         'type',
         'status',
+        'bank_name',
+        'bank_nameUser',
+        'bank_number',
+        'qr_image',
         'transaction_date'
     ];
 

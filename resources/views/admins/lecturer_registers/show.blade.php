@@ -110,98 +110,79 @@
                 <!-- Tab All -->
                 <div class="tab-pane fade show active" id="courses" role="tabpanel" aria-labelledby="courses-tab">
 
-                    <div class="card-body">
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <h5 class="text-primary"><i class="bi bi-person-circle me-2"></i> Thông tin giảng viên</h5>
-                                <hr>
-                                
-                                <div class="card bg-white ps-4 py-4 mx-auto" style="max-width: 600px;">
-                                    <div class="d-flex flex-column align-items-center">
-                                        <p class="fs-5 d-flex align-items-center w-100">
-                                            <i class="bi bi-person-fill me-3 fs-4"></i>
-                                            <strong class="flex-shrink-0" style="width: 120px;">Tên:</strong>
-                                            <span class="flex-grow-1 text-start">{{ $lecturerRegister->user->name }}</span>
-                                        </p>
-                                        <p class="fs-5 d-flex align-items-center w-100">
-                                            <i class="bi bi-envelope-fill me-3 fs-4"></i>
-                                            <strong class="flex-shrink-0" style="width: 120px;">Email:</strong>
-                                            <span class="flex-grow-1 text-start">{{ $lecturerRegister->user->email }}</span>
-                                        </p>
-                                        <p class="fs-5 d-flex align-items-center w-100">
-                                            <i class="bi bi-card-text me-3 fs-4"></i>
-                                            <strong class="flex-shrink-0" style="width: 120px;">Tiểu sử:</strong>
-                                            <span class="flex-grow-1 text-start">{{ $lecturerRegister->user->bio ?? 'Chưa cập nhật' }}</span>
-                                        </p>
-                                        <p class="fs-5 d-flex align-items-center w-100">
-                                            <i class="bi bi-calendar2-date-fill me-3 fs-4"></i>
-                                            <strong class="flex-shrink-0" style="width: 120px;">Ngày tạo:</strong>
-                                            <span class="flex-grow-1 text-start">{{ $lecturerRegister->created_at->format('d-m-Y H:i') }}</span>
-                                        </p>
-                                        <p class="fs-5 d-flex align-items-center w-100">
-                                            <i class="bi bi-calendar2-plus-fill me-3 fs-4"></i>
-                                            <strong class="flex-shrink-0" style="width: 120px;">Ngày cập nhật:</strong>
-                                            <span class="flex-grow-1 text-start">{{ $lecturerRegister->updated_at->format('d-m-Y H:i') }}</span>
-                                        </p>
+                    <div class="container py-5">
+                        <div class="row">
+                            <!-- Thông tin giảng viên -->
+                            <div class="col-lg-6">
+                                <div class="card shadow-lg border-0">
+                                    <div class="card-body text-center">
+                                        <!-- Avatar -->
+                                        <img src="{{ $lecturerRegister->user->profile_picture ? Storage::url($lecturerRegister->user->profile_picture) : '/default-avatar.png' }}" 
+                                             class="rounded-circle border border-3 border-primary shadow-sm mb-3" width="120" height="120">
+                                        
+                                        <h4 class="fw-bold">{{ $lecturerRegister->user->name }}</h4>
+                                        <p class="text-muted">{{ $lecturerRegister->user->bio ?? 'Chưa có thông tin' }}</p>
+                                        
+                                        <span class="badge bg-primary">
+                                            <i class="bi bi-envelope"></i> {{ $lecturerRegister->user->email }}
+                                        </span>
                                     </div>
                                 </div>
-                                
-                                
-                                
-                                
-
-                                </p>
                             </div>
-                            <div class="col-md-6">
-                                <h5 class="text-success"><i class="bi bi-file-earmark-text me-2"></i> Câu trả lời</h5>
-                                <hr>
-                                <div class="card p-3 bg-light">
-                                    <ul class="list-unstyled mb-0">
-                                        <li class="mb-2"><i class="bi bi-chat-left-quote text-primary me-2"></i>
-                                            {{ $lecturerRegister->answer1 }}</li>
-                                        <li class="mb-2"><i class="bi bi-chat-left-quote text-success me-2"></i>
-                                            {{ $lecturerRegister->answer2 }}</li>
-                                        <li><i class="bi bi-chat-left-quote text-danger me-2"></i>
-                                            {{ $lecturerRegister->answer3 }}</li>
-                                    </ul>
+                    
+                            <!-- Câu trả lời & Chứng chỉ -->
+                            <div class="col-lg-6">
+                                <div class="card shadow-sm border-0 mb-3">
+                                    <div class="card-header bg-success bg-gradient text-dark text-center">
+                                        <i class="bi bi-chat-left-text"></i> Câu trả lời của giảng viên
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">
+                                                <i class="bi bi-check-circle-fill text-success"></i> {{ $lecturerRegister->answer1 }}
+                                            </li>
+                                            <li class="list-group-item">
+                                                <i class="bi bi-check-circle-fill text-primary"></i> {{ $lecturerRegister->answer2 }}
+                                            </li>
+                                            <li class="list-group-item">
+                                                <i class="bi bi-check-circle-fill text-danger"></i> {{ $lecturerRegister->answer3 }}
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
-                                <h5 class="text-warning mt-4"><i class="bi bi-award me-2"></i> Chứng chỉ</h5>
-                                <hr>
-                                @if ($lecturerRegister->user->certificate_file)
-                                    <img src="{{ Storage::url($lecturerRegister->user->certificate_file) }}"
-                                        class="img-fluid rounded shadow" width="250px">
-                                @else
-                                    <p class="text-muted">Chưa có chứng chỉ</p>
-                                @endif
+                    
+                                <div class="card shadow-sm border-0">
+                                    <div class="card-header text-dark bg-warning text-center">
+                                        <i class="bi bi-award"></i> Chứng chỉ giảng viên
+                                    </div>
+                                    <div class="card-body text-center">
+                                        @if ($lecturerRegister->user->certificate_file)
+                                            <img src="{{ Storage::url($lecturerRegister->user->certificate_file) }}" class="img-fluid rounded shadow-sm">
+                                        @else
+                                            <p class="text-muted">Chưa có chứng chỉ</p>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
+                    
+                        <!-- Lý do từ chối -->
                         @if ($lecturerRegister->admin_rejection_reason)
-                            <div class="alert alert-danger d-flex ">
-                                <strong><i class="bi bi-x-circle"></i> Lý do từ chối:&nbsp;</strong>
-                                <span>{!! $lecturerRegister->admin_rejection_reason !!}</span>
+                            <div class="alert alert-danger mt-4">
+                                <i class="bi bi-x-circle"></i> <strong>Lý do từ chối:</strong> {!! $lecturerRegister->admin_rejection_reason !!}
                             </div>
                         @endif
-
-                        {{-- <div class="row mb-3">
-                            <div class="col-md-3"><strong>Trạng thái:</strong></div>
-                            <div class="col-md-9">
-                                @if ($lecturerRegister->status === 'pending')
-                                    <span class="badge bg-warning">Chờ duyệt</span>
-                                @elseif ($lecturerRegister->status === 'approved')
-                                    <span class="badge bg-success">Đã duyệt</span>
-                                @elseif ($lecturerRegister->status === 'rejected')
-                                    <span class="badge bg-danger">Từ chối</span>
-                                @endif
-                            </div>
-                        </div> --}}
-
-                        <div class="text-end">
-                            <a href="{{ route('admin.lecturer_registers.index') }}" class="btn btn-secondary">
+                    
+                        <!-- Nút quay lại -->
+                        <div class="text-end mt-3">
+                            <a href="{{ route('admin.lecturer_registers.index') }}" class="btn btn-lg btn-outline-secondary">
                                 <i class="bi bi-arrow-left"></i> Quay lại
                             </a>
                         </div>
                     </div>
+                    
+                    
+                    
 
                 </div>
 

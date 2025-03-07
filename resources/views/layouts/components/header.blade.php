@@ -124,10 +124,14 @@
                         <div class="dropdown-divider"></div>
                         <ul class="list-unstyled">
                             <li>
-                                <a class="dropdown-item" href="">
-                                    <i class="fe fe-power me-2"></i>
-                                    Sign Out
-                                </a>
+                                <form action="{{ route('admin.admin.logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fe fe-power me-2"></i>
+                                        Sign Out
+                                    </button>
+                                </form>
+                                
                             </li>
                         </ul>
                     </div>
