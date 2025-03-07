@@ -34,6 +34,43 @@ class LecturerController extends Controller
             'lecturer' => request()->user()
         ], Response::HTTP_CREATED);
     }
+    /**
+     * @OA\Get(
+     *     path="/lecturer/statistics",
+     *     summary="Lấy thống kê tổng số khóa học, tổng thu nhập và số lượng học viên của giảng viên",
+     *     tags={"Lecturer"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Thống kê thành công",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="total_courses", type="integer", example=5),
+     *             @OA\Property(property="total_revenue", type="number", format="float", example=15000000),
+     *             @OA\Property(property="courses", type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="title", type="string", example="Khóa học Laravel"),
+     *                     @OA\Property(property="enrollments_count", type="integer", example=100)
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Chưa xác thực",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Lỗi hệ thống",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Lỗi hệ thống: [chi tiết lỗi]")
+     *         )
+     *     )
+     * )
+     */
     public function statistics(Request $request)
     {
         $user = $request->user();
