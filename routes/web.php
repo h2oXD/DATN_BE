@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\VoucherUseController;
 use App\Http\Controllers\Admin\WalletController;
+use App\Http\Controllers\GoogleAuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,7 +27,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [DashBoardController::class, 'index'])->name('admin.home');
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('login', [AuthController::class, 'login'])->name('login');
-
 
 Route::middleware(['auth', 'admin'])->group(function (): void {
     Route::prefix('admin')->name('admin.')->group(function () {
