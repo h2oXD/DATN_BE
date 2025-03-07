@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ForgotPasswordController;
+use App\Http\Controllers\Api\ResetPasswordController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CertificateController;
 use App\Http\Controllers\Api\V1\CommentController;
@@ -109,6 +111,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('/posts/{post_id}/comments/{comment_id}', [CommentController::class, 'updatePostComment'])->name('post.comments.update');
     Route::delete('/posts/{post_id}/comments/{comment_id}', [CommentController::class, 'destroyPostComment'])->name('post.comments.destroy');
 
+
+    //Đổi mật khẩu
+    Route::post('/change-password', [ResetPasswordController::class, 'resetPassword'])->name('change.password');
+
+
+
+    
     
 });
 // Callback payment
@@ -180,6 +189,10 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+//Forgot password
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('forgot-password');
+Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.reset');
+
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/courses/{course_id}/public', [CourseController::class, 'publicCourseDetail']);
 Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id']);
