@@ -141,9 +141,8 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
 
     Route::post('lessons/order', [LessonController::class, 'updateOrder']);
 
-    Route::post('/user/wallets/withdraw', [WalletController::class, 'withdraw']); // rút tiền ví giảng viên
-
-    
+    // rút tiền ví giảng viên
+    Route::post('/user/wallets/withdraw', [WalletController::class, 'withdraw']);
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/home', [OverviewController::class, 'overview']);
