@@ -103,7 +103,7 @@
                                 </ul>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="{{ route('admin.admins.profile.edit') }}">
+                                <a class="dropdown-item" href="{{ route('admin.profiles.edit') }}">
                                     <i class="fe fe-user me-2"></i>
                                     Profile
                                 </a>

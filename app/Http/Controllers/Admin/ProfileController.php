@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
-    const PATH_VIEW = 'admins.profile.'; // Định nghĩa đường dẫn view giống như CourseController
+    const PATH_VIEW = 'admins.profiles.'; // Định nghĩa đường dẫn view giống như CourseController
 
     public function edit()
     {
@@ -75,7 +75,7 @@ class ProfileController extends Controller
             // Cập nhật người dùng
             $user->update($userData);
 
-            return Redirect::route('admin.admins.profile.edit')->with('success', 'Cập nhật hồ sơ thành công!');
+            return Redirect::route('admin.profiles.edit')->with('success', 'Cập nhật hồ sơ thành công!');
         } catch (\Throwable $th) {
             return Redirect::back()->with('error', $th->getMessage());
         }

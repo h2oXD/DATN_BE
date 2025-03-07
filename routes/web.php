@@ -80,20 +80,13 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         // Route::post('lecturer_registers/{user_id}', [LecturerRegisterController::class, 'show'])->name('lecturer_registers.show');
 
         // profile
-        Route::prefix('admins')->group(function () {
-            Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('admins.profile.edit');
-            Route::put('/profile/update', [ProfileController::class, 'update'])->name('admins.profile.update');
-            Route::get('/profile/social', [ProfileController::class, 'social'])->name('admins.profile.social');
-            Route::post('/profile/social/store', [ProfileController::class, 'storeSocial'])->name('admins.profile.social.store');
-            Route::get('/profile/delete', [ProfileController::class, 'delete'])->name('admins.profile.delete');
-            Route::delete('/profile/delete', [ProfileController::class, 'destroy'])->name('admins.profile.delete');
-        });
-        
+        Route::get('/profiles/edit', [ProfileController::class, 'edit'])->name('profiles.edit');
+        Route::put('/profiles/update', [ProfileController::class, 'update'])->name('profiles.update');
+
         // Kiểm duyệt yêu cầu rút tiền
         Route::get('censor-withdraw', [WalletController::class, 'index'])->name('censor-withdraw.index');
         Route::get('censor-withdraw/{id}', [WalletController::class, 'censor'])->name('censor-withdraw.show');
         Route::put('censor-withdraw/{id}/accept', [WalletController::class, 'accept'])->name('censor-withdraw.accept');
         Route::put('censor-withdraw/{id}/reject', [WalletController::class, 'reject'])->name('censor-withdraw.reject');
-        
     });
 });

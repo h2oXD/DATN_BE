@@ -16,7 +16,7 @@
                                 <div class="d-flex align-items-center">
                                     <div class="me-2 position-relative d-flex justify-content-end align-items-end mt-n5">
                                         <img src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
-                                            class="avatar-xl rounded-circle border border-4 border-white" alt="avatar" />
+                                            class="avatar-xl rounded-circle border border-4 border-white" style="width: 100px; height: 100px; object-fit: cover;" alt="avatar" />
                                     </div>
                                     <div class="lh-1">
                                         <h4 class="mb-0">{{ auth()->user()->name }}</h4>
@@ -25,7 +25,7 @@
                                     </div>
                                 </div>
                                 <div class="">
-                                    <a href="{{ route('admin.admins.profile.edit') }}" class="btn btn-light btn-sm">Account
+                                    <a href="{{ route('admin.profiles.edit') }}" class="btn btn-light btn-sm">Account
                                         Setting</a>
                                 </div>
                             </div>
@@ -49,22 +49,8 @@
                             <h5 class="px-4 py-3 m-0">ACCOUNT SETTINGS</h5>
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item px-4 py-2 active"><i class="fe fe-edit me-2"></i> <a
-                                        href="{{ route('admin.admins.profile.edit') }}"
+                                        href="{{ route('admin.profiles.edit') }}"
                                         class="text-decoration-none text-dark">Edit Profile</a></li>
-                                <li class="list-group-item px-4 py-2"><i class="fe fe-lock me-2"></i> <a href="#"
-                                        class="text-decoration-none text-dark">Security</a></li>
-                                <li class="list-group-item px-4 py-2"><i class="fe fe-share me-2"></i> <a
-                                        href="#"
-                                        class="text-decoration-none text-dark">Social Profiles</a></li>
-                                <li class="list-group-item px-4 py-2"><i class="fe fe-bell me-2"></i> <a href="#"
-                                        class="text-decoration-none text-dark">Notifications</a></li>
-                                <li class="list-group-item px-4 py-2"><i class="fe fe-shield me-2"></i> <a href="#"
-                                        class="text-decoration-none text-dark">Profile Privacy</a></li>
-                                <li class="list-group-item px-4 py-2"><i class="fe fe-trash me-2"></i> <a
-                                        href="#"
-                                        class="text-decoration-none text-dark">Delete Profile</a></li>
-                                <li class="list-group-item px-4 py-2"><i class="fe fe-link me-2"></i> <a href="#"
-                                        class="text-decoration-none text-dark">Linked Accounts</a></li>
                                 <li class="list-group-item px-4 py-2"><i class="fe fe-log-out me-2"></i> <a
                                         href="{{ route('admin.admin.logout') }}" class="text-decoration-none text-dark"
                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Sign
@@ -89,7 +75,7 @@
                                 <div class="d-lg-flex align-items-center justify-content-between">
                                     <div class="d-flex align-items-center mb-4 mb-lg-0">
                                         <img src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
-                                            class="avatar-md rounded-circle" alt="Current avatar" />
+                                            class="avatar-md rounded-circle" style="width: 100px; height: 100px; object-fit: cover;"  alt="Current avatar" />
                                         <div class="ms-3">
                                             <h4 class="mb-0">Your avatar</h4>
                                             <p class="mb-0">PNG or JPG no bigger than 800px wide and tall.</p>
@@ -106,7 +92,7 @@
                                     <p class="mb-4">Edit your personal information.</p>
                                     <!-- Form -->
                                     <form class="row gx-3 needs-validation" novalidate
-                                        action="{{ route('admin.admins.profile.update') }}" method="POST"
+                                        action="{{ route('admin.profiles.update') }}" method="POST"
                                         enctype="multipart/form-data">
                                         @csrf
                                         @method('PUT')
@@ -166,7 +152,7 @@
                                             <p class="mt-1">
                                                 Current image:
                                                 <img src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
-                                                    class="avatar-md rounded-circle" alt="Current avatar" />
+                                                    class="avatar-md rounded-circle" style="width: 100px; height: 100px; object-fit: cover;" alt="Current avatar" />
                                             </p>
                                         </div>
                                         <div class="col-12">
