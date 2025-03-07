@@ -261,10 +261,25 @@ class OverviewController extends Controller
             }
 
 
-            $coursesPublished = Course::with(['user', 'reviews', '']) // Eager loading user và reviews
+           
+            $user = $request->user();
+
+             //Course published
+            $coursesPublished = Course::with(['user', 'reviews']) // Eager loading user và reviews
                 ->where('status', 'published') // Lọc khóa học đã xuất bản
                 ->where('is_show_home', 1) // Lọc khóa học hiển thị trên trang chủ
-                ->get();
+                ->get()
+                ->map(function ($course) use ($user) {
+                    return [
+                        'id' => $course->id,
+                        'title' => $course->title,
+                        'thumbnail' => $course->thumbnail,
+                        'isLecturer' => $user ? ($course->user_id === $user->id) : false,
+                        'isEnrollment' => $user
+                            ? Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->exists()
+                            : false,
+                    ];
+                });
 
             if (count($coursesPublished) == 0) {
                 return response()->json([
@@ -275,8 +290,8 @@ class OverviewController extends Controller
 
 
 
-            $userId = $request->user()->id;
 
+            // top Course
             $courses = Course::with(['user', 'category', 'reviews'])
                 ->select([
                     'id',
@@ -303,16 +318,16 @@ class OverviewController extends Controller
                 ])
                 ->where('status', 'published') // Chỉ lấy khóa học đã duyệt
                 ->get()
-                ->map(function ($course) use ($userId) {
+                ->map(function ($course) use ($user) {
                     // Lấy điểm đánh giá cao nhất của khóa học
                     $highestRating = $course->reviews->max('rating');
 
                     // Kiểm tra người dùng có phải giảng viên không
-                    $isLecturer = $userId ? ($course->user_id === $userId) : false;
+                    $isLecturer = $user->id ? ($course->user_id === $user->id) : false;
 
                     // Kiểm tra người dùng đã đăng ký khóa học chưa
-                    $isEnrollment = $userId
-                        ? Enrollment::where('user_id', $userId)->where('course_id', $course->id)->exists()
+                    $isEnrollment = $user->id
+                        ? Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->exists()
                         : false;
 
                     return [
@@ -332,20 +347,23 @@ class OverviewController extends Controller
                 ], 200);
             }
 
-
+            // Course free
             $coursesFree = Course::with(['user', 'reviews'])
                 ->where('is_free', true) // Lọc khóa học miễn phí
                 ->where('status', 'published') // Lọc khóa học đã xuất bản
-                ->whereDoesntHave('enrollments', function ($query) use ($userId) {
-                    $query->where('user_id', $userId);
-                }) // Loại bỏ các khóa học mà người dùng hiện tại đã tham gia
-                ->get();
-
-            if (count($courses) == 0) {
-                return response()->json([
-                    'message' => 'Không có khoá học nào'
-                ], 200);
-            }
+                ->get()
+                ->map(function ($course) use ($user) {
+                    return [
+                        'id' => $course->id,
+                        'title' => $course->title,
+                        'thumbnail' => $course->thumbnail,
+                        'isLecturer' => $user ? ($course->user_id === $user->id) : false,
+                        'isEnrollment' => $user
+                            ? Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->exists()
+                            : false,
+                        'reviews' => $course->reviews, // Bao gồm đánh giá khóa học
+                    ];
+                });
 
 
             return response()->json(

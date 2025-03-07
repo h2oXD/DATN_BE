@@ -178,26 +178,26 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
-        $tags = [
-            [
-                'name' => 'php-laravel'
-            ],
-            [
-                'name' => 'c#-.NET'
-            ],
-            [
-                'name' => 'java-sp'
-            ],
-            [
-                'name' => 'reactjs-js'
-            ],
-        ];
+        // $tags = [
+        //     [
+        //         'name' => 'php-laravel'
+        //     ],
+        //     [
+        //         'name' => 'c#-.NET'
+        //     ],
+        //     [
+        //         'name' => 'java-sp'
+        //     ],
+        //     [
+        //         'name' => 'reactjs-js'
+        //     ],
+        // ];
         foreach ($categories as $category) {
             Category::create($category);
         }
-        foreach ($tags as $tag) {
-            Tag::create($tag);
-        }
+        // foreach ($tags as $tag) {
+        //     Tag::create($tag);
+        // }
 
         // $courseID = Course::create([
         //     'user_id' => 4,
