@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\DashBoardController;
 use App\Http\Controllers\Admin\LecturerRegisterController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\VoucherController;
@@ -77,19 +78,15 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::get('lecturer_registers', [LecturerRegisterController::class, 'index'])->name('lecturer_registers.index');
         Route::get('lecturer_registers/{user_id}', [LecturerRegisterController::class, 'show'])->name('lecturer_registers.show');
         // Route::post('lecturer_registers/{user_id}', [LecturerRegisterController::class, 'show'])->name('lecturer_registers.show');
-        
+
+        // profile
+        Route::get('/profiles/edit', [ProfileController::class, 'edit'])->name('profiles.edit');
+        Route::put('/profiles/update', [ProfileController::class, 'update'])->name('profiles.update');
+
         // Kiểm duyệt yêu cầu rút tiền
         Route::get('censor-withdraw', [WalletController::class, 'index'])->name('censor-withdraw.index');
         Route::get('censor-withdraw/{id}', [WalletController::class, 'censor'])->name('censor-withdraw.show');
         Route::put('censor-withdraw/{id}/accept', [WalletController::class, 'accept'])->name('censor-withdraw.accept');
         Route::put('censor-withdraw/{id}/reject', [WalletController::class, 'reject'])->name('censor-withdraw.reject');
-        
     });
 });
-
-
-
-
-
-
-
