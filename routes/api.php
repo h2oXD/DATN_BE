@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\SectionController;
 use App\Http\Controllers\Api\V1\StudyController;
 use App\Http\Controllers\Api\V1\TagController;
+use App\Http\Controllers\Api\V1\TransactionWalletController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\VideoController;
 use App\Http\Controllers\Api\V1\VNPayAPIController;
@@ -117,9 +118,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //Đổi mật khẩu
     Route::post('/change-password', [ResetPasswordController::class, 'resetPassword'])->name('change.password');
 
-
-
-    
+    // Lịch sử nạp tiền
+    Route::get('/user/wallet/deposit-histories', [TransactionWalletController::class, 'depositHistory']);
+    // Lịch sử ví tiền (tất cả các loại giao dịch)
+    Route::get('/user/wallet/histories', [TransactionWalletController::class, 'walletHistory']);
     
 });
 // Callback payment
@@ -167,6 +169,9 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
 
     // rút tiền ví giảng viên
     Route::post('/user/wallets/withdraw', [WalletController::class, 'withdraw']);
+    // Lịch sử rút tiền
+    Route::get('/user/wallet/withdraw-histories', [TransactionWalletController::class, 'withdrawHistory']);
+
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/home', [OverviewController::class, 'overview']);
