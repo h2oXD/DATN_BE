@@ -85,12 +85,18 @@ class EnrollmentController extends Controller
         }
 
         $course = $enrollment->course()->with(
-            'sections',
-            'sections.lessons',
-            'sections.lessons.videos',
-            'sections.lessons.documents',
-            'sections.lessons.codings',
-            'sections.lessons.quizzes',
+            [
+                'sections' => function ($query) {
+                    $query->orderBy('order');
+                },
+                'sections.lessons' => function ($query) {
+                    $query->orderBy('order');
+                },
+                'sections.lessons.videos',
+                'sections.lessons.documents',
+                'sections.lessons.codings',
+                'sections.lessons.quizzes',
+            ]
         )->first();
 
         return response()->json([
