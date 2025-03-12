@@ -930,20 +930,39 @@ class WalletController extends Controller
             ]);
 
             // Ghi lại lịch sử giao dịch
-            TransactionWallet::create([
-                'wallet_id'         => $wallet->id,
-                'transaction_code'  => Str::uuid(), // Mã giao dịch duy nhất
-                'amount'            => $amount,
-                'balance'           => $wallet->balance,
-                'type'              => 'withdraw',
-                'status'            => 'pending',
-                'bank_name'         => $bank_code,
-                'bank_nameUser'     => $bank_nameUser,
-                'bank_number'       => $bank_number,
-                'qr_image'          => $data['qr_image'],
-                'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
-            ]);
+            if ( isset($request['qr_image']) ) {
+                
+                TransactionWallet::create([
+                    'wallet_id'         => $wallet->id,
+                    'transaction_code'  => Str::uuid(), // Mã giao dịch duy nhất
+                    'amount'            => $amount,
+                    'balance'           => $wallet->balance,
+                    'type'              => 'withdraw',
+                    'status'            => 'pending',
+                    'bank_name'         => $bank_code,
+                    'bank_nameUser'     => $bank_nameUser,
+                    'bank_number'       => $bank_number,
+                    'qr_image'          => $data['qr_image'],
+                    'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+                ]);
 
+            } else {
+                
+                TransactionWallet::create([
+                    'wallet_id'         => $wallet->id,
+                    'transaction_code'  => Str::uuid(), // Mã giao dịch duy nhất
+                    'amount'            => $amount,
+                    'balance'           => $wallet->balance,
+                    'type'              => 'withdraw',
+                    'status'            => 'pending',
+                    'bank_name'         => $bank_code,
+                    'bank_nameUser'     => $bank_nameUser,
+                    'bank_number'       => $bank_number,
+                    'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+                ]);
+                
+            }
+            
             DB::commit(); // Lưu thay đổi vào database
             return response()->json([
                 'status' => 'success',
