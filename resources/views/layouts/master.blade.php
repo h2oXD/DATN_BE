@@ -30,6 +30,9 @@
 
         </main>
     </div>
+    <script>
+        document.documentElement.setAttribute("data-bs-theme", "light");
+    </script>
     @yield('script')
     @include('layouts.partials.script')
     @vite('resources/js/public.js')

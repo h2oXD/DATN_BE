@@ -199,15 +199,15 @@ class DatabaseSeeder extends Seeder
         //     Tag::create($tag);
         // }
 
-        // $courseID = Course::create([
-        //     'user_id' => 4,
-        //     'category_id' => 3,
-        //     'price_regular' => 199000,
-        //     'price_sale' => 99000,
-        //     'title' => 'Khoá học Laravel',
-        //     'status' => 'published',
-        //     'admin_commission_rate' => 30
-        // ]);
+        $courseID = Course::create([
+            'user_id' => 4,
+            'category_id' => 3,
+            'price_regular' => 199000,
+            'price_sale' => 99000,
+            'title' => 'Khoá học Laravel',
+            'status' => 'published',
+            'admin_commission_rate' => 30
+        ]);
         // Course::create([
         //     'user_id' => 4,
         //     'category_id' => 1,

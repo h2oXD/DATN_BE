@@ -82,10 +82,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/courses', [EnrollmentController::class, 'getUserCoursesWithProgress']);
     Route::get('/user/courses/{course_id}', [EnrollmentController::class, 'getprogress']);
 
-    // review
-    Route::post('/user/{user_id}/courses/{course_id}/reviews', [ReviewController::class, 'store']); // Thêm đánh giá
-    Route::put('/user/{user_id}/reviews/{review_id}', [ReviewController::class, 'update']);
-    Route::delete('/user/{user_id}/reviews/{review_id}', [ReviewController::class, 'destroy']);
+    // review 
+    Route::post('/courses/{courseId}/reviews', [ReviewController::class, 'storeCourseReview']);
+    Route::post('/lecturers/{lecturerId}/reviews', [ReviewController::class, 'storeLecturerReview']);
+    Route::put('/reviews/{review}', [ReviewController::class, 'update']);
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
+    Route::get('/courses/{courseId}/reviews', [ReviewController::class, 'getCourseReviews']);
+    Route::get('/lecturers/{lecturerId}/reviews', [ReviewController::class, 'getLecturerReviews']);
+    Route::get('/reviews/user', [ReviewController::class, 'getUserReviews']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 
@@ -116,11 +120,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //Đổi mật khẩu
     Route::post('/change-password', [ResetPasswordController::class, 'resetPassword'])->name('change.password');
-
-
-
-    
-    
 });
 // Callback payment
 Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
@@ -132,7 +131,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::get('/lecturer', [LecturerController::class, 'getLecturerInfo']);
     Route::get('lecturer/courses/{course_id}/check', [CourseController::class, 'check']);
     Route::get('lecturer/courses/{course_id}/pending', [CourseController::class, 'checkPending']);
-    
+
     // Thống kê giảng viên
     Route::get('/lecturer/statistics', [LecturerController::class, 'statistics']);
 
@@ -206,9 +205,6 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/courses/{course_id}/public', [CourseController::class, 'publicCourseDetail']);
 Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id']);
 //Xem đánh giá
-Route::get('/courses/{course_id}/reviews', [ReviewController::class, 'getReviewsByCourse']); // Lấy đánh giá của khóa học
-Route::get('/user/{user_id}/reviews', [ReviewController::class, 'getReviewsByUser']); // Lấy đánh giá của user
-
 
 Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
