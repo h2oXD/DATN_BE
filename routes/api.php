@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ResetPasswordController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CertificateController;
 use App\Http\Controllers\Api\V1\CommentController;
+use App\Http\Controllers\Api\V1\CompletionController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
@@ -104,10 +105,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::delete('/posts/{post}', [PostController::class, 'destroy']); // Xóa bài viết
 
     // Comment
-    Route::get('/courses/{course}/sections/{section}/lessons/{lesson}/comments', [CommentController::class, 'getLessonComment']);
-    Route::post('/courses/{course}/sections/{section}/lessons/{lesson}/comments', [CommentController::class, 'storeLessonComment']);
-    Route::put('/courses/{course}/sections/{section}/lessons/{lesson}/comments/{comment}', [CommentController::class, 'updateLessonComment']);
-    Route::delete('/courses/{course}/sections/{section}/lessons/{lesson}/comments/{comment}', [CommentController::class, 'destroyLessonComment']);
+    Route::get('/lessons/{lesson}/comments', [CommentController::class, 'getLessonComment']);
+    Route::post('lessons/{lesson}/comments', [CommentController::class, 'storeLessonComment']);
+    Route::put('/courses/{course}/lessons/{lesson}/comments/{comment}', [CommentController::class, 'updateLessonComment']);
+    Route::delete('/courses/{course}/lessons/{lesson}/comments/{comment}', [CommentController::class, 'destroyLessonComment']);
 
     Route::get('/posts/{post_id}/comments/posts', [CommentController::class, 'getPostComments'])->name('post.comments.index');
     Route::post('/posts/{post_id}/comments/', [CommentController::class, 'storePostComment'])->name('post.comments.store');
@@ -134,7 +135,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::get('/lecturer', [LecturerController::class, 'getLecturerInfo']);
     Route::get('lecturer/courses/{course_id}/check', [CourseController::class, 'check']);
     Route::get('lecturer/courses/{course_id}/pending', [CourseController::class, 'checkPending']);
-    
+
     // Thống kê giảng viên
     Route::get('/lecturer/statistics', [LecturerController::class, 'statistics']);
 
@@ -145,7 +146,8 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons', LessonController::class)->parameters(['lessons' => 'lesson_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos', VideoController::class)->parameters(['videos' => 'video_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', DocumentController::class)->parameters(['documents' => 'document_id']);
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', LessonCodingController::class)->parameters(['codings' => 'coding_id']);
+    // Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', LessonCodingController::class)->parameters(['codings' => 'coding_id']);
+    Route::post('/lecturer/courses/{course_id}/sections/{section_id}/codings', [LessonCodingController::class, 'store']);
 
     // Quản lý Quiz trong một bài học (Lesson)
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes', QuizController::class)
@@ -182,6 +184,8 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::post('/certificates/student/courses/{course_id}', [CertificateController::class, 'createCertificate']);
     Route::get('show/certificates/{course_id}', [CertificateController::class, 'showCertificate']);
     Route::get('certificates/{certificate_id}', [CertificateController::class, 'certificate']);
+    Route::get('progress/course/{course_id}', [CompletionController::class, 'showUserCourseProgress']);
+    Route::get('progress/{course_id}', [CompletionController::class, 'getLatestCourseInProgress']);
 
     // Nộp bài Quiz
     Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);
