@@ -92,7 +92,7 @@
             position: absolute;
             right: 10mm;
             bottom: 10mm;
-            /* background-image: url("{{ asset('badge.svg') }}"); */
+            background-image: url("{{ asset('badge.svg') }}");
         }
     </style>
 </head>

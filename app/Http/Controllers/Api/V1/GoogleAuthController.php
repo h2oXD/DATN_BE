@@ -101,11 +101,7 @@ class GoogleAuthController extends Controller
             // Tạo access token cho user đã đăng nhập
             $token = $user->createToken('GoogleAuthToken')->plainTextToken;
 
-            return response()->json([
-                'user' => $user,
-                'access_token' => $token,
-                'roles' => $user->roles,
-            ]);
+            return redirect("http://localhost:5173/google/callback?token={$token}");
 
         } catch (\Exception $e) {
             return response()->json(['error' => 'Đăng nhập thất bại!', 'message' => $e->getMessage()], 500);
