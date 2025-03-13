@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Certificate;
 use App\Models\Completion;
 use App\Models\Lesson;
 use Illuminate\Http\Request;
@@ -46,11 +47,14 @@ class CompletionController extends Controller
             ->where('course_id', $course_id)
             ->where('status', 'completed')
             ->count();
+        $certificate = Certificate::where('course_id', $course_id)->where('user_id', $user_id)->first();
+        $is_certificate = $certificate ?? 0;
 
         return response()->json([
             'total_lessons' => $totalLessons,
             'completed_lessons' => $completedLessons,
             'progress' => $totalLessons > 0 ? round(($completedLessons / $totalLessons) * 100, 2) . '%' : '0%',
+            'is_certificate' => $is_certificate
         ]);
     }
     public function getLatestCourseInProgress($course_id)
