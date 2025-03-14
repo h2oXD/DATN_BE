@@ -72,6 +72,10 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::post('courses/{id}/reject', [CourseController::class, 'reject'])->name('courses.reject');
         Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
         Route::get('courses/censor', [CourseController::class, 'censorCourseList'])->name('censor.courses.list');
+        Route::get('courses/approval-history', [CourseController::class, 'approvalHistory'])->name('courses.approval.history');
+        Route::get('courses/{id}/history', [CourseController::class, 'showHistory'])->name('courses.history.show');
+    
+
 
         Route::post('/lecturer-approvals/{user_id}/reject', [LecturerRegisterController::class, 'reject'])->name('lecturer-approvals.reject');
         Route::post('/lecturer-approvals/{user_id}/approve', [LecturerRegisterController::class, 'approve'])->name('lecturer-approvals.approve');

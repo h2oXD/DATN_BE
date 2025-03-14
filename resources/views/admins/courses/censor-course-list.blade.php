@@ -7,8 +7,9 @@
 @section('content')
     <div class="m-3">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h2 class="m-0">Kiểm duyệt khóa học</h2>
+                <a href="{{ route('admin.courses.approval.history') }}" class="btn btn-primary btn-sm">Lịch sử kiểm duyệt</a>
             </div>
             <div class="card-body">
                 <table class="table table-hover border" id="table">
