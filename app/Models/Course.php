@@ -95,7 +95,7 @@ class Course extends Model
     public function reviews()
     {
         return $this->morphMany(Review::class, 'reviewable');
-    }    
+    }
     public function enrollments()
     {
         return $this->hasMany(Enrollment::class, 'course_id');
@@ -105,4 +105,9 @@ class Course extends Model
     {
         return $this->hasMany(Progress::class, 'course_id');
     }
+    public function approvalHistories()
+    {
+        return $this->hasMany(CourseApprovalHistory::class, 'course_id');
+    }
+
 }

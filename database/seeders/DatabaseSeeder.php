@@ -208,33 +208,33 @@ class DatabaseSeeder extends Seeder
             'status' => 'published',
             'admin_commission_rate' => 30
         ]);
-        // Course::create([
-        //     'user_id' => 4,
-        //     'category_id' => 1,
-        //     'price_regular' => 500000,
-        //     'price_sale' => 399000,
-        //     'title' => 'Khoá học React',
-        //     'status' => 'draft',
-        //     'admin_commission_rate' => 30
-        // ]);
-        // Course::create([
-        //     'user_id' => 4,
-        //     'category_id' => 4,
-        //     'price_regular' => 99000,
-        //     'price_sale' => 89000,
-        //     'title' => 'Khoá học PHP cơ bản',
-        //     'status' => 'draft',
-        //     'admin_commission_rate' => 30
-        // ]);
+        Course::create([
+            'user_id' => 4,
+            'category_id' => 1,
+            'price_regular' => 500000,
+            'price_sale' => 399000,
+            'title' => 'Khoá học React',
+            'status' => 'draft',
+            'admin_commission_rate' => 30
+        ]);
+        Course::create([
+            'user_id' => 4,
+            'category_id' => 4,
+            'price_regular' => 99000,
+            'price_sale' => 89000,
+            'title' => 'Khoá học PHP cơ bản',
+            'status' => 'draft',
+            'admin_commission_rate' => 30
+        ]);
 
-        // Course::create([
-        //     'user_id' => 5,
-        //     'category_id' => 4,
-        //     'title' => 'Khoá học PHP nâng cao',
-        //     'status' => 'published',
-        //     'is_free' => true,
-        //     'admin_commission_rate' => 30
-        // ]);
+        Course::create([
+            'user_id' => 5,
+            'category_id' => 4,
+            'title' => 'Khoá học PHP nâng cao',
+            'status' => 'published',
+            'is_free' => true,
+            'admin_commission_rate' => 30
+        ]);
 
         // Course::create([
         //     'user_id' => 5,

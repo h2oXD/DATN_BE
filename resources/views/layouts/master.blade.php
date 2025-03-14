@@ -37,9 +37,7 @@
     @include('layouts.partials.script')
     @vite('resources/js/public.js')
     <script>
-        var userId = {{Auth::user()->id}}
-        
-        
+        var userId = {{ Auth::user()->id }}
     </script>
 </body>
 

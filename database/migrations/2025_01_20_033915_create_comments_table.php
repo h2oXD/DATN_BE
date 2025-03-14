@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade')->comment('id của người bình luận');
             $table->text('content')->comment('Nội dung');
             $table->foreignId('parent_id')->nullable()->constrained('comments')->onDelete('cascade')->comment('ID của bình luận cha');
-            $table->morphs('commentable');
+            $table->uuidMorphs('commentable');
             $table->timestamps();
         });
     }
