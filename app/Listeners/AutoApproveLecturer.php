@@ -30,11 +30,20 @@ class AutoApproveLecturer implements ShouldQueue
 
         // Kiểm tra nếu đã là giảng viên thì không duyệt nữa
         if ($user->hasRole('lecturer')) {
+
+            $lecturerRegister->update([
+                'status' => 'rejected',
+                'admin_rejection_reason' => 'Đã là giảng viên',
+            ]);
             return;
         }
 
         // Kiểm tra nếu chưa trả lời đầy đủ thì không duyệt
         if (empty($lecturerRegister->answer1) || empty($lecturerRegister->answer2) || empty($lecturerRegister->answer3)) {
+            $lecturerRegister->update([
+                'status' => 'rejected',
+                'admin_rejection_reason' => 'Người dùng chưa trả lời đầy đủ các câu hỏi.',
+            ]);
             return;
         }
 
