@@ -16,7 +16,7 @@ class Coding extends Model
         'problem_description',
         'starter_code',
         'solution_code',
-        'test_cases',
+        'output',
     ];
     public function lesson()
     {

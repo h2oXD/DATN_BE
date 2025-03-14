@@ -13,6 +13,4 @@
 <script src="{{env('APP_URL')}}/assets/libs/flatpickr/dist/flatpickr.min.js"></script>
 <script src="{{env('APP_URL')}}/assets/js/vendors/flatpickr.js"></script>
 
-<script>
-    document.documentElement.setAttribute("data-bs-theme", "light");
-</script>
+
