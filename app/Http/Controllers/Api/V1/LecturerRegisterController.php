@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\LecturerRegisterRequested;
 use App\Http\Controllers\Controller;
 use App\Models\LecturerRegister;
 use GuzzleHttp\Promise\Create;
@@ -65,47 +66,58 @@ class LecturerRegisterController extends Controller
      * )
      */
 
-    public function submitAnswers(Request $request)
-    {
-        $user = $request->user();
-
-        if ($user->hasRole('lecturer')) {
-            return response()->json(['message' => 'nguoi dung da la giang vien'], Response::HTTP_FORBIDDEN);
-        }
-        if ((empty($user->bio) || empty($user->profile_picture) || empty($user->phone_number))) {
-            return response()->json(['message' => 'ko du thong tin'], Response::HTTP_FORBIDDEN);
-        }
-        $validator = Validator::make($request->all(), [
-            'answer1' => 'required|max:255',
-            'answer2' => 'required|max:255',
-            'answer3' => 'required|max:255',
-            'certificate_file' => 'nullable',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], Response::HTTP_FORBIDDEN);
-        }
-
-
-        if ($request->hasFile('certificate_file')) {
-            $path = $request->file('certificate_file')->store('certificates');
-            $user->update(['certificate_file' => $path]);
-        }
-        LecturerRegister::create([
-            'user_id' => $user->id,
-            'answer1' => $request->answer1,
-            'answer2' => $request->answer2,
-            'answer3' => $request->answer3,
-
-        ]);
-        return response()->json([
-            'answer1' => $request->answer1,
-            'answer2' => $request->answer2,
-            'answer3' => $request->answer3,
-            'message' => 'Answers submitted successfully'
-
-        ], Response::HTTP_OK);
-    }
-
+     public function submitAnswers(Request $request)
+     {
+         $user = $request->user();
+     
+         // Kiểm tra nếu user đã là giảng viên
+         if ($user->hasRole('lecturer')) {
+             return response()->json(['message' => 'Người dùng đã là giảng viên'], Response::HTTP_FORBIDDEN);
+         }
+     
+         // Kiểm tra nếu thiếu thông tin hồ sơ
+         if (empty($user->bio) || empty($user->profile_picture) || empty($user->phone_number)) {
+             return response()->json(['message' => 'Không đủ thông tin hồ sơ'], Response::HTTP_FORBIDDEN);
+         }
+     
+         // Validate dữ liệu đầu vào
+         $validator = Validator::make($request->all(), [
+             'answer1' => 'required|max:255',
+             'answer2' => 'required|max:255',
+             'answer3' => 'required|max:255',
+             'certificate_file' => 'nullable|file|mimes:pdf,jpg,png|max:2048', // Chỉ chấp nhận file PDF, JPG, PNG tối đa 2MB
+         ]);
+     
+         if ($validator->fails()) {
+             return response()->json(['errors' => $validator->errors()], Response::HTTP_FORBIDDEN);
+         }
+     
+         // Xử lý upload file chứng chỉ nếu có
+         if ($request->hasFile('certificate_file')) {
+             $path = $request->file('certificate_file')->store('certificates');
+             $user->update(['certificate_file' => $path]);
+         }
+     
+         // Tạo yêu cầu xét duyệt giảng viên
+         $lecturerRegister = LecturerRegister::create([
+             'user_id' => $user->id,
+             'answer1' => $request->answer1,
+             'answer2' => $request->answer2,
+             'answer3' => $request->answer3,
+             'status' => 'pending',
+         ]);
+     
+         // Kích hoạt event để xử lý kiểm duyệt tự động
+         event(new LecturerRegisterRequested($lecturerRegister));
+     
+         return response()->json([
+             'answer1' => $request->answer1,
+             'answer2' => $request->answer2,
+             'answer3' => $request->answer3,
+             'message' => 'Yêu cầu xét duyệt đã được gửi',
+         ], Response::HTTP_OK);
+     }
+     
 
     /**
      * Lấy danh sách người dùng đăng ký làm giảng viên.
