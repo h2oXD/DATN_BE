@@ -33,6 +33,7 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
     Route::prefix('admin')->name('admin.')->group(function () {
         //Dashboard
         Route::get('/', [DashBoardController::class, 'dashboard'])->name('dashboard');
+        Route::get('/dashboard/revenue-filter', [DashboardController::class, 'filterRevenue'])->name('dashboard.revenue.filter');
         Route::post('logout', [AuthController::class, 'logout'])->name('admin.logout');
 
         //Voucher
