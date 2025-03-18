@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Chi tiết khóa học
+    Lịch sử kiểm duyệt khóa học
 @endsection
 
 @section('content')
@@ -13,9 +13,6 @@
             <div class="card-body">
                 <div class="mb-3">
                     <strong>Tiêu đề:</strong> {{ $course->title }}
-                </div>
-                <div class="mb-3">
-                    <strong>Mô tả:</strong> {{ $course->description }}
                 </div>
                 <div class="mb-3">
                     <strong>Danh mục:</strong> {{ $course->category->name }}
@@ -34,13 +31,14 @@
                     @endif
                 </div>
                 <div class="mb-3">
-                    <strong>Ngày tạo:</strong> {{ $course->created_at }}
+                    <strong>Ngày tạo:</strong> {{ $course->created_at->format('d/m/Y H:i') }}
                 </div>
                 <div class="mb-3">
                     <strong>Ảnh:</strong>
                     <img src="{{ Storage::url($course->thumbnail) }}" alt="thumbnail" height="100" width="100">
                 </div>
-                <a href="{{ route('admin.courses.index') }}" class="btn btn-secondary">Quay lại danh sách khóa học</a>
+
+                <a href="{{ route('admin.courses.approval.history') }}" class="btn btn-secondary mt-3">Quay lại</a>
             </div>
         </div>
     </div>
