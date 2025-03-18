@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\ChatRoom;
+use App\Models\ChatRoomUser;
 use App\Models\Course;
 use App\Models\CourseApprovalHistory;
 use App\Models\Lecturer;
@@ -55,11 +57,31 @@ class CourseController extends Controller
         $course->submited_at = now();
         $course->save();
 
+
+        $chatRoom = ChatRoom::where('course_id', $course->id)->first();
+
+    if (!$chatRoom) {
+        // Tạo phòng chat nếu chưa tồn tại
+        $chatRoom = ChatRoom::create([
+            'course_id' => $course->id,
+            'owner_id' => $course->user_id, // Chủ sở hữu là giảng viên
+            'name' => 'Chat nhóm: ' . $course->title,
+        ]);
+
+        // Thêm giảng viên vào bảng chat_room_users
+        ChatRoomUser::create([
+            'chat_room_id' => $chatRoom->id,
+            'user_id' => $course->user_id,
+            'joined_at' => now(),
+        ]);
+    }
+
         CourseApprovalHistory::create([
             'course_id' => $course->id,
             'user_id' => $user->id,
             'status' => 'approved',
         ]);
+
 
 
         return redirect()->route('admin.censor.courses.list')->with('success', 'Khóa học đã được phê duyệt');

@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\ResetPasswordController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CertificateController;
+use App\Http\Controllers\Api\V1\ChatMessageController;
+use App\Http\Controllers\Api\V1\ChatRoomController;
 use App\Http\Controllers\Api\V1\CommentController;
 use App\Http\Controllers\Api\V1\CompletionController;
 use App\Http\Controllers\Api\V1\CourseController;
@@ -123,6 +125,18 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //Đổi mật khẩu
     Route::post('/change-password', [ResetPasswordController::class, 'resetPassword'])->name('change.password');
 
+
+    //Chat room
+    Route::get('/chat-rooms', [ChatRoomController::class, 'index']);
+    Route::post('/chat-rooms', [ChatRoomController::class, 'store']);
+    Route::get('/chat-rooms/{id}', [ChatRoomController::class, 'show']);
+    Route::delete('/chat-rooms/{id}', [ChatRoomController::class, 'destroy']);
+
+
+    //Messenger
+    Route::get('/chat-rooms/{id}/messages', [ChatMessageController::class, 'index']);
+    Route::post('/chat-rooms/{id}/messages', [ChatMessageController::class, 'store']);
+    Route::delete('/chat-messages/{id}', [ChatMessageController::class, 'destroy']);
     // Lịch sử nạp tiền
     Route::get('/user/wallet/deposit-histories', [TransactionWalletController::class, 'depositHistory']);
     // Lịch sử ví tiền (tất cả các loại giao dịch)
@@ -175,6 +189,10 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
 
     // rút tiền ví giảng viên
     Route::post('/user/wallets/withdraw', [WalletController::class, 'withdraw']);
+
+    Route::post('/chat-rooms/{id}/add-user', [ChatRoomController::class, 'addUser']);
+    Route::post('/chat-rooms/{id}/remove-user', [ChatRoomController::class, 'removeUser']);
+    Route::post('/chat-rooms/{id}/mute-user', [ChatRoomController::class, 'muteUser']);
     // Lịch sử rút tiền
     Route::get('/user/wallet/withdraw-histories', [TransactionWalletController::class, 'withdrawHistory']);
 
