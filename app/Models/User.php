@@ -75,7 +75,7 @@ class User extends Authenticatable
 
     public function reviews()
     {
-        return $this->hasMany(Review::class);
+        return $this->morphMany(Review::class, 'reviewable');
     }
 
     public function voucheruse()
@@ -88,10 +88,11 @@ class User extends Authenticatable
         return $this->hasOne(LecturerRegister::class);
     }
 
-   public function comments()
-   {
-     return $this->hasMany(Comment::class);
-   }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
 
 
    public function posts()
@@ -99,5 +100,5 @@ class User extends Authenticatable
     return $this->hasMany(Post::class);
    }
 
-   
+
 }

@@ -4,24 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Review extends Model
 {
     use HasFactory;
- public $timestamps = false;
+
     protected $fillable = [
         'user_id',
-        'course_id',
+        'reviewable_id',
+        'reviewable_type',
         'rating',
         'review_text',
     ];
 
-    public function user(){
-        return $this->belongsTo(User::class);
+    public function reviewer()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function course()
+    public function reviewable(): MorphTo
     {
-        return $this->belongsTo(Course::class);
+        return $this->morphTo();
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\ChatRoom;
 use App\Models\ChatRoomUser;
 use App\Models\Course;
+use App\Models\CourseApprovalHistory;
 use App\Models\Lecturer;
 use App\Models\Tag;
 use Illuminate\Http\Request;
@@ -50,10 +51,12 @@ class CourseController extends Controller
 
     public function approve(Request $request, $id)
     {
+        $user = $request->user();
         $course = Course::findOrFail($id);
         $course->status = 'published';
         $course->submited_at = now();
         $course->save();
+
 
         $chatRoom = ChatRoom::where('course_id', $course->id)->first();
 
@@ -73,14 +76,34 @@ class CourseController extends Controller
         ]);
     }
 
+        CourseApprovalHistory::create([
+            'course_id' => $course->id,
+            'user_id' => $user->id,
+            'status' => 'approved',
+        ]);
+
+
+
         return redirect()->route('admin.censor.courses.list')->with('success', 'Khóa học đã được phê duyệt');
     }
     public function reject(Request $request, $id)
     {
+        $request->validate([
+            'reason' => ' nullable|string|max:500',
+        ]);
+
+        $user = $request->user();
         $course = Course::findOrFail($id);
         $course->status = 'draft';
-        $course->admin_comment = 'Từ chối';
+        $course->admin_comment = $request->reason;
         $course->save();
+
+        CourseApprovalHistory::create([
+            'course_id' => $course->id,
+            'user_id' => $user->id,
+            'status' => 'rejected',
+            'comment' => $request->reason,
+        ]);
         return redirect()->route('admin.censor.courses.list')->with('success', 'Khóa học đã bị từ chối');
     }
 
@@ -162,7 +185,7 @@ class CourseController extends Controller
             'sections.lessons.quizzes'
         ])->find($course_id);
 
-        if($course->status != 'pending'){
+        if ($course->status != 'pending') {
             return redirect()->route('admin.censor.courses.list');
         }
 
@@ -190,7 +213,7 @@ class CourseController extends Controller
                 if ($section->lessons) {
                     foreach ($section->lessons as $lesson) {
                         if ($lesson->videos) {
-                            $lesson->videos->duration = round($lesson->videos->duration / 60,1);
+                            $lesson->videos->duration = round($lesson->videos->duration / 60, 1);
                         }
                     }
                 }
@@ -203,4 +226,19 @@ class CourseController extends Controller
         // dd($totalLessons);
         return view(self::PATH_VIEW . 'check-course', compact('totalVideoDurationMinutes', 'course', 'totalLessons', 'learning_outcomes', 'target_students', 'prerequisites'));
     }
+    public function approvalHistory()
+    {
+        $approvalHistories = CourseApprovalHistory::with(['course', 'user'])->latest()->paginate(10);
+
+        return view(self::PATH_VIEW . 'approval_history', compact('approvalHistories'));
+    }
+
+    public function showHistory($id)
+    {
+        $course = Course::with('approvalHistories.user')->findOrFail($id);
+        $approvalHistories = $course->approvalHistories;
+    
+        return view(self::PATH_VIEW . 'show_history', compact('course','approvalHistories'));
+    }
+
 }
