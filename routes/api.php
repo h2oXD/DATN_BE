@@ -177,11 +177,13 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
 
     // Lấy danh sách câu hỏi của một Quiz
     Route::get('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'getQuestions']);
+    Route::get('/lecturer/quizzes/questions/{question_id}', [QuizController::class, 'showQuestions']);
 
     // Tạo câu hỏi trong Quiz
     Route::post('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'storeQuestion']);
+    Route::put('/lecturer/quizzes/{quiz_id}/questions/{question_id}', [QuizController::class, 'updateQuestion']);
     // Route::post('/lecturer/questions/{question_id}/answers', [QuizController::class, 'storeAnswer']);
-
+    Route::delete('/lecturer/questions/{question_id}', [QuizController::class, 'deleteQuestion']);
     // Cập nhật thứ tự câu hỏi trong Quiz
     Route::post('/user/quizzes/{quiz_id}/update-order', [QuizController::class, 'updateQuizOrder']);
 
