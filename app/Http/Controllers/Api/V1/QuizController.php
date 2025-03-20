@@ -557,19 +557,18 @@ class QuizController extends Controller
 
     public function uploadQuizExcel(Request $request, $lessonId, $quiz_id)
     {
-
         // Kiểm tra xem lesson có tồn tại không
         $lesson = Lesson::find($lessonId);
         if (!$lesson) {
             return response()->json(['message' => 'Lesson không tồn tại'], 404);
         }
-
-        // Kiểm tra xem quiz có thuộc lesson này không (nếu có quan hệ)
+    
+        // Kiểm tra xem quiz có thuộc lesson này không
         $quiz = Quiz::where('id', $quiz_id)->where('lesson_id', $lessonId)->first();
         if (!$quiz) {
             return response()->json(['message' => 'Quiz không thuộc lesson này'], 404);
         }
-
+    
         // Validate file upload
         $validator = Validator::make($request->all(), [
             'file' => 'required|mimes:xlsx,xls,csv|max:2048',
@@ -578,23 +577,17 @@ class QuizController extends Controller
             'file.mimes'    => 'File phải có định dạng: xlsx, xls, hoặc csv.',
             'file.max'      => 'File không được lớn hơn 2MB.'
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
-        // Lưu file vào storage
-        $file = $request->file('file');
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        $filePath = $file->storeAs('excels', $fileName, 'public');
-
-        // Import dữ liệu từ file đã lưu
-        Excel::import(new QuizImport($quiz_id), Storage::path($filePath));
-        Storage::delete($filePath);
-
+    
+        // Lấy file từ request và xử lý ngay
+        Excel::import(new QuizImport($quiz_id), $request->file('file'));
+    
         return response()->json([
             'message' => 'Import thành công!',
-            
         ]);
     }
+    
 }

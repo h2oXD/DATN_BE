@@ -205,7 +205,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
 
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
-    Route::get('/student/home', [OverviewController::class, 'overview']);
+   
     Route::get('/student/courses/{course_id}', [EnrollmentController::class, 'showUserEnrollmentCourse']);
     Route::get('/lesson/{lesson_id}', [EnrollmentController::class, 'showLesson']);
     Route::get('course/{course_id}/lesson', [EnrollmentController::class, 'getStatusLesson']);
@@ -233,7 +233,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/user/wishlist/check/{course_id}', [WishListController::class, 'check']); // Kiểm tra course
 });
 
-
+Route::get('/student/home', [OverviewController::class, 'overview']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 //Forgot password
