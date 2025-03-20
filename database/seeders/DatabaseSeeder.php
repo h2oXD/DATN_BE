@@ -26,6 +26,8 @@ use App\Models\VoucherUse;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -524,6 +526,36 @@ class DatabaseSeeder extends Seeder
         //     'status' => 'published',
         //     'admin_commission_rate' => 30
         // ]);
+
+
+        // $chatRooms = [
+        //     [
+        //         'id' => 1,
+        //         'course_id' => Str::uuid()->toString(),
+        //         'owner_id' => 1,
+        //         'name' => 'General Discussion',
+        //         'created_at' => Carbon::now(),
+        //         'updated_at' => Carbon::now(),
+        //     ],
+        //     [
+        //         'id' => 2,
+        //         'course_id' => Str::uuid()->toString(),
+        //         'owner_id' => 2,
+        //         'name' => 'Project Collaboration',
+        //         'created_at' => Carbon::now(),
+        //         'updated_at' => Carbon::now(),
+        //     ],
+        //     [
+        //         'id' => 3,
+        //         'course_id' => Str::uuid()->toString(),
+        //         'owner_id' => 3,
+        //         'name' => 'Q&A Session',
+        //         'created_at' => Carbon::now(),
+        //         'updated_at' => Carbon::now(),
+        //     ],
+        // ];
+
+
 
     }
 
