@@ -39,7 +39,7 @@
                 </p>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" href="{{route('admin.censor.courses.list')}}">
+                <a class="nav-link text-dark" href="{{ route('admin.censor.courses.list') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-10 me-2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -53,15 +53,15 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                     </svg>
-                   Kiểm duyệt người dùng
+                    Kiểm duyệt người dùng
                 </a>
                 <a class="nav-link text-dark collapsed" href="{{ route('admin.censor-withdraw.index') }}" y>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-10 me-2">
-                        <path stroke-linecap="round" stroke-linejoin="round" 
+                        <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm14 2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2a2 2 0 012-2z" />
                     </svg>
-                   Kiểm duyệt rút tiền
+                    Kiểm duyệt rút tiền
                 </a>
             </li>
             <li class="nav-item">
@@ -85,7 +85,8 @@
                 <div id="navCourse" class="collapse " data-bs-parent="#sideNavbar">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-dark " href="{{route('admin.courses.index')}}">Khoá học đang bán</a>
+                            <a class="nav-link text-dark " href="{{ route('admin.courses.index') }}">Khoá học đang
+                                bán</a>
 
                         </li>
                     </ul>
@@ -134,6 +135,30 @@
                     </ul>
                 </div>
             </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark collapsed" href="#" data-bs-toggle="collapse"
+                    data-bs-target="#navBanner" aria-expanded="false" aria-controls="navBanner">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="" viewBox="0 0 576 512" stroke-width="1.5"
+                        stroke="currentColor" class="w-10 me-2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M160 80l352 0c8.8 0 16 7.2 16 16l0 224c0 8.8-7.2 16-16 16l-21.2 0L388.1 178.9c-4.4-6.8-12-10.9-20.1-10.9s-15.7 4.1-20.1 10.9l-52.2 79.8-12.4-16.9c-4.5-6.2-11.7-9.8-19.4-9.8s-14.8 3.6-19.4 9.8L175.6 336 160 336c-8.8 0-16-7.2-16-16l0-224c0-8.8 7.2-16 16-16zM96 96l0 224c0 35.3 28.7 64 64 64l352 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L160 32c-35.3 0-64 28.7-64 64zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120L0 344c0 75.1 60.9 136 136 136l320 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-320 0c-48.6 0-88-39.4-88-88l0-224zm208 24a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z" />
+                    </svg>
+                    Banner
+                </a>
+                <div id="navBanner" class="collapse" data-bs-parent="#sideNavbar">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="{{ route('admin.banners.index') }}">Danh sách
+                                Banner</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="{{ route('admin.banners.create') }}">Thêm mới
+                                Banner</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
             <li class="nav-item">
                 <a class="nav-link text-dark collapsed" href="#" data-bs-toggle="collapse"
                     data-bs-target="#navCardManagement" aria-expanded="false" aria-controls="navCardManagement">
@@ -207,7 +232,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="{{ route('admin.lecturers.index') }}">Giảng viên</a>
                         </li>
-                       
+
                     </ul>
                 </div>
 

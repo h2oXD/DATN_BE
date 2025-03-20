@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\ResetPasswordController;
+use App\Http\Controllers\Api\V1\BannerController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CertificateController;
 use App\Http\Controllers\Api\V1\ChatMessageController;
@@ -235,6 +236,7 @@ Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name(
 
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/courses/{course_id}/public', [CourseController::class, 'publicCourseDetail']);
+Route::get('/courses/{course_id}/related', [CourseController::class, 'relatedCourses']);
 Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id']);
 //Xem đánh giá
 
@@ -242,3 +244,4 @@ Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirectToGoo
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 
 Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.default.api');
+Route::get('/banners', [BannerController::class, 'index']);
