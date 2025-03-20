@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\ResetPasswordController;
+use App\Http\Controllers\Api\V1\BannerController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CertificateController;
 use App\Http\Controllers\Api\V1\ChatMessageController;
@@ -243,3 +244,4 @@ Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirectToGoo
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 
 Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.default.api');
+Route::get('/banners', [BannerController::class, 'index']);
