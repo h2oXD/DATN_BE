@@ -24,6 +24,7 @@
                 </div>
             </div>
         </div>
+
         <div class="row gy-4 mb-4">
             <!-- Tổng doanh thu của giảng viên -->
             <div class="col-xl-3 col-lg-6 col-md-12 col-12">
@@ -224,6 +225,8 @@
                 </div>
             </div>
         </div>
+
+        {{-- biểu đồ thống kê doanh thu giảng viên  --}}
         <div class="row gy-4 my-2 mb-4">
             <!-- Thống kê tổng doanh thu của giảng viên -->
             <div class="">
@@ -278,151 +281,121 @@
 
         {{-- top giảng viên --}}
         <div class="my-1 row gy-4">
+
+            <!-- HOT INSTRUCTORS -->
             <div class="col-xl-4 col-lg-12 col-md-12 col-12">
-                <!-- Card -->
-                <div class="card h-100">
-                    <!-- Card header -->
-                    <div class="card-header d-flex align-items-center justify-content-between card-header-height">
-                        <h4 class="mb-0">giảng viên hot</h4>
-                        <a href="#" class="btn btn-outline-secondary btn-sm">View all</a>
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-header d-flex align-items-center justify-content-between bg-white">
+                        <h4 class="mb-0 fw-bold text-primary">Giảng viên nổi bật</h4>
+                        <a href="#" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
                     </div>
-                    <!-- Card body -->
-                    <div class="card-body">
-                        <!-- List group -->
+
+                    <div class="card-body py-3">
                         <ul class="list-group list-group-flush">
                             @forelse ($popularInstructors as $index => $instructor)
-                                <li class="list-group-item px-0 {{ $index === 0 ? 'pt-0' : '' }}">
-                                    <div class="row">
-                                        <div class="col-auto">
-                                            <div class="avatar avatar-md avatar-indicators avatar-online">
+                                <li class="list-group-item px-0 py-3 border-0 rounded hover-bg-light">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="position-relative">
                                                 <img alt="avatar"
                                                     src="{{ $instructor->profile_picture ? asset('storage/' . $instructor->profile_picture) : asset('assets/images/avatar/avatar-default.jpg') }}"
-                                                    class="rounded-circle" />
+                                                    class="rounded-circle shadow-sm border border-2" width="60"
+                                                    height="60" />
+                                                <span
+                                                    class="position-absolute bottom-0 end-0 p-1 bg-success rounded-circle border border-white"
+                                                    style="width:12px; height:12px;"></span>
+                                            </div>
+                                            <div>
+                                                <h5 class="mb-1 fw-semibold text-dark">{{ $instructor->name }}</h5>
+                                                <div class="text-muted small">
+                                                    {{ $instructor->courses_count }} khóa học •
+                                                    {{ number_format($instructor->students_count) }} học viên
+                                                </div>
+                                                <div class="text-muted small">
+                                                    {{ number_format($instructor->reviews_count) }} đánh giá</div>
                                             </div>
                                         </div>
-                                        <div class="col ms-n3">
-                                            <h4 class="mb-0 h5">{{ $instructor->name }}</h4>
-                                            <span class="me-2 fs-6">
-                                                <span
-                                                    class="text-dark me-1 fw-semibold">{{ $instructor->courses_count }}</span>
-                                                Khóa học
-                                            </span>
-                                            <span class="me-2 fs-6">
-                                                <span
-                                                    class="text-dark me-1 fw-semibold">{{ number_format($instructor->students_count) }}</span>
-                                                Học viên
-                                            </span>
-                                            <span class="fs-6">
-                                                <span
-                                                    class="text-dark me-1 fw-semibold">{{ number_format($instructor->reviews_count) }}</span>
-                                                Đánh giá
-                                            </span>
-                                        </div>
-                                        <div class="col-auto">
-                                            <span class="dropdown dropstart">
-                                                <a class="btn-icon btn btn-ghost btn-sm rounded-circle" href="#"
-                                                    role="button" id="courseDropdown{{ $index + 7 }}"
-                                                    data-bs-toggle="dropdown" data-bs-offset="-20,20"
-                                                    aria-expanded="false">
-                                                    <i class="fe fe-more-vertical"></i>
-                                                </a>
-                                                <span class="dropdown-menu"
-                                                    aria-labelledby="courseDropdown{{ $index + 7 }}">
-                                                    <span class="dropdown-header">Settings</span>
-                                                    <a class="dropdown-item" href="#">
-                                                        <i class="fe fe-edit dropdown-item-icon"></i>
-                                                        Edit
-                                                    </a>
-                                                    <a class="dropdown-item" href="#">
-                                                        <i class="fe fe-trash dropdown-item-icon"></i>
-                                                        Remove
-                                                    </a>
-                                                </span>
-                                            </span>
+
+                                        <div class="dropdown">
+                                            <a class="text-muted" href="#" role="button"
+                                                data-bs-toggle="dropdown">
+                                                <i class="fe fe-more-vertical"></i>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i
+                                                            class="fe fe-edit me-2"></i>Chỉnh sửa</a></li>
+                                                <li><a class="dropdown-item" href="#"><i
+                                                            class="fe fe-trash me-2"></i>Xóa</a></li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </li>
                             @empty
-                                <li class="list-group-item px-0 pt-0">
-                                    <p class="text-center">Không có giảng viên nào.</p>
-                                </li>
+                                <li class="list-group-item text-center text-muted">Không có giảng viên nào.</li>
                             @endforelse
                         </ul>
                     </div>
                 </div>
             </div>
+
+            <!-- RECENT COURSES -->
             <div class="col-xl-4 col-lg-12 col-md-12 col-12">
-                <!-- Card -->
-                <div class="card h-100">
-                    <!-- Card header -->
-                    <div class="card-header d-flex align-items-center justify-content-between card-header-height">
-                        <h4 class="mb-0">Khóa học gần đây</h4>
-                        <a href="#" class="btn btn-outline-secondary btn-sm">View all</a>
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-header d-flex align-items-center justify-content-between bg-white">
+                        <h4 class="mb-0 fw-bold text-primary">Khóa học gần đây</h4>
+                        <a href="#" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
                     </div>
-                    <!-- Card body -->
-                    <div class="card-body">
-                        <!-- List group flush -->
+
+                    <div class="card-body py-3">
                         <ul class="list-group list-group-flush">
                             @forelse ($recentCourses as $index => $course)
-                                <li class="list-group-item px-0 {{ $index === 0 ? 'pt-0' : '' }}">
-                                    <div class="row flex-column flex-md-row gap-3 gap-md-0">
-                                        <!-- Col -->
-                                        <div class="col-md-3 col-12">
+                                <li class="list-group-item px-0 py-3 border-0 rounded hover-bg-light">
+                                    <div
+                                        class="d-flex align-items-center justify-content-between flex-wrap flex-md-nowrap gap-3">
+                                        <a href="#" class="d-block flex-shrink-0">
+                                            <img src="{{ $course->thumbnail ? asset('storage/' . $course->thumbnail) : asset('assets/images/course/course-default.jpg') }}"
+                                                alt="{{ $course->title }}" class="rounded shadow-sm border border-1"
+                                                style="width: 80px; height: 60px; object-fit: cover;" />
+                                        </a>
+
+                                        <div class="flex-grow-1">
                                             <a href="#">
-                                                <img src="{{ $course->thumbnail ? asset('storage/' . $course->thumbnail) : asset('assets/images/course/course-default.jpg') }}"
-                                                    alt="{{ $course->title }}" class="img-fluid rounded" />
+                                                <h5 class="mb-1 text-dark fw-semibold">
+                                                    {{ Str::limit($course->title, 40, '...') }}</h5>
                                             </a>
-                                        </div>
-                                        <!-- Col -->
-                                        <div class="col-md-8 col-10">
-                                            <div class="d-flex flex-column gap-2">
-                                                <a href="#">
-                                                    <h5 class="text-primary-hover mb-0">
-                                                        {{ Str::limit($course->title, 40, '...') }}</h5>
-                                                </a>
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <img alt="avatar"
-                                                        src="{{ $course->user->profile_picture ? asset('storage/' . $course->user->profile_picture) : asset('assets/images/avatar/avatar-default.jpg') }}"
-                                                        class="avatar-md rounded-circle" />
-                                                    <span class="fs-6">{{ $course->user->name }}</span>
-                                                </div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <img alt="avatar"
+                                                    src="{{ $course->user->profile_picture ? asset('storage/' . $course->user->profile_picture) : asset('assets/images/avatar/avatar-default.jpg') }}"
+                                                    class="rounded-circle"
+                                                    style="width: 35px; height: 35px; object-fit: cover;" />
+                                                <span class="small text-muted">{{ $course->user->name }}</span>
                                             </div>
                                         </div>
-                                        <!-- Col auto -->
-                                        <div class="col-1 col-auto d-flex justify-content-center">
-                                            <span class="dropdown dropstart">
-                                                <a class="btn-icon btn btn-ghost btn-sm rounded-circle" href="#"
-                                                    role="button" id="courseDropdown{{ $index + 3 }}"
-                                                    data-bs-toggle="dropdown" data-bs-offset="-20,20"
-                                                    aria-expanded="false">
-                                                    <i class="fe fe-more-vertical"></i>
-                                                </a>
-                                                <span class="dropdown-menu"
-                                                    aria-labelledby="courseDropdown{{ $index + 3 }}">
-                                                    <span class="dropdown-header">Settings</span>
-                                                    <a class="dropdown-item" href="#">
-                                                        <i class="fe fe-edit dropdown-item-icon"></i>
-                                                        Edit
-                                                    </a>
-                                                    <a class="dropdown-item" href="#">
-                                                        <i class="fe fe-trash dropdown-item-icon"></i>
-                                                        Remove
-                                                    </a>
-                                                </span>
-                                            </span>
+
+                                        <div class="dropdown">
+                                            <a class="text-muted" href="#" role="button"
+                                                data-bs-toggle="dropdown">
+                                                <i class="fe fe-more-vertical"></i>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i
+                                                            class="fe fe-edit me-2"></i>Chỉnh sửa</a></li>
+                                                <li><a class="dropdown-item" href="#"><i
+                                                            class="fe fe-trash me-2"></i>Xóa</a></li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </li>
                             @empty
-                                <li class="list-group-item px-0 pt-0">
-                                    <p class="text-center">Không có khóa học nào.</p>
-                                </li>
+                                <li class="list-group-item text-center text-muted">Không có khóa học nào.</li>
                             @endforelse
                         </ul>
                     </div>
                 </div>
             </div>
+
         </div>
+
     </section>
 @endsection
 

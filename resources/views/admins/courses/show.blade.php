@@ -11,36 +11,59 @@
                 <h2 class="m-0">Chi tiết khóa học</h2>
             </div>
             <div class="card-body">
-                <div class="mb-3">
-                    <strong>Tiêu đề:</strong> {{ $course->title }}
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Tiêu đề</label>
+                        <input type="text" class="form-control" value="{{ $course->title }}" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Danh mục</label>
+                        <input type="text" class="form-control" value="{{ $course->category->name }}" readonly>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <strong>Mô tả:</strong> {{ $course->description }}
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Mô tả</label>
+                        <textarea class="form-control" rows="3" readonly>{{ $course->description }}</textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Giảng viên</label>
+                        <input type="text" class="form-control" value="{{ $course->user->name }}" readonly>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <strong>Danh mục:</strong> {{ $course->category->name }}
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Trạng thái</label>
+                        <input type="text"
+                            class="form-control 
+                        @if ($course->status == 'pending') bg-warning 
+                        @elseif($course->status == 'published') bg-success 
+                        @elseif($course->status == 'rejected') bg-danger @endif 
+                        text-white"
+                            value="@if ($course->status == 'pending') Chờ duyệt 
+                               @elseif($course->status == 'published') Đã phê duyệt 
+                               @elseif($course->status == 'rejected') Đã từ chối @endif"
+                            readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Ngày tạo</label>
+                        <input type="text" class="form-control" value="{{ $course->created_at }}" readonly>
+                    </div>
                 </div>
+
                 <div class="mb-3">
-                    <strong>Giảng viên:</strong> {{ $course->user->name }}
+                    <label class="form-label">Ảnh khóa học</label>
+                    <div>
+                        <img src="{{ Storage::url($course->thumbnail) }}" alt="thumbnail" height="100" width="100"
+                            style="border-radius: 8px;">
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <strong>Trạng thái:</strong>
-                    @if ($course->status == 'pending')
-                        <span class="badge bg-warning">Chờ duyệt</span>
-                    @elseif($course->status == 'published')
-                        <span class="badge bg-success">Đã phê duyệt</span>
-                    @elseif($course->status == 'rejected')
-                        <span class="badge bg-danger">Đã từ chối</span>
-                    @endif
+
+                <div class="mt-4">
+                    <a href="{{ route('admin.courses.index') }}" class="btn btn-secondary">Quay lại danh sách khóa học</a>
                 </div>
-                <div class="mb-3">
-                    <strong>Ngày tạo:</strong> {{ $course->created_at }}
-                </div>
-                <div class="mb-3">
-                    <strong>Ảnh:</strong>
-                    <img src="{{ Storage::url($course->thumbnail) }}" alt="thumbnail" height="100" width="100">
-                </div>
-                <a href="{{ route('admin.courses.index') }}" class="btn btn-secondary">Quay lại danh sách khóa học</a>
             </div>
         </div>
     </div>

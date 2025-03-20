@@ -36,16 +36,6 @@
                 <div class="row mt-0 mt-md-4">
                     <div class="col-lg-3 col-md-4 col-12">
                         <div class="card card-body p-0 border-0">
-                            <h5 class="px-4 py-3 m-0">GÓI ĐĂNG KÝ</h5>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item px-4 py-2"><i class="fe fe-calendar me-2"></i> Gói của tôi</li>
-                                <li class="list-group-item px-4 py-2"><i class="fe fe-dollar-sign me-2"></i> Thông tin thanh
-                                    toán</li>
-                                <li class="list-group-item px-4 py-2"><i class="fe fe-credit-card me-2"></i> Thanh toán</li>
-                                <li class="list-group-item px-4 py-2"><i class="fe fe-file-text me-2"></i> Hóa đơn</li>
-                                <li class="list-group-item px-4 py-2"><i class="fe fe-help-circle me-2"></i> Bài kiểm tra
-                                    của tôi</li>
-                            </ul>
                             <h5 class="px-4 py-3 m-0">THIẾT LẬP TÀI KHOẢN</h5>
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item px-4 py-2 active"><i class="fe fe-edit me-2"></i> <a
@@ -118,9 +108,9 @@
                                         <!-- Email -->
                                         <div class="mb-3 col-12 col-md-6">
                                             <label class="form-label" for="profileEditEmail">Email</label>
-                                            <input type="email" id="profileEditEmail" name="email"
-                                                class="form-control" value="{{ old('email', auth()->user()->email) }}"
-                                                placeholder="Email" required />
+                                            <input type="email" id="profileEditEmail" name="email" class="form-control"
+                                                value="{{ old('email', auth()->user()->email) }}" placeholder="Email"
+                                                required />
                                             <div class="invalid-feedback">Vui lòng nhập địa chỉ email hợp lệ.</div>
                                             @error('email')
                                                 <span class="text-danger">{{ $message }}</span>
