@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\DashBoardController;
@@ -36,6 +37,8 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::get('/dashboard/revenue-filter', [DashboardController::class, 'filterRevenue'])->name('dashboard.revenue.filter');
         Route::post('logout', [AuthController::class, 'logout'])->name('admin.logout');
 
+        //Banner
+        Route::resource('banners', BannerController::class);
         //Voucher
         Route::resource('vouchers', VoucherController::class);
         Route::resource('voucher-use', VoucherUseController::class);

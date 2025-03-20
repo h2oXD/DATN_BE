@@ -901,4 +901,84 @@ class CourseController extends Controller
             'message' => 'Gửi yêu cầu phê duyệt thành công'
         ], Response::HTTP_OK);
     }
+    /**
+ * @OA\Get(
+ *     path="/api/courses/{course_id}/related",
+ *     summary="Lấy danh sách khóa học liên quan",
+ *     description="API này trả về danh sách khóa học có cùng danh mục với khóa học hiện tại.",
+ *     tags={"Courses"},
+ *     @OA\Parameter(
+ *         name="course_id",
+ *         in="path",
+ *         required=true,
+ *         description="ID của khóa học",
+ *         @OA\Schema(type="integer", example=1)
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Danh sách khóa học liên quan",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="message", type="string", example="Lấy danh sách khoá học liên quan thành công"),
+ *             @OA\Property(
+ *                 property="related_courses",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     type="object",
+ *                     @OA\Property(property="id", type="integer", example=2),
+ *                     @OA\Property(property="title", type="string", example="Khóa học Laravel"),
+ *                     @OA\Property(property="category_id", type="integer", example=1),
+ *                     @OA\Property(property="status", type="string", example="published"),
+ *                     @OA\Property(property="thumbnail", type="string", example="images/laravel.jpg")
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Không tìm thấy khóa học",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="message", type="string", example="Không tìm thấy khoá học")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Lỗi hệ thống",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="message", type="string", example="Lỗi hệ thống"),
+ *             @OA\Property(property="error", type="string", example="Chi tiết lỗi")
+ *         )
+ *     )
+ * )
+ */
+    public function relatedCourses($course_id)
+    {
+        try {
+            $course = Course::find($course_id);
+    
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Không tìm thấy khoá học'
+                ], Response::HTTP_NOT_FOUND);
+            }
+    
+            $relatedCourses = Course::where('category_id', $course->category_id)
+                ->where('id', '!=', $course_id)
+                ->where('status', 'published')
+                ->limit(5) 
+                ->get();
+    
+            return response()->json([
+                'message' => 'Lấy danh sách khoá học liên quan thành công',
+                'related_courses' => $relatedCourses
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Lỗi hệ thống',
+                'error' => $th
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
