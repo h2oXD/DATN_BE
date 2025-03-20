@@ -86,10 +86,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/courses', [EnrollmentController::class, 'getUserCoursesWithProgress']);
     Route::get('/user/courses/{course_id}', [EnrollmentController::class, 'getprogress']);
 
-    // review
-    Route::post('/user/{user_id}/courses/{course_id}/reviews', [ReviewController::class, 'store']); // Thêm đánh giá
-    Route::put('/user/{user_id}/reviews/{review_id}', [ReviewController::class, 'update']);
-    Route::delete('/user/{user_id}/reviews/{review_id}', [ReviewController::class, 'destroy']);
+    // review 
+    Route::post('/courses/{courseId}/reviews', [ReviewController::class, 'storeCourseReview']);
+    Route::post('/lecturers/{lecturerId}/reviews', [ReviewController::class, 'storeLecturerReview']);
+    Route::put('/reviews/{review}', [ReviewController::class, 'update']);
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
+    Route::get('/courses/{courseId}/reviews', [ReviewController::class, 'getCourseReviews']);
+    Route::get('/lecturers/{lecturerId}/reviews', [ReviewController::class, 'getLecturerReviews']);
+    Route::get('/reviews/user', [ReviewController::class, 'getUserReviews']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 
@@ -137,7 +141,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/wallet/deposit-histories', [TransactionWalletController::class, 'depositHistory']);
     // Lịch sử ví tiền (tất cả các loại giao dịch)
     Route::get('/user/wallet/histories', [TransactionWalletController::class, 'walletHistory']);
-    
+
 });
 // Callback payment
 Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
@@ -239,9 +243,6 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/courses/{course_id}/public', [CourseController::class, 'publicCourseDetail']);
 Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id']);
 //Xem đánh giá
-Route::get('/courses/{course_id}/reviews', [ReviewController::class, 'getReviewsByCourse']); // Lấy đánh giá của khóa học
-Route::get('/user/{user_id}/reviews', [ReviewController::class, 'getReviewsByUser']); // Lấy đánh giá của user
-
 
 Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);

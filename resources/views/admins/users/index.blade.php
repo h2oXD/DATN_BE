@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <div class="card">
+    <div class="card m-3">
         <div class="card-header d-flex justify-content-between align-content-center">
             <h2 class="m-0">Danh sách người dùng</h2>
             <a href="{{ route('admin.users.create') }}" class="btn btn-primary">Thêm mới người dùng</a>
