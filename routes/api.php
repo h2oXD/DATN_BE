@@ -192,6 +192,12 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     // Lịch sử rút tiền
     Route::get('/user/wallet/withdraw-histories', [TransactionWalletController::class, 'withdrawHistory']);
 
+
+    // Excel quiz
+    Route::post('/lessons/{lessonId}/quizzes/{quiz_id}/upload', [QuizController::class, 'uploadQuizExcel']);
+
+   
+
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/student/home', [OverviewController::class, 'overview']);
