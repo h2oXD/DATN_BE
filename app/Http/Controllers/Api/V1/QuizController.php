@@ -590,10 +590,11 @@ class QuizController extends Controller
 
         // Import dữ liệu từ file đã lưu
         Excel::import(new QuizImport($quiz_id), Storage::path($filePath));
+        Storage::delete($filePath);
 
         return response()->json([
             'message' => 'Import thành công!',
-            'file_path' => Storage::url($filePath) // Trả về URL file nếu cần
+            
         ]);
     }
 }
