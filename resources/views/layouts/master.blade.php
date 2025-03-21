@@ -31,13 +31,18 @@
 
         </main>
     </div>
+    <script>
+        document.documentElement.setAttribute("data-bs-theme", "light");
+    </script>
     @yield('script')
+    <script>
+        document.documentElement.setAttribute("data-bs-theme", "light");
+    </script>
+    @stack('scripts')
     @include('layouts.partials.script')
     @vite('resources/js/public.js')
     <script>
-        var userId = {{Auth::user()->id}}
-        
-        
+        var userId = {{ Auth::user()->id }}
     </script>
 </body>
 

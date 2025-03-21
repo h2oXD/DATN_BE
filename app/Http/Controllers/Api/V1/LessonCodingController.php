@@ -8,6 +8,7 @@ use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\Section;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class LessonCodingController extends Controller
@@ -197,15 +198,14 @@ class LessonCodingController extends Controller
      */
     // Tạo bài tập lập trình mới
 
-    public function store(Request $request, $course_id, $section_id, $lesson_id)
+    public function store(Request $request, $course_id, $section_id)
     {
         // Kiểm tra lesson có tồn tại không
         $course = $request->user()->courses()->with([
             'sections' => fn($query) => $query->where('id', $section_id),
-            'sections.lessons' => fn($query) => $query->where('id', $lesson_id)
         ])->find($course_id);
 
-        if (!$course || !$course->sections->first() || !$lesson = $course->sections->first()->lessons->first()) {
+        if (!$course || !$course->sections->first()) {
             return response()->json(['message' => 'Không tìm thấy tài nguyên'], 404);
         }
 
@@ -216,7 +216,7 @@ class LessonCodingController extends Controller
             'problem_description' => 'nullable|string',
             'starter_code' => 'required|string',
             'solution_code' => 'required|string',
-            'test_cases' => 'required|json',
+            'output' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -225,22 +225,30 @@ class LessonCodingController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-
-        // Lấy dữ liệu hợp lệ
-        $data = $validator->validated();
-
-        // Chuyển test_cases sang JSON nếu cần
-        $data['test_cases'] = is_array($data['test_cases']) ? json_encode($data['test_cases']) : $data['test_cases'];
-     
-
+        DB::beginTransaction();
         // Lưu vào database
         try {
+            // Lấy dữ liệu hợp lệ
+            $data = $validator->validated();
+            // Lấy order lớn nhất hiện tại trong section và tăng thêm 1
+            $maxOrder = $course->sections->first()->lessons()->max('order') ?? 0;
+            $order['order'] = $maxOrder + 1;
+
+            $lesson = Lesson::create([
+                'section_id' => $section_id,
+                'title' => $data['problem_title'],
+                'description' => $data['problem_description'],
+                'type' => 'coding',
+                'order' => $order['order']
+            ]);
             $coding = $lesson->codings()->create($data);
+            DB::commit();
             return response()->json([
                 'message' => 'Bài tập lập trình đã được tạo thành công!',
                 'data' => $coding
             ], 201);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'message' => 'Lỗi khi tạo bài tập lập trình!',
                 'error' => $e->getMessage()
@@ -392,7 +400,7 @@ class LessonCodingController extends Controller
             'problem_description' => 'nullable|string',
             'starter_code' => 'required|string',
             'solution_code' => 'required|string',
-            'test_cases' => 'required|json',
+            'output' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -404,11 +412,6 @@ class LessonCodingController extends Controller
 
         // Lấy dữ liệu hợp lệ
         $data = $validator->validated();
-
-        // Nếu test_cases là mảng, chuyển sang JSON
-        if (!empty($data['test_cases']) && is_array($data['test_cases'])) {
-            $data['test_cases'] = json_encode($data['test_cases']);
-        }
 
         // Cập nhật dữ liệu trong database
         try {

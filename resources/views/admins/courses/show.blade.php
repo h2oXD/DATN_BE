@@ -29,7 +29,7 @@
                         <span class="badge bg-warning">Chờ duyệt</span>
                     @elseif($course->status == 'published')
                         <span class="badge bg-success">Đã phê duyệt</span>
-                    @elseif($course->status == 'rejected')
+                    @elseif($course->status == 'draft')
                         <span class="badge bg-danger">Đã từ chối</span>
                     @endif
                 </div>

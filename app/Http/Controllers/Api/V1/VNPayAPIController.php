@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\ChatRoom;
+use App\Models\ChatRoomUser;
 use App\Models\Completion;
 use App\Models\Course;
 use App\Models\Enrollment;
@@ -104,7 +106,7 @@ class VNPayAPIController extends Controller
         DB::beginTransaction();
 
         try {
-
+            $user = $request->user();
             $own_course = $request->user()->courses()->find($course_id);
             $course = Course::lockForUpdate()->findOrFail($course_id);
             $is_free = $course->is_free;
@@ -222,7 +224,6 @@ class VNPayAPIController extends Controller
                     'status' => 'success',
                     'payment_url' => $paymentUrl
                 ], Response::HTTP_CREATED);
-
             } else {
 
                 // Kiểm tra khóa học đã được sở hữu chưa
@@ -287,14 +288,29 @@ class VNPayAPIController extends Controller
                     'progress_percent' => 0
                 ]);
 
+
+                // Thêm người dùng vào phòng chat của khóa học
+                $chatRoom = ChatRoom::where('course_id', $course_id)->first(); // Lấy phòng chat
+
+                if ($chatRoom) {
+                    $alreadyJoined = ChatRoomUser::where('chat_room_id', $chatRoom->id)
+                        ->where('user_id', $user->id)
+                        ->exists();
+
+                    if (!$alreadyJoined) {
+                        ChatRoomUser::create([
+                            'chat_room_id' => $chatRoom->id,
+                            'user_id' => $user->id
+                        ]);
+                    }
+                }
+
                 DB::commit(); // Commit transaction
 
                 return response()->json([
                     'message' => 'Thanh toán thành công!'
                 ], Response::HTTP_OK);
-
             }
-
         } catch (\Throwable $th) {
             DB::rollBack(); // Rollback transaction nếu có lỗi
             return response()->json([
@@ -491,12 +507,10 @@ class VNPayAPIController extends Controller
                 DB::commit(); // Commit transaction
 
                 return redirect('http://localhost:5173/student/MyCourse');
-
             } else {
 
                 DB::rollBack(); // Rollback transaction nếu có lỗi
                 return redirect("http://localhost:5173/student/home/$course_id/coursedetail?status=error");
-
             }
         } catch (\Throwable $th) {
             DB::rollBack(); // Rollback transaction nếu có lỗi
@@ -505,6 +519,5 @@ class VNPayAPIController extends Controller
                 'error' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
     }
 }

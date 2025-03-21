@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Certificate;
 use App\Models\Completion;
 use App\Models\Enrollment;
 use App\Models\Lesson;
@@ -85,12 +86,18 @@ class EnrollmentController extends Controller
         }
 
         $course = $enrollment->course()->with(
-            'sections',
-            'sections.lessons',
-            'sections.lessons.videos',
-            'sections.lessons.documents',
-            'sections.lessons.codings',
-            'sections.lessons.quizzes',
+            [
+                'sections' => function ($query) {
+                    $query->orderBy('order');
+                },
+                'sections.lessons' => function ($query) {
+                    $query->orderBy('order');
+                },
+                'sections.lessons.videos',
+                'sections.lessons.documents',
+                'sections.lessons.codings',
+                'sections.lessons.quizzes',
+            ]
         )->first();
 
         return response()->json([
@@ -124,9 +131,11 @@ class EnrollmentController extends Controller
             ->whereIn('status', ['active', 'canceled', 'completed'])
             ->with(['course', 'progress'])
             ->first();
-
+        $is_certificate = Certificate::where('course_id', $courses_id)->where('user_id', $user->id)->first();
+        $is_certificate ? 1 : 0;
         return response()->json([
-            'data' => $enrollments
+            'data' => $enrollments,
+            'is_certificate' => $is_certificate
         ], 200);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ComplainController;
 use App\Http\Controllers\Admin\CourseController;
@@ -34,8 +35,11 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
     Route::prefix('admin')->name('admin.')->group(function () {
         //Dashboard
         Route::get('/', [DashBoardController::class, 'dashboard'])->name('dashboard');
+        Route::get('/dashboard/revenue-filter', [DashboardController::class, 'filterRevenue'])->name('dashboard.revenue.filter');
         Route::post('logout', [AuthController::class, 'logout'])->name('admin.logout');
 
+        //Banner
+        Route::resource('banners', BannerController::class);
         //Voucher
         Route::resource('vouchers', VoucherController::class);
         Route::resource('voucher-use', VoucherUseController::class);
@@ -73,6 +77,10 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::post('courses/{id}/reject', [CourseController::class, 'reject'])->name('courses.reject');
         Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
         Route::get('courses/censor', [CourseController::class, 'censorCourseList'])->name('censor.courses.list');
+        Route::get('courses/approval-history', [CourseController::class, 'approvalHistory'])->name('courses.approval.history');
+        Route::get('courses/{id}/history', [CourseController::class, 'showHistory'])->name('courses.history.show');
+    
+
 
         Route::post('/lecturer-approvals/{user_id}/reject', [LecturerRegisterController::class, 'reject'])->name('lecturer-approvals.reject');
         Route::post('/lecturer-approvals/{user_id}/approve', [LecturerRegisterController::class, 'approve'])->name('lecturer-approvals.approve');
