@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Imports\QuizImport;
 use App\Models\Answer;
+use App\Models\Course;
+use App\Models\Lesson;
 use App\Models\Question;
 use App\Models\Quiz;
 use App\Models\Submission;
@@ -11,6 +14,9 @@ use App\Models\SubmissionAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Section;
+use Illuminate\Support\Facades\Validator;
 
 class QuizController extends Controller
 {
@@ -576,4 +582,42 @@ class QuizController extends Controller
             ], 500);
         }
     }
+
+
+
+    public function uploadQuizExcel(Request $request, $lessonId, $quiz_id)
+    {
+        // Kiểm tra xem lesson có tồn tại không
+        $lesson = Lesson::find($lessonId);
+        if (!$lesson) {
+            return response()->json(['message' => 'Lesson không tồn tại'], 404);
+        }
+    
+        // Kiểm tra xem quiz có thuộc lesson này không
+        $quiz = Quiz::where('id', $quiz_id)->where('lesson_id', $lessonId)->first();
+        if (!$quiz) {
+            return response()->json(['message' => 'Quiz không thuộc lesson này'], 404);
+        }
+    
+        // Validate file upload
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+        ], [
+            'file.required' => 'Vui lòng chọn một file để import.',
+            'file.mimes'    => 'File phải có định dạng: xlsx, xls, hoặc csv.',
+            'file.max'      => 'File không được lớn hơn 2MB.'
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+    
+        // Lấy file từ request và xử lý ngay
+        Excel::import(new QuizImport($quiz_id), $request->file('file'));
+    
+        return response()->json([
+            'message' => 'Import thành công!',
+        ]);
+    }
+    
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\ResetPasswordController;
+use App\Http\Controllers\Api\V1\BannerController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CertificateController;
 use App\Http\Controllers\Api\V1\ChatMessageController;
@@ -198,9 +199,15 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     // Lịch sử rút tiền
     Route::get('/user/wallet/withdraw-histories', [TransactionWalletController::class, 'withdrawHistory']);
 
+
+    // Excel quiz
+    Route::post('/lessons/{lessonId}/quizzes/{quiz_id}/upload', [QuizController::class, 'uploadQuizExcel']);
+
+   
+
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
-    Route::get('/student/home', [OverviewController::class, 'overview']);
+   
     Route::get('/student/courses/{course_id}', [EnrollmentController::class, 'showUserEnrollmentCourse']);
     Route::get('/lesson/{lesson_id}', [EnrollmentController::class, 'showLesson']);
     Route::get('course/{course_id}/lesson', [EnrollmentController::class, 'getStatusLesson']);
@@ -228,7 +235,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/user/wishlist/check/{course_id}', [WishListController::class, 'check']); // Kiểm tra course
 });
 
-
+Route::get('/student/home', [OverviewController::class, 'overview']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 //Forgot password
@@ -237,6 +244,7 @@ Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name(
 
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/courses/{course_id}/public', [CourseController::class, 'publicCourseDetail']);
+Route::get('/courses/{course_id}/related', [CourseController::class, 'relatedCourses']);
 Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id']);
 //Xem đánh giá
 
@@ -244,3 +252,4 @@ Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirectToGoo
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 
 Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.default.api');
+Route::get('/banners', [BannerController::class, 'index']);
