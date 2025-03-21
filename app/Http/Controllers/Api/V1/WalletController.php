@@ -780,7 +780,7 @@ class WalletController extends Controller
 
     /**
      * @OA\Post(
-     *   path="/user/wallets/withdraw",
+     *   path="/lecturer/wallets/withdraw",
      *   tags={"Wallet"},
      *   summary="Rút tiền từ ví giảng viên",
      *   description="API này cho phép giảng viên rút tiền từ ví về tài khoản ngân hàng của họ. Chỉ tài khoản có vai trò 'lecturer' mới được phép rút tiền.",

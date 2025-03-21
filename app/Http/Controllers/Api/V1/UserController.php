@@ -88,8 +88,6 @@ class UserController extends Controller
      *     )
      * )
      */
-
-
     public function update(Request $request)
     {
         $user = $request->user();
@@ -130,11 +128,77 @@ class UserController extends Controller
         return response()->json(['message' => 'User info updated successfully', 'user' => $user], Response::HTTP_OK);
     }
 
-    // Thêm thông tin ngân hàng
+    /**
+     * @OA\Post(
+     * path="/lecturer/insertBank",
+     * summary="Thêm thông tin ngân hàng cho giảng viên",
+     * description="Thêm thông tin ngân hàng cho người dùng có vai trò giảng viên.",
+     * tags={"Lecturer"},
+     * security={{"sanctum": {}}},
+     * @OA\RequestBody(
+     * required=true,
+     * @OA\JsonContent(
+     * required={"bank_name", "bank_nameUser", "bank_number"},
+     * @OA\Property(property="bank_name", type="string", example="Vietcombank", description="Tên ngân hàng"),
+     * @OA\Property(property="bank_nameUser", type="string", example="Nguyen Van A", description="Tên chủ tài khoản"),
+     * @OA\Property(property="bank_number", type="integer", example=1234567890, description="Số tài khoản ngân hàng")
+     * )
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Thêm thông tin ngân hàng thành công",
+     * @OA\JsonContent(
+     * @OA\Property(property="status", type="string", example="success"),
+     * @OA\Property(property="message", type="string", example="Thêm thông tin ngân hàng thành công")
+     * )
+     * ),
+     * @OA\Response(
+     * response=400,
+     * description="Lỗi server hoặc lỗi dữ liệu",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Lỗi server"),
+     * @OA\Property(property="error", type="string", example="Chi tiết lỗi")
+     * )
+     * ),
+     * @OA\Response(
+     * response=401,
+     * description="Không xác thực",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Unauthenticated.")
+     * )
+     * ),
+     * @OA\Response(
+     * response=403,
+     * description="Không có quyền truy cập",
+     * @OA\JsonContent(
+     * @OA\Property(property="status", type="string", example="error"),
+     * @OA\Property(property="message", type="string", example="Chỉ tài khoản giảng viên mới có thể thao tác")
+     * )
+     * ),
+     * @OA\Response(
+     * response=404,
+     * description="Không tìm thấy người dùng",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Không tìm thấy người dùng")
+     * )
+     * ),
+     * @OA\Response(
+     * response=422,
+     * description="Lỗi xác thực dữ liệu đầu vào",
+     * @OA\JsonContent(
+     * @OA\Property(property="errors", type="object",
+     * @OA\Property(property="bank_name", type="array", @OA\Items(type="string", example="The bank name field is required.")),
+     * @OA\Property(property="bank_nameUser", type="array", @OA\Items(type="string", example="The bank name user field is required.")),
+     * @OA\Property(property="bank_number", type="array", @OA\Items(type="string", example="The bank number field is required."))
+     * )
+     * )
+     * )
+     * )
+     */
     public function insertBank(Request $request)
     {
         try {
-            
+
             $user = $request->user();
 
             if (!$user) {
@@ -152,9 +216,9 @@ class UserController extends Controller
 
             // Kiểm tra dữ liệu truyền lên
             $validator = Validator::make($request->all(), [
-                'bank_name'         => 'required|string',
-                'bank_nameUser'     => 'required|string',
-                'bank_number'       => 'required|int'
+                'bank_name' => 'required|string',
+                'bank_nameUser' => 'required|string',
+                'bank_number' => 'required|int'
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -163,30 +227,88 @@ class UserController extends Controller
             }
 
             $user->update([
-                'bank_name'         => $request->bank_name,
-                'bank_nameUser'     => $request->bank_nameUser,
-                'bank_number'       => $request->bank_number
+                'bank_name' => $request->bank_name,
+                'bank_nameUser' => $request->bank_nameUser,
+                'bank_number' => $request->bank_number
             ]);
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Thêm thông tin ngân hàng thành công'
             ], Response::HTTP_OK);
-            
+
         } catch (\Throwable $th) {
             return response()->json([
-                'message'   => 'Lỗi server',
-                'error'     => $th->getMessage(),
+                'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
     }
 
-    // Lấy thông tin ngân hàng
+    /**
+     * @OA\Get(
+     * path="/lecturer/getBank",
+     * summary="Lấy thông tin ngân hàng của giảng viên",
+     * description="Lấy thông tin ngân hàng của người dùng có vai trò giảng viên.",
+     * tags={"Lecturer"},
+     * security={{"sanctum": {}}},
+     * @OA\Response(
+     * response=200,
+     * description="Thông tin ngân hàng của giảng viên",
+     * @OA\JsonContent(
+     * @OA\Property(property="status", type="string", example="success"),
+     * @OA\Property(property="infoBank", type="object",
+     * @OA\Property(property="bank_name", type="string", example="Vietcombank"),
+     * @OA\Property(property="bank_nameUser", type="string", example="Nguyen Van A"),
+     * @OA\Property(property="bank_number", type="integer", example="1234567890")
+     * )
+     * )
+     * ),
+     * @OA\Response(
+     * response=204,
+     * description="Không có thông tin ngân hàng",
+     * @OA\JsonContent(
+     * @OA\Property(property="status", type="string", example="success"),
+     * @OA\Property(property="infoBank", type="string", example="Không có thông tin")
+     * )
+     * ),
+     * @OA\Response(
+     * response=401,
+     * description="Xác thực không thành công",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Unauthenticated.")
+     * )
+     * ),
+     * @OA\Response(
+     * response=403,
+     * description="Không có quyền truy cập",
+     * @OA\JsonContent(
+     * @OA\Property(property="status", type="string", example="error"),
+     * @OA\Property(property="message", type="string", example="Chỉ tài khoản giảng viên mới có thể thao tác")
+     * )
+     * ),
+     * @OA\Response(
+     * response=404,
+     * description="Người dùng không tồn tại",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Không tìm thấy người dùng")
+     * )
+     * ),
+     * @OA\Response(
+     * response=500,
+     * description="Lỗi server",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Lỗi server"),
+     * @OA\Property(property="error", type="string", example="Chi tiết lỗi")
+     * )
+     * )
+     * )
+     */
     public function getBank(Request $request)
     {
         try {
-            
+
             $user = $request->user();
 
             if (!$user) {
@@ -203,31 +325,31 @@ class UserController extends Controller
             }
 
             $infoBank = [
-                'bank_name'         => $user->bank_name,
-                'bank_nameUser'     => $user->bank_nameUser,
-                'bank_number'       => $user->bank_number
+                'bank_name' => $user->bank_name,
+                'bank_nameUser' => $user->bank_nameUser,
+                'bank_number' => $user->bank_number
             ];
 
             if ($infoBank) {
-                
+
                 return response()->json([
                     'status' => 'success',
                     'infoBank' => $infoBank
                 ], Response::HTTP_OK);
 
             } else {
-                
+
                 return response()->json([
                     'status' => 'success',
                     'infoBank' => 'Không có thông tin'
                 ], Response::HTTP_NO_CONTENT);
 
             }
-            
+
         } catch (\Throwable $th) {
             return response()->json([
-                'message'   => 'Lỗi server',
-                'error'     => $th->getMessage(),
+                'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
