@@ -106,7 +106,7 @@ class VNPayAPIController extends Controller
         try {
 
             $own_course = $request->user()->courses()->find($course_id);
-            $course = Course::findOrFail($course_id);
+            $course = Course::lockForUpdate()->findOrFail($course_id);
             $is_free = $course->is_free;
 
             if ($is_free == 0) {

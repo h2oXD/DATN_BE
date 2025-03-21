@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ComplainController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\DashBoardController;
 use App\Http\Controllers\Admin\LecturerRegisterController;
@@ -88,5 +89,16 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::get('censor-withdraw/{id}', [WalletController::class, 'censor'])->name('censor-withdraw.show');
         Route::put('censor-withdraw/{id}/accept', [WalletController::class, 'accept'])->name('censor-withdraw.accept');
         Route::put('censor-withdraw/{id}/reject', [WalletController::class, 'reject'])->name('censor-withdraw.reject');
+        Route::get('history', [WalletController::class, 'historyCensor'])->name('censor-withdraw.history');
+        Route::get('history/{id}', [WalletController::class, 'detailHistory'])->name('censor-withdraw.history-detail');
+
+        // Kiểm duyệt yêu cầu khiếu nại
+        Route::get('censor-complain', [ComplainController::class, 'index'])->name('censor-complain.index');
+        Route::get('censor-complain/{id}', [ComplainController::class, 'censor'])->name('censor-complain.show');
+        Route::post('censor-complains/{id}/accept', [ComplainController::class, 'accept']);
+        Route::put('censor-complains/{id}/reject', [ComplainController::class, 'reject'])->name('censor-complain.reject');
+        Route::get('history-complain', [ComplainController::class, 'historyCensor'])->name('censor-complain.history');
+        Route::get('history-complain/{id}', [ComplainController::class, 'detailHistory'])->name('censor-complain.history-detail');
+
     });
 });

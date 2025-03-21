@@ -291,9 +291,9 @@ class WalletController extends Controller
 
         try {
 
-            $wallet = $request->user()->wallet;
+            $wallet = $request->user()->wallet()->lockForUpdate()->first();
             $own_course = $request->user()->courses()->find($course_id);
-            $course = Course::findOrFail($course_id);
+            $course = Course::lockForUpdate()->findOrFail($course_id);
             $is_free = $course->is_free;
             $lecturer_id = $course->user; // id giảng viên khóa học
 
@@ -589,7 +589,7 @@ class WalletController extends Controller
     {
         try {
             
-            $wallet = $request->user()->wallet;
+            $wallet = $request->user()->wallet()->lockForUpdate()->first();
 
             // Kiểm tra ví có tồn tại hay không
             if (!$wallet) {
@@ -859,7 +859,7 @@ class WalletController extends Controller
         try {
             
             $user           = $request->user();
-            $wallet         = $user->wallet;
+            $wallet         = $user->wallet()->lockForUpdate()->first();
             $amount         = $request->input('amount');
             $bank_code      = $request->input('bank_name');
             $bank_nameUser  = $request->input('bank_nameUser');
@@ -919,7 +919,7 @@ class WalletController extends Controller
             $wallet->decrement('balance', $amount);
             $wallet->update([
                 'transaction_history' => [
-                    'Loại giao dịch'        => 'Rút tiền',
+                    'Loại giao dịch'        => 'Gửi yêu cầu rút tiền',
                     'Số tiền thanh toán'    => number_format($amount) . ' VND',
                     'Số dư ví'              => number_format($wallet->balance) . ' VND',
                     'Mã ngân hàng'          => $bank_code,

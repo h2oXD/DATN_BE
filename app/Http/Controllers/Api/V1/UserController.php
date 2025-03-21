@@ -129,4 +129,108 @@ class UserController extends Controller
         $user->update($data);
         return response()->json(['message' => 'User info updated successfully', 'user' => $user], Response::HTTP_OK);
     }
+
+    // Thêm thông tin ngân hàng
+    public function insertBank(Request $request)
+    {
+        try {
+            
+            $user = $request->user();
+
+            if (!$user) {
+                return response()->json([
+                    'message' => 'Không tìm thấy người dùng'
+                ], Response::HTTP_NOT_FOUND);
+            }
+            // Kiểm tra người dùng có vai trò giảng viên hay không
+            if (!$user->roles()->where('name', 'lecturer')->exists()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Chỉ tài khoản giảng viên mới có thể thao tác'
+                ], Response::HTTP_FORBIDDEN);
+            }
+
+            // Kiểm tra dữ liệu truyền lên
+            $validator = Validator::make($request->all(), [
+                'bank_name'         => 'required|string',
+                'bank_nameUser'     => 'required|string',
+                'bank_number'       => 'required|int'
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'errors' => $validator->errors()
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $user->update([
+                'bank_name'         => $request->bank_name,
+                'bank_nameUser'     => $request->bank_nameUser,
+                'bank_number'       => $request->bank_number
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Thêm thông tin ngân hàng thành công'
+            ], Response::HTTP_OK);
+            
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message'   => 'Lỗi server',
+                'error'     => $th->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    // Lấy thông tin ngân hàng
+    public function getBank(Request $request)
+    {
+        try {
+            
+            $user = $request->user();
+
+            if (!$user) {
+                return response()->json([
+                    'message' => 'Không tìm thấy người dùng'
+                ], Response::HTTP_NOT_FOUND);
+            }
+            // Kiểm tra người dùng có vai trò giảng viên hay không
+            if (!$user->roles()->where('name', 'lecturer')->exists()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Chỉ tài khoản giảng viên mới có thể thao tác'
+                ], Response::HTTP_FORBIDDEN);
+            }
+
+            $infoBank = [
+                'bank_name'         => $user->bank_name,
+                'bank_nameUser'     => $user->bank_nameUser,
+                'bank_number'       => $user->bank_number
+            ];
+
+            if ($infoBank) {
+                
+                return response()->json([
+                    'status' => 'success',
+                    'infoBank' => $infoBank
+                ], Response::HTTP_OK);
+
+            } else {
+                
+                return response()->json([
+                    'status' => 'success',
+                    'infoBank' => 'Không có thông tin'
+                ], Response::HTTP_NO_CONTENT);
+
+            }
+            
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message'   => 'Lỗi server',
+                'error'     => $th->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
 }

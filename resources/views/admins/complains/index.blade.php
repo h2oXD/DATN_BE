@@ -1,16 +1,16 @@
 @extends('layouts.master')
 
 @section('title')
-    Kiểm duyệt yêu cầu rút tiền
+    Kiểm duyệt yêu cầu khiếu nại
 @endsection
 
 @section('content')
     <div class="m-3">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-content-center">
-                <h2 class="m-0">Kiểm duyệt yêu cầu rút tiền</h2>
+                <h2 class="m-0">Kiểm duyệt yêu cầu khiếu nại</h2>
 
-                <a href="{{ route('admin.censor-withdraw.history') }}" class="btn btn-primary">Lịch sử kiểm duyệt</a>
+                <a href="{{ route('admin.censor-complain.history') }}" class="btn btn-primary">Lịch sử kiểm duyệt</a>
             </div>
             <div class="card-body">
 
@@ -42,27 +42,25 @@
                             <th class="border-end">STT</th>
                             <th class="border-end">Tên người dùng</th>
                             <th class="border-end">Email</th>
-                            <th class="border-end">Số tiền rút</th>
                             <th class="border-end">Ngày gửi yêu cầu</th>
                             <th class="border-end">Trạng thái</th>
                             <th class="border-end">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($items as $transaction)
+                        @foreach ($items as $complain)
                             <tr>
-                                <td class="border-end">{{ $transaction->id }}</td>
-                                <td class="border-end">{{ $transaction->wallet->user->name }}</td>
-                                <td class="border-end">{{ $transaction->wallet->user->email }}</td>
-                                <td class="border-end">{{ number_format($transaction->amount) }} VND</td>
-                                <td class="border-end">{{ Carbon\Carbon::parse($transaction->transaction_date)->format('d/m/Y H:i:s') }}</td>
+                                <td class="border-end">{{ $complain->id }}</td>
+                                <td class="border-end">{{ $complain->transaction_wallets->wallet->user->name }}</td>
+                                <td class="border-end">{{ $complain->transaction_wallets->wallet->user->email }}</td>
+                                <td class="border-end">{{ Carbon\Carbon::parse($complain->request_date)->format('d/m/Y H:i:s') }}</td>
                                 <td class="border-end">
-                                    @if ($transaction->status == 'pending')
+                                    @if ($complain->status)
                                         <span class="badge bg-warning">Chờ duyệt</span>
                                     @endif
                                 </td>
                                 <td class="border-end">
-                                    <a href="{{ route('admin.censor-withdraw.show', $transaction->id) }}" class="btn btn-info btn-sm">
+                                    <a href="{{ route('admin.censor-complain.show', $complain->id) }}" class="btn btn-info btn-sm">
                                         Kiểm tra
                                     </a>
                                 </td>
