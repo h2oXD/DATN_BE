@@ -28,6 +28,9 @@ class User extends Authenticatable
         'linkedin_url',
         'website_url',
         'certificate_file',
+        'bank_name',
+        'bank_nameUser',
+        'bank_number',
     ];
 
     /**
