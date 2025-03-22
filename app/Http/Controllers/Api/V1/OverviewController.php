@@ -257,26 +257,27 @@ class OverviewController extends Controller
                     ]);
             }])
                 ->whereHas('courses', function ($query) {
-                    $query->where('status', 'published')
-                        ->whereHas('reviews', function ($q) {
-                            $q->where('reviewable_type', Course::class); // Chỉ xét review của khóa học
-                        });
+                    $query->where('status', 'published'); // Chỉ cần có khóa học published, không bắt buộc có review
                 })
                 ->get()
                 ->map(function ($user) {
                     $publishedCourses = $user->courses->where('status', 'published');
 
-                    $averageRating = $publishedCourses->flatMap(function ($course) {
+                    // Lấy tất cả rating của các khóa học
+                    $allRatings = $publishedCourses->flatMap(function ($course) {
                         return $course->reviews->pluck('rating');
-                    })->avg();
+                    });
+
+                    // Tính average_rating, nếu không có review thì gán 0
+                    $averageRating = $allRatings->isNotEmpty() ? $allRatings->avg() : 0;
 
                     return [
                         'lecturer' => $user,
-                        'average_rating' => $averageRating ?? 0
+                        'average_rating' => $averageRating
                     ];
                 })
-                ->sortByDesc('average_rating')
-                ->take(10)
+                ->sortByDesc('average_rating') // Sắp xếp giảng viên theo rating
+                ->take(10) // Lấy 10 giảng viên top đầu
                 ->values();
 
 
@@ -340,9 +341,14 @@ class OverviewController extends Controller
             }
 
             // Course free
-            $coursesFree = Course::with(['user', 'reviews' => function ($query) {
-                $query->where('reviewable_type', Course::class);
-            }])
+            $coursesFree = Course::with([
+                'user' => function ($query) {
+                    $query->select('id', 'name', 'profile_picture', 'bio'); // Lấy thông tin giảng viên
+                },
+                'reviews' => function ($query) {
+                    $query->where('reviewable_type', Course::class);
+                }
+            ])
                 ->where('is_free', true)
                 ->where('status', 'published')
                 ->get()
@@ -351,10 +357,17 @@ class OverviewController extends Controller
                         'id' => $course->id,
                         'title' => $course->title,
                         'thumbnail' => $course->thumbnail,
+                        'level' => $course->level, // Lấy level khóa học
                         'isLecturer' => $user ? ($course->user_id === $user->id) : false,
                         'isEnrollment' => $user
                             ? Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->exists()
                             : false,
+                        'lecturer' => [
+                            'id' => $course->user->id,
+                            'name' => $course->user->name,
+                            'profile_picture' => $course->user->profile_picture,
+                            'bio' => $course->user->bio,
+                        ],
                         'reviews' => $course->reviews,
                     ];
                 });
