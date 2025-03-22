@@ -1,20 +1,19 @@
 @extends('layouts.master')
 
 @section('title')
-    Chi tiết yêu cầu
+    Chi tiết kiểm duyệt
 @endsection
 
 @section('content')
     <div class="container my-5">
         <div class="card shadow-lg">
             <div class="card-header text-white">
-                <h2 class="m-0">Chi tiết yêu cầu</h2>
+                <h2 class="m-0">Chi tiết kiểm duyệt</h2>
             </div>
             <div class="card-body">
                 <div class="row">
-                    <!-- Cột bên trái: Thông tin người dùng và giao dịch -->
+                    <!-- Cột bên trái: Thông tin người dùng -->
                     <div class="col-md-6">
-                        <!-- Thông tin người dùng -->
                         <div class="card mb-3">
                             <div class="card-header bg-gradient-mix-shade text-white">Thông tin người dùng</div>
                             <div class="card-body">
@@ -24,20 +23,44 @@
                             </div>
                         </div>
 
-                        <!-- Thông tin giao dịch -->
                         <div class="card mb-3">
                             <div class="card-header bg-gradient-mix-shade text-white">Thông tin giao dịch</div>
                             <div class="card-body">
                                 <p><strong>Ngày gửi yêu cầu:</strong> {{ Carbon\Carbon::parse($transaction->transaction_date)->format('d/m/Y H:i:s') }}</p>
+                                <p><strong>Ngày xác nhận:</strong> {{ Carbon\Carbon::parse($transaction->censor_date)->format('d/m/Y H:i:s') }}
+                                </p>
                                 <p><strong>Số tiền rút:</strong> {{ number_format($transaction->amount) }} VND</p>
-                                <p><strong>Số dư ví hiện tại:</strong> {{ number_format($transaction->wallet->balance) }} VND</p>
+                                <p><strong>Số dư ví sau kiểm duyệt:</strong> {{ number_format($transaction->balance) }} VND</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Cột bên phải: Thông tin ngân hàng và mã QR -->
+                    <!-- Cột bên phải: Thông tin thanh toán & trạng thái -->
                     <div class="col-md-6">
-                        <!-- Thông tin ngân hàng -->
+                        <div class="card mb-3">
+                            <div class="card-header bg-gradient-mix-shade text-white">Trạng thái giao dịch</div>
+                            <div class="card-body">
+                                <p>
+                                    <strong>Trạng thái:</strong>
+                                    @if ($transaction->status == 'success')
+                                        <span class="badge bg-success">Thành công</span>
+                                    @else
+                                        <span class="badge bg-danger">Từ chối</span>
+                                    @endif
+                                </p>
+                                <p><strong>Ghi chú:</strong>
+                                    {{ $transaction->note }}
+                                </p>
+                                <p><strong>Người dùng khiếu nại:</strong>
+                                    @if ($transaction->complain == 0)
+                                        <span class="text-muted">Không có</span>
+                                    @else
+                                        <span class="text-danger">Có</span>
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+
                         <div class="card mb-3">
                             <div class="card-header bg-gradient-mix-shade text-white">Thông tin thanh toán</div>
                             <div class="card-body">
@@ -47,7 +70,6 @@
                             </div>
                         </div>
 
-                        <!-- Mã QR -->
                         <div class="card mb-3">
                             <div class="card-header bg-gradient-mix-shade text-white">Mã QR</div>
                             <div class="card-body text-center">
@@ -62,56 +84,11 @@
                     </div>
                 </div>
 
-                <!-- Các nút thao tác -->
-                <div class="d-flex justify-content-center gap-3">
-                    <!-- Đồng ý -->
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                        data-bs-target="#exampleModalCenter">
-                        Đồng ý
-                    </button>
-
-                    <!-- Từ chối -->
-                    <form action="{{ route('admin.censor-withdraw.reject', $transaction->id) }}" method="POST"
-                        style="display:inline-block;" id="update-transaction-{{ $transaction->id }}">
-                        @csrf
-                        @method('PUT')
-                        <button type="button" class="btn btn-danger" onclick="confirmDelete({{ $transaction->id }})">Từ
-                            chối</button>
-                    </form>
-
-                    <!-- Quay lại -->
-                    <a href="{{ route('admin.censor-withdraw.index') }}" class="btn btn-secondary">
+                <!-- Nút quay lại -->
+                <div class="text-center mt-3">
+                    <a href="{{ route('admin.censor-withdraw.history') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Quay lại
                     </a>
-                </div>
-                
-            </div>
-        </div>
-    </div>
-
-    <!-- Thông báo xác nhận -->
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Thông báo xác nhận</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    Bạn đã chuyển tiền thành công?
-                </div>
-
-                <div class="modal-footer">
-                    <form action="{{ route('admin.censor-withdraw.accept', $transaction->id) }}" method="post"
-                        style="display:inline;">
-                        @csrf
-                        @method('PUT')
-                        <button type="submit" class="btn btn-primary">Xác nhận</button>
-                    </form>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                 </div>
             </div>
         </div>

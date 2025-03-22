@@ -6,7 +6,7 @@
 
 @section('content')
 
-    @if (session()->has('success') && !session()->get('success'))
+    @if (session()->has('error') && session()->get('error'))
         <div class="alert alert-danger">
             {{ session()->get('error') }}
         </div>
