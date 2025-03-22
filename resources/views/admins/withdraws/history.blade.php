@@ -8,9 +8,9 @@
     <div class="m-3">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-content-center">
-                <h2 class="m-0">Kiểm duyệt yêu cầu rút tiền</h2>
+                <h2 class="m-0">Lịch sử kiểm duyệt</h2>
 
-                <a href="{{ route('admin.censor-withdraw.history') }}" class="btn btn-primary">Lịch sử kiểm duyệt</a>
+                <a href="{{ route('admin.censor-withdraw.index') }}" class="btn btn-primary">Kiểm duyệt rút tiền</a>
             </div>
             <div class="card-body">
 
@@ -44,7 +44,8 @@
                             <th class="border-end">Email</th>
                             <th class="border-end">Số tiền rút</th>
                             <th class="border-end">Ngày gửi yêu cầu</th>
-                            <th class="border-end">Trạng thái</th>
+                            <th class="border-end">Ngày kiểm duyệt</th>
+                            <th class="border-end">Kết quả duyệt</th>
                             <th class="border-end">Thao tác</th>
                         </tr>
                     </thead>
@@ -56,14 +57,17 @@
                                 <td class="border-end">{{ $transaction->wallet->user->email }}</td>
                                 <td class="border-end">{{ number_format($transaction->amount) }} VND</td>
                                 <td class="border-end">{{ Carbon\Carbon::parse($transaction->transaction_date)->format('d/m/Y H:i:s') }}</td>
+                                <td class="border-end">{{ Carbon\Carbon::parse($transaction->censor_date)->format('d/m/Y H:i:s') }}</td>
                                 <td class="border-end">
-                                    @if ($transaction->status == 'pending')
-                                        <span class="badge bg-warning">Chờ duyệt</span>
+                                    @if ($transaction->status == 'success')
+                                        <span class="badge bg-success">Xác nhận</span>
+                                    @else
+                                        <span class="badge bg-danger">Từ chối</span>
                                     @endif
                                 </td>
                                 <td class="border-end">
-                                    <a href="{{ route('admin.censor-withdraw.show', $transaction->id) }}" class="btn btn-info btn-sm">
-                                        Kiểm tra
+                                    <a href="{{ route('admin.censor-withdraw.history-detail', $transaction->id) }}" class="btn btn-info btn-sm">
+                                        Xem chi tiết
                                     </a>
                                 </td>
                             </tr>

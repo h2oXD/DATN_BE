@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\CertificateController;
 use App\Http\Controllers\Api\V1\ChatMessageController;
 use App\Http\Controllers\Api\V1\ChatRoomController;
 use App\Http\Controllers\Api\V1\CommentController;
+use App\Http\Controllers\Api\V1\ComplainController;
 use App\Http\Controllers\Api\V1\CompletionController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
@@ -190,14 +191,28 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
 
     Route::post('lessons/order', [LessonController::class, 'updateOrder']);
 
-    // rút tiền ví giảng viên
-    Route::post('/user/wallets/withdraw', [WalletController::class, 'withdraw']);
-
     Route::post('/chat-rooms/{id}/add-user', [ChatRoomController::class, 'addUser']);
     Route::post('/chat-rooms/{id}/remove-user', [ChatRoomController::class, 'removeUser']);
     Route::post('/chat-rooms/{id}/mute-user', [ChatRoomController::class, 'muteUser']);
+
+    // rút tiền ví giảng viên
+    Route::post('/lecturer/wallets/withdraw', [WalletController::class, 'withdraw']);
     // Lịch sử rút tiền
-    Route::get('/user/wallet/withdraw-histories', [TransactionWalletController::class, 'withdrawHistory']);
+    Route::get('/lecturer/wallet/withdraw-histories', [TransactionWalletController::class, 'withdrawHistory']);
+
+    // Gửi khiếu nại rút tiền
+    Route::post('/lecturer/wallets/withdraws/{transaction_wallet_id}/complain', [ComplainController::class, 'complain']);
+    // Danh sách khiếu nại
+    Route::get('/lecturer/wallet/complain', [ComplainController::class, 'listComplain']);
+    // Xem chi tiết khiếu nại
+    Route::get('/lecturer/wallet/complains/{complain_id}', [ComplainController::class, 'detailComplain']);
+    // Hủy yêu cầu khiếu nại
+    Route::put('/lecturer/wallet/complain/{complain_id}/cancel', [ComplainController::class, 'cancelComplain']);
+
+    // Thêm thẻ ngân hàng vào thông tin người dùng
+    Route::post('/lecturer/insertBank', [UserController::class, 'insertBank']);
+    // Lấy thông tin thẻ ngân hàng của người dùng
+    Route::get('/lecturer/getBank', [UserController::class, 'getBank']);
 
 
     // Excel quiz

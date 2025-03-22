@@ -293,9 +293,9 @@ class WalletController extends Controller
 
         try {
 
-            $wallet = $request->user()->wallet;
+            $wallet = $request->user()->wallet()->lockForUpdate()->first();
             $own_course = $request->user()->courses()->find($course_id);
-            $course = Course::findOrFail($course_id);
+            $course = Course::lockForUpdate()->findOrFail($course_id);
             $is_free = $course->is_free;
             $lecturer_id = $course->user; // id giảng viên khóa học
 
@@ -624,8 +624,8 @@ class WalletController extends Controller
     public function depositPayment(Request $request)
     {
         try {
-
-            $wallet = $request->user()->wallet;
+            
+            $wallet = $request->user()->wallet()->lockForUpdate()->first();
 
             // Kiểm tra ví có tồn tại hay không
             if (!$wallet) {
@@ -816,7 +816,7 @@ class WalletController extends Controller
 
     /**
      * @OA\Post(
-     *   path="/user/wallets/withdraw",
+     *   path="/lecturer/wallets/withdraw",
      *   tags={"Wallet"},
      *   summary="Rút tiền từ ví giảng viên",
      *   description="API này cho phép giảng viên rút tiền từ ví về tài khoản ngân hàng của họ. Chỉ tài khoản có vai trò 'lecturer' mới được phép rút tiền.",
@@ -893,14 +893,14 @@ class WalletController extends Controller
         DB::beginTransaction();
 
         try {
-
-            $user = $request->user();
-            $wallet = $user->wallet;
-            $amount = $request->input('amount');
-            $bank_code = $request->input('bank_name');
-            $bank_nameUser = $request->input('bank_nameUser');
-            $bank_number = $request->input('bank_number');
-
+            
+            $user           = $request->user();
+            $wallet         = $user->wallet()->lockForUpdate()->first();
+            $amount         = $request->input('amount');
+            $bank_code      = $request->input('bank_name');
+            $bank_nameUser  = $request->input('bank_nameUser');
+            $bank_number    = $request->input('bank_number');
+            
             // Kiểm tra người dùng có vai trò giảng viên hay không
             if (!$user->roles()->where('name', 'lecturer')->exists()) {
                 return response()->json([
@@ -955,13 +955,13 @@ class WalletController extends Controller
             $wallet->decrement('balance', $amount);
             $wallet->update([
                 'transaction_history' => [
-                    'Loại giao dịch' => 'Rút tiền',
-                    'Số tiền thanh toán' => number_format($amount) . ' VND',
-                    'Số dư ví' => number_format($wallet->balance) . ' VND',
-                    'Mã ngân hàng' => $bank_code,
-                    'Tên người nhận' => $bank_nameUser,
-                    'Số tài khoản' => $bank_number,
-                    'Ngày giao dịch' => Carbon::now('Asia/Ho_Chi_Minh')
+                    'Loại giao dịch'        => 'Gửi yêu cầu rút tiền',
+                    'Số tiền thanh toán'    => number_format($amount) . ' VND',
+                    'Số dư ví'              => number_format($wallet->balance) . ' VND',
+                    'Mã ngân hàng'          => $bank_code,
+                    'Tên người nhận'        => $bank_nameUser,
+                    'Số tài khoản'          => $bank_number,
+                    'Ngày giao dịch'        => Carbon::now('Asia/Ho_Chi_Minh')
                 ]
             ]);
 
