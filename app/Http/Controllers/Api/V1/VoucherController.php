@@ -254,8 +254,8 @@ class VoucherController extends Controller
 
         try {
     
-            $voucher = Voucher::find($voucher_id);
-            $course = Course::find($course_id);
+            $voucher = Voucher::lockForUpdate()->find($voucher_id);
+            $course = Course::lockForUpdate()->find($course_id);
             $user_id = $request->user()->id;
     
             // Kiểm tra voucher và course

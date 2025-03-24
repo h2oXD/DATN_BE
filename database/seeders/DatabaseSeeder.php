@@ -64,7 +64,7 @@ class DatabaseSeeder extends Seeder
 
         //Tạo Học viên
         $student = User::create([
-            'name' => 'Học viên 1',
+            'name' => 'Trương Thái Tú',
             'email' => 'hocvien1@gmail.com',
             'password' => Hash::make('123123123'),
             'phone_number' => '0333444555',
@@ -81,7 +81,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::create([
-            'name' => 'Học viên 2',
+            'name' => 'Nguyễn Văn Thuyết',
             'email' => 'hocvien2@gmail.com',
             'password' => Hash::make('123123123'),
             'phone_number' => '0333444555',
@@ -99,11 +99,16 @@ class DatabaseSeeder extends Seeder
 
         //Tạo giảng viên
         $lecturer = User::create([
-            'name' => 'Giảng viên A',
+            'name' => 'Tống Văn Đức',
             'email' => 'giangviena@gmail.com',
             'password' => Hash::make('123123123'),
             'phone_number' => '0888777666',
-            'profile_picture' => '/profile_pictures/RkukY0gX1gZ7vlcCNkqVTaA5SejQFlAVm1BGStq3.jpg',
+            'profile_picture' => '',
+            'bio' => 'Là một giảng viên lập trình với hơn 10 năm kinh nghiệm trong ngành công nghệ thông tin, tôi luôn đam mê chia sẻ kiến thức và truyền cảm hứng cho thế hệ lập trình viên tương lai. Tôi tin rằng lập trình không chỉ là một kỹ năng, mà còn là một nghệ thuật, một cách tư duy sáng tạo để giải quyết vấn đề.
+
+Trong suốt sự nghiệp của mình, tôi đã có cơ hội làm việc với nhiều ngôn ngữ lập trình khác nhau, từ những ngôn ngữ cổ điển như C++ đến những ngôn ngữ hiện đại như Python và JavaScript. Tôi cũng có kinh nghiệm sâu rộng trong việc phát triển các ứng dụng web, ứng dụng di động và các hệ thống phần mềm phức tạp.
+
+Ngoài công việc giảng dạy, tôi cũng thường xuyên tham gia vào các dự án mã nguồn mở và các hoạt động cộng đồng liên quan đến lập trình. Tôi luôn mong muốn được đóng góp vào sự phát triển của ngành công nghệ thông tin và giúp đỡ những người có đam mê với lập trình.'
         ]);
         Wallet::create([
             'user_id' => $lecturer->id,
@@ -120,11 +125,16 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $lecturer = User::create([
-            'name' => 'Giảng viên B',
+            'name' => 'Nguyễn Văn Thuyết',
             'email' => 'giangvienb@gmail.com',
             'password' => Hash::make('123123123'),
             'phone_number' => '0888777666',
-            'profile_picture' => '/profile_pictures/RkukY0gX1gZ7vlcCNkqVTaA5SejQFlAVm1BGStq3.jpg',
+            'profile_picture' => '',
+            'bio' => 'Với hơn 8 năm kinh nghiệm trong lĩnh vực phát triển phần mềm, tôi đã chuyển niềm đam mê của mình sang giảng dạy để giúp những lập trình viên tham vọng khám phá tiềm năng của họ. Tôi tin rằng học lập trình không chỉ là việc nắm vững cú pháp, mà còn là việc rèn luyện tư duy logic và khả năng giải quyết vấn đề.
+
+Tôi chuyên về các ngôn ngữ lập trình web như JavaScript, React và Node.js. Tôi luôn cập nhật những xu hướng công nghệ mới nhất để đảm bảo rằng học viên của mình được trang bị những kiến thức và kỹ năng cần thiết để thành công trong ngành.
+
+Ngoài việc giảng dạy, tôi cũng là một người đóng góp tích cực cho cộng đồng mã nguồn mở. Tôi tin rằng việc chia sẻ kiến thức và kinh nghiệm là chìa khóa để xây dựng một cộng đồng lập trình viên mạnh mẽ và đoàn kết.'
         ]);
 
         $lecturer->wallet()->create(['balance' => 0]);
@@ -138,12 +148,67 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('123123123'),
             'phone_number' => '0888777666',
             'profile_picture' => '',
+            'bio' => 'Với hơn 15 năm kinh nghiệm trong lĩnh vực phát triển phần mềm và nghiên cứu khoa học máy tính, tôi mang đến lớp học không chỉ kiến thức lập trình mà còn là tư duy của một nhà khoa học. Tôi tin rằng lập trình là công cụ mạnh mẽ để hiện thực hóa những ý tưởng sáng tạo và giải quyết những vấn đề phức tạp.
+
+Tôi có chuyên môn sâu về các lĩnh vực như trí tuệ nhân tạo, học máy và phân tích dữ liệu lớn. Tôi luôn khuyến khích học viên của mình đặt câu hỏi, thử nghiệm và không ngừng khám phá những giới hạn của công nghệ.
+
+Ngoài công việc giảng dạy, tôi còn tham gia vào các dự án nghiên cứu và phát triển các sản phẩm công nghệ đột phá. Tôi mong muốn được chia sẻ những kinh nghiệm và kiến thức của mình để giúp học viên trở thành những lập trình viên xuất sắc và những nhà lãnh đạo công nghệ tương lai.',
         ]);
 
         $lecturer->wallet()->create(['balance' => 0]);
 
         $roles = Role::whereIn('name', ['student', 'lecturer'])->pluck('id');
         $lecturer->roles()->attach($roles);
+
+        $listLecturers = [
+            [
+                'name' => 'Nguyễn Ngọc Hiếu',
+                'email' => 'giangvien10@gmail.com',
+                'password' => '123123123',
+                'phone_number' => '0888777666',
+                'profile_picture' => '',
+                'bio' => ''
+            ],
+            [
+                'name' => 'Trông Anh Ngược',
+                'email' => 'giangvien11@gmail.com',
+                'password' => '123123123',
+                'phone_number' => '0888777666',
+                'profile_picture' => '',
+                'bio' => ''
+            ],
+            [
+                'name' => 'Giả Hành Tôn',
+                'email' => 'giangvien12@gmail.com',
+                'password' => '123123123',
+                'phone_number' => '0888777666',
+                'profile_picture' => '',
+                'bio' => ''
+            ],
+            [
+                'name' => 'Tôn Hành Giả',
+                'email' => 'giangvien13@gmail.com',
+                'password' => '123123123',
+                'phone_number' => '0888777666',
+                'profile_picture' => '',
+                'bio' => ''
+            ],
+        ];
+        foreach ($listLecturers as $l) {
+            $lecturer = User::create([
+                'name' => $l['name'],
+                'email' => $l['email'],
+                'password' => Hash::make($l['password']),
+                'phone_number' => $l['phone_number'],
+                'profile_picture' => '',
+                'bio' => '',
+            ]);
+
+            $lecturer->wallet()->create(['balance' => 0]);
+
+            $roles = Role::whereIn('name', ['student', 'lecturer'])->pluck('id');
+            $lecturer->roles()->attach($roles);
+        }
 
         $categories = [
             [
@@ -201,42 +266,42 @@ class DatabaseSeeder extends Seeder
         //     Tag::create($tag);
         // }
 
-        $courseID = Course::create([
-            'user_id' => 4,
-            'category_id' => 3,
-            'price_regular' => 199000,
-            'price_sale' => 99000,
-            'title' => 'Khoá học Laravel',
-            'status' => 'published',
-            'admin_commission_rate' => 30
-        ]);
-        Course::create([
-            'user_id' => 4,
-            'category_id' => 1,
-            'price_regular' => 500000,
-            'price_sale' => 399000,
-            'title' => 'Khoá học React',
-            'status' => 'draft',
-            'admin_commission_rate' => 30
-        ]);
-        Course::create([
-            'user_id' => 4,
-            'category_id' => 4,
-            'price_regular' => 99000,
-            'price_sale' => 89000,
-            'title' => 'Khoá học PHP cơ bản',
-            'status' => 'draft',
-            'admin_commission_rate' => 30
-        ]);
+        // $courseID = Course::create([
+        //     'user_id' => 4,
+        //     'category_id' => 3,
+        //     'price_regular' => 199000,
+        //     'price_sale' => 99000,
+        //     'title' => 'Khoá học Laravel',
+        //     'status' => 'published',
+        //     'admin_commission_rate' => 30
+        // ]);
+        // Course::create([
+        //     'user_id' => 4,
+        //     'category_id' => 1,
+        //     'price_regular' => 500000,
+        //     'price_sale' => 399000,
+        //     'title' => 'Khoá học React',
+        //     'status' => 'draft',
+        //     'admin_commission_rate' => 30
+        // ]);
+        // Course::create([
+        //     'user_id' => 4,
+        //     'category_id' => 4,
+        //     'price_regular' => 99000,
+        //     'price_sale' => 89000,
+        //     'title' => 'Khoá học PHP cơ bản',
+        //     'status' => 'draft',
+        //     'admin_commission_rate' => 30
+        // ]);
 
-        Course::create([
-            'user_id' => 5,
-            'category_id' => 4,
-            'title' => 'Khoá học PHP nâng cao',
-            'status' => 'published',
-            'is_free' => true,
-            'admin_commission_rate' => 30
-        ]);
+        // Course::create([
+        //     'user_id' => 5,
+        //     'category_id' => 4,
+        //     'title' => 'Khoá học PHP nâng cao',
+        //     'status' => 'published',
+        //     'is_free' => true,
+        //     'admin_commission_rate' => 30
+        // ]);
 
         // Course::create([
         //     'user_id' => 5,
@@ -260,7 +325,7 @@ class DatabaseSeeder extends Seeder
         // foreach ($quizzes as $quiz) {
         //     Quiz::create($quiz);
         // }
-      
+
         // Course::create([
         //     'user_id' => 5,
         //     'category_id' => 5,
@@ -398,124 +463,124 @@ class DatabaseSeeder extends Seeder
         // foreach ($questions as $question) {
         //     Question::create($question);
 
-    //         $reviews = [
-    //             [
-    //                 'user_id' => 4,
-    //                 'course_id' => 3,
-    //                 'rating' => 5,
-    //                 'review_text' => 'Good job'
-    //             ],
-    //             [
-    //                 'user_id' => 3,
-    //                 'course_id' => 2,
-    //                 'rating' => 2,
-    //                 'review_text' => 'Very bad'
-    //             ],
-    //             [
-    //                 'user_id' => 4,
-    //                 'course_id' => 4,
-    //                 'rating' => 4,
-    //                 'review_text' => 'Very good'
-    //             ],
-    //             [
-    //                 'user_id' => 4,
-    //                 'course_id' => 5,
-    //                 'rating' => 5,
-    //                 'review_text' => 'Dinh noc kich tran'
-    //             ]
-    //         ];
+        //         $reviews = [
+        //             [
+        //                 'user_id' => 4,
+        //                 'course_id' => 3,
+        //                 'rating' => 5,
+        //                 'review_text' => 'Good job'
+        //             ],
+        //             [
+        //                 'user_id' => 3,
+        //                 'course_id' => 2,
+        //                 'rating' => 2,
+        //                 'review_text' => 'Very bad'
+        //             ],
+        //             [
+        //                 'user_id' => 4,
+        //                 'course_id' => 4,
+        //                 'rating' => 4,
+        //                 'review_text' => 'Very good'
+        //             ],
+        //             [
+        //                 'user_id' => 4,
+        //                 'course_id' => 5,
+        //                 'rating' => 5,
+        //                 'review_text' => 'Dinh noc kich tran'
+        //             ]
+        //         ];
 
-    //         foreach ($reviews as $review) {
-    //             Review::create($review);
-    //         }
-        
-
-    //     $progressData = [
-    //         [
-    //             'user_id' => 2,
-    //             'course_id' => 1,
-    //             'status' => 'in_progress',
-    //             'progress_percent' => 0
-    //         ],
-    //         [
-    //             'user_id' => 3,
-    //             'course_id' => 1,
-    //             'status' => 'in_progress',
-    //             'progress_percent' => 0
-    //         ],
-    //     ];
-    //     foreach ($progressData as $data) {
-    //         Progress::create($data);
-    //     }
-
-    //     $transactions = [
-    //         [
-    //             'user_id' => 2,
-    //             'course_id' => 1,
-    //             'amount' => 99000,
-    //             'payment_method' => 'wallet',
-    //             'status' => 'success',
-    //             'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
-    //         ],
-    //         [
-    //             'user_id' => 3,
-    //             'course_id' => 1,
-    //             'amount' => 99000,
-    //             'payment_method' => 'bank_transfer',
-    //             'status' => 'success',
-    //             'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
-    //         ],
-    //     ];
-    //     foreach ($transactions as $data) {
-    //         Transaction::create($data);
-    //     }
+        //         foreach ($reviews as $review) {
+        //             Review::create($review);
+        //         }
 
 
-    //     Course::create([
-    //         'user_id' => 4,
-    //         'category_id' => 4,
-    //         'price_regular' => 100000,
-    //         'price_sale' => 70000,
-    //         'title' => 'Khoá học PHP cơ bản',
-    //         'status' => 'published',
-    //         'admin_commission_rate' => 30
-    //     ]);
+        //     $progressData = [
+        //         [
+        //             'user_id' => 2,
+        //             'course_id' => 1,
+        //             'status' => 'in_progress',
+        //             'progress_percent' => 0
+        //         ],
+        //         [
+        //             'user_id' => 3,
+        //             'course_id' => 1,
+        //             'status' => 'in_progress',
+        //             'progress_percent' => 0
+        //         ],
+        //     ];
+        //     foreach ($progressData as $data) {
+        //         Progress::create($data);
+        //     }
+
+        //     $transactions = [
+        //         [
+        //             'user_id' => 2,
+        //             'course_id' => 1,
+        //             'amount' => 99000,
+        //             'payment_method' => 'wallet',
+        //             'status' => 'success',
+        //             'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
+        //         ],
+        //         [
+        //             'user_id' => 3,
+        //             'course_id' => 1,
+        //             'amount' => 99000,
+        //             'payment_method' => 'bank_transfer',
+        //             'status' => 'success',
+        //             'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
+        //         ],
+        //     ];
+        //     foreach ($transactions as $data) {
+        //         Transaction::create($data);
+        //     }
 
 
-    //     $comments = [
-    //         [
-    //             'user_id' => 1,
-    //             'content' => 'Bài học rất hữu ích!',
-    //             'parent_id' => null,
-    //             'commentable_type' => 'App\Models\Lesson',
-    //             'commentable_id' => 2,
-    //         ],
-    //         [
-    //             'user_id' => 2,
-    //             'content' => 'Cảm ơn giảng viên!',
-    //             'parent_id' => null,
-    //             'commentable_type' => Lesson::class,
-    //             'commentable_id' => 1,
-    //         ],
-    //         [
-    //             'user_id' => 3,
-    //             'content' => 'Bạn có thể giải thích lại phần này không?',
-    //             'parent_id' => 1, // Bình luận trả lời
-    //             'commentable_type' => 'App\Models\Lesson',
-    //             'commentable_id' => 2,
-    //         ],
-    //         [
-    //             'user_id' => 4,
-    //             'content' => 'Mình đã hiểu rồi, cảm ơn!',
-    //             'parent_id' => 3, // Trả lời bình luận trên
-    //             'commentable_type' => 'App\Models\Lesson',
-    //             'commentable_id' => 2,
-    //         ],
-    //     ];
+        //     Course::create([
+        //         'user_id' => 4,
+        //         'category_id' => 4,
+        //         'price_regular' => 100000,
+        //         'price_sale' => 70000,
+        //         'title' => 'Khoá học PHP cơ bản',
+        //         'status' => 'published',
+        //         'admin_commission_rate' => 30
+        //     ]);
 
-    //     foreach ($comments as $comment) {
-    //         Comment::create($comment);
-    //     }
+
+        //     $comments = [
+        //         [
+        //             'user_id' => 1,
+        //             'content' => 'Bài học rất hữu ích!',
+        //             'parent_id' => null,
+        //             'commentable_type' => 'App\Models\Lesson',
+        //             'commentable_id' => 2,
+        //         ],
+        //         [
+        //             'user_id' => 2,
+        //             'content' => 'Cảm ơn giảng viên!',
+        //             'parent_id' => null,
+        //             'commentable_type' => Lesson::class,
+        //             'commentable_id' => 1,
+        //         ],
+        //         [
+        //             'user_id' => 3,
+        //             'content' => 'Bạn có thể giải thích lại phần này không?',
+        //             'parent_id' => 1, // Bình luận trả lời
+        //             'commentable_type' => 'App\Models\Lesson',
+        //             'commentable_id' => 2,
+        //         ],
+        //         [
+        //             'user_id' => 4,
+        //             'content' => 'Mình đã hiểu rồi, cảm ơn!',
+        //             'parent_id' => 3, // Trả lời bình luận trên
+        //             'commentable_type' => 'App\Models\Lesson',
+        //             'commentable_id' => 2,
+        //         ],
+        //     ];
+
+        //     foreach ($comments as $comment) {
+        //         Comment::create($comment);
+        //     }
 
         // Course::create([
         //     'user_id' => 4,

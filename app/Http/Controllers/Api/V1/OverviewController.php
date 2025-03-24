@@ -227,47 +227,74 @@ class OverviewController extends Controller
             //     $courses_id = $user->enrollments()->course_id;
             // }
 
-            $lecturers = User::with(['courses' => function ($query) {
-                $query->with('reviews')
-                    ->where('status', 'published') // Chỉ lấy khóa học đã xuất bản
-                    ->select('id', 'user_id', 'category_id', 'price_regular', 'price_sale', 'title', 'thumbnail', 'video_preview', 'description', 'primary_content', 'status', 'is_show_home', 'target_students', 'learning_outcomes', 'prerequisites', 'who_is_this_for', 'is_free', 'language', 'level', 'created_at', 'updated_at');
-            }])
+            $lecturers = User::with([
+                'courses' => function ($query) {
+                    $query->with([
+                        'reviews' => function ($q) {
+                            $q->where('reviewable_type', Course::class); // Chỉ lấy review của khóa học
+                        }
+                    ])
+                        ->where('status', 'published')
+                        ->select([
+                            'id',
+                            'user_id',
+                            'category_id',
+                            'price_regular',
+                            'price_sale',
+                            'title',
+                            'thumbnail',
+                            'video_preview',
+                            'description',
+                            'primary_content',
+                            'status',
+                            'is_show_home',
+                            'target_students',
+                            'learning_outcomes',
+                            'prerequisites',
+                            'who_is_this_for',
+                            'is_free',
+                            'language',
+                            'level',
+                            'created_at',
+                            'updated_at'
+                        ]);
+                }
+            ])
                 ->whereHas('courses', function ($query) {
-                    $query->where('status', 'published') // Chỉ lấy giảng viên có khóa học đã xuất bản
-                        ->whereHas('reviews'); // Chỉ lấy khóa học có đánh giá
+                    $query->where('status', 'published')
+                        ->whereHas('reviews', function ($q) {
+                            $q->where('reviewable_type', Course::class); // Chỉ xét review của khóa học
+                        });
                 })
                 ->get()
                 ->map(function ($user) {
-                    // Chỉ tính điểm trung bình của các khóa học có trạng thái "published"
-                    $publishedCourses = $user->courses->where('status', 'published'); // Lọc khóa học đã xuất bản
+                    $publishedCourses = $user->courses->where('status', 'published');
 
                     $averageRating = $publishedCourses->flatMap(function ($course) {
-                        return $course->reviews->pluck('rating'); // Lấy tất cả các đánh giá của các khóa học
-                    })->avg(); // Tính trung bình điểm rating
+                        return $course->reviews->pluck('rating');
+                    })->avg();
 
                     return [
                         'lecturer' => $user,
-                        'average_rating' => $averageRating ?? 0 // Gán điểm trung bình vào
+                        'average_rating' => $averageRating ?? 0
                     ];
                 })
-                ->sortByDesc('average_rating') // Sắp xếp giảm dần theo điểm trung bình
-                ->take(10) // Lấy 10 giảng viên có điểm trung bình cao nhất
-                ->values(); // Reset lại key index của collection
-
-            if (!$lecturers) {
-                return response()->json([
-                    'message' => 'Không có người dùng nào'
-                ], 404);
-            }
+                ->sortByDesc('average_rating')
+                ->take(10)
+                ->values();
 
 
-           
             $user = $request->user();
 
-             //Course published
-            $coursesPublished = Course::with(['user', 'reviews']) // Eager loading user và reviews
-                ->where('status', 'published') // Lọc khóa học đã xuất bản
-                ->where('is_show_home', 1) // Lọc khóa học hiển thị trên trang chủ
+            //Course published
+            $coursesPublished = Course::with([
+                'user',
+                'reviews' => function ($query) {
+                    $query->where('reviewable_type', Course::class);
+                }
+            ])
+                ->where('status', 'published')
+                ->where('is_show_home', 1)
                 ->get()
                 ->map(function ($course) use ($user) {
                     return [
@@ -292,54 +319,30 @@ class OverviewController extends Controller
 
 
             // top Course
-            $courses = Course::with(['user', 'category', 'reviews'])
-                ->select([
-                    'id',
-                    'user_id',
-                    'category_id',
-                    'price_regular',
-                    'price_sale',
-                    'title',
-                    'thumbnail',
-                    'video_preview',
-                    'description',
-                    'primary_content',
-                    'status',
-                    'is_show_home',
-                    'target_students',
-                    'learning_outcomes',
-                    'prerequisites',
-                    'who_is_this_for',
-                    'is_free',
-                    'language',
-                    'level',
-                    'created_at',
-                    'updated_at'
-                ])
-                ->where('status', 'published') // Chỉ lấy khóa học đã duyệt
+            $courses = Course::with([
+                'user',
+                'category',
+                'reviews' => function ($query) {
+                    $query->where('reviewable_type', Course::class);
+                }
+            ])
+                ->where('status', 'published')
                 ->get()
                 ->map(function ($course) use ($user) {
-                    // Lấy điểm đánh giá cao nhất của khóa học
                     $highestRating = $course->reviews->max('rating');
-
-                    // Kiểm tra người dùng có phải giảng viên không
-                    $isLecturer = $user->id ? ($course->user_id === $user->id) : false;
-
-                    // Kiểm tra người dùng đã đăng ký khóa học chưa
-                    $isEnrollment = $user->id
-                        ? Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->exists()
-                        : false;
 
                     return [
                         'course' => $course,
                         'highest_rating' => number_format($highestRating, 1) ?? 0,
-                        'is_lecturer' => $isLecturer,
-                        'is_enrollment' => $isEnrollment,
+                        'is_lecturer' => $user ? ($course->user_id === $user->id) : false,
+                        'is_enrollment' => $user
+                            ? Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->exists()
+                            : false,
                     ];
                 })
-                ->sortByDesc('highest_rating') // Sắp xếp theo highest_rating giảm dần
-                ->take(10) // Lấy 10 khóa học có rating cao nhất
-                ->values(); // Reset index để JSON đẹp hơn
+                ->sortByDesc('highest_rating')
+                ->take(10)
+                ->values();
 
             if (count($courses) == 0) {
                 return response()->json([
@@ -348,30 +351,24 @@ class OverviewController extends Controller
             }
 
             // Course free
-            $coursesFree = Course::with(['user', 'reviews'])
-                ->where('is_free', true) // Lọc khóa học miễn phí
-                ->where('status', 'published') // Lọc khóa học đã xuất bản
-                ->get()
-                ->map(function ($course) use ($user) {
-                    return [
-                        'id' => $course->id,
-                        'title' => $course->title,
-                        'thumbnail' => $course->thumbnail,
-                        'isLecturer' => $user ? ($course->user_id === $user->id) : false,
-                        'isEnrollment' => $user
-                            ? Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->exists()
-                            : false,
-                        'reviews' => $course->reviews, // Bao gồm đánh giá khóa học
-                    ];
-                });
+            $coursesFree = Course::with([
+                'user',
+                'reviews' => function ($query) {
+                    $query->where('reviewable_type', Course::class);
+                }
+            ])
+                ->where('is_free', true)
+                ->where('status', 'published')
+                ->get();
+                
 
 
             return response()->json(
                 [
 
                     'topLectures' => $lecturers,
-                    'topCourses'  => $courses,
-                    'courseFree'  => $coursesFree,
+                    'topCourses' => $courses,
+                    'courseFree' => $coursesFree,
                     'coursesPublished' => $coursesPublished
                 ],
                 200
@@ -425,5 +422,21 @@ class OverviewController extends Controller
         return response()->json([
             'data' => $newCourse
         ], 200);
+    }
+    public function guestLecturer()
+    {
+        $lecturers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'lecturer');
+        })
+            ->with([
+                'reviews' => function ($query) {
+                    $query->orderByDesc('rating'); // Sắp xếp đánh giá theo rating giảm dần
+                }
+            ])
+            ->withCount(['reviews', 'courses']) // Đếm số lượng đánh giá
+            ->withAvg('reviews', 'rating') // Lấy trung bình rating
+            ->orderByDesc('reviews_count') // Sắp xếp theo số đánh giá nhiều nhất
+            ->get();
+        return response()->json($lecturers);
     }
 }
