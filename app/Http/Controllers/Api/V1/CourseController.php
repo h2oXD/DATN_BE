@@ -660,12 +660,13 @@ class CourseController extends Controller
     {
         try {
             $course = Course::with([
-                'user:id,name,email', // Lấy thông tin giảng viên
+                'reviews',
+                'user:id,name,email,profile_picture', // Lấy thông tin giảng viên
                 'sections' => function ($query) {
                     $query->orderBy('order');
                 },
                 'sections.lessons' => function ($query) {
-                    $query->orderBy('order')->select('id', 'section_id', 'title', 'description');
+                    $query->orderBy('order');
                 },
                 'sections.lessons.videos:id,lesson_id,video_url',
                 'sections.lessons.documents:id,lesson_id,document_url',
@@ -696,6 +697,8 @@ class CourseController extends Controller
                     'created_at',
                     'updated_at'
                 ])
+                ->withCount(['reviews']) // Đếm số lượng đánh giá
+                ->withAvg('reviews', 'rating') // Lấy trung bình rating
                 ->find($course_id);
 
             if (!$course) {
@@ -902,74 +905,77 @@ class CourseController extends Controller
         ], Response::HTTP_OK);
     }
     /**
- * @OA\Get(
- *     path="/api/courses/{course_id}/related",
- *     summary="Lấy danh sách khóa học liên quan",
- *     description="API này trả về danh sách khóa học có cùng danh mục với khóa học hiện tại.",
- *     tags={"Courses"},
- *     @OA\Parameter(
- *         name="course_id",
- *         in="path",
- *         required=true,
- *         description="ID của khóa học",
- *         @OA\Schema(type="integer", example=1)
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Danh sách khóa học liên quan",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(property="message", type="string", example="Lấy danh sách khoá học liên quan thành công"),
- *             @OA\Property(
- *                 property="related_courses",
- *                 type="array",
- *                 @OA\Items(
- *                     type="object",
- *                     @OA\Property(property="id", type="integer", example=2),
- *                     @OA\Property(property="title", type="string", example="Khóa học Laravel"),
- *                     @OA\Property(property="category_id", type="integer", example=1),
- *                     @OA\Property(property="status", type="string", example="published"),
- *                     @OA\Property(property="thumbnail", type="string", example="images/laravel.jpg")
- *                 )
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=404,
- *         description="Không tìm thấy khóa học",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(property="message", type="string", example="Không tìm thấy khoá học")
- *         )
- *     ),
- *     @OA\Response(
- *         response=500,
- *         description="Lỗi hệ thống",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(property="message", type="string", example="Lỗi hệ thống"),
- *             @OA\Property(property="error", type="string", example="Chi tiết lỗi")
- *         )
- *     )
- * )
- */
+     * @OA\Get(
+     *     path="/api/courses/{course_id}/related",
+     *     summary="Lấy danh sách khóa học liên quan",
+     *     description="API này trả về danh sách khóa học có cùng danh mục với khóa học hiện tại.",
+     *     tags={"Courses"},
+     *     @OA\Parameter(
+     *         name="course_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID của khóa học",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Danh sách khóa học liên quan",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Lấy danh sách khoá học liên quan thành công"),
+     *             @OA\Property(
+     *                 property="related_courses",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=2),
+     *                     @OA\Property(property="title", type="string", example="Khóa học Laravel"),
+     *                     @OA\Property(property="category_id", type="integer", example=1),
+     *                     @OA\Property(property="status", type="string", example="published"),
+     *                     @OA\Property(property="thumbnail", type="string", example="images/laravel.jpg")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Không tìm thấy khóa học",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Không tìm thấy khoá học")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Lỗi hệ thống",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Lỗi hệ thống"),
+     *             @OA\Property(property="error", type="string", example="Chi tiết lỗi")
+     *         )
+     *     )
+     * )
+     */
     public function relatedCourses($course_id)
     {
         try {
             $course = Course::find($course_id);
-    
+
             if (!$course) {
                 return response()->json([
                     'message' => 'Không tìm thấy khoá học'
                 ], Response::HTTP_NOT_FOUND);
             }
-    
+
             $relatedCourses = Course::where('category_id', $course->category_id)
+                ->with(['user', 'reviews'])
+                ->withCount(['reviews']) // Đếm số lượng đánh giá
+                ->withAvg('reviews', 'rating') // Lấy trung bình rating
                 ->where('id', '!=', $course_id)
                 ->where('status', 'published')
-                ->limit(5) 
+                ->limit(5)
                 ->get();
-    
+
             return response()->json([
                 'message' => 'Lấy danh sách khoá học liên quan thành công',
                 'related_courses' => $relatedCourses

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Completion;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Progress;
+use App\Models\Section;
 use App\Models\Transaction;
 use App\Models\TransactionWallet;
 use App\Models\Wallet;
@@ -23,7 +25,7 @@ class WalletController extends Controller
      */
     public function index()
     {
-        
+
     }
 
     /**
@@ -88,8 +90,8 @@ class WalletController extends Controller
             // Kiểm tra xem ví có tồn tại hay không
             if (!$wallet) {
                 return response()->json([
-                    'status'    => 'error',
-                    'message'   => 'Không tìm thấy ví của người dùng này.'
+                    'status' => 'error',
+                    'message' => 'Không tìm thấy ví của người dùng này.'
                 ], Response::HTTP_NOT_FOUND);
             }
 
@@ -100,8 +102,8 @@ class WalletController extends Controller
 
         } catch (\Throwable $th) {
             return response()->json([
-                'message'   => 'Lỗi server',
-                'error'     => $th->getMessage(),
+                'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -175,8 +177,8 @@ class WalletController extends Controller
             // Kiểm tra xem ví có tồn tại hay không
             if (!$wallet) {
                 return response()->json([
-                    'status'    => 'error',
-                    'message'   => 'Không tìm thấy ví của người dùng này.'
+                    'status' => 'error',
+                    'message' => 'Không tìm thấy ví của người dùng này.'
                 ], Response::HTTP_NOT_FOUND);
             }
 
@@ -201,8 +203,8 @@ class WalletController extends Controller
 
         } catch (\Throwable $th) {
             return response()->json([
-                'message'   => 'Lỗi server',
-                'error'     => $th->getMessage(),
+                'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -314,33 +316,33 @@ class WalletController extends Controller
             }
 
             if ($is_free == 0) {
-                
+
                 // Kiểm tra ví có tồn tại hay không
                 if (!$wallet) {
                     return response()->json([
-                        'status'    => 'error',
-                        'message'   => 'Không tìm thấy ví của người dùng này'
+                        'status' => 'error',
+                        'message' => 'Không tìm thấy ví của người dùng này'
                     ], Response::HTTP_NOT_FOUND);
                 }
                 // Kiểm tra khóa học đã được sở hữu chưa
                 if ($own_course) {
                     return response()->json([
-                        'status'    => 'error',
-                        'message'   => 'Khóa học đã sở hữu không cần thanh toán'
+                        'status' => 'error',
+                        'message' => 'Khóa học đã sở hữu không cần thanh toán'
                     ], Response::HTTP_LOCKED);
                 }
                 // Kiểm tra khóa học có tồn tại không
                 if (!$course) {
                     return response()->json([
-                        'status'    => 'error',
-                        'message'   => 'Không tìm thấy khóa học cần thanh toán'
+                        'status' => 'error',
+                        'message' => 'Không tìm thấy khóa học cần thanh toán'
                     ], Response::HTTP_NOT_FOUND);
                 }
                 // Kiểm tra trạng thái của khóa học có hợp lệ không
                 if ($course->status === "pending" || $course->status === "draft") {
                     return response()->json([
-                        'status'    => 'error',
-                        'message'   => 'Trạng thái khóa học không hợp lệ'
+                        'status' => 'error',
+                        'message' => 'Trạng thái khóa học không hợp lệ'
                     ], Response::HTTP_LOCKED);
                 }
                 // Kiểm tra người dùng đã tham gia khóa học chưa
@@ -384,63 +386,84 @@ class WalletController extends Controller
                 $wallet->decrement('balance', $request->amount);
                 $wallet->update([
                     'transaction_history' => [
-                        'Loại giao dịch'        => 'Thanh toán khóa học',
-                        'Số tiền thanh toán'    => number_format($request->amount) . ' VND',
-                        'Số dư'                 => number_format($wallet->balance) . ' VND',
-                        'Ngày giao dịch'        => Carbon::now('Asia/Ho_Chi_Minh')
+                        'Loại giao dịch' => 'Thanh toán khóa học',
+                        'Số tiền thanh toán' => number_format($request->amount) . ' VND',
+                        'Số dư' => number_format($wallet->balance) . ' VND',
+                        'Ngày giao dịch' => Carbon::now('Asia/Ho_Chi_Minh')
                     ]
                 ]);
                 Transaction::create([
-                    'user_id'           => $request->user()->id,
-                    'course_id'         => $course_id,
-                    'amount'            => $request->amount,
-                    'payment_method'    => 'wallet',
-                    'status'            => 'success',
-                    'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+                    'user_id' => $request->user()->id,
+                    'course_id' => $course_id,
+                    'amount' => $request->amount,
+                    'payment_method' => 'wallet',
+                    'status' => 'success',
+                    'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
                 ]);
                 TransactionWallet::create([
-                    'wallet_id'         => $wallet->id,
-                    'transaction_code'  => Str::uuid(),
-                    'amount'            => $request->amount,
-                    'balance'           => $wallet->balance,
-                    'type'              => 'payment',
-                    'status'            => 'success',
-                    'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+                    'wallet_id' => $wallet->id,
+                    'transaction_code' => Str::uuid(),
+                    'amount' => $request->amount,
+                    'balance' => $wallet->balance,
+                    'type' => 'payment',
+                    'status' => 'success',
+                    'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
                 ]);
                 Enrollment::create([
-                    'user_id'       => $request->user()->id,
-                    'course_id'     => $course_id,
-                    'status'        => 'active',
-                    'enrolled_at'   => Carbon::now('Asia/Ho_Chi_Minh')
+                    'user_id' => $request->user()->id,
+                    'course_id' => $course_id,
+                    'status' => 'active',
+                    'enrolled_at' => Carbon::now('Asia/Ho_Chi_Minh')
                 ]);
                 Progress::create([
-                    'user_id'           => $request->user()->id,
-                    'course_id'         => $course_id,
-                    'status'            => 'in_progress',
-                    'progress_percent'  => 0
+                    'user_id' => $request->user()->id,
+                    'course_id' => $course_id,
+                    'status' => 'in_progress',
+                    'progress_percent' => 0
                 ]);
 
-                
+
                 // Cộng tiền 70% lợi nhuận bán khóa học vào ví giảng viên, cập nhật lịch sử
                 $profit = $request->amount * 0.7;
                 $lecturer_wallet->increment('balance', $profit);
                 $lecturer_wallet->update([
                     'transaction_history' => [
-                        'Loại giao dịch'        => 'Nhận lợi nhuận bán khóa học',
-                        'Số tiền nhận'          => number_format($profit) . ' VND',
-                        'Số dư'                 => number_format($lecturer_wallet->balance) . ' VND',
-                        'Ngày giao dịch'        => Carbon::now('Asia/Ho_Chi_Minh')
+                        'Loại giao dịch' => 'Nhận lợi nhuận bán khóa học',
+                        'Số tiền nhận' => number_format($profit) . ' VND',
+                        'Số dư' => number_format($lecturer_wallet->balance) . ' VND',
+                        'Ngày giao dịch' => Carbon::now('Asia/Ho_Chi_Minh')
                     ]
                 ]);
                 TransactionWallet::create([
-                    'wallet_id'         => $lecturer_wallet->id,
-                    'transaction_code'  => Str::uuid(),
-                    'amount'            => $profit,
-                    'balance'           => $lecturer_wallet->balance,
-                    'type'              => 'profit',
-                    'status'            => 'success',
-                    'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+                    'wallet_id' => $lecturer_wallet->id,
+                    'transaction_code' => Str::uuid(),
+                    'amount' => $profit,
+                    'balance' => $lecturer_wallet->balance,
+                    'type' => 'profit',
+                    'status' => 'success',
+                    'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
                 ]);
+
+                $user_id = request()->user()->id;
+                // Lấy tất cả sections của khóa học
+                $sections = Section::where('course_id', $course_id)->with([
+                    'lessons' => function ($query) {
+                        $query->orderBy('order', 'desc');
+                    }
+                ])->get();
+
+                // Duyệt qua từng section và khởi tạo tiến trình cho từng lesson
+                foreach ($sections as $section) {
+                    foreach ($section->lessons as $lesson) {
+                        Completion::create([
+                            'user_id' => $user_id,
+                            'course_id' => $course_id,
+                            'lesson_id' => $lesson->id,
+                            'status' => 'in_progress',
+                            'created_at' => Carbon::now('Asia/Ho_Chi_Minh')
+                        ]);
+                    }
+                }
 
                 DB::commit(); // Commit transaction
 
@@ -454,22 +477,22 @@ class WalletController extends Controller
                 // Kiểm tra khóa học đã được sở hữu chưa
                 if ($own_course) {
                     return response()->json([
-                        'status'    => 'error',
-                        'message'   => 'Khóa học đã sở hữu không cần thanh toán'
+                        'status' => 'error',
+                        'message' => 'Khóa học đã sở hữu không cần thanh toán'
                     ], Response::HTTP_LOCKED);
                 }
                 // Kiểm tra khóa học có tồn tại không
                 if (!$course) {
                     return response()->json([
-                        'status'    => 'error',
-                        'message'   => 'Không tìm thấy khóa học cần thanh toán'
+                        'status' => 'error',
+                        'message' => 'Không tìm thấy khóa học cần thanh toán'
                     ], Response::HTTP_NOT_FOUND);
                 }
                 // Kiểm tra trạng thái của khóa học có hợp lệ không
                 if ($course->status === "pending" || $course->status === "draft") {
                     return response()->json([
-                        'status'    => 'error',
-                        'message'   => 'Trạng thái khóa học không hợp lệ'
+                        'status' => 'error',
+                        'message' => 'Trạng thái khóa học không hợp lệ'
                     ], Response::HTTP_LOCKED);
                 }
                 // Kiểm tra người dùng đã tham gia khóa học chưa
@@ -491,28 +514,49 @@ class WalletController extends Controller
                         'error' => 'Giao dịch thất bại'
                     ], Response::HTTP_BAD_REQUEST);
                 }
-                
+
                 // Ghi lịch sử giao dịch vào database và tham gia khóa học
                 Transaction::create([
-                    'user_id'           => $request->user()->id,
-                    'course_id'         => $course_id,
-                    'amount'            => 0,
-                    'payment_method'    => 'wallet',
-                    'status'            => 'success',
-                    'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+                    'user_id' => $request->user()->id,
+                    'course_id' => $course_id,
+                    'amount' => 0,
+                    'payment_method' => 'wallet',
+                    'status' => 'success',
+                    'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
                 ]);
                 Enrollment::create([
-                    'user_id'       => $request->user()->id,
-                    'course_id'     => $course_id,
-                    'status'        => 'active',
-                    'enrolled_at'   => Carbon::now('Asia/Ho_Chi_Minh')
+                    'user_id' => $request->user()->id,
+                    'course_id' => $course_id,
+                    'status' => 'active',
+                    'enrolled_at' => Carbon::now('Asia/Ho_Chi_Minh')
                 ]);
                 Progress::create([
-                    'user_id'           => $request->user()->id,
-                    'course_id'         => $course_id,
-                    'status'            => 'in_progress',
-                    'progress_percent'  => 0
+                    'user_id' => $request->user()->id,
+                    'course_id' => $course_id,
+                    'status' => 'in_progress',
+                    'progress_percent' => 0
                 ]);
+
+                $user_id = request()->user()->id;
+                // Lấy tất cả sections của khóa học
+                $sections = Section::where('course_id', $course_id)->with([
+                    'lessons' => function ($query) {
+                        $query->orderBy('order', 'desc');
+                    }
+                ])->get();
+
+                // Duyệt qua từng section và khởi tạo tiến trình cho từng lesson
+                foreach ($sections as $section) {
+                    foreach ($section->lessons as $lesson) {
+                        Completion::create([
+                            'user_id' => $user_id,
+                            'course_id' => $course_id,
+                            'lesson_id' => $lesson->id,
+                            'status' => 'in_progress',
+                            'created_at' => Carbon::now('Asia/Ho_Chi_Minh')
+                        ]);
+                    }
+                }
 
                 DB::commit(); // Commit transaction
 
@@ -526,8 +570,8 @@ class WalletController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack(); // Rollback transaction nếu có lỗi
             return response()->json([
-                'message'   => 'Lỗi server',
-                'error'     => $th->getMessage(),
+                'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -594,14 +638,14 @@ class WalletController extends Controller
             // Kiểm tra ví có tồn tại hay không
             if (!$wallet) {
                 return response()->json([
-                    'status'    => 'error',
-                    'message'   => 'Không tìm thấy ví của người dùng này'
+                    'status' => 'error',
+                    'message' => 'Không tìm thấy ví của người dùng này'
                 ], Response::HTTP_NOT_FOUND);
             }
 
             // Kiểm tra dữ liệu truyền lên
             $validator = Validator::make($request->all(), [
-                'amount'    => 'required|int',
+                'amount' => 'required|int',
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -610,34 +654,34 @@ class WalletController extends Controller
             }
 
             // Lấy thông tin cấu hình từ .env
-            $vnp_TmnCode    = env('VNP_TMN_CODE');
+            $vnp_TmnCode = env('VNP_TMN_CODE');
             $vnp_HashSecret = env('VNP_HASH_SECRET');
-            $vnp_Url        = env('VNP_URL'); // URL của môi trường test hoặc production
-            $vnp_Returnurl  = env('VNP_RETURN_URL_FOR_DEPOSIT');
+            $vnp_Url = env('VNP_URL'); // URL của môi trường test hoặc production
+            $vnp_Returnurl = env('VNP_RETURN_URL_FOR_DEPOSIT');
 
             // Tạo các tham số thanh toán
-            $vnp_TxnRef     = $request->user()->id . "_" . time();
-            $vnp_OrderInfo  = "Thanh toán khóa học";
-            $vnp_OrderType  = "education";
-            $vnp_Amount     = $request->input('amount', 0) * 100; // Số tiền (nhân với 100) để loại bỏ phần thập phân
-            $vnp_Locale     = "vn";
-            $vnp_BankCode   = $request->input('bank_code', "");
-            $vnp_IpAddr     = $request->ip();
+            $vnp_TxnRef = $request->user()->id . "_" . time();
+            $vnp_OrderInfo = "Thanh toán khóa học";
+            $vnp_OrderType = "education";
+            $vnp_Amount = $request->input('amount', 0) * 100; // Số tiền (nhân với 100) để loại bỏ phần thập phân
+            $vnp_Locale = "vn";
+            $vnp_BankCode = $request->input('bank_code', "");
+            $vnp_IpAddr = $request->ip();
 
             // Mảng các tham số gửi lên VNPAY
             $inputData = [
-                "vnp_Version"       => "2.1.0",
-                "vnp_TmnCode"       => $vnp_TmnCode,
-                "vnp_Amount"        => $vnp_Amount,
-                "vnp_Command"       => "pay",
-                "vnp_CreateDate"    => date('YmdHis'),
-                "vnp_CurrCode"      => "VND",
-                "vnp_IpAddr"        => $vnp_IpAddr,
-                "vnp_Locale"        => $vnp_Locale,
-                "vnp_OrderInfo"     => $vnp_OrderInfo,
-                "vnp_OrderType"     => $vnp_OrderType,
-                "vnp_ReturnUrl"     => $vnp_Returnurl,
-                "vnp_TxnRef"        => $vnp_TxnRef,
+                "vnp_Version" => "2.1.0",
+                "vnp_TmnCode" => $vnp_TmnCode,
+                "vnp_Amount" => $vnp_Amount,
+                "vnp_Command" => "pay",
+                "vnp_CreateDate" => date('YmdHis'),
+                "vnp_CurrCode" => "VND",
+                "vnp_IpAddr" => $vnp_IpAddr,
+                "vnp_Locale" => $vnp_Locale,
+                "vnp_OrderInfo" => $vnp_OrderInfo,
+                "vnp_OrderType" => $vnp_OrderType,
+                "vnp_ReturnUrl" => $vnp_Returnurl,
+                "vnp_TxnRef" => $vnp_TxnRef,
             ];
 
             if (!empty($vnp_BankCode)) {
@@ -666,14 +710,14 @@ class WalletController extends Controller
 
             // Trả về URL thanh toán cho client
             return response()->json([
-                'status'        => 'success',
-                'payment_url'   => $paymentUrl
+                'status' => 'success',
+                'payment_url' => $paymentUrl
             ], Response::HTTP_CREATED);
-            
+
         } catch (\Throwable $th) {
             return response()->json([
-                'message'   => 'Lỗi server',
-                'error'     => $th->getMessage(),
+                'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -726,7 +770,7 @@ class WalletController extends Controller
             list($user_id, $timestamp) = explode('_', $request->query('vnp_TxnRef'));
             $wallet = Wallet::where('user_id', $user_id)->first();
             $amount = $request->query('vnp_Amount') / 100;
-            $transactionCode = $request->query('vnp_BankTranNo').$request->query('vnp_PayDate').$request->query('vnp_SecureHash');
+            $transactionCode = $request->query('vnp_BankTranNo') . $request->query('vnp_PayDate') . $request->query('vnp_SecureHash');
 
             if ($request->query('vnp_ResponseCode') == "00") {
 
@@ -742,22 +786,22 @@ class WalletController extends Controller
                 $wallet->increment('balance', $amount);
                 $wallet->update([
                     'transaction_history' => [
-                        'Loại giao dịch'        => 'Nạp tiền vào ví',
-                        'Số tiền thanh toán'    => number_format($amount) . ' VND',
-                        'Số dư'                 => number_format($wallet->balance) . ' VND',
-                        'Ngày giao dịch'        => Carbon::now('Asia/Ho_Chi_Minh')
+                        'Loại giao dịch' => 'Nạp tiền vào ví',
+                        'Số tiền thanh toán' => number_format($amount) . ' VND',
+                        'Số dư' => number_format($wallet->balance) . ' VND',
+                        'Ngày giao dịch' => Carbon::now('Asia/Ho_Chi_Minh')
                     ]
                 ]);
 
                 // Tạo lịch sử giao dịch
                 TransactionWallet::create([
-                    'wallet_id'             => $wallet->id,
-                    'transaction_code'      => $transactionCode,
-                    'amount'                => $amount,
-                    'balance'               => $wallet->balance,
-                    'type'                  => 'deposit',
-                    'status'                => 'success',
-                    'transaction_date'      => Carbon::now('Asia/Ho_Chi_Minh')
+                    'wallet_id' => $wallet->id,
+                    'transaction_code' => $transactionCode,
+                    'amount' => $amount,
+                    'balance' => $wallet->balance,
+                    'type' => 'deposit',
+                    'status' => 'success',
+                    'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
                 ]);
 
                 DB::commit(); // Commit transaction
@@ -772,8 +816,8 @@ class WalletController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack(); // Rollback transaction nếu có lỗi
             return response()->json([
-                'message'   => 'Lỗi server',
-                'error'     => $th->getMessage(),
+                'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -896,11 +940,11 @@ class WalletController extends Controller
 
             // Kiểm tra dữ liệu truyền lên
             $validator = Validator::make($request->all(), [
-                'amount'            => 'required|int',
-                'bank_name'         => 'required|string',
-                'bank_nameUser'     => 'required|string',
-                'bank_number'       => 'required|int',
-                'qr_image'          => 'nullable|image|max:2048',
+                'amount' => 'required|int',
+                'bank_name' => 'required|string',
+                'bank_nameUser' => 'required|string',
+                'bank_number' => 'required|int',
+                'qr_image' => 'nullable|image|max:2048',
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -930,50 +974,50 @@ class WalletController extends Controller
             ]);
 
             // Ghi lại lịch sử giao dịch
-            if ( isset($request['qr_image']) ) {
-                
+            if (isset($request['qr_image'])) {
+
                 TransactionWallet::create([
-                    'wallet_id'         => $wallet->id,
-                    'transaction_code'  => Str::uuid(), // Mã giao dịch duy nhất
-                    'amount'            => $amount,
-                    'balance'           => $wallet->balance,
-                    'type'              => 'withdraw',
-                    'status'            => 'pending',
-                    'bank_name'         => $bank_code,
-                    'bank_nameUser'     => $bank_nameUser,
-                    'bank_number'       => $bank_number,
-                    'qr_image'          => $data['qr_image'],
-                    'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+                    'wallet_id' => $wallet->id,
+                    'transaction_code' => Str::uuid(), // Mã giao dịch duy nhất
+                    'amount' => $amount,
+                    'balance' => $wallet->balance,
+                    'type' => 'withdraw',
+                    'status' => 'pending',
+                    'bank_name' => $bank_code,
+                    'bank_nameUser' => $bank_nameUser,
+                    'bank_number' => $bank_number,
+                    'qr_image' => $data['qr_image'],
+                    'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
                 ]);
 
             } else {
-                
+
                 TransactionWallet::create([
-                    'wallet_id'         => $wallet->id,
-                    'transaction_code'  => Str::uuid(), // Mã giao dịch duy nhất
-                    'amount'            => $amount,
-                    'balance'           => $wallet->balance,
-                    'type'              => 'withdraw',
-                    'status'            => 'pending',
-                    'bank_name'         => $bank_code,
-                    'bank_nameUser'     => $bank_nameUser,
-                    'bank_number'       => $bank_number,
-                    'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+                    'wallet_id' => $wallet->id,
+                    'transaction_code' => Str::uuid(), // Mã giao dịch duy nhất
+                    'amount' => $amount,
+                    'balance' => $wallet->balance,
+                    'type' => 'withdraw',
+                    'status' => 'pending',
+                    'bank_name' => $bank_code,
+                    'bank_nameUser' => $bank_nameUser,
+                    'bank_number' => $bank_number,
+                    'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
                 ]);
-                
+
             }
-            
+
             DB::commit(); // Lưu thay đổi vào database
             return response()->json([
                 'status' => 'success',
                 'message' => 'Gửi yêu cầu rút tiền thành công!'
             ], Response::HTTP_OK);
-            
+
         } catch (\Throwable $th) {
             DB::rollBack(); // Rollback transaction nếu có lỗi
             return response()->json([
-                'message'   => 'Lỗi server',
-                'error'     => $th->getMessage(),
+                'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

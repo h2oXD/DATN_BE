@@ -23,8 +23,9 @@
                 <div class="col-auto text-center d-flex gap-2">
                     <form action="{{ route('admin.courses.approve', $course->id) }}" method="POST">
                         @csrf
-                        <button class="btn btn-outline-primary btn-sm">Chấp nhận</button>
+                        <button id="chapnhan" class="btn btn-outline-primary btn-sm">Chấp nhận</button>
                     </form>
+
                     <div>
                         <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
                             data-bs-target=".gd-example-modal-lg">Từ chối</button>

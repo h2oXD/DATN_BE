@@ -439,6 +439,7 @@ class QuizController extends Controller
 
         // Validate dữ liệu đầu vào
         $request->validate([
+            'image_url' => 'nullable',
             'question_text' => 'required|string',
             'is_multiple_choice' => 'required|in:0,1',
             'answers' => 'required|array',
@@ -447,60 +448,26 @@ class QuizController extends Controller
         $questionData['quiz_id'] = $quiz->id;
         $questionData['question_text'] = $request->question_text;
         $questionData['is_multiple_choice'] = $request->is_multiple_choice;
+        if (request()->hasFile('image_url')) {
+            $questionData['image_url'] = Storage::put('quizImage', $request->file('image_url'));
+        }
         $answersData = $request->answers;
-        // Lọc bỏ các answer rỗng
-        $answersData = array_filter($answersData, function ($answer) {
-            return isset($answer['text']) && trim($answer['text']) !== '';
-        });
-
 
         // Lấy order lớn nhất hiện có cho quiz này
         $maxOrder = Question::where('quiz_id', $quiz->id)->max('order');
         $newOrder = $maxOrder ? $maxOrder + 1 : 1;
         $questionData['order'] = $newOrder;
+
         DB::beginTransaction();
         try {
-            if ($request->is_multiple_choice == 1) {
-                $question = Question::create($questionData);
-                foreach ($answersData as $index => $answers) {
-                    if (!isset($answers['is_correct'])) {
-                        Answer::create([
-                            'answer_text' => $answers['text'],
-                            'is_correct' => 0,
-                            'question_id' => $question->id,
-                            'order' => $index + 1
-                        ]);
-                    } else {
-                        Answer::create([
-                            'answer_text' => $answers['text'],
-                            'is_correct' => $answers['is_correct'][0],
-                            'question_id' => $question->id,
-                            'order' => $index + 1
-                        ]);
-                    }
-                }
-            }
-            if ($questionData['is_multiple_choice'] == 0) {
-                $correctIndex = $request->is_correct; // Lấy index của câu trả lời đúng
-                $answersData[$correctIndex]['is_correct'] = 1;
-                $question = Question::create($questionData);
-                foreach ($answersData as $index => $answers) {
-                    if (!isset($answers['is_correct'])) {
-                        Answer::create([
-                            'answer_text' => $answers['text'],
-                            'is_correct' => 0,
-                            'question_id' => $question->id,
-                            'order' => $index + 1
-                        ]);
-                    } else {
-                        Answer::create([
-                            'answer_text' => $answers['text'],
-                            'is_correct' => $answers['is_correct'],
-                            'question_id' => $question->id,
-                            'order' => $index + 1
-                        ]);
-                    }
-                }
+            $question = Question::create($questionData);
+            foreach ($answersData as $index => $answers) {
+                Answer::create([
+                    'answer_text' => $answers['answer_text'],
+                    'is_correct' => $answers['is_correct'],
+                    'question_id' => $question->id,
+                    'order' => $index + 1
+                ]);
             }
             DB::commit();
             return response()->json([
@@ -551,6 +518,69 @@ class QuizController extends Controller
             'message' => 'Answer created successfully',
             'data' => $answer
         ], 201);
+    }
+    public function deleteQuestion($question_id)
+    {
+        $question = Question::find($question_id);
+        $question_image = $question->image_url;
+        $question->delete();
+        if (isset($question_image) && $question_image && Storage::exists($question_image)) {
+            Storage::delete($question_image);
+        }
+        return response()->noContent();
+    }
+    public function showQuestions($question_id)
+    {
+        $question = Question::with('answers')->find($question_id);
+        return response()->json($question);
+    }
+    public function updateQuestion(Request $request, $quiz_id, $question_id)
+    {
+        // Kiểm tra xem Quiz có tồn tại không
+        $quiz = Quiz::find($quiz_id);
+        if (!$quiz) {
+            return response()->json(['status' => 'error', 'message' => 'Quiz not found'], 404);
+        }
+
+        // Validate dữ liệu đầu vào
+        $request->validate([
+            'image_url' => 'nullable',
+            'question_text' => 'required|string',
+            'is_multiple_choice' => 'required|in:0,1',
+            'answers' => 'required|array',
+        ]);
+
+        $questionData['quiz_id'] = $quiz->id;
+        $questionData['question_text'] = $request->question_text;
+        $questionData['is_multiple_choice'] = $request->is_multiple_choice;
+        if (request()->hasFile('image_url')) {
+            $questionData['image_url'] = Storage::put('quizImage', $request->file('image_url'));
+        }
+        $answersData = $request->answers;
+
+        DB::beginTransaction();
+        try {
+            $question = Question::find($question_id);
+            $question->update($questionData);
+            Answer::where('question_id', $question_id)->delete();
+            foreach ($answersData as $index => $answers) {
+                Answer::create([
+                    'answer_text' => $answers['answer_text'],
+                    'is_correct' => $answers['is_correct'],
+                    'question_id' => $question->id,
+                    'order' => $index + 1
+                ]);
+            }
+            DB::commit();
+            return response()->json([
+                'message' => 'Thêm câu hỏi thành công',
+            ], 201);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Lỗi hệ thống ' . $th,
+            ], 500);
+        }
     }
 
 

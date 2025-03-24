@@ -138,11 +138,17 @@ class ReviewController extends Controller
             return response()->json(['error' => 'Khóa học không tồn tại'], 404);
         }
 
+        $user_id = request()->user()->id;
+        $isReviewed = Review::where('reviewable_type', Course::class)->where('user_id', $user_id)->where('reviewable_id',$courseId)->first();
         $reviews = Review::where('reviewable_type', Course::class)
+            ->with('reviewer')
             ->where('reviewable_id', $courseId)
             ->get();
 
-        return response()->json($reviews);
+        return response()->json([
+            'reviews' => $reviews,
+            'isReviewed' => $isReviewed ? 1 : 0,
+        ]);
     }
 
     // Lấy danh sách đánh giá của một giảng viên
