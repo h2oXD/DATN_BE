@@ -179,11 +179,13 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
 
     // Lấy danh sách câu hỏi của một Quiz
     Route::get('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'getQuestions']);
+    Route::get('/lecturer/quizzes/questions/{question_id}', [QuizController::class, 'showQuestions']);
 
     // Tạo câu hỏi trong Quiz
     Route::post('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'storeQuestion']);
+    Route::put('/lecturer/quizzes/{quiz_id}/questions/{question_id}', [QuizController::class, 'updateQuestion']);
     // Route::post('/lecturer/questions/{question_id}/answers', [QuizController::class, 'storeAnswer']);
-
+    Route::delete('/lecturer/questions/{question_id}', [QuizController::class, 'deleteQuestion']);
     // Cập nhật thứ tự câu hỏi trong Quiz
     Route::post('/user/quizzes/{quiz_id}/update-order', [QuizController::class, 'updateQuizOrder']);
 
@@ -216,11 +218,11 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     // Excel quiz
     Route::post('/lessons/{lessonId}/quizzes/{quiz_id}/upload', [QuizController::class, 'uploadQuizExcel']);
 
-   
+
 
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
-   
+
     Route::get('/student/courses/{course_id}', [EnrollmentController::class, 'showUserEnrollmentCourse']);
     Route::get('/lesson/{lesson_id}', [EnrollmentController::class, 'showLesson']);
     Route::get('course/{course_id}/lesson', [EnrollmentController::class, 'getStatusLesson']);
@@ -266,3 +268,4 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleC
 
 Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.default.api');
 Route::get('/banners', [BannerController::class, 'index']);
+Route::get('/guest/lecturer', [OverviewController::class, 'guestLecturer']);
