@@ -218,11 +218,11 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     // Excel quiz
     Route::post('/lessons/{lessonId}/quizzes/{quiz_id}/upload', [QuizController::class, 'uploadQuizExcel']);
 
-   
+
 
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
-   
+
     Route::get('/student/courses/{course_id}', [EnrollmentController::class, 'showUserEnrollmentCourse']);
     Route::get('/lesson/{lesson_id}', [EnrollmentController::class, 'showLesson']);
     Route::get('course/{course_id}/lesson', [EnrollmentController::class, 'getStatusLesson']);
@@ -268,3 +268,4 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleC
 
 Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.default.api');
 Route::get('/banners', [BannerController::class, 'index']);
+Route::get('/guest/lecturer', [OverviewController::class, 'guestLecturer']);

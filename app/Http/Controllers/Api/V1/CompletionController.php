@@ -65,7 +65,7 @@ class CompletionController extends Controller
         $latestCourse = Completion::where('user_id', $user_id)
             ->where('course_id', $course_id)
             ->where('status', 'in_progress')
-            ->orderBy('id', 'desc')
+            ->orderBy('id', 'asc')
             ->first();
 
         if ($latestCourse) {

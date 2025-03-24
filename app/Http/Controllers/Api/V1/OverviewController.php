@@ -227,35 +227,39 @@ class OverviewController extends Controller
             //     $courses_id = $user->enrollments()->course_id;
             // }
 
-            $lecturers = User::with(['courses' => function ($query) {
-                $query->with(['reviews' => function ($q) {
-                    $q->where('reviewable_type', Course::class); // Chỉ lấy review của khóa học
-                }])
-                    ->where('status', 'published')
-                    ->select([
-                        'id',
-                        'user_id',
-                        'category_id',
-                        'price_regular',
-                        'price_sale',
-                        'title',
-                        'thumbnail',
-                        'video_preview',
-                        'description',
-                        'primary_content',
-                        'status',
-                        'is_show_home',
-                        'target_students',
-                        'learning_outcomes',
-                        'prerequisites',
-                        'who_is_this_for',
-                        'is_free',
-                        'language',
-                        'level',
-                        'created_at',
-                        'updated_at'
-                    ]);
-            }])
+            $lecturers = User::with([
+                'courses' => function ($query) {
+                    $query->with([
+                        'reviews' => function ($q) {
+                            $q->where('reviewable_type', Course::class); // Chỉ lấy review của khóa học
+                        }
+                    ])
+                        ->where('status', 'published')
+                        ->select([
+                            'id',
+                            'user_id',
+                            'category_id',
+                            'price_regular',
+                            'price_sale',
+                            'title',
+                            'thumbnail',
+                            'video_preview',
+                            'description',
+                            'primary_content',
+                            'status',
+                            'is_show_home',
+                            'target_students',
+                            'learning_outcomes',
+                            'prerequisites',
+                            'who_is_this_for',
+                            'is_free',
+                            'language',
+                            'level',
+                            'created_at',
+                            'updated_at'
+                        ]);
+                }
+            ])
                 ->whereHas('courses', function ($query) {
                     $query->where('status', 'published')
                         ->whereHas('reviews', function ($q) {
@@ -283,9 +287,12 @@ class OverviewController extends Controller
             $user = $request->user();
 
             //Course published
-            $coursesPublished = Course::with(['user', 'reviews' => function ($query) {
-                $query->where('reviewable_type', Course::class);
-            }])
+            $coursesPublished = Course::with([
+                'user',
+                'reviews' => function ($query) {
+                    $query->where('reviewable_type', Course::class);
+                }
+            ])
                 ->where('status', 'published')
                 ->where('is_show_home', 1)
                 ->get()
@@ -312,9 +319,13 @@ class OverviewController extends Controller
 
 
             // top Course
-            $courses = Course::with(['user', 'category', 'reviews' => function ($query) {
-                $query->where('reviewable_type', Course::class);
-            }])
+            $courses = Course::with([
+                'user',
+                'category',
+                'reviews' => function ($query) {
+                    $query->where('reviewable_type', Course::class);
+                }
+            ])
                 ->where('status', 'published')
                 ->get()
                 ->map(function ($course) use ($user) {
@@ -340,32 +351,24 @@ class OverviewController extends Controller
             }
 
             // Course free
-            $coursesFree = Course::with(['user', 'reviews' => function ($query) {
-                $query->where('reviewable_type', Course::class);
-            }])
+            $coursesFree = Course::with([
+                'user',
+                'reviews' => function ($query) {
+                    $query->where('reviewable_type', Course::class);
+                }
+            ])
                 ->where('is_free', true)
                 ->where('status', 'published')
-                ->get()
-                ->map(function ($course) use ($user) {
-                    return [
-                        'id' => $course->id,
-                        'title' => $course->title,
-                        'thumbnail' => $course->thumbnail,
-                        'isLecturer' => $user ? ($course->user_id === $user->id) : false,
-                        'isEnrollment' => $user
-                            ? Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->exists()
-                            : false,
-                        'reviews' => $course->reviews,
-                    ];
-                });
+                ->get();
+                
 
 
             return response()->json(
                 [
 
                     'topLectures' => $lecturers,
-                    'topCourses'  => $courses,
-                    'courseFree'  => $coursesFree,
+                    'topCourses' => $courses,
+                    'courseFree' => $coursesFree,
                     'coursesPublished' => $coursesPublished
                 ],
                 200
@@ -419,5 +422,21 @@ class OverviewController extends Controller
         return response()->json([
             'data' => $newCourse
         ], 200);
+    }
+    public function guestLecturer()
+    {
+        $lecturers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'lecturer');
+        })
+            ->with([
+                'reviews' => function ($query) {
+                    $query->orderByDesc('rating'); // Sắp xếp đánh giá theo rating giảm dần
+                }
+            ])
+            ->withCount(['reviews', 'courses']) // Đếm số lượng đánh giá
+            ->withAvg('reviews', 'rating') // Lấy trung bình rating
+            ->orderByDesc('reviews_count') // Sắp xếp theo số đánh giá nhiều nhất
+            ->get();
+        return response()->json($lecturers);
     }
 }

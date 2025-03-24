@@ -160,6 +160,56 @@ Ngoài công việc giảng dạy, tôi còn tham gia vào các dự án nghiên
         $roles = Role::whereIn('name', ['student', 'lecturer'])->pluck('id');
         $lecturer->roles()->attach($roles);
 
+        $listLecturers = [
+            [
+                'name' => 'Nguyễn Ngọc Hiếu',
+                'email' => 'giangvien10@gmail.com',
+                'password' => '123123123',
+                'phone_number' => '0888777666',
+                'profile_picture' => '',
+                'bio' => ''
+            ],
+            [
+                'name' => 'Trông Anh Ngược',
+                'email' => 'giangvien11@gmail.com',
+                'password' => '123123123',
+                'phone_number' => '0888777666',
+                'profile_picture' => '',
+                'bio' => ''
+            ],
+            [
+                'name' => 'Giả Hành Tôn',
+                'email' => 'giangvien12@gmail.com',
+                'password' => '123123123',
+                'phone_number' => '0888777666',
+                'profile_picture' => '',
+                'bio' => ''
+            ],
+            [
+                'name' => 'Tôn Hành Giả',
+                'email' => 'giangvien13@gmail.com',
+                'password' => '123123123',
+                'phone_number' => '0888777666',
+                'profile_picture' => '',
+                'bio' => ''
+            ],
+        ];
+        foreach ($listLecturers as $l) {
+            $lecturer = User::create([
+                'name' => $l['name'],
+                'email' => $l['email'],
+                'password' => Hash::make($l['password']),
+                'phone_number' => $l['phone_number'],
+                'profile_picture' => '',
+                'bio' => '',
+            ]);
+
+            $lecturer->wallet()->create(['balance' => 0]);
+
+            $roles = Role::whereIn('name', ['student', 'lecturer'])->pluck('id');
+            $lecturer->roles()->attach($roles);
+        }
+
         $categories = [
             [
                 'id' => 1,

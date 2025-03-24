@@ -446,7 +446,11 @@ class WalletController extends Controller
 
                 $user_id = request()->user()->id;
                 // Lấy tất cả sections của khóa học
-                $sections = Section::where('course_id', $course_id)->with('lessons')->get();
+                $sections = Section::where('course_id', $course_id)->with([
+                    'lessons' => function ($query) {
+                        $query->orderBy('order', 'desc');
+                    }
+                ])->get();
 
                 // Duyệt qua từng section và khởi tạo tiến trình cho từng lesson
                 foreach ($sections as $section) {
@@ -535,7 +539,11 @@ class WalletController extends Controller
 
                 $user_id = request()->user()->id;
                 // Lấy tất cả sections của khóa học
-                $sections = Section::where('course_id', $course_id)->with('lessons')->get();
+                $sections = Section::where('course_id', $course_id)->with([
+                    'lessons' => function ($query) {
+                        $query->orderBy('order', 'desc');
+                    }
+                ])->get();
 
                 // Duyệt qua từng section và khởi tạo tiến trình cho từng lesson
                 foreach ($sections as $section) {
