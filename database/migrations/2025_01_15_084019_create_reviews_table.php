@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Course;
-use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,13 +13,20 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            
-            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
-            $table->foreignUuid('course_id')->constrained('courses')->onDelete('cascade');
-            $table->integer('rating');
-            $table->text('review_text')->nullable();
-            $table->timestamp('created_at')->nullable();
 
+            // Người đánh giá (Reviewer - thường là sinh viên)
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
+            // Đối tượng được đánh giá (Khóa học hoặc Giảng viên)
+            $table->string('reviewable_type'); // Chuỗi cho loại model
+            $table->uuid('reviewable_id');   // Chuỗi cho UUID (thay vì bigint)
+
+            $table->integer('rating'); // Điểm đánh giá
+            $table->text('review_text')->nullable(); // Nội dung đánh giá
+            $table->timestamps(); // created_at & updated_at
+
+            // Chỉ số cho quan hệ đa hình
+            $table->index(['reviewable_type', 'reviewable_id']);
         });
     }
 

@@ -297,10 +297,11 @@
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div class="d-flex align-items-center gap-3">
                                             <div class="position-relative">
-                                                <img alt="avatar"
-                                                    src="{{ $instructor->profile_picture ? asset('storage/' . $instructor->profile_picture) : asset('assets/images/avatar/avatar-default.jpg') }}"
-                                                    class="rounded-circle shadow-sm border border-2" width="60"
-                                                    height="60" />
+                                                <img alt="avatar" src="{{ asset('storage/' . $instructor->profile_picture) }}"
+                                                    onerror="this.onerror=null;this.src='{{ asset('assets/images/avatar/avatar-default.jpg') }}';"
+                                                    class="avatar-xl rounded-circle border border-4 border-white"
+                                                    style="width: 50px; height: 50px; object-fit: cover;"
+                                                    alt="avatar" />
                                                 <span
                                                     class="position-absolute bottom-0 end-0 p-1 bg-success rounded-circle border border-white"
                                                     style="width:12px; height:12px;"></span>
@@ -364,8 +365,7 @@
                                                     {{ Str::limit($course->title, 40, '...') }}</h5>
                                             </a>
                                             <div class="d-flex align-items-center gap-2">
-                                                <img alt="avatar"
-                                                    src="{{ $course->user->profile_picture ? asset('storage/' . $course->user->profile_picture) : asset('assets/images/avatar/avatar-default.jpg') }}"
+                                                <img alt="avatar" src="{{ asset('storage/' . $course->user->profile_picture) }}"
                                                     class="rounded-circle"
                                                     style="width: 35px; height: 35px; object-fit: cover;" />
                                                 <span class="small text-muted">{{ $course->user->name }}</span>

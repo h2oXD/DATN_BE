@@ -15,7 +15,7 @@
                             <div class="d-flex align-items-end justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <div class="me-2 position-relative d-flex justify-content-end align-items-end mt-n5">
-                                        <img src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
+                                        <img src="{{ asset($user->profile_picture ?? 'assets/images/avatar/avatar-3.jpg') }}"
                                             class="avatar-xl rounded-circle border border-4 border-white"
                                             style="width: 100px; height: 100px; object-fit: cover;" alt="avatar" />
                                     </div>
@@ -64,9 +64,9 @@
                             <div class="card-body">
                                 <div class="d-lg-flex align-items-center justify-content-between">
                                     <div class="d-flex align-items-center mb-4 mb-lg-0">
-                                        <img src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
-                                            class="avatar-md rounded-circle"
-                                            style="width: 100px; height: 100px; object-fit: cover;" alt="Current avatar" />
+                                        <img src="{{ asset($user->profile_picture ?? 'assets/images/avatar/avatar-3.jpg') }}"
+                                            class="avatar-xl rounded-circle border border-4 border-white"
+                                            style="width: 100px; height: 100px; object-fit: cover;" alt="avatar" />
                                         <div class="ms-3">
                                             <h4 class="mb-0">Ảnh đại diện của bạn</h4>
                                             <p class="mb-0">PNG hoặc JPG, không lớn hơn 800px chiều rộng và chiều cao.</p>
@@ -128,10 +128,10 @@
                                             @enderror
                                             <p class="mt-1">
                                                 Ảnh hiện tại:
-                                                <img src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
-                                                    class="avatar-md rounded-circle"
+                                                <img src="{{ asset($user->profile_picture ?? 'assets/images/avatar/avatar-3.jpg') }}"
+                                                    class="avatar-xl rounded-circle border border-4 border-white"
                                                     style="width: 100px; height: 100px; object-fit: cover;"
-                                                    alt="Current avatar" />
+                                                    alt="avatar" />
                                             </p>
                                         </div>
                                         <div class="col-12">

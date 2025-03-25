@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <div class="card">
+    <div class="card m-3">
         <div class="card-header d-flex justify-content-between align-content-center">
             <h2>Chi tiết người dùng</h2>
         </div>
@@ -39,7 +39,9 @@
             <div class="row mb-3">
                 <div class="col-md-3"><strong>Ảnh đại diện:</strong></div>
                 <div class="col-md-9">
-                    <img src="{{ Storage::url($user->profile_picture) }}" class="rounded-circle" width="100" height="100">
+                    <img src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"" alt="avatar"
+                    class="avatar-xl rounded-circle border border-4 border-white"
+                    style="width: 100px; height: 100px; object-fit: cover;" alt="avatar" />
                 </div>
             </div>
             <div class="row mb-3">

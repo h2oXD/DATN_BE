@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <div class="card">
+    <div class="card m-3">
         <div class="card-header">
             <h2 class="m-0">Thêm mới người dùng</h2>
         </div>

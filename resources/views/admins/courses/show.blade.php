@@ -60,7 +60,6 @@
                             style="border-radius: 8px;">
                     </div>
                 </div>
-
                 <div class="mt-4">
                     <a href="{{ route('admin.courses.index') }}" class="btn btn-secondary">Quay lại danh sách khóa học</a>
                 </div>

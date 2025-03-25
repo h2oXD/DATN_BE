@@ -789,9 +789,9 @@ class WalletController extends Controller
      *     required=true,
      *     @OA\JsonContent(
      *       type="object",
-     *       required={"amount", "bank_code", "bank_nameUser", "bank_number"},
+     *       required={"amount", "bank_name", "bank_nameUser", "bank_number"},
      *       @OA\Property(property="amount", type="integer", example=500000, description="Số tiền cần rút (tối thiểu 10,000 VND)"),
-     *       @OA\Property(property="bank_code", type="string", example="VCB", description="Mã ngân hàng"),
+     *       @OA\Property(property="bank_name", type="string", example="MBank", description="Tên ngân hàng"),
      *       @OA\Property(property="bank_nameUser", type="string", example="Nguyen Van A", description="Tên chủ tài khoản ngân hàng"),
      *       @OA\Property(property="bank_number", type="integer", example=123456789, description="Số tài khoản ngân hàng"),
      *       @OA\Property(property="qr_image", type="string", format="binary", description="Hình ảnh mã QR (tùy chọn, tối đa 2MB)")
@@ -930,20 +930,39 @@ class WalletController extends Controller
             ]);
 
             // Ghi lại lịch sử giao dịch
-            TransactionWallet::create([
-                'wallet_id'         => $wallet->id,
-                'transaction_code'  => Str::uuid(), // Mã giao dịch duy nhất
-                'amount'            => $amount,
-                'balance'           => $wallet->balance,
-                'type'              => 'withdraw',
-                'status'            => 'pending',
-                'bank_name'         => $bank_code,
-                'bank_nameUser'     => $bank_nameUser,
-                'bank_number'       => $bank_number,
-                'qr_image'          => $data['qr_image'],
-                'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
-            ]);
+            if ( isset($request['qr_image']) ) {
+                
+                TransactionWallet::create([
+                    'wallet_id'         => $wallet->id,
+                    'transaction_code'  => Str::uuid(), // Mã giao dịch duy nhất
+                    'amount'            => $amount,
+                    'balance'           => $wallet->balance,
+                    'type'              => 'withdraw',
+                    'status'            => 'pending',
+                    'bank_name'         => $bank_code,
+                    'bank_nameUser'     => $bank_nameUser,
+                    'bank_number'       => $bank_number,
+                    'qr_image'          => $data['qr_image'],
+                    'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+                ]);
 
+            } else {
+                
+                TransactionWallet::create([
+                    'wallet_id'         => $wallet->id,
+                    'transaction_code'  => Str::uuid(), // Mã giao dịch duy nhất
+                    'amount'            => $amount,
+                    'balance'           => $wallet->balance,
+                    'type'              => 'withdraw',
+                    'status'            => 'pending',
+                    'bank_name'         => $bank_code,
+                    'bank_nameUser'     => $bank_nameUser,
+                    'bank_number'       => $bank_number,
+                    'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+                ]);
+                
+            }
+            
             DB::commit(); // Lưu thay đổi vào database
             return response()->json([
                 'status' => 'success',

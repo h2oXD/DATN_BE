@@ -3,9 +3,13 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\ResetPasswordController;
+use App\Http\Controllers\Api\V1\BannerController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CertificateController;
+use App\Http\Controllers\Api\V1\ChatMessageController;
+use App\Http\Controllers\Api\V1\ChatRoomController;
 use App\Http\Controllers\Api\V1\CommentController;
+use App\Http\Controllers\Api\V1\CompletionController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
@@ -23,6 +27,7 @@ use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\SectionController;
 use App\Http\Controllers\Api\V1\StudyController;
 use App\Http\Controllers\Api\V1\TagController;
+use App\Http\Controllers\Api\V1\TransactionWalletController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\VideoController;
 use App\Http\Controllers\Api\V1\VNPayAPIController;
@@ -82,10 +87,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/courses', [EnrollmentController::class, 'getUserCoursesWithProgress']);
     Route::get('/user/courses/{course_id}', [EnrollmentController::class, 'getprogress']);
 
-    // review
-    Route::post('/user/{user_id}/courses/{course_id}/reviews', [ReviewController::class, 'store']); // Thêm đánh giá
-    Route::put('/user/{user_id}/reviews/{review_id}', [ReviewController::class, 'update']);
-    Route::delete('/user/{user_id}/reviews/{review_id}', [ReviewController::class, 'destroy']);
+    // review 
+    Route::post('/courses/{courseId}/reviews', [ReviewController::class, 'storeCourseReview']);
+    Route::post('/lecturers/{lecturerId}/reviews', [ReviewController::class, 'storeLecturerReview']);
+    Route::put('/reviews/{review}', [ReviewController::class, 'update']);
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
+    Route::get('/courses/{courseId}/reviews', [ReviewController::class, 'getCourseReviews']);
+    Route::get('/lecturers/{lecturerId}/reviews', [ReviewController::class, 'getLecturerReviews']);
+    Route::get('/reviews/user', [ReviewController::class, 'getUserReviews']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 
@@ -103,10 +112,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::delete('/posts/{post}', [PostController::class, 'destroy']); // Xóa bài viết
 
     // Comment
-    Route::get('/courses/{course}/sections/{section}/lessons/{lesson}/comments', [CommentController::class, 'getLessonComment']);
-    Route::post('/courses/{course}/sections/{section}/lessons/{lesson}/comments', [CommentController::class, 'storeLessonComment']);
-    Route::put('/courses/{course}/sections/{section}/lessons/{lesson}/comments/{comment}', [CommentController::class, 'updateLessonComment']);
-    Route::delete('/courses/{course}/sections/{section}/lessons/{lesson}/comments/{comment}', [CommentController::class, 'destroyLessonComment']);
+    Route::get('/lessons/{lesson}/comments', [CommentController::class, 'getLessonComment']);
+    Route::post('lessons/{lesson}/comments', [CommentController::class, 'storeLessonComment']);
+    Route::put('/courses/{course}/lessons/{lesson}/comments/{comment}', [CommentController::class, 'updateLessonComment']);
+    Route::delete('/courses/{course}/lessons/{lesson}/comments/{comment}', [CommentController::class, 'destroyLessonComment']);
 
     Route::get('/posts/{post_id}/comments/posts', [CommentController::class, 'getPostComments'])->name('post.comments.index');
     Route::post('/posts/{post_id}/comments/', [CommentController::class, 'storePostComment'])->name('post.comments.store');
@@ -118,9 +127,22 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/change-password', [ResetPasswordController::class, 'resetPassword'])->name('change.password');
 
 
+    //Chat room
+    Route::get('/chat-rooms', [ChatRoomController::class, 'index']);
+    Route::post('/chat-rooms', [ChatRoomController::class, 'store']);
+    Route::get('/chat-rooms/{id}', [ChatRoomController::class, 'show']);
+    Route::delete('/chat-rooms/{id}', [ChatRoomController::class, 'destroy']);
 
-    
-    
+
+    //Messenger
+    Route::get('/chat-rooms/{id}/messages', [ChatMessageController::class, 'index']);
+    Route::post('/chat-rooms/{id}/messages', [ChatMessageController::class, 'store']);
+    Route::delete('/chat-messages/{id}', [ChatMessageController::class, 'destroy']);
+    // Lịch sử nạp tiền
+    Route::get('/user/wallet/deposit-histories', [TransactionWalletController::class, 'depositHistory']);
+    // Lịch sử ví tiền (tất cả các loại giao dịch)
+    Route::get('/user/wallet/histories', [TransactionWalletController::class, 'walletHistory']);
+
 });
 // Callback payment
 Route::get('/user/courses/{course_id}/payment-callback', [VNPayAPIController::class, 'paymentCallback']);
@@ -132,7 +154,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::get('/lecturer', [LecturerController::class, 'getLecturerInfo']);
     Route::get('lecturer/courses/{course_id}/check', [CourseController::class, 'check']);
     Route::get('lecturer/courses/{course_id}/pending', [CourseController::class, 'checkPending']);
-    
+
     // Thống kê giảng viên
     Route::get('/lecturer/statistics', [LecturerController::class, 'statistics']);
 
@@ -143,7 +165,8 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons', LessonController::class)->parameters(['lessons' => 'lesson_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/videos', VideoController::class)->parameters(['videos' => 'video_id']);
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', DocumentController::class)->parameters(['documents' => 'document_id']);
-    Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', LessonCodingController::class)->parameters(['codings' => 'coding_id']);
+    // Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', LessonCodingController::class)->parameters(['codings' => 'coding_id']);
+    Route::post('/lecturer/courses/{course_id}/sections/{section_id}/codings', [LessonCodingController::class, 'store']);
 
     // Quản lý Quiz trong một bài học (Lesson)
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes', QuizController::class)
@@ -167,9 +190,22 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
 
     // rút tiền ví giảng viên
     Route::post('/user/wallets/withdraw', [WalletController::class, 'withdraw']);
+
+    Route::post('/chat-rooms/{id}/add-user', [ChatRoomController::class, 'addUser']);
+    Route::post('/chat-rooms/{id}/remove-user', [ChatRoomController::class, 'removeUser']);
+    Route::post('/chat-rooms/{id}/mute-user', [ChatRoomController::class, 'muteUser']);
+    // Lịch sử rút tiền
+    Route::get('/user/wallet/withdraw-histories', [TransactionWalletController::class, 'withdrawHistory']);
+
+
+    // Excel quiz
+    Route::post('/lessons/{lessonId}/quizzes/{quiz_id}/upload', [QuizController::class, 'uploadQuizExcel']);
+
+   
+
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
-    Route::get('/student/home', [OverviewController::class, 'overview']);
+   
     Route::get('/student/courses/{course_id}', [EnrollmentController::class, 'showUserEnrollmentCourse']);
     Route::get('/lesson/{lesson_id}', [EnrollmentController::class, 'showLesson']);
     Route::get('course/{course_id}/lesson', [EnrollmentController::class, 'getStatusLesson']);
@@ -177,6 +213,8 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::post('/certificates/student/courses/{course_id}', [CertificateController::class, 'createCertificate']);
     Route::get('show/certificates/{course_id}', [CertificateController::class, 'showCertificate']);
     Route::get('certificates/{certificate_id}', [CertificateController::class, 'certificate']);
+    Route::get('progress/course/{course_id}', [CompletionController::class, 'showUserCourseProgress']);
+    Route::get('progress/{course_id}', [CompletionController::class, 'getLatestCourseInProgress']);
 
     // Nộp bài Quiz
     Route::post('/user/{user_id}/quizzes/{quiz_id}/submit', [QuizController::class, 'submitQuiz']);
@@ -195,7 +233,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::get('/user/wishlist/check/{course_id}', [WishListController::class, 'check']); // Kiểm tra course
 });
 
-
+Route::get('/student/home', [OverviewController::class, 'overview']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 //Forgot password
@@ -204,13 +242,12 @@ Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name(
 
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/courses/{course_id}/public', [CourseController::class, 'publicCourseDetail']);
+Route::get('/courses/{course_id}/related', [CourseController::class, 'relatedCourses']);
 Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id']);
 //Xem đánh giá
-Route::get('/courses/{course_id}/reviews', [ReviewController::class, 'getReviewsByCourse']); // Lấy đánh giá của khóa học
-Route::get('/user/{user_id}/reviews', [ReviewController::class, 'getReviewsByUser']); // Lấy đánh giá của user
-
 
 Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 
 Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.default.api');
+Route::get('/banners', [BannerController::class, 'index']);

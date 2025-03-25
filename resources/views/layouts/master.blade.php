@@ -30,6 +30,9 @@
 
         </main>
     </div>
+    <script>
+        document.documentElement.setAttribute("data-bs-theme", "light");
+    </script>
     @yield('script')
     <script>
         document.documentElement.setAttribute("data-bs-theme", "light");

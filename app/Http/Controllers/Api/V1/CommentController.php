@@ -15,31 +15,14 @@ class CommentController extends Controller
 {
     //
 
-    public function getLessonComment(Request $request, $course, $section, $lesson)
+    public function getLessonComment(Request $request, $lesson)
     {
-        // Kiểm tra xem lesson có thuộc section không
-        $lessonExists = Lesson::where('id', $lesson)
-            ->where('section_id', $section)
-            ->exists();
-
-        if (!$lessonExists) {
-            return response()->json(['message' => 'Bài học không thuộc phần học này!'], 400);
-        }
-
-        // Kiểm tra xem section có thuộc course không
-        $sectionExists = Section::where('id', $section)
-            ->where('course_id', $course)
-            ->exists();
-
-        if (!$sectionExists) {
-            return response()->json(['message' => 'Phần học không thuộc khóa học này!'], 400);
-        }
-
         // Lấy danh sách tất cả bình luận trong lesson (bao gồm bình luận cha và con)
         $comments = Comment::with(['user', 'replies.user']) // Eager loading user và replies
             ->where('commentable_type', Lesson::class)
             ->where('commentable_id', $lesson)
-            ->orderBy('created_at', 'asc') // Hiển thị theo thứ tự cũ -> mới
+            ->where('parent_id', null)
+            ->orderBy('created_at', 'desc') // Hiển thị theo thứ tự cũ -> mới
             ->get();
 
         return response()->json($comments);
@@ -47,7 +30,7 @@ class CommentController extends Controller
 
 
 
-    public function storeLessonComment(Request $request, $course, $section, $lesson)
+    public function storeLessonComment(Request $request, $lesson)
     {
         $validator = Validator::make($request->all(), [
             'content' => 'required|string',
@@ -61,33 +44,6 @@ class CommentController extends Controller
 
         $validated = $validator->validated();
         $user = $request->user(); // Lấy user hiện tại từ request
-
-        // Kiểm tra xem lesson có thuộc section không
-        $lessonExists = Lesson::where('id', $lesson)
-            ->where('section_id', $section)
-            ->exists();
-
-        if (!$lessonExists) {
-            return response()->json(['message' => 'Bài học không thuộc phần học này!'], 400);
-        }
-
-        // Kiểm tra xem section có thuộc course không
-        $sectionExists = Section::where('id', $section)
-            ->where('course_id', $course)
-            ->exists();
-
-        if (!$sectionExists) {
-            return response()->json(['message' => 'Phần học không thuộc khóa học này!'], 400);
-        }
-
-        // Kiểm tra xem user có quyền truy cập khóa học không (đã ghi danh chưa)
-        $isEnrolled = Enrollment::where('user_id', $user->id)
-            ->where('course_id', $course)
-            ->exists();
-
-        if (!$isEnrolled) {
-            return response()->json(['message' => 'Bạn chưa ghi danh vào khóa học này!'], 403);
-        }
 
         // Tạo comment
         $comment = Comment::create([
