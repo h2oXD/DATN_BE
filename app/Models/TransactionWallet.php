@@ -20,11 +20,20 @@ class TransactionWallet extends Model
         'bank_nameUser',
         'bank_number',
         'qr_image',
-        'transaction_date'
+        'transaction_date',
+        'censor_date',
+        'note',
+        'complain',
+        'time_limited_complain'
     ];
 
     public function wallet()
     {
         return $this->belongsTo(Wallet::class, 'wallet_id');
+    }
+
+    public function complain()
+    {
+        return $this->hasMany(Complain::class);
     }
 }

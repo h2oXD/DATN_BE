@@ -108,7 +108,7 @@ class VNPayAPIController extends Controller
         try {
             $user = $request->user();
             $own_course = $request->user()->courses()->find($course_id);
-            $course = Course::findOrFail($course_id);
+            $course = Course::lockForUpdate()->findOrFail($course_id);
             $is_free = $course->is_free;
 
             if ($is_free == 0) {
@@ -288,6 +288,26 @@ class VNPayAPIController extends Controller
                     'progress_percent' => 0
                 ]);
 
+                $user_id = request()->user()->id;
+                // Lấy tất cả sections của khóa học
+                $sections = Section::where('course_id', $course_id)->with([
+                    'lessons' => function ($query) {
+                        $query->orderBy('order', 'desc');
+                    }
+                ])->get();
+
+                // Duyệt qua từng section và khởi tạo tiến trình cho từng lesson
+                foreach ($sections as $section) {
+                    foreach ($section->lessons as $lesson) {
+                        Completion::create([
+                            'user_id' => $user_id,
+                            'course_id' => $course_id,
+                            'lesson_id' => $lesson->id,
+                            'status' => 'in_progress',
+                            'created_at' => Carbon::now('Asia/Ho_Chi_Minh')
+                        ]);
+                    }
+                }
 
                 // Thêm người dùng vào phòng chat của khóa học
                 $chatRoom = ChatRoom::where('course_id', $course_id)->first(); // Lấy phòng chat
@@ -489,7 +509,11 @@ class VNPayAPIController extends Controller
                     'progress_percent' => 0
                 ]);
                 // Lấy tất cả sections của khóa học
-                $sections = Section::where('course_id', $course_id)->with('lessons')->get();
+                $sections = Section::where('course_id', $course_id)->with([
+                    'lessons' => function ($query) {
+                        $query->orderBy('order', 'desc');
+                    }
+                ])->get();
 
                 // Duyệt qua từng section và khởi tạo tiến trình cho từng lesson
                 foreach ($sections as $section) {

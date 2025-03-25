@@ -13,20 +13,19 @@ class BannerController extends Controller
      * @OA\Get(
      *     path="/banners",
      *     summary="Lấy danh sách banner đang hoạt động",
+     *     description="API này trả về danh sách các banner có trạng thái đang hoạt động (status = 1).",
      *     tags={"Banners"},
      *     @OA\Response(
      *         response=200,
-     *         description="Lấy dữ liệu thành công",
+     *         description="Danh sách banner đang hoạt động",
      *         @OA\JsonContent(
-     *             type="object",
      *             @OA\Property(property="message", type="string", example="Lấy dữ liệu thành công"),
      *             @OA\Property(
      *                 property="banners",
      *                 type="array",
      *                 @OA\Items(
-     *                     type="object",
      *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="title", type="string", example="Banner quảng cáo"),
+     *                     @OA\Property(property="title", type="string", example="Ưu đãi khóa học"),
      *                     @OA\Property(property="image", type="string", example="https://example.com/banner.jpg")
      *                 )
      *             )
@@ -36,7 +35,6 @@ class BannerController extends Controller
      *         response=404,
      *         description="Không có banner nào đang hoạt động",
      *         @OA\JsonContent(
-     *             type="object",
      *             @OA\Property(property="message", type="string", example="Không có banner nào đang hoạt động.")
      *         )
      *     ),
@@ -44,7 +42,6 @@ class BannerController extends Controller
      *         response=500,
      *         description="Lỗi hệ thống",
      *         @OA\JsonContent(
-     *             type="object",
      *             @OA\Property(property="message", type="string", example="Lỗi hệ thống"),
      *             @OA\Property(property="error", type="string", example="Chi tiết lỗi hệ thống")
      *         )

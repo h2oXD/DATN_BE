@@ -29,6 +29,10 @@ return new class extends Migration {
 
             $table->string('certificate_file')->nullable();
 
+            $table->string('bank_name')->nullable()->comment('Tên ngân hàng');
+            $table->string('bank_nameUser')->nullable()->comment('Tên người dùng');
+            $table->string('bank_number')->nullable()->comment('Số tài khoản');
+
             $table->timestamps();
         });
     }

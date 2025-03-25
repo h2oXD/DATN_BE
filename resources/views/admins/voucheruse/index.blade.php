@@ -10,7 +10,7 @@
             <h2 class="m-0">Lịch sử phiếu giảm giá đã dùng</h2>
         </div>
         <div class="card-body p-0">
-            @if (session()->has('success') && !session()->get('success'))
+            @if (session()->has('error') && session()->get('error'))
                 <div class="alert alert-danger">
                     {{ session()->get('error') }}
                 </div>

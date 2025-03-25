@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\CertificateController;
 use App\Http\Controllers\Api\V1\ChatMessageController;
 use App\Http\Controllers\Api\V1\ChatRoomController;
 use App\Http\Controllers\Api\V1\CommentController;
+use App\Http\Controllers\Api\V1\ComplainController;
 use App\Http\Controllers\Api\V1\CompletionController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\DocumentController;
@@ -178,34 +179,50 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
 
     // Lấy danh sách câu hỏi của một Quiz
     Route::get('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'getQuestions']);
+    Route::get('/lecturer/quizzes/questions/{question_id}', [QuizController::class, 'showQuestions']);
 
     // Tạo câu hỏi trong Quiz
     Route::post('/lecturer/quizzes/{quiz_id}/questions', [QuizController::class, 'storeQuestion']);
+    Route::put('/lecturer/quizzes/{quiz_id}/questions/{question_id}', [QuizController::class, 'updateQuestion']);
     // Route::post('/lecturer/questions/{question_id}/answers', [QuizController::class, 'storeAnswer']);
-
+    Route::delete('/lecturer/questions/{question_id}', [QuizController::class, 'deleteQuestion']);
     // Cập nhật thứ tự câu hỏi trong Quiz
     Route::post('/user/quizzes/{quiz_id}/update-order', [QuizController::class, 'updateQuizOrder']);
 
     Route::post('lessons/order', [LessonController::class, 'updateOrder']);
 
-    // rút tiền ví giảng viên
-    Route::post('/user/wallets/withdraw', [WalletController::class, 'withdraw']);
-
     Route::post('/chat-rooms/{id}/add-user', [ChatRoomController::class, 'addUser']);
     Route::post('/chat-rooms/{id}/remove-user', [ChatRoomController::class, 'removeUser']);
     Route::post('/chat-rooms/{id}/mute-user', [ChatRoomController::class, 'muteUser']);
+
+    // rút tiền ví giảng viên
+    Route::post('/lecturer/wallets/withdraw', [WalletController::class, 'withdraw']);
     // Lịch sử rút tiền
-    Route::get('/user/wallet/withdraw-histories', [TransactionWalletController::class, 'withdrawHistory']);
+    Route::get('/lecturer/wallet/withdraw-histories', [TransactionWalletController::class, 'withdrawHistory']);
+
+    // Gửi khiếu nại rút tiền
+    Route::post('/lecturer/wallets/withdraws/{transaction_wallet_id}/complain', [ComplainController::class, 'complain']);
+    // Danh sách khiếu nại
+    Route::get('/lecturer/wallet/complain', [ComplainController::class, 'listComplain']);
+    // Xem chi tiết khiếu nại
+    Route::get('/lecturer/wallet/complains/{complain_id}', [ComplainController::class, 'detailComplain']);
+    // Hủy yêu cầu khiếu nại
+    Route::put('/lecturer/wallet/complain/{complain_id}/cancel', [ComplainController::class, 'cancelComplain']);
+
+    // Thêm thẻ ngân hàng vào thông tin người dùng
+    Route::post('/lecturer/insertBank', [UserController::class, 'insertBank']);
+    // Lấy thông tin thẻ ngân hàng của người dùng
+    Route::get('/lecturer/getBank', [UserController::class, 'getBank']);
 
 
     // Excel quiz
     Route::post('/lessons/{lessonId}/quizzes/{quiz_id}/upload', [QuizController::class, 'uploadQuizExcel']);
 
-   
+
 
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
-   
+
     Route::get('/student/courses/{course_id}', [EnrollmentController::class, 'showUserEnrollmentCourse']);
     Route::get('/lesson/{lesson_id}', [EnrollmentController::class, 'showLesson']);
     Route::get('course/{course_id}/lesson', [EnrollmentController::class, 'getStatusLesson']);
@@ -251,3 +268,4 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleC
 
 Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.default.api');
 Route::get('/banners', [BannerController::class, 'index']);
+Route::get('/guest/lecturer', [OverviewController::class, 'guestLecturer']);

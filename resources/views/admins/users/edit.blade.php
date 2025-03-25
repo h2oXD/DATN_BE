@@ -69,9 +69,9 @@
                 <div class="mb-3 col-7 ">
                     <label for="profile_picture" class="form-label">Ảnh đại diện</label>
                     <div class="d-flex align-items-center gap-3">
-                        <img src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"" alt="avatar"
-                        class="avatar-xl rounded-circle border border-4 border-white"
-                        style="width: 100px; height: 100px; object-fit: cover;" alt="avatar" />
+                        <img src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
+                            alt="avatar" class="avatar-xl rounded-circle border border-4 border-white"
+                            style="width: 50px; height: 50px; object-fit: cover;" />
                         <input type="file" class="form-control" name="profile_picture" id="profile_picture" />
                     </div>
                 </div>
@@ -79,7 +79,7 @@
                     <a href="{{ url()->previous() }}" class="btn btn-secondary">Quay lại</a>
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                 </div>
-                
+
             </form>
         </div>
     </div>

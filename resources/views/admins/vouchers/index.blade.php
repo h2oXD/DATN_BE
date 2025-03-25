@@ -13,7 +13,7 @@
             <a href="{{ route('admin.vouchers.create') }}" class="btn btn-primary">Thêm mới phiếu giảm giá</a>
         </div>
         <div class="card-body p-0">
-            @if (session()->has('success') && !session()->get('success'))
+            @if (session()->has('error') && session()->get('error'))
                 <div class="alert alert-danger">
                     {{ session()->get('error') }}
                 </div>

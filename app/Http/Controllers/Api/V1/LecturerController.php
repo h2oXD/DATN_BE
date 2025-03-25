@@ -12,6 +12,7 @@ use App\Models\Lecturer;
 use App\Models\Lesson;
 use App\Models\Quiz;
 use App\Models\Section;
+use App\Models\Transaction;
 use App\Models\TransactionWallet;
 use App\Models\Video;
 use App\Models\Wallet;
@@ -91,15 +92,16 @@ class LecturerController extends Controller
                     'enrollments_count' => $course->enrollments_count,
                 ];
             });
+        foreach ($coursesWithStudents as $c) {
+            $totalAmount = Transaction::where('course_id', $c['id'])->sum('amount');
+            $profit = $totalAmount * 0.7;
+        }
 
-        $totalRevenue = $user->wallet?->transaction_wallet()
-            ->where('type', 'profit')
-            ->where('status', 'success')
-            ->sum('amount') ?? 0;
 
         return response()->json([
             'total_courses' => $totalCourses,
-            'total_revenue' => $totalRevenue,
+            'total_revenue' => $totalAmount,
+            'LoiNhuan' => $profit,
             'courses' => $coursesWithStudents,
         ]);
     }
