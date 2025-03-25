@@ -39,7 +39,9 @@
             <div class="row mb-3">
                 <div class="col-md-3"><strong>Ảnh đại diện:</strong></div>
                 <div class="col-md-9">
-                    <img src="{{ Storage::url($user->profile_picture) }}" class="rounded-circle" width="100" height="100">
+                    <img src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
+                        alt="avatar" class="avatar-xl rounded-circle border border-4 border-white"
+                        style="width: 50px; height: 50px; object-fit: cover;" />
                 </div>
             </div>
             <div class="row mb-3">
@@ -51,7 +53,8 @@
                 <div class="col-md-9">{{ $user->updated_at->format('d-m-Y H:i') }}</div>
             </div>
             <div class="text-end">
-                <a href="{{ route($user->roles->contains('name', 'lecturer') ? 'admin.lecturers.index' : 'admin.students.index') }}" class="btn btn-secondary">Quay lại</a>
+                <a href="{{ route($user->roles->contains('name', 'lecturer', 'students') ? 'admin.lecturers.index' : 'admin.students.index') }}"
+                    class="btn btn-secondary">Quay lại</a>
             </div>
         </div>
     </div>

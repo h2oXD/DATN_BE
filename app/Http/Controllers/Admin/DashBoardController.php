@@ -106,10 +106,13 @@ class DashBoardController extends Controller
             });
 
         // Lấy danh sách khóa học gần đây (Recent Courses)
-        $recentCourses = Course::with('user') // Lấy thông tin giảng viên
-            ->orderBy('created_at', 'desc') // Sắp xếp theo ngày tạo giảm dần
-            ->take(4) // Lấy 4 khóa học gần đây nhất
+        $recentCourses = Course::select('id', 'title', 'thumbnail', 'user_id', 'created_at')
+            ->with('user:id,name,profile_picture')
+            ->where('status', 'published')
+            ->latest('created_at')
+            ->take(4)
             ->get();
+
 
         // Dữ liệu biểu đồ: Tổng doanh thu của tất cả giảng viên
         $revenuePerDate = Transaction::selectRaw('DATE(transaction_date) as date, SUM(amount) * 0.7 as total_revenue')
