@@ -261,27 +261,26 @@ class OverviewController extends Controller
                 }
             ])
                 ->whereHas('courses', function ($query) {
-                    $query->where('status', 'published'); // Chỉ cần có khóa học published, không bắt buộc có review
+                    $query->where('status', 'published')
+                        ->whereHas('reviews', function ($q) {
+                            $q->where('reviewable_type', Course::class); // Chỉ xét review của khóa học
+                        });
                 })
                 ->get()
                 ->map(function ($user) {
                     $publishedCourses = $user->courses->where('status', 'published');
 
-                    // Lấy tất cả rating của các khóa học
-                    $allRatings = $publishedCourses->flatMap(function ($course) {
+                    $averageRating = $publishedCourses->flatMap(function ($course) {
                         return $course->reviews->pluck('rating');
-                    });
-
-                    // Tính average_rating, nếu không có review thì gán 0
-                    $averageRating = $allRatings->isNotEmpty() ? $allRatings->avg() : 0;
+                    })->avg();
 
                     return [
                         'lecturer' => $user,
-                        'average_rating' => $averageRating
+                        'average_rating' => $averageRating ?? 0
                     ];
                 })
-                ->sortByDesc('average_rating') // Sắp xếp giảng viên theo rating
-                ->take(10) // Lấy 10 giảng viên top đầu
+                ->sortByDesc('average_rating')
+                ->take(10)
                 ->values();
 
 
