@@ -28,6 +28,7 @@ class BannerController extends Controller
             [
                 'title' => 'required|string|max:255',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',//|dimensions:width=1200,height=600
+                'link' => 'nullable|string|max:255',
                 'status' => 'required|boolean',
             ],
 
@@ -44,6 +45,7 @@ class BannerController extends Controller
         Banner::create([
             'title' => $request->title,
             'image' => $imagePath,
+            'link' => $request->link,
             'status' => $request->status,
         ]);
 
@@ -61,6 +63,7 @@ class BannerController extends Controller
             [
                 'title' => 'required|string|max:255',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'link' => 'nullable|string|max:255',
                 'status' => 'required|boolean',
             ],
 
@@ -68,7 +71,6 @@ class BannerController extends Controller
                 'title.required' => 'Vui lòng đặt tên tên cho banner',
                 'image.required' => 'Vui lòng nhập ảnh',
                 'image.image' => 'Vui lòng nhập đúng định dạng',
-
             ]
         );
 
@@ -81,6 +83,7 @@ class BannerController extends Controller
         }
 
         $banner->title = $request->title;
+        $banner->link = $request->link;
         $banner->status = $request->status;
         $banner->save();
 
