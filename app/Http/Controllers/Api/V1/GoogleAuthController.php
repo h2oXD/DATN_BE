@@ -106,12 +106,11 @@ class GoogleAuthController extends Controller
                 }
             }
 
-            if ($user->roles->contains('id', 3)) {
-                return response()->json(['error' => 'Tài khoản này không được phép đăng nhập!'], 403);
-            }
-
             // Tạo access token
             $token = $user->createToken('GoogleAuthToken')->plainTextToken;
+            if ($user->roles->contains('id', 3)) {
+                return redirect("http://localhost:5173?message=Tài khoản không có quyền truy cập&type=login&status=success");
+            }
 
             return redirect("http://localhost:5173/google/callback?token={$token}");
 

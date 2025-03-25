@@ -19,6 +19,7 @@
                             <tr>
                                 <th>Banner</th>
                                 <th>Tiêu đề</th>
+                                <th>Đường dẫn</th>
                                 <th>Trạng thái</th>
                                 <th>Hành động</th>
                             </tr>
@@ -27,9 +28,17 @@
                             @foreach ($banners as $banner)
                                 <tr>
                                     <td>
-                                        <img src="{{ asset('storage/' . $banner->image) }}" width="120" class="img-thumbnail">
+                                        <img src="{{ asset('storage/' . $banner->image) }}" width="120"
+                                            class="img-thumbnail">
                                     </td>
                                     <td>{{ $banner->title }}</td>
+                                    <td>
+                                        @if ($banner->link)
+                                            <a href="{{ $banner->link }}" target="_blank">{{ $banner->link }}</a>
+                                        @else
+                                            <span class="text-muted">Không có</span>
+                                        @endif
+                                    </td>
                                     <td>
                                         @if ($banner->status)
                                             <span class="badge bg-success">Hoạt động</span>
@@ -38,16 +47,17 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a class="btn btn-warning btn-sm" href="{{ route('admin.banners.edit', $banner->id) }}">
+                                        <a class="btn btn-warning btn-sm"
+                                            href="{{ route('admin.banners.edit', $banner->id) }}">
                                             <i class="fe fe-edit"></i> Sửa
                                         </a>
                                         <form id="delete-banner-{{ $banner->id }}"
-                                              action="{{ route('admin.banners.destroy', $banner->id) }}"
-                                              method="POST" class="d-inline">
+                                            action="{{ route('admin.banners.destroy', $banner->id) }}" method="POST"
+                                            class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="btn btn-danger btn-sm"
-                                                    onclick="confirmDelete({{ $banner->id }})">
+                                                onclick="confirmDelete({{ $banner->id }})">
                                                 <i class="fe fe-trash"></i> Xóa
                                             </button>
                                         </form>

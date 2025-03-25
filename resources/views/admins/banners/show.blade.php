@@ -8,13 +8,23 @@
             </div>
             <div class="card-body">
                 <p><strong>Tiêu đề:</strong> {{ $banner->title }}</p>
-                <p><strong>Trạng thái:</strong> 
+
+                <p><strong>Trạng thái:</strong>
                     @if ($banner->status)
                         <span class="badge bg-success">Hoạt động</span>
                     @else
                         <span class="badge bg-danger">Không hoạt động</span>
                     @endif
                 </p>
+
+                <p><strong>Đường dẫn:</strong>
+                    @if ($banner->link)
+                        <a href="{{ $banner->link }}" target="_blank">{{ $banner->link }}</a>
+                    @else
+                        <span class="text-muted">Không có</span>
+                    @endif
+                </p>
+
                 <p><strong>Hình ảnh:</strong></p>
                 <img src="{{ asset('storage/' . $banner->image) }}" width="400" class="img-thumbnail">
 
