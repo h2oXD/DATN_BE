@@ -7,11 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreCourseRequest;
 use App\Http\Requests\Api\UpdateCourseRequest;
 use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\Role;
 use App\Notifications\CourseApprovalRequestedNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Sanctum\PersonalAccessToken;
 use Symfony\Component\HttpFoundation\Response;
 
 class CourseController extends Controller
@@ -660,7 +662,9 @@ class CourseController extends Controller
     {
         try {
             $course = Course::with([
-                'reviews',
+                'reviews' => function ($query) {
+                    $query->with('reviewer');
+                },
                 'user:id,name,email,profile_picture', // Lấy thông tin giảng viên
                 'sections' => function ($query) {
                     $query->orderBy('order');
@@ -716,6 +720,18 @@ class CourseController extends Controller
             // Tính trung bình rating của khóa học
             $averageRating = $course->reviews()->avg('rating') ?? 0;
 
+            $token = request()->bearerToken(); // Lấy Bearer Token từ request
+            $user_id = null;
+
+            if ($token) {
+                $accessToken = PersonalAccessToken::findToken($token); // Tìm token trong DB
+                if ($accessToken) {
+                    $user_id = $accessToken->tokenable_id; // Lấy ID user từ token
+                }
+            }
+
+            $isEnrollment = $user_id && Enrollment::where('user_id', $user_id)->where('course_id', $course_id)->exists() ? 1 : 0;
+
             return response()->json([
                 'data' => [
                     'course' => $course,
@@ -723,6 +739,7 @@ class CourseController extends Controller
                     'student_count' => $studentCount,
                     'total_lessons' => $totalLessons,
                     'average_rating' => round($averageRating, 1),
+                    'isEnrollment' => $isEnrollment,
                 ]
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
