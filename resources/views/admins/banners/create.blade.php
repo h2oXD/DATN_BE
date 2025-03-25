@@ -30,6 +30,16 @@
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label">Đường dẫn (Link)</label>
+                        <input type="url" name="link" value="{{ old('link') }}"
+                            class="form-control @error('link') is-invalid @enderror"
+                            placeholder="Nhập đường dẫn banner (nếu có)">
+                        @error('link')
+                            <div class="text-danger mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label">Trạng thái</label>
                         <select name="status" class="form-control @error('status') is-invalid @enderror">
                             <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Hoạt động</option>
