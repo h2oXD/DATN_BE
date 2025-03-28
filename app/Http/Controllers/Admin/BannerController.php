@@ -16,6 +16,11 @@ class BannerController extends Controller
         $banners = Banner::latest()->paginate(10);
         return view(self::VIEW_PATH . 'index', compact('banners'));
     }
+    public function show(Banner $banner)
+{
+    return view(self::VIEW_PATH . 'show', compact('banner'));
+}
+
 
     public function create()
     {
@@ -27,6 +32,7 @@ class BannerController extends Controller
         $request->validate(
             [
                 'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',//|dimensions:width=1200,height=600
                 'link' => 'nullable|string|max:255',
                 'status' => 'required|boolean',
@@ -44,6 +50,7 @@ class BannerController extends Controller
 
         Banner::create([
             'title' => $request->title,
+            'description' => $request->description,
             'image' => $imagePath,
             'link' => $request->link,
             'status' => $request->status,
@@ -62,6 +69,7 @@ class BannerController extends Controller
         $request->validate(
             [
                 'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'link' => 'nullable|string|max:255',
                 'status' => 'required|boolean',
@@ -83,6 +91,7 @@ class BannerController extends Controller
         }
 
         $banner->title = $request->title;
+        $banner->description = $request->description;
         $banner->link = $request->link;
         $banner->status = $request->status;
         $banner->save();

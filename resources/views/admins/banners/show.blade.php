@@ -9,6 +9,14 @@
             <div class="card-body">
                 <p><strong>Tiêu đề:</strong> {{ $banner->title }}</p>
 
+                <p><strong>Mô tả:</strong>
+                    @if ($banner->description)
+                        {{ $banner->description }}
+                    @else
+                        <span class="text-muted">Không có</span>
+                    @endif
+                </p>
+
                 <p><strong>Trạng thái:</strong>
                     @if ($banner->status)
                         <span class="badge bg-success">Hoạt động</span>
