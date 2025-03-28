@@ -53,6 +53,9 @@ class CourseController extends Controller
     {
         $user = $request->user();
         $course = Course::findOrFail($id);
+        if ($course->status != 'pending') {
+            return redirect()->route('admin.censor.courses.list')->with('errors', 'Thao tác thất bại');
+        }
         $course->status = 'published';
         $course->submited_at = now();
         $course->save();
@@ -60,21 +63,21 @@ class CourseController extends Controller
 
         $chatRoom = ChatRoom::where('course_id', $course->id)->first();
 
-    if (!$chatRoom) {
-        // Tạo phòng chat nếu chưa tồn tại
-        $chatRoom = ChatRoom::create([
-            'course_id' => $course->id,
-            'owner_id' => $course->user_id, // Chủ sở hữu là giảng viên
-            'name' => 'Chat nhóm: ' . $course->title,
-        ]);
+        if (!$chatRoom) {
+            // Tạo phòng chat nếu chưa tồn tại
+            $chatRoom = ChatRoom::create([
+                'course_id' => $course->id,
+                'owner_id' => $course->user_id, // Chủ sở hữu là giảng viên
+                'name' => 'Chat nhóm: ' . $course->title,
+            ]);
 
-        // Thêm giảng viên vào bảng chat_room_users
-        ChatRoomUser::create([
-            'chat_room_id' => $chatRoom->id,
-            'user_id' => $course->user_id,
-            'joined_at' => now(),
-        ]);
-    }
+            // Thêm giảng viên vào bảng chat_room_users
+            ChatRoomUser::create([
+                'chat_room_id' => $chatRoom->id,
+                'user_id' => $course->user_id,
+                'joined_at' => now(),
+            ]);
+        }
 
         CourseApprovalHistory::create([
             'course_id' => $course->id,
@@ -94,6 +97,9 @@ class CourseController extends Controller
 
         $user = $request->user();
         $course = Course::findOrFail($id);
+        if ($course->status != 'pending') {
+            return redirect()->route('admin.censor.courses.list')->with('errors', 'Thao tác thất bại');
+        }
         $course->status = 'draft';
         $course->admin_comment = $request->reason;
         $course->save();
@@ -237,8 +243,8 @@ class CourseController extends Controller
     {
         $course = Course::with('approvalHistories.user')->findOrFail($id);
         $approvalHistories = $course->approvalHistories;
-    
-        return view(self::PATH_VIEW . 'show_history', compact('course','approvalHistories'));
+
+        return view(self::PATH_VIEW . 'show_history', compact('course', 'approvalHistories'));
     }
 
 }
