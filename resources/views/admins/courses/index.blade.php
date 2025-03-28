@@ -66,8 +66,8 @@
                         @foreach ($courses as $course)
                             <tr>
                                 <td>
-                                    <img src="{{ Storage::url($course->thumbnail) }}" alt="ảNH"
-                                        class="w-50 h-50 avatar-md">
+                                    <img src="{{ Storage::url($course->thumbnail) }}" alt="Ảnh khóa học" class="avatar-md"
+                                        style="width: 100px; height: 60px; object-fit: cover;">
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center flex-row gap-2">
@@ -86,7 +86,7 @@
                                         <span class="badge bg-danger">Đã từ chối</span>
                                     @endif
                                 </td>
-                                
+
                                 {{-- <td>
                                     @if ($course->status == 'pending')
                                         <form action="{{ route('courses.approve', $course->id) }}" method="POST"
@@ -102,7 +102,7 @@
                                     @endif
 
                                 </td> --}}
-                                
+
                                 <td>
                                     <span class="dropdown dropstart">
                                         <a class="btn-icon btn btn-ghost btn-sm rounded-circle" href="#"

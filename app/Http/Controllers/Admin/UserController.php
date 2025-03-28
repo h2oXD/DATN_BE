@@ -120,7 +120,6 @@ class UserController extends Controller
 
             return redirect()->route($data['role'] === 'lecturer' ? 'admin.lecturers.index' : 'admin.students.index')
                 ->with('success', 'Tạo user thành công!');
-
         } catch (\Throwable $th) {
             if (!empty($data['profile_picture']) && Storage::exists($data['profile_picture'])) {
                 Storage::delete($data['profile_picture']);
@@ -165,14 +164,19 @@ class UserController extends Controller
 
         try {
             if ($request->hasFile('profile_picture')) {
-                $data['profile_picture'] = Storage::put('profile_pictures', $request->file('profile_picture'));
+                // Xóa ảnh cũ nếu có
+                if ($user->profile_picture) {
+                    Storage::delete($user->profile_picture);
+                }
+
+                // Lưu ảnh mới
+                $data['profile_picture'] = $request->file('profile_picture')->store('profile_pictures');
             }
 
             $user->update($data);
 
             return redirect()->route($user->roles->contains('name', 'lecturer') ? 'admin.lecturers.index' : 'admin.students.index')
                 ->with('success', 'Cập nhật user thành công!');
-
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }
