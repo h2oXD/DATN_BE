@@ -26,7 +26,9 @@ class BannerController extends Controller
      *                 @OA\Items(
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="title", type="string", example="Ưu đãi khóa học"),
-     *                     @OA\Property(property="image", type="string", example="https://example.com/banner.jpg")
+     *                     @OA\Property(property="description", type="string", example="Giảm giá 50% cho tất cả các khóa học"),
+     *                     @OA\Property(property="image", type="string", example="https://example.com/banner.jpg"),
+     *                     @OA\Property(property="link", type="string", example="https://example.com/khuyen-mai")
      *                 )
      *             )
      *         )
@@ -49,11 +51,12 @@ class BannerController extends Controller
      * )
      */
 
+
     public function index()
     {
         try {
             $banners = Banner::where('status', 1)
-                ->select('id', 'title', 'image')
+                ->select('id', 'title', 'description', 'image', 'link')
                 ->get();
 
             if ($banners->isEmpty()) {
