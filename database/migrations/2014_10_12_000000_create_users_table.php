@@ -24,6 +24,11 @@ return new class extends Migration {
             $table->text('bio')->nullable();
             $table->string('google_id')->nullable();
 
+            $table->string('country')->nullable();
+            $table->string('province')->nullable();
+            $table->date('birth_date')->nullable();
+            $table->enum('gender', ['male', 'female', 'other'])->nullable();
+
             $table->string('linkedin_url')->nullable()->default(NULL);
             $table->string('website_url')->nullable()->default(NULL);
 
