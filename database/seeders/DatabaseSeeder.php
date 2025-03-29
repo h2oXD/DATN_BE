@@ -54,7 +54,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Nguyễn Hữu Hào',
             'email' => 'haonhph45336@fpt.edu.vn',
             'password' => Hash::make('123123123'),
-            'profile_picture' => 'storage/profile_pictures/XDxpvzCxBxQCl5zjkV6NmPerD3fuuYQMSVhN4cUr.png',
+            'profile_picture' => '',
         ]);
         $roleAdmin = Role::select('id')->where('name', 'admin')->first();
         UserRole::create([
