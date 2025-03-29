@@ -12,6 +12,17 @@
                 <a href="{{ route('admin.courses.approval.history') }}" class="btn btn-primary btn-sm">Lịch sử kiểm duyệt</a>
             </div>
             <div class="card-body">
+                @if (session()->has('errors') && !session()->get('errors'))
+                    <div class="alert alert-danger">
+                        {{ session()->get('errors') }}
+                    </div>
+                @endif
+
+                @if (session()->has('success') && session()->get('success'))
+                    <div class="alert alert-info">
+                        Thao tác thành công!
+                    </div>
+                @endif
                 <table class="table table-hover border" id="table">
                     <thead class="table-light">
                         <tr>

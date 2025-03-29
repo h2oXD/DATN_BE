@@ -60,7 +60,7 @@ class NoteController extends Controller
 
         // Kiểm tra nếu không có ghi chú
         if ($notes->isEmpty()) {
-            return response()->json(['message' => 'Hiện tại chưa có ghi chú nào cho video này'], 404);
+            return response()->json([], 200);
         }
 
         return response()->json($notes);
