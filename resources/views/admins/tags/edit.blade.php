@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-    <div class="card">
+    <div class="card m-3">
         <div class="card-header d-flex justify-content-between align-content-center">
             <h2>Chỉnh sửa Tag</h2>
         </div>

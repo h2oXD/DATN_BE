@@ -12,10 +12,12 @@ use App\Models\Lesson;
 use App\Models\Progress;
 use App\Models\Section;
 use App\Models\Transaction;
+use App\Models\TransactionWallet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class VNPayAPIController extends Controller
@@ -292,7 +294,7 @@ class VNPayAPIController extends Controller
                 // Lấy tất cả sections của khóa học
                 $sections = Section::where('course_id', $course_id)->with([
                     'lessons' => function ($query) {
-                        $query->orderBy('order', 'desc');
+                        $query->orderBy('order', 'asc');
                     }
                 ])->get();
 
@@ -459,6 +461,9 @@ class VNPayAPIController extends Controller
         try {
 
             $user_id = $request->query('vnp_TxnRef');
+            $course = Course::lockForUpdate()->findOrFail($course_id);
+            $lecturer_id = $course->user;
+
             list($user_id, $timestamp) = explode('_', $request->query('vnp_TxnRef'));
             // Kiểm tra người dùng đã tham gia khóa học chưa
             $Enrolled = Enrollment::where('user_id', $user_id)
@@ -508,10 +513,40 @@ class VNPayAPIController extends Controller
                     'status' => 'in_progress',
                     'progress_percent' => 0
                 ]);
+
+                // Cộng tiền 70% lợi nhuận bán khóa học vào ví giảng viên, cập nhật lịch sử
+                $lecturer_wallet = $lecturer_id->wallet; // Lấy ví của giảng viên
+                if (!$lecturer_wallet) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Không tìm thấy ví của giảng viên'
+                    ], Response::HTTP_NOT_FOUND);
+                }
+
+                $profit = $request->query('vnp_Amount') / 100 * 0.7;
+                $lecturer_wallet->increment('balance', $profit);
+                $lecturer_wallet->update([
+                    'transaction_history' => [
+                        'Loại giao dịch'    => 'Nhận lợi nhuận bán khóa học',
+                        'Số tiền nhận'      => number_format($profit) . ' VND',
+                        'Số dư'             => number_format($lecturer_wallet->balance) . ' VND',
+                        'Ngày giao dịch'    => Carbon::now('Asia/Ho_Chi_Minh')
+                    ]
+                ]);
+                TransactionWallet::create([
+                    'wallet_id'         => $lecturer_wallet->id,
+                    'transaction_code'  => Str::uuid(),
+                    'amount'            => $profit,
+                    'balance'           => $lecturer_wallet->balance,
+                    'type'              => 'profit',
+                    'status'            => 'success',
+                    'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
+                ]);
+
                 // Lấy tất cả sections của khóa học
                 $sections = Section::where('course_id', $course_id)->with([
                     'lessons' => function ($query) {
-                        $query->orderBy('order', 'desc');
+                        $query->orderBy('order', 'asc');
                     }
                 ])->get();
 

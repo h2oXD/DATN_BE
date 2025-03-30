@@ -58,13 +58,14 @@
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
                         <div class="dropdown-item">
                             <div class="d-flex">
-                                <div class="avatar avatar-md avatar-indicators avatar-online">
+                                <div class="avatar avatar-md avatar-indicators avatar-online mx-1">
                                     <img src="{{ auth()->user()->profile_picture ? asset(auth()->user()->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
                                         class="avatar-md rounded-circle" alt="Current avatar" />
                                 </div>
-                                <div class="ms-3 lh-1">
-                                    <h5 class="mb-1">Annette Black</h5>
-                                    <p class="mb-0">annette@geeksui.com</p>
+                                <div class="lh-1">
+                                    <h4 class="mb-0">{{ auth()->user()->name }}</h4>
+                                    <small
+                                        class="text-black-50">{{ str_replace('@', '', auth()->user()->email) }}</small>
                                 </div>
                             </div>
                         </div>
@@ -131,7 +132,7 @@
                                         Sign Out
                                     </button>
                                 </form>
-                                
+
                             </li>
                         </ul>
                     </div>

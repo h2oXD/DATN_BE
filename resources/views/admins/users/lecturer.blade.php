@@ -59,8 +59,9 @@
                                 <td>
                                     <div class="d-flex align-items-center flex-row gap-2">
                                         <div class="position-relative">
-                                            <img src="{{ Storage::url($user->profile_picture) }}" alt="avatar"
-                                                class="rounded-circle avatar-md">
+                                            <img src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
+                                                alt="avatar" class="avatar-xl rounded-circle border border-4 border-white"
+                                                style="width: 50px; height: 50px; object-fit: cover;" />
                                             <a href="#" class="position-absolute mt-5 ms-n4">
                                                 <span class="status bg-success"></span>
                                             </a>

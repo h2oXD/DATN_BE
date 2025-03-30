@@ -22,6 +22,15 @@
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label">Mô tả</label>
+                        <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="3"
+                            placeholder="Nhập mô tả banner">{{ old('description', $banner->description) }}</textarea>
+                        @error('description')
+                            <div class="text-danger mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label">Hình ảnh hiện tại</label>
                         <div>
                             <img src="{{ asset('storage/' . $banner->image) }}" width="150">

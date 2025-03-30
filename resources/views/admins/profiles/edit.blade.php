@@ -15,7 +15,7 @@
                             <div class="d-flex align-items-end justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <div class="me-2 position-relative d-flex justify-content-end align-items-end mt-n5">
-                                        <img src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
+                                        <img src="{{ asset($user->profile_picture ?? 'assets/images/avatar/avatar-3.jpg') }}"
                                             class="avatar-xl rounded-circle border border-4 border-white"
                                             style="width: 100px; height: 100px; object-fit: cover;" alt="avatar" />
                                     </div>
@@ -36,16 +36,6 @@
                 <div class="row mt-0 mt-md-4">
                     <div class="col-lg-3 col-md-4 col-12">
                         <div class="card card-body p-0 border-0">
-                            <h5 class="px-4 py-3 m-0">GÓI ĐĂNG KÝ</h5>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item px-4 py-2"><i class="fe fe-calendar me-2"></i> Gói của tôi</li>
-                                <li class="list-group-item px-4 py-2"><i class="fe fe-dollar-sign me-2"></i> Thông tin thanh
-                                    toán</li>
-                                <li class="list-group-item px-4 py-2"><i class="fe fe-credit-card me-2"></i> Thanh toán</li>
-                                <li class="list-group-item px-4 py-2"><i class="fe fe-file-text me-2"></i> Hóa đơn</li>
-                                <li class="list-group-item px-4 py-2"><i class="fe fe-help-circle me-2"></i> Bài kiểm tra
-                                    của tôi</li>
-                            </ul>
                             <h5 class="px-4 py-3 m-0">THIẾT LẬP TÀI KHOẢN</h5>
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item px-4 py-2 active"><i class="fe fe-edit me-2"></i> <a
@@ -74,9 +64,9 @@
                             <div class="card-body">
                                 <div class="d-lg-flex align-items-center justify-content-between">
                                     <div class="d-flex align-items-center mb-4 mb-lg-0">
-                                        <img src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
-                                            class="avatar-md rounded-circle"
-                                            style="width: 100px; height: 100px; object-fit: cover;" alt="Current avatar" />
+                                        <img src="{{ asset($user->profile_picture ?? 'assets/images/avatar/avatar-3.jpg') }}"
+                                            class="avatar-xl rounded-circle border border-4 border-white"
+                                            style="width: 100px; height: 100px; object-fit: cover;" alt="avatar" />
                                         <div class="ms-3">
                                             <h4 class="mb-0">Ảnh đại diện của bạn</h4>
                                             <p class="mb-0">PNG hoặc JPG, không lớn hơn 800px chiều rộng và chiều cao.</p>
@@ -118,9 +108,9 @@
                                         <!-- Email -->
                                         <div class="mb-3 col-12 col-md-6">
                                             <label class="form-label" for="profileEditEmail">Email</label>
-                                            <input type="email" id="profileEditEmail" name="email"
-                                                class="form-control" value="{{ old('email', auth()->user()->email) }}"
-                                                placeholder="Email" required />
+                                            <input type="email" id="profileEditEmail" name="email" class="form-control"
+                                                value="{{ old('email', auth()->user()->email) }}" placeholder="Email"
+                                                required />
                                             <div class="invalid-feedback">Vui lòng nhập địa chỉ email hợp lệ.</div>
                                             @error('email')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -138,10 +128,10 @@
                                             @enderror
                                             <p class="mt-1">
                                                 Ảnh hiện tại:
-                                                <img src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
-                                                    class="avatar-md rounded-circle"
+                                                <img src="{{ asset($user->profile_picture ?? 'assets/images/avatar/avatar-3.jpg') }}"
+                                                    class="avatar-xl rounded-circle border border-4 border-white"
                                                     style="width: 100px; height: 100px; object-fit: cover;"
-                                                    alt="Current avatar" />
+                                                    alt="avatar" />
                                             </p>
                                         </div>
                                         <div class="col-12">

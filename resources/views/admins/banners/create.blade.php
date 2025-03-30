@@ -22,6 +22,15 @@
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label">Mô tả</label>
+                        <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="3"
+                            placeholder="">{{ old('description') }}</textarea>
+                        @error('description')
+                            <div class="text-danger mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label">Hình ảnh</label>
                         <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
                         @error('image')
