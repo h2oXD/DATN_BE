@@ -591,7 +591,7 @@ class CourseController extends Controller
                 'message' => $th,
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-    }
+    }    
 
     /**
      * @OA\Get(
