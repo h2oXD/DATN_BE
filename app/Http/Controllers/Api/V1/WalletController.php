@@ -448,7 +448,7 @@ class WalletController extends Controller
                 // Lấy tất cả sections của khóa học
                 $sections = Section::where('course_id', $course_id)->with([
                     'lessons' => function ($query) {
-                        $query->orderBy('order', 'desc');
+                        $query->orderBy('order', 'asc');
                     }
                 ])->get();
 
@@ -541,7 +541,7 @@ class WalletController extends Controller
                 // Lấy tất cả sections của khóa học
                 $sections = Section::where('course_id', $course_id)->with([
                     'lessons' => function ($query) {
-                        $query->orderBy('order', 'desc');
+                        $query->orderBy('order', 'asc');
                     }
                 ])->get();
 

@@ -139,15 +139,18 @@ class ReviewController extends Controller
         }
 
         $user_id = request()->user()->id;
-        $isReviewed = Review::where('reviewable_type', Course::class)->where('user_id', $user_id)->where('reviewable_id',$courseId)->first();
+        $isReviewed = Review::where('reviewable_type', Course::class)->where('user_id', $user_id)->where('reviewable_id', $courseId)->first();
         $reviews = Review::where('reviewable_type', Course::class)
             ->with('reviewer')
             ->where('reviewable_id', $courseId)
             ->get();
-
+        $avg_rate = Review::where('reviewable_type', Course::class)
+            ->where('reviewable_id', $courseId)
+            ->avg('rating');
         return response()->json([
             'reviews' => $reviews,
             'isReviewed' => $isReviewed ? 1 : 0,
+            'avgRate' => $avg_rate
         ]);
     }
 

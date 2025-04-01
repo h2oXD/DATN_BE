@@ -98,7 +98,7 @@
                     </ul>
                 </div>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link text-dark  collapsed " href="#" data-bs-toggle="collapse"
                     data-bs-target="#navachungchi" aria-expanded="false" aria-controls="navachungchi">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -116,7 +116,7 @@
                         </li>
                     </ul>
                 </div>
-            </li>
+            </li> --}}
             <li class="nav-item">
                 <a class="nav-link text-dark  collapsed " href="#" data-bs-toggle="collapse"
                     data-bs-target="#navProject" aria-expanded="false" aria-controls="navProject">
@@ -165,7 +165,7 @@
                 </div>
             </li>
 
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link text-dark collapsed" href="#" data-bs-toggle="collapse"
                     data-bs-target="#navCardManagement" aria-expanded="false" aria-controls="navCardManagement">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -187,7 +187,7 @@
                         </li>
                     </ul>
                 </div>
-            </li>
+            </li> --}}
             <!-- Nav item -->
             <li class="nav-item">
                 <a class="nav-link text-dark  collapsed " href="#" data-bs-toggle="collapse"

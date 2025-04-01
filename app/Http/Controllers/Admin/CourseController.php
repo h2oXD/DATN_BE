@@ -21,26 +21,34 @@ class CourseController extends Controller
     {
         $search = $request->get('search');
         $category = $request->get('category');
-        $tag = $request->get('tag');
+        $language = $request->get('language');
+        $level = $request->get('level');
 
         $categories = Category::all();
+        $languages = Course::where('status', 'published')->distinct()->pluck('language')->filter()->all();
+        $levels = Course::where('status', 'published')->distinct()->pluck('level')->filter()->all();
 
-        $courses = Course::with('category', 'tags')->where('status', 'published')
+        $courses = Course::with('category', 'user')
+            ->where('status', 'published')
             ->when($search, function ($query, $search) {
                 return $query->where('title', 'like', "%$search%")
-                    ->orWhere('description', 'like', "%$search%");
+                    ->orWhereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%$search%");
+                    });
             })
             ->when($category, function ($query, $category) {
                 return $query->where('category_id', $category);
             })
-            ->when($tag, function ($query, $tag) {
-                return $query->whereHas('tags', function ($query) use ($tag) {
-                    $query->where('name', 'like', "%$tag%");
-                });
+            ->when($language, function ($query, $language) {
+                return $query->where('language', $language);
+            })
+            ->when($level, function ($query, $level) {
+                return $query->where('level', $level);
             })
             ->latest('id')
             ->paginate(10);
-        return view(self::PATH_VIEW . 'index', compact('courses', 'categories'));
+
+        return view(self::PATH_VIEW . 'index', compact('courses', 'categories', 'languages', 'levels'));
     }
 
     public function show($id)
@@ -53,6 +61,9 @@ class CourseController extends Controller
     {
         $user = $request->user();
         $course = Course::findOrFail($id);
+        if ($course->status != 'pending') {
+            return redirect()->route('admin.censor.courses.list')->with('errors', 'Thao tác thất bại');
+        }
         $course->status = 'published';
         $course->submited_at = now();
         $course->save();
@@ -60,21 +71,21 @@ class CourseController extends Controller
 
         $chatRoom = ChatRoom::where('course_id', $course->id)->first();
 
-    if (!$chatRoom) {
-        // Tạo phòng chat nếu chưa tồn tại
-        $chatRoom = ChatRoom::create([
-            'course_id' => $course->id,
-            'owner_id' => $course->user_id, // Chủ sở hữu là giảng viên
-            'name' => 'Chat nhóm: ' . $course->title,
-        ]);
+        if (!$chatRoom) {
+            // Tạo phòng chat nếu chưa tồn tại
+            $chatRoom = ChatRoom::create([
+                'course_id' => $course->id,
+                'owner_id' => $course->user_id, // Chủ sở hữu là giảng viên
+                'name' => 'Chat nhóm: ' . $course->title,
+            ]);
 
-        // Thêm giảng viên vào bảng chat_room_users
-        ChatRoomUser::create([
-            'chat_room_id' => $chatRoom->id,
-            'user_id' => $course->user_id,
-            'joined_at' => now(),
-        ]);
-    }
+            // Thêm giảng viên vào bảng chat_room_users
+            ChatRoomUser::create([
+                'chat_room_id' => $chatRoom->id,
+                'user_id' => $course->user_id,
+                'joined_at' => now(),
+            ]);
+        }
 
         CourseApprovalHistory::create([
             'course_id' => $course->id,
@@ -94,6 +105,9 @@ class CourseController extends Controller
 
         $user = $request->user();
         $course = Course::findOrFail($id);
+        if ($course->status != 'pending') {
+            return redirect()->route('admin.censor.courses.list')->with('errors', 'Thao tác thất bại');
+        }
         $course->status = 'draft';
         $course->admin_comment = $request->reason;
         $course->save();
@@ -237,8 +251,8 @@ class CourseController extends Controller
     {
         $course = Course::with('approvalHistories.user')->findOrFail($id);
         $approvalHistories = $course->approvalHistories;
-    
-        return view(self::PATH_VIEW . 'show_history', compact('course','approvalHistories'));
+
+        return view(self::PATH_VIEW . 'show_history', compact('course', 'approvalHistories'));
     }
 
 }
