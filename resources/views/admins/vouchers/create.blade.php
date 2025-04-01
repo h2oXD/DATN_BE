@@ -43,7 +43,7 @@
 
                 <div class="col-lg-6 mb-2 col-12">
                     <label for="type" class="form-label">Loại giảm giá</label>
-                    <select name="type" class="form-select text-dark">
+                    <select name="type" class="form-select text-dark" id="voucher_type">
                         <option @if (old('type') == 'percent') selected @endif value="percent">Phần trăm</option>
                         <option @if (old('type') == 'fix_amount') selected @endif value="fix_amount">Giá tiền</option>
                     </select>
@@ -66,6 +66,15 @@
                     <input type="datetime-local" class="form-control" name="start_time" id="start_time"
                         value="{{ old('start_time') }}" />
                     @error('start_time')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="col-lg-6 mb-2 col-12" id="discount_max_price_container">
+                    <label for="discount_max_price" class="form-label">Số tiền cao nhất được giảm theo %</label>
+                    <input type="number" class="form-control" name="discount_max_price" id="discount_max_price" min="0"
+                        value="{{ old('discount_max_price') }}" />
+                    @error('discount_max_price')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
@@ -123,6 +132,23 @@
     <script>
         tinymce.init({
             selector: 'textarea#description'
+        });
+
+        // ẩn/ hiện input giảm giá cao nhất theo %
+        document.addEventListener('DOMContentLoaded', function () {
+            let voucherType = document.getElementById('voucher_type');
+            let discountMaxPriceContainer = document.getElementById('discount_max_price_container');
+
+            function toggleDiscountMaxPrice() {
+                if (voucherType.value === 'percent') {
+                    discountMaxPriceContainer.style.display = 'block';
+                } else {
+                    discountMaxPriceContainer.style.display = 'none';
+                }
+            }
+
+            voucherType.addEventListener('change', toggleDiscountMaxPrice);
+            toggleDiscountMaxPrice();
         });
     </script>
 @endsection

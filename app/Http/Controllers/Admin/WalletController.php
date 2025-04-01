@@ -19,7 +19,7 @@ class WalletController extends AdminBaseController
     }
 
     // Xuất danh sách yêu cầu rút tiền
-    public function index()
+    public function index(Request $request)
     {
         $items = TransactionWallet::with('wallet.user')
                     ->where('type', 'withdraw')

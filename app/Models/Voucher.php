@@ -16,6 +16,7 @@ class Voucher extends Model
         'description',
         'type',
         'discount_price',
+        'discount_max_price',
         'start_time',
         'end_time',
         'count',
