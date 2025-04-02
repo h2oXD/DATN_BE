@@ -21,26 +21,34 @@ class CourseController extends Controller
     {
         $search = $request->get('search');
         $category = $request->get('category');
-        $tag = $request->get('tag');
+        $language = $request->get('language');
+        $level = $request->get('level');
 
         $categories = Category::all();
+        $languages = Course::where('status', 'published')->distinct()->pluck('language')->filter()->all();
+        $levels = Course::where('status', 'published')->distinct()->pluck('level')->filter()->all();
 
-        $courses = Course::with('category', 'tags')->where('status', 'published')
+        $courses = Course::with('category', 'user')
+            ->where('status', 'published')
             ->when($search, function ($query, $search) {
                 return $query->where('title', 'like', "%$search%")
-                    ->orWhere('description', 'like', "%$search%");
+                    ->orWhereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%$search%");
+                    });
             })
             ->when($category, function ($query, $category) {
                 return $query->where('category_id', $category);
             })
-            ->when($tag, function ($query, $tag) {
-                return $query->whereHas('tags', function ($query) use ($tag) {
-                    $query->where('name', 'like', "%$tag%");
-                });
+            ->when($language, function ($query, $language) {
+                return $query->where('language', $language);
+            })
+            ->when($level, function ($query, $level) {
+                return $query->where('level', $level);
             })
             ->latest('id')
             ->paginate(10);
-        return view(self::PATH_VIEW . 'index', compact('courses', 'categories'));
+
+        return view(self::PATH_VIEW . 'index', compact('courses', 'categories', 'languages', 'levels'));
     }
 
     public function show($id)
