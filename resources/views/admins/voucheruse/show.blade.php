@@ -69,6 +69,12 @@
                                 @endif
                             </div>
                         </div>
+                        @if ($item->voucher->type === 'percent')
+                            <div class="row mb-3">
+                                <div class="col-md-4"><strong>Số tiền giảm cao nhất:</strong></div>
+                                <div class="col-md-8">{{ $item->voucher->discount_max_price }}</div>
+                            </div>
+                        @endif
                     </div>
                 </div>
 

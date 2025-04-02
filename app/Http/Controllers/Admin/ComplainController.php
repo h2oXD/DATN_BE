@@ -22,7 +22,7 @@ class ComplainController extends AdminBaseController
         $this->routePath = 'admin.censor-complain.index';
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $items = Complain::with('transaction_wallets.wallet.user')
                     ->where('status', 'pending')

@@ -5,7 +5,8 @@
 @endsection
 
 @section('content')
-    <div class="card m-3 ">
+
+    <div class="card m-3">
         <div class="card-header d-flex justify-content-between align-content-center">
             <h2 class="m-0">Lịch sử phiếu giảm giá đã dùng</h2>
         </div>
@@ -39,13 +40,9 @@
                             <th scope="col">ID</th>
                             <th scope="col">Tên phiếu giảm giá</th>
                             <th scope="col">Mã giảm giá</th>
-                            <th scope="col">Loại giảm giá</th>
-                            <th scope="col">Số % / tiền giảm</th>
                             <th scope="col">Tên người dùng</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Số điện thoại</th>
                             <th scope="col">Tên khóa học</th>
-                            <th scope="col">Giá khóa học</th>
+                            <th scope="col">Giá bán</th>
                             <th scope="col">Giá đã giảm</th>
                             <th scope="col">Ngày sử dụng</th>
                             <th scope="col"></th>
@@ -57,23 +54,7 @@
                                 <td>{{ $item->id }}</td>
                                 <td>{{ $item->voucher_name }}</td>
                                 <td>{{ $item->code }}</td>
-                                <td>
-                                    @if ($item->type === 'percent')
-                                        <span class="">%</span>
-                                    @elseif ($item->type === 'fix_amount')
-                                        <span class="">Giá</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($item->type === 'percent' && $item->discount_price)
-                                        <span class="">{{ $item->discount_price }}%</span>
-                                    @elseif ($item->type === 'fix_amount' && $item->discount_price)
-                                        <span class="">{{ number_format($item->discount_price) }} VND</span>
-                                    @endif
-                                </td>
                                 <td>{{ $item->user_name }}</td>
-                                <td>{{ $item->email }}</td>
-                                <td>{{ $item->phone_number }}</td>
                                 <td>{{ $item->title }}</td>
                                 <td>{{ number_format($item->price_regular) }} VND</td>
                                 <td>{{ number_format($item->price_sale) }} VND</td>
@@ -87,7 +68,8 @@
                                         </a>
                                         <span class="dropdown-menu">
                                             <span class="dropdown-header">Hành động</span>
-                                            <a href="{{ route('admin.voucher-use.show', $item->id) }}" class="dropdown-item">
+                                            <a href="{{ route('admin.voucher-use.show', $item->id) }}"
+                                                class="dropdown-item">
                                                 <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                                     class="size-6">
@@ -97,8 +79,9 @@
                                                         d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                                 </svg>Xem chi tiết
                                             </a>
-                                            <form action="{{ route('admin.voucher-use.destroy', $item->id) }}" method="POST"
-                                                style="display:inline-block;" id="delete-voucher-{{ $item->id }}">
+                                            <form action="{{ route('admin.voucher-use.destroy', $item->id) }}"
+                                                method="POST" style="display:inline-block;"
+                                                id="delete-voucher-{{ $item->id }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <a class="dropdown-item">
@@ -125,6 +108,7 @@
             </div>
         </div>
     </div>
+
 @endsection
 
 @section('script')
