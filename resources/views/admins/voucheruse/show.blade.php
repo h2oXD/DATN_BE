@@ -13,8 +13,8 @@
             <div class="card-body">
 
                 <div class="card mb-4">
-                    <div class="card-header bg-success text-white">
-                        <h4>Thông tin Người Dùng</h4>
+                    <div class="card-header bg-gradient-mix-shade text-white">
+                        <h4 class="text-white">Thông tin Người Dùng</h4>
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
@@ -33,8 +33,8 @@
                 </div>
                 
                 <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h4>Thông tin Phiếu Giảm Giá</h4>
+                    <div class="card-header bg-gradient-mix-shade text-white">
+                        <h4 class="text-white">Thông tin Phiếu Giảm Giá</h4>
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
@@ -69,18 +69,18 @@
                                 @endif
                             </div>
                         </div>
-                        @if ($item->voucher->type === 'percent')
+                        @if ($item->voucher->discount_max_price)
                             <div class="row mb-3">
-                                <div class="col-md-4"><strong>Số tiền giảm cao nhất:</strong></div>
-                                <div class="col-md-8">{{ $item->voucher->discount_max_price }}</div>
+                                <div class="col-md-4"><strong>Số tiền giảm tối đa:</strong></div>
+                                <div class="col-md-8">{{ number_format($item->voucher->discount_max_price) }} VND</div>
                             </div>
                         @endif
                     </div>
                 </div>
 
                 <div class="card mb-4">
-                    <div class="card-header bg-warning text-dark">
-                        <h4>Thông tin Khóa Học</h4>
+                    <div class="card-header bg-gradient-mix-shade text-white">
+                        <h4 class="text-white">Thông tin Khóa Học</h4>
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
