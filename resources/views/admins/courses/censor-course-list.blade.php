@@ -23,7 +23,45 @@
                         Thao tác thành công!
                     </div>
                 @endif
+                <form method="GET" action="{{ route('admin.censor.courses.list') }}" class="row gx-3 mb-2">
+               
+                <div class="col-lg-4 col-12 mb-2">
+                    <input type="text" name="search" class="form-control"
+                        placeholder="Tìm theo tên khóa học hoặc giảng viên" value="{{ request('search') }}">
+                </div>
+                <div class="col-lg-2 col-12 mb-2">
+                    <select name="category" class="form-select ms-2 text-dark">
+                        <option value="">Tất cả danh mục</option>
+                        @foreach ($parentCategory as $category)
+                            <option value="{{ $category->id }}"
+                                {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-lg-2 col-12 mb-2">
+                    <select name="language" class="form-select ms-2 text-dark">
+                        <option value="">Tất cả ngôn ngữ</option>
+                        @foreach ($languages as $language)
+                            <option value="{{ $language }}" {{ request('language') == $language ? 'selected' : '' }}>
+                                {{ $language }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-lg-2 col-12 mb-2">
+                    <select name="level" class="form-select ms-2 text-dark">
+                        <option value="">Tất cả trình độ</option>
+                        @foreach ($levels as $level)
+                            <option value="{{ $level }}" {{ request('level') == $level ? 'selected' : '' }}>
+                                {{ $level }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-lg-2 col-12 mb-2">
+                    <button type="submit" class="btn btn-info ms-2">Tìm kiếm</button>
+                </div>
+            </form>
                 <table class="table table-hover border" id="table">
+                    
                     <thead class="table-light">
                         <tr>
                             <th class="border-end">Ảnh bìa</th>
