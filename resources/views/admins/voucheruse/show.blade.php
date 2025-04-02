@@ -88,12 +88,24 @@
                             <div class="col-md-8">{{ $item->course->title }}</div>
                         </div>
                         <div class="row mb-3">
+                            <div class="col-md-4"><strong>Mô tả:</strong></div>
+                            <div class="col-md-8">{{ $item->course->description }}</div>
+                        </div>
+                        <div class="row mb-3">
                             <div class="col-md-4"><strong>Giá gốc:</strong></div>
                             <div class="col-md-8">{{ number_format($item->course->price_regular) }} VND</div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-4"><strong>Giá đã giảm:</strong></div>
                             <div class="col-md-8">{{ number_format($item->course->price_sale) }} VND</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4"><strong>Ngôn ngữ:</strong></div>
+                            <div class="col-md-8">{{ $item->course->language }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4"><strong>Trình độ:</strong></div>
+                            <div class="col-md-8">{{ $item->course->level }}</div>
                         </div>
                     </div>
                 </div>

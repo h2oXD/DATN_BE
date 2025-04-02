@@ -16,7 +16,7 @@
 
                 <form method="GET" action="{{ route('admin.censor-withdraw.index') }}" class="row gx-3 m-2">
                     <div class="col-lg-8 col-12 mb-2">
-                        <input type="text" name="search" class="form-control" placeholder="Tìm kiếm phiếu giảm giá"
+                        <input type="text" name="search" class="form-control" placeholder="Tìm kiếm yêu cầu rút tiền"
                             value="{{ request('search') }}">
                     </div>
                     <div class="col-lg-2 col-12 mb-2">
