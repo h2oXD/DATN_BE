@@ -20,7 +20,7 @@ window.Echo.private("notifications." + userId).notification((notification) => {
                             ${
                                 notification.user_avatar
                                     ? `<img src="${notification.user_avatar}" alt="" class="avatar-md rounded-circle" />`
-                                    : `<img src="https://i1.sndcdn.com/artworks-000641828677-d2ubdw-t500x500.jpg" alt="" class="avatar-md rounded-circle" />`
+                                    : `<img src="/assets/avatarDefault.jpg" alt="" class="avatar-md rounded-circle" />`
                             }
                             <div class="ms-3">
                             <a href="/admin/courses/${

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\ChatRoom;
+use App\Models\ChatRoomUser;
 use App\Models\Completion;
 use App\Models\Course;
 use App\Models\Enrollment;
@@ -464,6 +466,21 @@ class WalletController extends Controller
                         ]);
                     }
                 }
+                // Thêm người dùng vào phòng chat của khóa học
+                $chatRoom = ChatRoom::where('course_id', $course_id)->first(); // Lấy phòng chat
+
+                if ($chatRoom) {
+                    $alreadyJoined = ChatRoomUser::where('chat_room_id', $chatRoom->id)
+                        ->where('user_id', $user_id)
+                        ->exists();
+
+                    if (!$alreadyJoined) {
+                        ChatRoomUser::create([
+                            'chat_room_id' => $chatRoom->id,
+                            'user_id' => $user_id
+                        ]);
+                    }
+                }
 
                 DB::commit(); // Commit transaction
 
@@ -558,6 +575,22 @@ class WalletController extends Controller
                     }
                 }
 
+                // Thêm người dùng vào phòng chat của khóa học
+                $chatRoom = ChatRoom::where('course_id', $course_id)->first(); // Lấy phòng chat
+
+                if ($chatRoom) {
+                    $alreadyJoined = ChatRoomUser::where('chat_room_id', $chatRoom->id)
+                        ->where('user_id', $user_id)
+                        ->exists();
+
+                    if (!$alreadyJoined) {
+                        ChatRoomUser::create([
+                            'chat_room_id' => $chatRoom->id,
+                            'user_id' => $user_id
+                        ]);
+                    }
+                }
+
                 DB::commit(); // Commit transaction
 
                 return response()->json([
@@ -632,7 +665,7 @@ class WalletController extends Controller
     public function depositPayment(Request $request)
     {
         try {
-            
+
             $wallet = $request->user()->wallet()->lockForUpdate()->first();
 
             // Kiểm tra ví có tồn tại hay không
@@ -901,14 +934,14 @@ class WalletController extends Controller
         DB::beginTransaction();
 
         try {
-            
-            $user           = $request->user();
-            $wallet         = $user->wallet()->lockForUpdate()->first();
-            $amount         = $request->input('amount');
-            $bank_code      = $request->input('bank_name');
-            $bank_nameUser  = $request->input('bank_nameUser');
-            $bank_number    = $request->input('bank_number');
-            
+
+            $user = $request->user();
+            $wallet = $user->wallet()->lockForUpdate()->first();
+            $amount = $request->input('amount');
+            $bank_code = $request->input('bank_name');
+            $bank_nameUser = $request->input('bank_nameUser');
+            $bank_number = $request->input('bank_number');
+
             // Kiểm tra người dùng có vai trò giảng viên hay không
             if (!$user->roles()->where('name', 'lecturer')->exists()) {
                 return response()->json([
@@ -963,13 +996,13 @@ class WalletController extends Controller
             $wallet->decrement('balance', $amount);
             $wallet->update([
                 'transaction_history' => [
-                    'Loại giao dịch'        => 'Gửi yêu cầu rút tiền',
-                    'Số tiền thanh toán'    => number_format($amount) . ' VND',
-                    'Số dư ví'              => number_format($wallet->balance) . ' VND',
-                    'Mã ngân hàng'          => $bank_code,
-                    'Tên người nhận'        => $bank_nameUser,
-                    'Số tài khoản'          => $bank_number,
-                    'Ngày giao dịch'        => Carbon::now('Asia/Ho_Chi_Minh')
+                    'Loại giao dịch' => 'Gửi yêu cầu rút tiền',
+                    'Số tiền thanh toán' => number_format($amount) . ' VND',
+                    'Số dư ví' => number_format($wallet->balance) . ' VND',
+                    'Mã ngân hàng' => $bank_code,
+                    'Tên người nhận' => $bank_nameUser,
+                    'Số tài khoản' => $bank_number,
+                    'Ngày giao dịch' => Carbon::now('Asia/Ho_Chi_Minh')
                 ]
             ]);
 

@@ -54,6 +54,7 @@ use Laravel\Socialite\Facades\Socialite;
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', [AuthController::class, 'getUser']);
+    Route::post('/broadcasting/auth', [AuthController::class, 'broadcasting']);
     Route::apiResource('users', UserController::class)->only(['show', 'update']);
     Route::get('/courseNew', [OverviewController::class, 'courseNew']);
 
@@ -218,7 +219,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     // Excel quiz
     Route::post('/lessons/{lessonId}/quizzes/{quiz_id}/upload', [QuizController::class, 'uploadQuizExcel']);
 
-
+    Route::get('/lecturer-course-student-infor', [CourseController::class, 'getStudentInfoInCourse']);
 
 });
 Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
@@ -260,7 +261,7 @@ Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name(
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/courses/{course_id}/public', [CourseController::class, 'publicCourseDetail']);
 Route::get('/courses/{course_id}/related', [CourseController::class, 'relatedCourses']);
-Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id']);
+// Route::apiResource('/tags', TagController::class)->parameters(['tags' => 'tag_id']);
 //Xem đánh giá
 
 Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirectToGoogle']);
@@ -269,3 +270,4 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleC
 Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.default.api');
 Route::get('/banners', [BannerController::class, 'index']);
 Route::get('/guest/lecturer', [OverviewController::class, 'guestLecturer']);
+Route::get('/guest/lecturer-info/{lecturer_id}', [OverviewController::class, 'guestLecturerInfo']);

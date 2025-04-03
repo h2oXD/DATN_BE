@@ -25,6 +25,10 @@ class User extends Authenticatable
         'profile_picture',
         'bio',
         'google_id',
+        'country',
+        'province',
+        'birth_date',
+        'gender',
         'linkedin_url',
         'website_url',
         'certificate_file',
@@ -98,13 +102,16 @@ class User extends Authenticatable
 
 
 
-   public function posts()
-   {
-    return $this->hasMany(Post::class);
-   }
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
 
-  
 
-   
+    public function chatRooms()
+    {
+        return $this->belongsToMany(ChatRoom::class, 'chat_room_users', 'user_id', 'chat_room_id');
+    }
+
 
 }

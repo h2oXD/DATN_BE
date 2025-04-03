@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,13 @@ Broadcast::channel('notifications.{userId}', function ($user, $userId) {
     return (int) $user->id === (int) $userId;
 });
 
-Broadcast::channel('chat-room.{id}', function ($user, $id) {
-    return $user->chatRooms()->where('chat_rooms.id', $id)->exists();
+Broadcast::channel('notifications-client.{userId}', function ($user, $userId) {
+    return (int) $user->id === (int) $userId;
+});
+
+Broadcast::channel('chat-room.{id}', function ($user, $idRoom) {
+    if ($user->chatRooms()->where('chat_rooms.id', $idRoom)->exists()) {
+        return ['id' => $user->id, 'name' => $user->name];
+    }
+
 });

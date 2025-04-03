@@ -360,7 +360,7 @@ class OverviewController extends Controller
                 ->where('is_free', true)
                 ->where('status', 'published')
                 ->get();
-                
+
 
 
             return response()->json(
@@ -437,6 +437,11 @@ class OverviewController extends Controller
             ->withAvg('reviews', 'rating') // Lấy trung bình rating
             ->orderByDesc('reviews_count') // Sắp xếp theo số đánh giá nhiều nhất
             ->get();
+        return response()->json($lecturers);
+    }
+    public function guestLecturerInfo($lecturer_id)
+    {
+        $lecturers = User::with(['courses','reviews'])->find($lecturer_id);
         return response()->json($lecturers);
     }
 }

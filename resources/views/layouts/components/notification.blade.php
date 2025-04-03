@@ -28,7 +28,7 @@
                                                      <img src="{{ Storage::url($notification->user_avatar) }}"
                                                          alt="" class="avatar-md rounded-circle" />
                                                  @else
-                                                     <img src="https://i1.sndcdn.com/artworks-000641828677-d2ubdw-t500x500.jpg"
+                                                     <img src="/assets/avatarDefault.jpg"
                                                          alt="" class="avatar-md rounded-circle" />
                                                  @endif
                                                  <a href="/admin/courses/{{ $notification->data['course_id'] }}/censor"

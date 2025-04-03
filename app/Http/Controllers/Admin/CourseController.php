@@ -10,6 +10,9 @@ use App\Models\Course;
 use App\Models\CourseApprovalHistory;
 use App\Models\Lecturer;
 use App\Models\Tag;
+use App\Models\User;
+use App\Notifications\CourseApprove;
+use App\Notifications\CourseReject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -85,7 +88,8 @@ class CourseController extends Controller
             'status' => 'approved',
         ]);
 
-
+        $lecturer = User::find($course->user_id);
+        $lecturer->notify(new CourseApprove($course, $lecturer));
 
         return redirect()->route('admin.censor.courses.list')->with('success', 'Khóa học đã được phê duyệt');
     }
@@ -110,6 +114,10 @@ class CourseController extends Controller
             'status' => 'rejected',
             'comment' => $request->reason,
         ]);
+
+        $lecturer = User::find($course->user_id);
+        $lecturer->notify(new CourseReject($course, $lecturer));
+
         return redirect()->route('admin.censor.courses.list')->with('success', 'Khóa học đã bị từ chối');
     }
 

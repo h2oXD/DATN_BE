@@ -33,9 +33,9 @@ class ChatMessageController extends Controller
         }
 
         // Kiểm tra nếu người dùng bị mute
-        if (MutedUser::where('chat_room_id', $roomId)->where('user_id', $user->id)->exists()) {
-            return response()->json(['message' => 'You are muted'], 403);
-        }
+        // if (MutedUser::where('chat_room_id', $roomId)->where('user_id', $user->id)->exists()) {
+        //     return response()->json(['message' => 'You are muted'], 403);
+        // }
 
         // Kiểm tra xem người dùng có gửi tin nhắn hoặc file không
         if (!$request->has('message') && !$request->hasFile('file')) {

@@ -30,12 +30,9 @@ class NewChatMessage implements ShouldBroadcast
      *
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
-    public function broadcastOn(): array
+    public function broadcastOn(): PresenceChannel
     {
-        return
-            [
-                new Channel('chat-room.' . $this->message->chat_room_id),
-            ];
+        return new PresenceChannel('chat-room.' . $this->message->chat_room_id);
     }
 
     public function broadcastWith()

@@ -51,7 +51,7 @@
                     <a class="rounded-circle" href="#" role="button" id="dropdownUser" data-bs-toggle="dropdown"
                         aria-expanded="false">
                         <div class="avatar avatar-md avatar-indicators avatar-online">
-                            <img src="{{ auth()->user()->profile_picture ? asset(auth()->user()->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
+                            <img src="{{ auth()->user()->profile_picture ? asset(auth()->user()->profile_picture) : asset('assets/avatarDefault.jpg') }}"
                                 class="avatar-md rounded-circle" alt="Current avatar" />
                         </div>
                     </a>
@@ -59,7 +59,7 @@
                         <div class="dropdown-item">
                             <div class="d-flex">
                                 <div class="avatar avatar-md avatar-indicators avatar-online mx-1">
-                                    <img src="{{ auth()->user()->profile_picture ? asset(auth()->user()->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
+                                    <img src="{{ auth()->user()->profile_picture ? asset(auth()->user()->profile_picture) : asset('assets/avatarDefault.jpg') }}"
                                         class="avatar-md rounded-circle" alt="Current avatar" />
                                 </div>
                                 <div class="lh-1">

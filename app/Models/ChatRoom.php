@@ -27,6 +27,6 @@ class ChatRoom extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'chat_room_users')->withPivot('role', 'joined_at');
+        return $this->belongsToMany(User::class, 'chat_room_users');
     }
 }
