@@ -23,7 +23,7 @@ class AdminBaseController extends Controller
         // $this->uploadPath = 'images/products'; 
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $items = $this->model::paginate(5);
         return view($this->viewPath . __FUNCTION__, compact('items'));

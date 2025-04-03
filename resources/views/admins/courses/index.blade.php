@@ -11,9 +11,9 @@
         </div>
         <div class="card-body p-0">
             <form method="GET" action="{{ route('admin.courses.index') }}" class="row gx-3 m-2">
-                <div class="col-lg-8 col-12 mb-2">
-                    <input type="text" name="search" class="form-control" placeholder="Tìm kiếm khóa học"
-                        value="{{ request('search') }}">
+                <div class="col-lg-4 col-12 mb-2">
+                    <input type="text" name="search" class="form-control"
+                        placeholder="Tìm theo tên khóa học hoặc giảng viên" value="{{ request('search') }}">
                 </div>
                 <div class="col-lg-2 col-12 mb-2">
                     <select name="category" class="form-select ms-2 text-dark">
@@ -21,6 +21,24 @@
                         @foreach ($categories as $category)
                             <option value="{{ $category->id }}"
                                 {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-lg-2 col-12 mb-2">
+                    <select name="language" class="form-select ms-2 text-dark">
+                        <option value="">Tất cả ngôn ngữ</option>
+                        @foreach ($languages as $language)
+                            <option value="{{ $language }}" {{ request('language') == $language ? 'selected' : '' }}>
+                                {{ $language }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-lg-2 col-12 mb-2">
+                    <select name="level" class="form-select ms-2 text-dark">
+                        <option value="">Tất cả trình độ</option>
+                        @foreach ($levels as $level)
+                            <option value="{{ $level }}" {{ request('level') == $level ? 'selected' : '' }}>
+                                {{ $level }}</option>
                         @endforeach
                     </select>
                 </div>

@@ -24,26 +24,34 @@ class CourseController extends Controller
     {
         $search = $request->get('search');
         $category = $request->get('category');
-        $tag = $request->get('tag');
+        $language = $request->get('language');
+        $level = $request->get('level');
 
         $categories = Category::all();
+        $languages = Course::where('status', 'published')->distinct()->pluck('language')->filter()->all();
+        $levels = Course::where('status', 'published')->distinct()->pluck('level')->filter()->all();
 
-        $courses = Course::with('category', 'tags')->where('status', 'published')
+        $courses = Course::with('category', 'user')
+            ->where('status', 'published')
             ->when($search, function ($query, $search) {
                 return $query->where('title', 'like', "%$search%")
-                    ->orWhere('description', 'like', "%$search%");
+                    ->orWhereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%$search%");
+                    });
             })
             ->when($category, function ($query, $category) {
                 return $query->where('category_id', $category);
             })
-            ->when($tag, function ($query, $tag) {
-                return $query->whereHas('tags', function ($query) use ($tag) {
-                    $query->where('name', 'like', "%$tag%");
-                });
+            ->when($language, function ($query, $language) {
+                return $query->where('language', $language);
+            })
+            ->when($level, function ($query, $level) {
+                return $query->where('level', $level);
             })
             ->latest('id')
             ->paginate(10);
-        return view(self::PATH_VIEW . 'index', compact('courses', 'categories'));
+
+        return view(self::PATH_VIEW . 'index', compact('courses', 'categories', 'languages', 'levels'));
     }
 
     public function show($id)
@@ -177,10 +185,44 @@ class CourseController extends Controller
         }
     }
 
-    public function censorCourseList()
+    public function censorCourseList(Request $request)
     {
-        $courses = Course::where('status', 'pending')->get();
-        return view('admins.courses.censor-course-list', compact('courses'));
+
+        $search = $request->get('search');
+        $selectedCategory = $request->get('category');
+        $language = $request->get('language');
+        $level = $request->get('level');
+        $languages = Course::where('status', 'published')->distinct()->pluck('language')->filter()->all();
+        $levels = Course::where('status', 'published')->distinct()->pluck('level')->filter()->all();
+
+        $parentCategory = Category::whereNull('parent_id')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        $courses = Course::with('category', 'user')
+            ->where('status', 'pending')
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', "%$search%")
+                        ->orWhereHas('user', function ($q) use ($search) {
+                            $q->where('name', 'like', "%$search%");
+                        });
+                });
+            })
+            ->when($selectedCategory, function ($query, $selectedCategory) {
+                return $query->where('category_id', $selectedCategory);
+            })
+            ->when($language, function ($query, $language) {
+                return $query->where('language', $language);
+            })
+            ->when($level, function ($query, $level) {
+                return $query->where('level', $level);
+            })
+            ->latest('id')
+            ->paginate(10);
+
+
+        return view('admins.courses.censor-course-list', compact('courses', 'parentCategory', 'languages', 'levels'));
     }
     public function checkCourse($course_id)
     {
@@ -240,11 +282,53 @@ class CourseController extends Controller
         // dd($totalLessons);
         return view(self::PATH_VIEW . 'check-course', compact('totalVideoDurationMinutes', 'course', 'totalLessons', 'learning_outcomes', 'target_students', 'prerequisites'));
     }
-    public function approvalHistory()
+    public function approvalHistory(Request $request)
     {
-        $approvalHistories = CourseApprovalHistory::with(['course', 'user'])->latest()->paginate(10);
+        $search = $request->get('search');
+        $selectedCategory = $request->get('category');
+        $language = $request->get('language');
+        $level = $request->get('level');
+        $status = $request->get('status'); // Lọc theo trạng thái
 
-        return view(self::PATH_VIEW . 'approval_history', compact('approvalHistories'));
+        $languages = Course::where('status', 'published')->distinct()->pluck('language')->filter()->all();
+        $levels = Course::where('status', 'published')->distinct()->pluck('level')->filter()->all();
+        $statuses = CourseApprovalHistory::distinct()->pluck('status')->filter()->all();
+
+        $parentCategory = Category::whereNull('parent_id')
+            ->orderBy('name', 'asc')
+            ->get();
+
+            $courses = CourseApprovalHistory::with(['course.category', 'course.user'])
+            ->whereHas('course', function ($query) use ($selectedCategory, $language, $level, $search) {
+                if ($selectedCategory) {
+                    $query->where('category_id', $selectedCategory);
+                }
+                if ($language) {
+                    $query->where('language', $language);
+                }
+                if ($level) {
+                    $query->where('level', $level);
+                }
+            })
+            ->when($search, function ($query, $search) {
+                $query->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%");
+                });
+            }) // Tìm kiếm theo tên user trong bảng CourseApprovalHistory
+            ->where(function ($query) use ($status) {
+                if ($status) {
+                    $query->where('status', $status);
+                } else {
+                    $query->whereIn('status', ['approved', 'rejected']); // Mặc định lấy approved & rejected
+                }
+            })
+            ->latest('id')
+            ->paginate(10);
+        
+
+
+
+        return view(self::PATH_VIEW . 'approval_history', compact('courses', 'parentCategory', 'statuses', 'levels'));
     }
 
     public function showHistory($id)
@@ -254,5 +338,4 @@ class CourseController extends Controller
 
         return view(self::PATH_VIEW . 'show_history', compact('course', 'approvalHistories'));
     }
-
 }

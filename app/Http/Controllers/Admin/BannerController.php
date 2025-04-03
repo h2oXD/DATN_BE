@@ -11,15 +11,25 @@ class BannerController extends Controller
 {
     protected const VIEW_PATH = 'admins.banners.';
 
-    public function index()
+    public function index(Request $request)
     {
-        $banners = Banner::latest()->paginate(10);
+        $query = Banner::query();
+
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where('title', 'like', "%{$search}%");
+        }
+
+        if ($request->has('status') && in_array($request->status, ['0', '1'])) {
+            $query->where('status', $request->status);
+        }
+        $banners = $query->latest()->paginate(10);
         return view(self::VIEW_PATH . 'index', compact('banners'));
     }
     public function show(Banner $banner)
-{
-    return view(self::VIEW_PATH . 'show', compact('banner'));
-}
+    {
+        return view(self::VIEW_PATH . 'show', compact('banner'));
+    }
 
 
     public function create()

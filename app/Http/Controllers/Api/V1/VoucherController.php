@@ -72,10 +72,13 @@ class VoucherController extends Controller
             $user_id = Auth::id();
             $usedVoucherIds = VoucherUse::where('user_id', $user_id)->pluck('voucher_id')->toArray();
             
-            // Lấy danh sách các voucher mà người dùng chưa sử dụng
+            // Lấy danh sách các voucher mà người dùng chưa sử dụng, trong thời gian hiệu lực và số lượng > 0
             $vouchers = Voucher::whereNotIn('id', $usedVoucherIds)
+                ->where('start_time', '<=', now())
+                ->where('end_time', '>=', now())
+                ->where('count', '>', 0)
                 ->where('is_active', 1)
-                ->select('id', 'name', 'code', 'description', 'type', 'discount_price', 'start_time', 'end_time', 'count', 'is_active')
+                ->select('id', 'name', 'code', 'description', 'type', 'discount_price', 'discount_max_price', 'start_time', 'end_time', 'count', 'is_active')
                 ->get();
 
             if ($vouchers->isEmpty()) {
@@ -163,7 +166,7 @@ class VoucherController extends Controller
             // Lấy ra voucher theo id
             $voucher = Voucher::where('id', $voucher_id)
                 ->where('is_active', 1)
-                ->select('id', 'name', 'code', 'description', 'type', 'discount_price', 'start_time', 'end_time', 'count', 'is_active')
+                ->select('id', 'name', 'code', 'description', 'type', 'discount_price', 'discount_max_price', 'start_time', 'end_time', 'count', 'is_active')
                 ->first();
     
             if (!$voucher) {

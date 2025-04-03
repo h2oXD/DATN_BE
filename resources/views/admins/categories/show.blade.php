@@ -1,5 +1,9 @@
 @extends('layouts.master')
 
+@section('title')
+    Chi tiết danh mục
+@endsection
+
 @section('content')
     <div class="container my-5">
         <div class="card shadow-lg border-0 rounded-4 overflow-hidden">

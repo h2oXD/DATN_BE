@@ -16,7 +16,7 @@ class VoucherUseController extends AdminBaseController
         $this->routePath = 'voucher-use.index';
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $items = VoucherUse::select(
             'voucher_uses.id',

@@ -14,10 +14,40 @@ class CategoryController extends Controller
     //
     protected const VIEW_PATH = 'admins.categories.';
 
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::with('children')->whereNull('parent_id')->get();
-        return view(self::VIEW_PATH  . __FUNCTION__, compact('categories'));
+        $search = $request->get('search');
+        $selectedCategory = $request->get('category');
+
+        $parentCategory = Category::whereNull('parent_id')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        $categories = Category::with('children')
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%")
+                        ->orWhere('slug', 'like', "%$search%");
+                })
+                    ->orWhereHas('children', function ($q) use ($search) {
+                        $q->where('name', 'like', "%$search%")
+                            ->orWhere('slug', 'like', "%$search%");
+                    });
+            })
+            ->when($selectedCategory, function ($query, $selectedCategory) {
+                $query->where(function ($q) use ($selectedCategory) {
+                    $q->where('id', $selectedCategory)
+                        ->orWhere('parent_id', $selectedCategory);
+                });
+            })
+            ->orderBy('name', 'asc')
+            ->get();
+
+        $noResults = $categories->isEmpty();
+
+
+
+        return view(self::VIEW_PATH  . __FUNCTION__, compact('categories', 'parentCategory', 'noResults'));
     }
 
 
@@ -176,17 +206,17 @@ class CategoryController extends Controller
 
 
     public function trashed()
-{
-    // Lấy danh mục cha đã bị xóa (nếu có)
-    $trashedParents = Category::onlyTrashed()->whereNull('parent_id')->with(['children' => function ($query) {
-        $query->onlyTrashed(); // Lấy danh mục con bị xóa của danh mục cha đã bị xóa
-    }])->get();
+    {
+        // Lấy danh mục cha đã bị xóa (nếu có)
+        $trashedParents = Category::onlyTrashed()->whereNull('parent_id')->with(['children' => function ($query) {
+            $query->onlyTrashed(); // Lấy danh mục con bị xóa của danh mục cha đã bị xóa
+        }])->get();
 
-    // Lấy danh mục con bị xóa nhưng có danh mục cha chưa bị xóa
-    $trashedChildren = Category::onlyTrashed()->whereNotNull('parent_id')->get();
+        // Lấy danh mục con bị xóa nhưng có danh mục cha chưa bị xóa
+        $trashedChildren = Category::onlyTrashed()->whereNotNull('parent_id')->get();
 
-    return view('admins.categories.trashed', compact('trashedParents', 'trashedChildren'));
-}
+        return view('admins.categories.trashed', compact('trashedParents', 'trashedChildren'));
+    }
 
 
 
@@ -227,7 +257,7 @@ class CategoryController extends Controller
 
         // Khôi phục danh mục cha và tất cả danh mục con
         $category->restore();
-       
+
 
         return back()->with('success', 'Danh mục đã được khôi phục!');
     }
