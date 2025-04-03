@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\ChatRoom;
+use App\Models\ChatRoomUser;
 use Illuminate\Http\Request;
 
 class ChatRoomController extends Controller
@@ -15,21 +16,26 @@ class ChatRoomController extends Controller
         $user = $request->user();
 
         // Nếu là giảng viên, hiển thị nhóm chat của các khóa học họ tạo
-        if ($user->hasRole('lecturer')) {
-            return ChatRoom::whereHas('course', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })->with('course')->get();
-        }
+        // if ($user->hasRole('lecturer')) {
+        //     return ChatRoom::whereHas('course', function ($query) use ($user) {
+        //         $query->where('user_id', $user->id);
+        //     })->with('course')->get();
+        // }
 
         // Nếu là học viên, hiển thị nhóm chat của các khóa học họ đã đăng ký
-        return ChatRoom::whereHas('course.enrollments', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->with('course')->get();
+        // return ChatRoom::whereHas('course.enrollments', function ($query) use ($user) {
+        //     $query->where('user_id', $user->id);
+        // })->with('course')->get();
+
+        $chatRoom = ChatRoomUser::where('user_id',$user->id)->with(['chatRoom','user'])->get();
+        return response()->json([
+            'room' => $chatRoom
+        ],200);
     }
 
     public function show(Request $request, $id)
     {
-        $chatRoom = ChatRoom::with('messages')->findOrFail($id);
+        $chatRoom = ChatRoom::with(['messages.user','users'])->findOrFail($id);
         $user = $request->user();
 
         // Kiểm tra user có quyền truy cập không

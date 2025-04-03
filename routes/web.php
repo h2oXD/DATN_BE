@@ -64,10 +64,10 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         });
 
         // Tag
-        Route::resource('tags', TagController::class);
-        Route::delete('/forceDelete/{id}', [TagController::class, 'forceDelete'])->name('tags.forceDelete');
-        Route::get('/trash', [TagController::class, 'trash'])->name('tags.trash');
-        Route::post('/restore/{id}', [TagController::class, 'restore'])->name('tags.restore');
+        // Route::resource('tags', TagController::class);
+        // Route::delete('/forceDelete/{id}', [TagController::class, 'forceDelete'])->name('tags.forceDelete');
+        // Route::get('/trash', [TagController::class, 'trash'])->name('tags.trash');
+        // Route::post('/restore/{id}', [TagController::class, 'restore'])->name('tags.restore');
 
         //Course
         // Route::resource('courses', CourseController::class);

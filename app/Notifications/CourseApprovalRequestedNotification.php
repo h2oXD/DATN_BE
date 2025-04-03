@@ -11,7 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class CourseApprovalRequestedNotification extends Notification implements ShouldBroadcast
+class CourseApprovalRequestedNotification extends Notification implements ShouldBroadcast, ShouldQueue
 {
     use Queueable;
     public $course;

@@ -32,7 +32,12 @@ class ChatMessageController extends Controller
             return response()->json(['message' => 'You are not a member of this chat room'], 403);
         }
 
-        
+
+        // Kiểm tra nếu người dùng bị mute
+        // if (MutedUser::where('chat_room_id', $roomId)->where('user_id', $user->id)->exists()) {
+        //     return response()->json(['message' => 'You are muted'], 403);
+        // }
+
 
         // Kiểm tra xem người dùng có gửi tin nhắn hoặc file không
         if (!$request->has('message') && !$request->hasFile('file')) {
