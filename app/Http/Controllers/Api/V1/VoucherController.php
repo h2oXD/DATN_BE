@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Voucher;
 use App\Models\VoucherUse;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -298,7 +299,7 @@ class VoucherController extends Controller
                 'voucher_id' => $voucher_id,
                 'user_id' => $user_id,
                 'course_id' => $course_id,
-                'time_used' => now(),
+                'time_used' => Carbon::now('Asia/Ho_Chi_Minh'),
             ]);
     
             DB::commit(); // Commit transaction

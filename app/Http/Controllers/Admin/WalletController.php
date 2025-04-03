@@ -21,13 +21,36 @@ class WalletController extends AdminBaseController
     // Xuất danh sách yêu cầu rút tiền
     public function index(Request $request)
     {
-        $items = TransactionWallet::with('wallet.user')
-                    ->where('type', 'withdraw')
-                    ->where('status', 'pending')
-                    ->orderBy('transaction_date', 'desc')
-                    ->get();
+        $query = TransactionWallet::with('wallet.user')
+        ->where('type', 'withdraw')
+        ->where('status', 'pending');
 
-        return view($this->viewPath . __FUNCTION__, compact('items'));
+        // Lấy dữ liệu từ input tìm kiếm
+        $search = $request->input('search');
+        $category = $request->input('category');
+
+        // Danh sách các cột có thể tìm kiếm
+        $columns = [
+            'user_name' => 'Tên người dùng',
+            'email'     => 'Email',
+        ];
+
+        // Áp dụng điều kiện tìm kiếm nếu có
+        if ($search && array_key_exists($category, $columns)) {
+            if ($category == 'user_name') {
+                $query->whereHas('wallet.user', function ($q) use ($search) {
+                    $q->where('name', 'LIKE', "%$search%");
+                });
+            } elseif ($category == 'email') {
+                $query->whereHas('wallet.user', function ($q) use ($search) {
+                    $q->where('email', 'LIKE', "%$search%");
+                });
+            }
+        }
+
+        $items = $query->orderBy('transaction_date', 'desc')->paginate(10);
+
+        return view($this->viewPath . __FUNCTION__, compact('items', 'columns'));
     }
 
     // Xem thông tin chi tiết và kiểm duyệt
@@ -125,15 +148,45 @@ class WalletController extends AdminBaseController
         }
     }
 
-    public function historyCensor()
+    public function historyCensor(Request $request)
     {
-        $items = TransactionWallet::with('wallet.user')
-                            ->whereIn('status', ['success', 'fail'])
-                            ->where('type', 'withdraw')
-                            ->orderBy('censor_date', 'desc')
-                            ->get();
+        $query = TransactionWallet::with('wallet.user')
+        ->whereIn('status', ['success', 'fail'])
+        ->where('type', 'withdraw');
 
-        return view($this->viewPath . 'history', compact('items'));
+        // Lấy dữ liệu từ input tìm kiếm
+        $search = $request->input('search');
+        $category = $request->input('category');
+
+        // Danh sách các cột có thể tìm kiếm
+        $columns = [
+            'user_name' => 'Tên người dùng',
+            'email'     => 'Email',
+            'status'    => 'Kết quả duyệt',
+        ];
+
+        // Áp dụng điều kiện tìm kiếm nếu có
+        if ($search && array_key_exists($category, $columns)) {
+            if ($category == 'user_name') {
+                $query->whereHas('wallet.user', function ($q) use ($search) {
+                    $q->where('name', 'LIKE', "%$search%");
+                });
+            } elseif ($category == 'email') {
+                $query->whereHas('wallet.user', function ($q) use ($search) {
+                    $q->where('email', 'LIKE', "%$search%");
+                });
+            } elseif ($category == 'status') {
+                if (stripos('Xác nhận', $search) !== false) {
+                    $query->where('status', 'success');
+                } elseif (stripos('Từ chối', $search) !== false) {
+                    $query->where('status', 'fail');
+                }
+            }
+        }
+
+        $items = $query->orderBy('censor_date', 'desc')->paginate(10);
+
+        return view($this->viewPath . 'history', compact('items', 'columns'));
     }
 
     public function detailHistory($id)

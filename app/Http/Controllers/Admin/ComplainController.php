@@ -24,12 +24,35 @@ class ComplainController extends AdminBaseController
 
     public function index(Request $request)
     {
-        $items = Complain::with('transaction_wallets.wallet.user')
-                    ->where('status', 'pending')
-                    ->orderBy('request_date', 'desc')
-                    ->get();
+        $query = Complain::with('transaction_wallets.wallet.user')
+                ->where('status', 'pending');
 
-        return view($this->viewPath . __FUNCTION__, compact('items'));
+        // Lấy dữ liệu từ request
+        $search = $request->input('search');
+        $category = $request->input('category');
+
+        // Danh sách các cột có thể tìm kiếm
+        $columns = [
+            'user_name' => 'Tên người dùng',
+            'email' => 'Email',
+        ];
+
+        // Áp dụng điều kiện tìm kiếm
+        if ($search && array_key_exists($category, $columns)) {
+            if ($category == 'user_name') {
+                $query->whereHas('transaction_wallets.wallet.user', function ($q) use ($search) {
+                    $q->where('name', 'LIKE', "%$search%");
+                });
+            } elseif ($category == 'email') {
+                $query->whereHas('transaction_wallets.wallet.user', function ($q) use ($search) {
+                    $q->where('email', 'LIKE', "%$search%");
+                });
+            }
+        }
+
+        $items = $query->orderBy('request_date', 'desc')->paginate(10);
+
+        return view($this->viewPath . 'index', compact('items', 'columns'));
     }
 
     public function censor($id)
@@ -182,14 +205,44 @@ class ComplainController extends AdminBaseController
         }
     }
 
-    public function historyCensor()
+    public function historyCensor(Request $request)
     {
-        $items = Complain::with('transaction_wallets.wallet.user')
-                            ->whereIn('status', ['resolved', 'rejected'])
-                            ->orderBy('feedback_date', 'desc')
-                            ->get();
+        $query = Complain::with('transaction_wallets.wallet.user')
+        ->whereIn('status', ['resolved', 'rejected']);
 
-        return view($this->viewPath . 'history', compact('items'));
+        // Lấy dữ liệu từ request
+        $search = $request->input('search');
+        $category = $request->input('category');
+
+        // Danh sách các cột có thể tìm kiếm
+        $columns = [
+            'user_name' => 'Tên người dùng',
+            'email'     => 'Email',
+            'status'    => 'Kết quả duyệt',
+        ];
+
+        // Áp dụng điều kiện tìm kiếm
+        if ($search && array_key_exists($category, $columns)) {
+            if ($category == 'user_name') {
+                $query->whereHas('transaction_wallets.wallet.user', function ($q) use ($search) {
+                    $q->where('name', 'LIKE', "%$search%");
+                });
+            } elseif ($category == 'email') {
+                $query->whereHas('transaction_wallets.wallet.user', function ($q) use ($search) {
+                    $q->where('email', 'LIKE', "%$search%");
+                });
+            } elseif ($category == 'status') {
+                if (str_contains(strtolower($search), 'xác nhận')) {
+                    $query->where('status', 'resolved');
+                } elseif (str_contains(strtolower($search), 'từ chối')) {
+                    $query->where('status', 'rejected');
+                }
+            }
+        }
+
+        $items = $query->orderBy('feedback_date', 'desc')->paginate(10);
+
+        return view($this->viewPath . 'history', compact('items', 'columns'));
     }
 
     public function detailHistory($id)

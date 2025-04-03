@@ -95,6 +95,11 @@
                                 bán</a>
 
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark " href="{{ route('admin.transaction-courses.index') }}">
+                                Lịch sử mua khóa học
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>

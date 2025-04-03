@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\LecturerRegisterController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TagController;
+use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\VoucherUseController;
 use App\Http\Controllers\Admin\WalletController;
@@ -107,6 +108,10 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::put('censor-complains/{id}/reject', [ComplainController::class, 'reject'])->name('censor-complain.reject');
         Route::get('history-complain', [ComplainController::class, 'historyCensor'])->name('censor-complain.history');
         Route::get('history-complain/{id}', [ComplainController::class, 'detailHistory'])->name('censor-complain.history-detail');
+
+        // Danh sách lịch sử mua khóa học của người dùng
+        Route::get('transaction-courses', [TransactionController::class, 'index'])->name('transaction-courses.index');
+        Route::get('transaction-course/{id}', [TransactionController::class, 'show'])->name('transaction-courses.show');
 
     });
 });
