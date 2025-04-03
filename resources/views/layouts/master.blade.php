@@ -40,6 +40,8 @@
         document.documentElement.setAttribute("data-bs-theme", "light");
     </script>
     @stack('scripts')
+    @stack('scriptss')
+    @stack('script')
     @include('layouts.partials.script')
     @vite('resources/js/public.js')
     <script>

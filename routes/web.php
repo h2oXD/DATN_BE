@@ -36,6 +36,8 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         //Dashboard
         Route::get('/', [DashBoardController::class, 'dashboard'])->name('dashboard');
         Route::get('/dashboard/revenue-filter', [DashboardController::class, 'filterRevenue'])->name('dashboard.revenue.filter');
+        Route::get('/dashboard/analytics', [DashBoardController::class, 'dashboardAnalytics'])->name('dashboard.analytics');
+        Route::get('/dashboard/courses', [DashBoardController::class, 'dashboardCourses'])->name('dashboard.courses');
         Route::post('logout', [AuthController::class, 'logout'])->name('admin.logout');
 
         //Banner
@@ -43,7 +45,7 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         //Voucher
         Route::resource('vouchers', VoucherController::class);
         Route::resource('voucher-use', VoucherUseController::class);
-
+        
         //Categories
         Route::get('categories/trashed', [CategoryController::class, 'trashed'])->name('categories.trashed');
         Route::delete('categories/{id}/force-delete', [CategoryController::class, 'forceDelete'])
