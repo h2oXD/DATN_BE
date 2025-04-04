@@ -298,7 +298,7 @@ class CourseController extends Controller
             ->orderBy('name', 'asc')
             ->get();
 
-            $courses = CourseApprovalHistory::with(['course.category', 'course.user'])
+        $courses = CourseApprovalHistory::with(['course.category', 'course.user'])
             ->whereHas('course', function ($query) use ($selectedCategory, $language, $level, $search) {
                 if ($selectedCategory) {
                     $query->where('category_id', $selectedCategory);
@@ -309,12 +309,15 @@ class CourseController extends Controller
                 if ($level) {
                     $query->where('level', $level);
                 }
+                if ($search) {
+                    $query->where('title', 'like', "%$search%");
+                }
             })
             ->when($search, function ($query, $search) {
-                $query->whereHas('user', function ($q) use ($search) {
+                $query->orWhereHas('user', function ($q) use ($search) {
                     $q->where('name', 'like', "%$search%");
                 });
-            }) // Tìm kiếm theo tên user trong bảng CourseApprovalHistory
+            }) // Tìm kiếm theo tên giảng viên trong CourseApprovalHistory
             ->where(function ($query) use ($status) {
                 if ($status) {
                     $query->where('status', $status);
@@ -324,7 +327,8 @@ class CourseController extends Controller
             })
             ->latest('id')
             ->paginate(10);
-        
+
+
 
 
 

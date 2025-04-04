@@ -11,11 +11,7 @@
                 <div
                     class="border-bottom pb-3 mb-3 d-flex flex-column flex-lg-row gap-3 justify-content-between align-items-lg-center">
                     <div>
-<<<<<<< HEAD
                         <h1 class="mb-0 h2 fw-bold">Thống kê người dùng</h1>
-=======
-                        <h1 class="mb-0 h2 fw-bold">Dashboard</h1>
->>>>>>> 4f3b156cc879c41bb6ade31028fa477559a3df96
                     </div>
                     <div class="d-flex gap-3">
                         <div class="input-group">
@@ -180,14 +176,8 @@
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div class="d-flex align-items-center gap-3">
                                             <div class="position-relative">
-<<<<<<< HEAD
                                                 <img alt="avatar"
                                                     src="{{ asset('storage/' . $instructor->profile_picture) }}"
-=======
-                                                <img alt="avatar" 
-                                                {{-- src="{{ asset('storage/' . $instructor->profile_picture) }}" --}}
-                                                 src="assets/avatarDefault.jpg"
->>>>>>> 4f3b156cc879c41bb6ade31028fa477559a3df96
                                                     onerror="this.onerror=null;this.src='{{ asset('assets/images/avatar/avatar-default.jpg') }}';"
                                                     class="avatar-xl rounded-circle border border-4 border-white"
                                                     style="width: 50px; height: 50px; object-fit: cover;" alt="avatar" />
@@ -250,14 +240,8 @@
                                                     {{ Str::limit($course->title, 40, '...') }}</h5>
                                             </a>
                                             <div class="d-flex align-items-center gap-2">
-<<<<<<< HEAD
                                                 <img alt="avatar"
                                                     src="{{ asset('storage/' . $course->user->profile_picture) }}"
-=======
-                                                <img alt="avatar" 
-                                                {{-- src="{{ asset('storage/' . $course->user->profile_picture) }}" --}}
-                                                src="assets/avatarDefault.jpg"
->>>>>>> 4f3b156cc879c41bb6ade31028fa477559a3df96
                                                     class="rounded-circle"
                                                     style="width: 35px; height: 35px; object-fit: cover;" />
                                                 <span class="small text-muted">{{ $course->user->name }}</span>
