@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminBaseController;
 use App\Models\Voucher;
 use App\Models\VoucherUse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 
 class VoucherController extends AdminBaseController
@@ -15,6 +16,52 @@ class VoucherController extends AdminBaseController
         $this->model = Voucher::class;
         $this->viewPath = 'admins.vouchers.';
         $this->routePath = 'admin.vouchers.index';
+    }
+
+    public function index(Request $request)
+    {
+        $query = Voucher::query();
+        $columns = [
+            'name'              => 'Tên',
+            'code'              => 'Mã giảm giá',
+            'type'              => 'Loại giảm giá',
+            'is_active'         => 'Trạng thái'
+        ];
+
+        $search = $request->input('search');
+        $category = $request->input('category');
+
+        if ($search && $category && array_key_exists($category, $columns)) {
+            if ($category === 'is_active') {
+
+                $statusMapping = [
+                    'Hoạt động' => 1,
+                    'Khóa'      => 0
+                ];
+    
+                if (array_key_exists($search, $statusMapping)) {
+                    $query->where($category, $statusMapping[$search]);
+                }
+
+            } elseif ($category === 'type') {
+
+                $typeMapping = [
+                    '%' => 'percent',
+                    'giá' => 'fix_amount'
+                ];
+    
+                if (array_key_exists($search, $typeMapping)) {
+                    $query->where($category, $typeMapping[$search]);
+                }
+
+            } else {
+                $query->where($category, 'LIKE', "%{$search}%");
+            }
+        }
+
+        $items = $query->paginate(10);
+
+        return view($this->viewPath . __FUNCTION__, compact('items', 'columns'));
     }
 
     public function destroy($id)
@@ -44,6 +91,7 @@ class VoucherController extends AdminBaseController
         // Conditional validation for discount_price
         if (request()->input('type') === 'percent') {
             $rules['discount_price'] = ['required', 'integer', 'min:1', 'max:100']; // Max 100 for percent
+            $rules['discount_max_price'] = ['required', 'integer', 'min:1', 'max:10000000'];
         } elseif (request()->input('type') === 'fix_amount') {
             $rules['discount_price'] = ['required', 'integer', 'min:1', 'max:10000000']; // No max limit for fix_amount
         } else {
@@ -87,6 +135,10 @@ class VoucherController extends AdminBaseController
         ];
         if (request()->input('type') === 'percent') {
             $message['discount_price.max'] = 'Giá trị giảm giá không được vượt quá 100 (cho phần trăm).';
+            $message['discount_max_price.required'] = 'Giá trị giảm giá cao nhất không được để trống.';
+            $message['discount_max_price.integer'] = 'Giá trị giảm giá cao nhất phải là số nguyên.';
+            $message['discount_max_price.min'] = 'Giá trị giảm giá cao nhất phải lớn hơn 0.';
+            $message['discount_max_price.max'] = 'Giá trị giảm giá cao nhất (số tiền) không được vượt quá 10,000,000.';
         } elseif (request()->input('type') === 'fix_amount') {
             $message['discount_price.max'] = 'Giá trị giảm giá (số tiền) không được vượt quá 10,000,000.';
         }
@@ -107,6 +159,7 @@ class VoucherController extends AdminBaseController
         ];
         if (request()->input('type') === 'percent') {
             $rules['discount_price'] = ['required', 'integer', 'min:1', 'max:100']; // Max 100 for percent
+            $rules['discount_max_price'] = ['required', 'integer', 'min:1', 'max:10000000'];
         } elseif (request()->input('type') === 'fix_amount') {
             $rules['discount_price'] = ['required', 'integer', 'min:1', 'max:10000000']; // No max limit for fix_amount
         } else {
@@ -145,6 +198,10 @@ class VoucherController extends AdminBaseController
         ];
         if (request()->input('type') === 'percent') {
             $message['discount_price.max'] = 'Giá trị giảm giá không được vượt quá 100 (cho phần trăm).';
+            $message['discount_max_price.required'] = 'Giá trị giảm giá cao nhất không được để trống.';
+            $message['discount_max_price.integer'] = 'Giá trị giảm giá cao nhất phải là số nguyên.';
+            $message['discount_max_price.min'] = 'Giá trị giảm giá cao nhất phải lớn hơn 0.';
+            $message['discount_max_price.max'] = 'Giá trị giảm giá cao nhất (số tiền) không được vượt quá 10,000,000.';
         } elseif (request()->input('type') === 'fix_amount') {
             $message['discount_price.max'] = 'Giá trị giảm giá (số tiền) không được vượt quá 10,000,000.';
         }

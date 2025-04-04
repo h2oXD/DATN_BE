@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
@@ -29,7 +32,15 @@ use Symfony\Component\HttpFoundation\Response;
 class AuthController extends Controller
 {
 
-
+    public function broadcasting()
+    {
+        $user = request()->user();
+        Log::info($user);
+        if (!$user) {
+            return response()->json(['Bạn không có quyền'], 403);
+        }
+        return Broadcast::auth(request());
+    }
     public function getUser(Request $request)
     {
         $user = $request->user();

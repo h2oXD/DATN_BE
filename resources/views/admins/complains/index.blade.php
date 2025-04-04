@@ -14,6 +14,26 @@
             </div>
             <div class="card-body">
 
+                <form method="GET" action="{{ route('admin.censor-complain.index') }}" class="row gx-3 m-2">
+                    <div class="col-lg-8 col-12 mb-2">
+                        <input type="text" name="search" class="form-control" placeholder="Tìm kiếm yêu cầu khiếu nại"
+                            value="{{ request('search') }}">
+                    </div>
+                    <div class="col-lg-2 col-12 mb-2">
+                        <select name="category" class="form-select ms-2 text-dark">
+                            <option value="">Chọn cột</option>
+                            @foreach ($columns as $key => $label)
+                                <option value="{{ $key }}" {{ request('category') == $key ? 'selected' : '' }}>
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-12 mb-2">
+                        <button type="submit" class="btn btn-info ms-2">Tìm kiếm</button>
+                    </div>
+                </form>
+
                 @if (session()->has('error') && session()->get('error'))
                     <div class="alert alert-danger">
                         {{ session()->get('error') }}

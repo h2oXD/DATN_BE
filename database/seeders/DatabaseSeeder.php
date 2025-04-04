@@ -55,7 +55,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Nguyễn Hữu Hào',
             'email' => 'haonhph45336@fpt.edu.vn',
             'password' => Hash::make('123123123'),
-            'profile_picture' => 'storage/profile_pictures/XDxpvzCxBxQCl5zjkV6NmPerD3fuuYQMSVhN4cUr.png',
+            'profile_picture' => '',
         ]);
         $roleAdmin = Role::select('id')->where('name', 'admin')->first();
         UserRole::create([
@@ -82,7 +82,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::create([
-            'name' => 'Nguyễn Văn Thuyết',
+            'name' => 'Vũ Đức Tài',
             'email' => 'hocvien2@gmail.com',
             'password' => Hash::make('123123123'),
             'phone_number' => '0333444555',
@@ -101,7 +101,7 @@ class DatabaseSeeder extends Seeder
         //Tạo giảng viên
         $lecturer = User::create([
             'name' => 'Tống Văn Đức',
-            'email' => 'giangviena@gmail.com',
+            'email' => 'fixbugandcry@gmail.com',
             'password' => Hash::make('123123123'),
             'phone_number' => '0888777666',
             'profile_picture' => '',
@@ -389,6 +389,7 @@ Ngoài công việc giảng dạy, tôi còn tham gia vào các dự án nghiên
                 'description' => 'Giảm giá sản phẩm 10%',
                 'type' => 'percent',
                 'discount_price' => 10,
+                'discount_max_price' => 20000,
                 'start_time' => Carbon::now(),
                 'end_time' => Carbon::now()->addDays(30),
                 'count' => '99',
@@ -399,7 +400,7 @@ Ngoài công việc giảng dạy, tôi còn tham gia vào các dự án nghiên
                 'code' => 'FREE100',
                 'description' => 'Miễn phí thanh toán khi tham gia khóa học đầu tiên',
                 'type' => 'percent',
-                'discount_price' => 10,
+                'discount_price' => 100,
                 'start_time' => Carbon::now(),
                 'end_time' => Carbon::now()->addDays(30),
                 'count' => '9999',

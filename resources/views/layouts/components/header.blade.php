@@ -4,15 +4,6 @@
         <a id="nav-toggle" href="#">
             <i class="fe fe-menu"></i>
         </a>
-        <div class="ms-lg-3 d-none d-md-none d-lg-block">
-            <!-- Form -->
-            <form class="d-flex align-items-center">
-                <span class="position-absolute ps-3 search-icon">
-                    <i class="fe fe-search"></i>
-                </span>
-                <input type="search" class="form-control ps-6" placeholder="Search Entire Dashboard" />
-            </form>
-        </div>
         <!--Navbar nav -->
         <div class="ms-auto d-flex">
             <div class="dropdown">
@@ -51,7 +42,7 @@
                     <a class="rounded-circle" href="#" role="button" id="dropdownUser" data-bs-toggle="dropdown"
                         aria-expanded="false">
                         <div class="avatar avatar-md avatar-indicators avatar-online">
-                            <img src="{{ auth()->user()->profile_picture ? asset(auth()->user()->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
+                            <img src="{{ auth()->user()->profile_picture ? asset(auth()->user()->profile_picture) : asset('assets/avatarDefault.jpg') }}"
                                 class="avatar-md rounded-circle" alt="Current avatar" />
                         </div>
                     </a>
@@ -59,7 +50,7 @@
                         <div class="dropdown-item">
                             <div class="d-flex">
                                 <div class="avatar avatar-md avatar-indicators avatar-online mx-1">
-                                    <img src="{{ auth()->user()->profile_picture ? asset(auth()->user()->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
+                                    <img src="{{ auth()->user()->profile_picture ? asset(auth()->user()->profile_picture) : asset('assets/avatarDefault.jpg') }}"
                                         class="avatar-md rounded-circle" alt="Current avatar" />
                                 </div>
                                 <div class="lh-1">

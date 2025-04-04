@@ -21,9 +21,9 @@
                 </div>
 
                 <div class="col-auto text-center d-flex gap-2">
-                    <form action="{{ route('admin.courses.approve', $course->id) }}" method="POST">
+                    <form id="approve-form" action="{{ route('admin.courses.approve', $course->id) }}" method="POST">
                         @csrf
-                        <button id="chapnhan" class="btn btn-outline-primary btn-sm">Chấp nhận</button>
+                        <button  type="button" id="chapnhan" class="btn btn-outline-primary btn-sm">Chấp nhận</button>
                     </form>
 
                     <div>
@@ -44,7 +44,14 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
-            <div class="modal-body px-1">
+            <div class="modal-body px-2 py-2">
+                <div class="px-3">
+                    <p class="mb-1">1. Không phù hợp với nhu cầu hoặc mục tiêu</p>
+                    <p class="mb-1">2. Học phí quá cao</p>
+                    <p class="mb-1">3. Không đủ thời gian tham gia</p>
+                    <p class="mb-1">4. Chất lượng khóa học không đảm bảo</p>
+                    <p class="mb-1">5. Thiếu các yếu tố hỗ trợ học tập</p>
+                </div>
                 <form method="post" action="{{ route('admin.courses.reject', $course->id) }}"
                     class="d-flex flex-column mx-2">
                     <div class="">
@@ -64,3 +71,22 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById("chapnhan").addEventListener("click", function() {
+        Swal.fire({
+            title: "Bạn có chắc chắn?",
+            text: "Khóa học này sẽ được phê duyệt!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById("approve-form").submit();
+            }
+        });
+    });
+</script>

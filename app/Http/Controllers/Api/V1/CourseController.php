@@ -11,6 +11,7 @@ use App\Models\Enrollment;
 use App\Models\Role;
 use App\Notifications\CourseApprovalRequestedNotification;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -1003,5 +1004,15 @@ class CourseController extends Controller
                 'error' => $th
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+    public function getStudentInfoInCourse()
+    {
+        $courseId = request()->query('course_id'); // Lấy giá trị course_id
+        $user = Auth::user();
+        if ($courseId) {
+            $course = Course::where('user_id', $user->id)->where('status', 'published')->where('id', $courseId)->with(['progresses'])->get();
+            return response()->json($course);
+        }
+        return null;
     }
 }

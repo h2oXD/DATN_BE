@@ -3,7 +3,9 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "start:all": "concurrently \"php artisan ser\" \"npm run dev\" \"php artisan queue:work\"",
+        "clear": "concurrently \"php artisan cache:clear\" \"php artisan config:clear\""
     },
     "devDependencies": {
         "axios": "^1.6.4",
@@ -11,6 +13,7 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
+        "concurrently": "^9.1.2",
         "date-fns": "^4.1.0",
         "laravel-echo": "^2.0.2",
         "pusher-js": "^8.4.0"

@@ -12,5 +12,25 @@
         @else
             <p class="text-success mb-2 fw-bold"><i class="fe fe-check ms-1"></i>Tổng thời gian video đã đủ ({{ $totalVideoDurationMinutes }}/30 phút)</p>
         @endif
+        @if ($course->thumbnail)
+            <p class="text-success mb-2 fw-bold"><i class="fe fe-check ms-1"></i>Đã có ảnh bìa</p>
+        @else
+            <p class="text-success mb-2 fw-bold"><i class="fe fe-x ms-1"></i>Chưa có ảnh bìa</p>
+        @endif
+        @if ($course->video_preview)
+            <p class="text-success mb-2 fw-bold"><i class="fe fe-check ms-1"></i>Đã có video quảng cáo</p>
+        @else
+            <p class="text-success mb-2 fw-bold"><i class="fe fe-x ms-1"></i>Chưa có video quảng cáo</p>
+        @endif
+        @if ($course->description)
+            <p class="text-success mb-2 fw-bold"><i class="fe fe-check ms-1"></i>Đã có mô tả cho khoá học</p>
+        @else
+            <p class="text-success mb-2 fw-bold"><i class="fe fe-x ms-1"></i>Chưa có mô tả cho khoá học</p>
+        @endif
+        @if ($course->title)
+            <p class="text-success mb-2 fw-bold"><i class="fe fe-check ms-1"></i>Đã có tiêu đề cho khoá học</p>
+        @else
+            <p class="text-success mb-2 fw-bold"><i class="fe fe-x ms-1"></i>Chưa có tiêu đề cho khoá học</p>
+        @endif
     </div>
 </div>

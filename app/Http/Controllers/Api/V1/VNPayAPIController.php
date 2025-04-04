@@ -563,6 +563,22 @@ class VNPayAPIController extends Controller
                     }
                 }
 
+                // Thêm người dùng vào phòng chat của khóa học
+                $chatRoom = ChatRoom::where('course_id', $course_id)->first(); // Lấy phòng chat
+
+                if ($chatRoom) {
+                    $alreadyJoined = ChatRoomUser::where('chat_room_id', $chatRoom->id)
+                        ->where('user_id', $user_id)
+                        ->exists();
+
+                    if (!$alreadyJoined) {
+                        ChatRoomUser::create([
+                            'chat_room_id' => $chatRoom->id,
+                            'user_id' => $user_id
+                        ]);
+                    }
+                }
+
                 DB::commit(); // Commit transaction
 
                 return redirect('http://localhost:5173/student/MyCourse');
