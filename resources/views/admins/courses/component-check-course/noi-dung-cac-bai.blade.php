@@ -38,9 +38,11 @@
                                         {{ $lesson->title }}
                                         @if ($lesson->type == 'video')
                                             @if ($lesson->videos->duration < 5)
-                                                <span class="text-warning">[{{ $lesson->videos->duration }} phút] <i class="fe fe-alert-triangle"></i></span>
+                                                <span class="text-warning">[{{ $lesson->videos->duration }} phút] <i
+                                                        class="fe fe-alert-triangle"></i></span>
                                             @else
-                                                <span class="text-success">[{{ $lesson->videos->duration }} phút] <i class="fe fe-check"></i></span>
+                                                <span class="text-success">[{{ $lesson->videos->duration }} phút] <i
+                                                        class="fe fe-check"></i></span>
                                             @endif
                                         @endif
                                     </div>
@@ -81,6 +83,47 @@
                                                 data-bs-target="#{{ $lesson->type }}-{{ $lesson->id }}">
                                                 Xem
                                             </button>
+                                            <div class="modal fade gd-example-modal-lg" tabindex="-1" role="dialog"
+                                                aria-labelledby="myLargeModalLabel"
+                                                id="{{ $lesson->type }}-{{ $lesson->id }}" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="m-0">Các câu hỏi</h4>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close">
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            {{-- @php
+                                                                dd($lesson->quizzes[0]->questions)
+                                                            @endphp --}}
+                                                            @foreach ($lesson->quizzes[0]->questions as $question)
+                                                                <div class="mb-2 alert alert-light">
+                                                                    <p class="m-0 fw-bold">{{ $question->question_text }}
+                                                                    </p>
+                                                                    @foreach ($question->answers as $answer)
+                                                                        <div class="d-flex align-items-center my-1">
+                                                                            @if ($answer->is_correct)
+                                                                                <i class="fe fe-check text-success"></i>
+                                                                            @else
+                                                                                <i class="fe fe-x text-danger"></i>
+                                                                            @endif
+                                                                            <p class="m-0">
+                                                                                {{ $answer->answer_text }}
+                                                                            </p>
+                                                                        </div>
+                                                                    @endforeach
+                                                                </div>
+                                                            @endforeach
+                                                            <button type="button" class="btn btn-sm btn-danger"
+                                                                data-bs-dismiss="modal" aria-label="Close">
+                                                                Đóng
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @endif
                                         @if ($lesson->type == 'video')
                                             <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
@@ -110,7 +153,8 @@
                                             </div>
                                         @endif
                                         @if ($lesson->type == 'coding')
-                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                            <button type="button" class="btn btn-sm btn-primary"
+                                                data-bs-toggle="modal"
                                                 data-bs-target="#{{ $lesson->type }}-{{ $lesson->id }}">
                                                 Xem
                                             </button>

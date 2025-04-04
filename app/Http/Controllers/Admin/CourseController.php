@@ -238,7 +238,9 @@ class CourseController extends Controller
             'sections.lessons.documents',
             'sections.lessons.videos',
             'sections.lessons.codings',
-            'sections.lessons.quizzes'
+            'sections.lessons.quizzes' => function ($query) { // Thêm eager loading cho quizzes
+                $query->with('questions.answers'); // Eager load questions và answers của quiz
+            },
         ])->find($course_id);
 
         if ($course->status != 'pending') {
@@ -298,7 +300,7 @@ class CourseController extends Controller
             ->orderBy('name', 'asc')
             ->get();
 
-            $courses = CourseApprovalHistory::with(['course.category', 'course.user'])
+        $courses = CourseApprovalHistory::with(['course.category', 'course.user'])
             ->whereHas('course', function ($query) use ($selectedCategory, $language, $level, $search) {
                 if ($selectedCategory) {
                     $query->where('category_id', $selectedCategory);
@@ -324,7 +326,7 @@ class CourseController extends Controller
             })
             ->latest('id')
             ->paginate(10);
-        
+
 
 
 
