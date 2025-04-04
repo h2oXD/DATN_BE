@@ -13,7 +13,7 @@
             </div>
             <div class="card-body">
                 <form method="GET" action="{{ route('admin.courses.approval.history') }}" class="row gx-3 mb-2">
-               
+
                     <div class="col-lg-4 col-12 mb-2">
                         <input type="text" name="search" class="form-control"
                             placeholder="Tìm theo tên khóa học hoặc người duyệt" value="{{ request('search') }}">
@@ -23,16 +23,24 @@
                             <option value="">Tất cả danh mục</option>
                             @foreach ($parentCategory as $category)
                                 <option value="{{ $category->id }}"
-                                    {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                    {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
+                    @php
+                        $statusLabels = [
+                            'pending' => 'Chờ duyệt',
+                            'approved' => 'Đã duyệt',
+                            'rejected' => 'Từ chối',
+                        ];
+                    @endphp
                     <div class="col-lg-2 col-12 mb-2">
                         <select name="status" class="form-select ms-2 text-dark">
                             <option value="">Tất cả trạng thái</option>
                             @foreach ($statuses as $sta)
                                 <option value="{{ $sta }}" {{ request('status') == $sta ? 'selected' : '' }}>
-                                    {{ $sta }}</option>
+                                    {{ $statusLabels[$sta] ?? $sta }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -79,9 +87,9 @@
                                         class="btn btn-info btn-sm">
                                         <i class="fas fa-eye"></i> Xem chi tiết
                                     </a>
-                                    
+
                                 </td>
-                                
+
                             </tr>
                         @endforeach
                     </tbody>
