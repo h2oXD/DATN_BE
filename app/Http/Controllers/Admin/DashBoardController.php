@@ -9,7 +9,6 @@ use App\Models\Enrollment;
 use App\Models\Review;
 use App\Models\Submission;
 use App\Models\Transaction;
-use App\Models\TransactionWallet;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -57,21 +56,44 @@ class DashBoardController extends Controller
         ]);
     }
 
-
     public function dashboard()
     {
         $now = Carbon::now();
         $lastMonth = $now->copy()->subMonth();
 
-        // 1. Tổng doanh thu của giảng viên (toàn bộ thời gian)
-        $currentRevenue = Transaction::sum('amount') * 0.7;
+        $currentRevenue = Transaction::sum('amount');
         $lastMonthRevenue = Transaction::whereBetween('transaction_date', [$lastMonth->startOfMonth(), $lastMonth->endOfMonth()])
-            ->sum('amount') * 0.7;
+            ->sum('amount');
         $revenueChange = $currentRevenue - $lastMonthRevenue;
 
+        //doanh thu theo năm
+        $year = now()->year;
+
+        $revenuePerMonth = Transaction::selectRaw('MONTH(transaction_date) as month, SUM(amount) as total_revenue')
+            ->whereYear('transaction_date', $year)
+            ->groupBy(DB::raw('MONTH(transaction_date)'))
+            ->orderBy(DB::raw('MONTH(transaction_date)'))
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'month' => 'Tháng ' . $item->month,
+                    'total_revenue' => round($item->total_revenue),
+                    'total_profit' => round($item->total_revenue * 0.3)
+                ];
+            });
+
+        // Lấy dữ liệu cho biểu đồ
+        $chartMonthLabels = $revenuePerMonth->pluck('month');
+        $chartMonthSeries = $revenuePerMonth->pluck('total_revenue');
+        $chartProfitSeries = $revenuePerMonth->pluck('total_profit');
+
         // 2. Tổng số khóa học
-        $currentCourses = Course::count();
-        $lastMonthCourses = Course::whereBetween('created_at', [$lastMonth->startOfMonth(), $lastMonth->endOfMonth()])->count();
+        $currentCourses = Course::where('status', 'published')->count();
+
+        $lastMonthCourses = Course::where('status', 'published')
+            ->whereBetween('created_at', [$lastMonth->startOfMonth(), $lastMonth->endOfMonth()])
+            ->count();
+
         $coursesChange = $currentCourses - $lastMonthCourses;
 
         // 3. Tổng số học viên
@@ -97,8 +119,8 @@ class DashBoardController extends Controller
                 $query->withCount('enrollments') // Đếm số học viên cho mỗi khóa học
                     ->withCount('reviews');    // Đếm số đánh giá cho mỗi khóa học
             }])
-            ->orderBy('courses_count', 'desc') // Sắp xếp theo số khóa học giảm dần
-            ->take(5) // Lấy 5 giảng viên hàng đầu
+            ->orderBy('courses_count', 'desc')
+            ->take(5)
             ->get()
             ->map(function ($instructor) {
                 // Tính tổng số học viên và đánh giá từ các khóa học
@@ -144,7 +166,12 @@ class DashBoardController extends Controller
         // Tổng số bài nộp quiz
         $totalSubmissions = Submission::count();
 
-        $coursesData = Course::selectRaw('DATE(created_at) as date, COUNT(*) as total_courses')
+        $currentProfit = $currentRevenue * 0.3;
+        $lastMonthProfit = $lastMonthRevenue * 0.3;
+        $profitChange = $currentProfit - $lastMonthProfit;
+
+        $coursesData = Course::where('status', 'published')
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total_courses')
             ->groupBy(DB::raw('DATE(created_at)'))
             ->orderBy('date', 'ASC')
             ->get()
@@ -178,7 +205,7 @@ class DashBoardController extends Controller
             });
 
         $lecturersData = User::join('user_role', 'users.id', '=', 'user_role.user_id')
-            ->where('user_role.role_id', 2) // Lọc chỉ lấy giảng viên
+            ->where('user_role.role_id', 2)
             ->selectRaw('DATE(users.created_at) as date, COUNT(users.id) as total_lecturers')
             ->groupBy(DB::raw('DATE(users.created_at)'))
             ->orderBy('date', 'ASC')
@@ -212,7 +239,13 @@ class DashBoardController extends Controller
             'coursesData',
             'studentsData',
             'ordersData',
-            'lecturersData'
+            'lecturersData',
+            'currentProfit',
+            'profitChange',
+            'revenuePerMonth',
+            'chartMonthSeries',
+            'chartMonthLabels',
+            'chartProfitSeries',
         ));
     }
 
@@ -231,6 +264,27 @@ class DashBoardController extends Controller
         $currentProfit = $currentRevenue * 0.3;
         $lastMonthProfit = $lastMonthRevenue * 0.3;
         $profitChange = $currentProfit - $lastMonthProfit;
+
+        //doanh thu theo năm
+        $year = now()->year;
+
+        $revenuePerMonth = Transaction::selectRaw('MONTH(transaction_date) as month, SUM(amount) as total_revenue')
+            ->whereYear('transaction_date', $year)
+            ->groupBy(DB::raw('MONTH(transaction_date)'))
+            ->orderBy(DB::raw('MONTH(transaction_date)'))
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'month' => 'Tháng ' . $item->month,
+                    'total_revenue' => round($item->total_revenue),
+                    'total_profit' => round($item->total_revenue * 0.3)
+                ];
+            });
+
+        // Lấy dữ liệu cho biểu đồ
+        $chartMonthLabels = $revenuePerMonth->pluck('month');
+        $chartMonthSeries = $revenuePerMonth->pluck('total_revenue');
+        $chartProfitSeries = $revenuePerMonth->pluck('total_profit');
 
         // Dữ liệu biểu đồ doanh thu theo ngày
         $revenuePerDate = Transaction::selectRaw('DATE(transaction_date) as date, SUM(amount) * 0.7 as total_revenue')
@@ -276,6 +330,7 @@ class DashBoardController extends Controller
             ->selectRaw('users.name as lecturer_name, SUM(transactions.amount) * 0.7 as total_revenue')
             ->groupBy('users.name')
             ->orderBy('total_revenue', 'DESC')
+            ->take(5) // Lấy top 5 giảng viên
             ->get()
             ->map(function ($item) {
                 return [
@@ -286,6 +341,15 @@ class DashBoardController extends Controller
 
         $instructorLabels = $revenueByLecturer->pluck('lecturer_name');
         $instructorSeries = $revenueByLecturer->pluck('total_revenue');
+
+        $currentRevenue = Transaction::sum('amount');
+        $lastMonthRevenue = Transaction::whereBetween('transaction_date', [$lastMonth->startOfMonth(), $lastMonth->endOfMonth()])
+            ->sum('amount');
+        $revenueChange = $currentRevenue - $lastMonthRevenue;
+
+        $currentProfit = $currentRevenue * 0.3;
+        $lastMonthProfit = $lastMonthRevenue * 0.3;
+        $profitChange = $currentProfit - $lastMonthProfit;
 
         // Doanh thu theo danh mục khóa học
         $revenueByCategory = Transaction::join('courses', 'transactions.course_id', '=', 'courses.id')
@@ -318,7 +382,11 @@ class DashBoardController extends Controller
             'instructorLabels',
             'instructorSeries',
             'categoryLabels',
-            'categorySeries'
+            'categorySeries',
+            'chartMonthSeries',
+            'chartMonthLabels',
+            'chartProfitSeries',
+            'revenuePerMonth'
         ));
     }
     public function dashboardCourses()
@@ -341,9 +409,13 @@ class DashBoardController extends Controller
             ->groupBy('payment_method')
             ->get();
 
-        // Biểu đồ hiển thị khóa học được mua nhiều nhất
+        // Biểu đồ hiển thị top 5 khóa học được mua nhiều nhất
         $mostPurchasedCourses = DB::table('courses')
-            ->leftJoin('enrollments', 'courses.id', '=', 'enrollments.course_id')
+            ->leftJoin('enrollments', function ($join) {
+                $join->on('courses.id', '=', 'enrollments.course_id')
+                    ->whereIn('enrollments.status', ['active', 'completed']);
+            })
+            ->where('courses.status', 'published')
             ->select('courses.id', 'courses.title', DB::raw('count(enrollments.id) as enrollments_count'))
             ->groupBy('courses.id', 'courses.title')
             ->orderByDesc('enrollments_count')

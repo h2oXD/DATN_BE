@@ -56,7 +56,7 @@
             <div class="col-lg-6">
                 <div class="card h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="mb-0">Khóa học được mua nhiều nhất</h4>
+                        <h4 class="mb-0">Top 5 khóa học được mua nhiều nhất</h4>
                     </div>
                     <div class="card-body">
                         <div id="mostPurchasedCoursesChart" class="apex-charts" style="height: 300px;"></div>
@@ -93,20 +93,16 @@
 
 @push('scriptss')
     <script>
-        // Biểu đồ số lượng khóa học theo danh mục
         document.addEventListener('DOMContentLoaded', function() {
+            // Biểu đồ số lượng khóa học theo danh mục
             const coursesByCategoryChart = new ApexCharts(document.querySelector("#coursesByCategoryChart"), {
                 chart: {
-                    type: 'bar'
+                    type: 'pie'
                 },
-                series: [{
-                    name: 'Số lượng',
-                    data: @json($coursesByCategory->pluck('courses_count'))
-                }],
-                xaxis: {
-                    categories: @json($coursesByCategory->pluck('name'))
-                }
+                series: @json($coursesByCategory->pluck('courses_count')),
+                labels: @json($coursesByCategory->pluck('name'))
             });
+
             coursesByCategoryChart.render();
 
             // Biểu đồ số lượng học viên đăng ký theo khóa học
@@ -131,13 +127,29 @@
             enrollmentsByCourseChart.render();
 
             // Biểu đồ so sánh số lần mua bằng ví và ngân hàng
+            const paymentMethodsData = @json($paymentMethods);
+
+            // Tạo bản đồ để đổi tên các phương thức thanh toán
+            const paymentMethodMap = {
+                "credit_card": "Thẻ tín dụng",
+                "paypal": "Paypal",
+                "bank_transfer": "Chuyển khoản ngân hàng",
+                "wallet": "Ví"
+            };
+
+            // Áp dụng map để thay đổi tên hiển thị trên biểu đồ
+            const updatedLabels = paymentMethodsData.map(item => paymentMethodMap[item.payment_method] || item
+                .payment_method);
+
+            // Tạo biểu đồ với tên đã được thay đổi
             const paymentMethodsChart = new ApexCharts(document.querySelector("#paymentMethodsChart"), {
                 chart: {
                     type: 'pie'
                 },
-                series: @json($paymentMethods->pluck('total')),
-                labels: @json($paymentMethods->pluck('payment_method'))
+                series: paymentMethodsData.map(item => item.total),
+                labels: updatedLabels
             });
+
             paymentMethodsChart.render();
 
             // Biểu đồ hiển thị khóa học được mua nhiều nhất
