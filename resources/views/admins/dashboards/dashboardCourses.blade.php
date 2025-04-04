@@ -127,13 +127,29 @@
             enrollmentsByCourseChart.render();
 
             // Biểu đồ so sánh số lần mua bằng ví và ngân hàng
+            const paymentMethodsData = @json($paymentMethods);
+
+            // Tạo bản đồ để đổi tên các phương thức thanh toán
+            const paymentMethodMap = {
+                "credit_card": "Thẻ tín dụng",
+                "paypal": "Paypal",
+                "bank_transfer": "Chuyển khoản ngân hàng",
+                "wallet": "Ví"
+            };
+
+            // Áp dụng map để thay đổi tên hiển thị trên biểu đồ
+            const updatedLabels = paymentMethodsData.map(item => paymentMethodMap[item.payment_method] || item
+                .payment_method);
+
+            // Tạo biểu đồ với tên đã được thay đổi
             const paymentMethodsChart = new ApexCharts(document.querySelector("#paymentMethodsChart"), {
                 chart: {
                     type: 'pie'
                 },
-                series: @json($paymentMethods->pluck('total')),
-                labels: @json($paymentMethods->pluck('payment_method'))
+                series: paymentMethodsData.map(item => item.total),
+                labels: updatedLabels
             });
+
             paymentMethodsChart.render();
 
             // Biểu đồ hiển thị khóa học được mua nhiều nhất
