@@ -60,6 +60,8 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
             Route::get('students', [UserController::class, 'indexStudents'])->name('students.index');
             Route::get('/create', [UserController::class, 'create'])->name('users.create');
             Route::post('/', [UserController::class, 'store'])->name('users.store');
+            Route::get('/{user}/showlecturer', [UserController::class, 'showLecturer'])->name('users.showlecturer');
+            Route::get('/{user}/showstudent', [UserController::class, 'showstudent'])->name('users.showstudent');
             Route::get('/{user}', [UserController::class, 'show'])->name('users.show');
             Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
             Route::put('/{user}', [UserController::class, 'update'])->name('users.update');

@@ -7,8 +7,8 @@
 @section('content')
     <div class="container my-5">
         <div class="card">
-            <div class="card-header">
-                <h2 class="m-0">Chi tiết khóa học</h2>
+            <div class="card-header bg-gradient-mix-shade">
+                <h2 class="m-0 text-white">Chi tiết khóa học</h2>
             </div>
             <div class="card-body">
                 <div class="row mb-3">
@@ -25,18 +25,18 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Mô tả</label>
-                        <textarea class="form-control" rows="3" readonly>{{ $course->description }}</textarea>
+                        <textarea class="form-control " rows="3" readonly>{{ $course->description }}</textarea>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Giảng viên</label>
-                        <input type="text" class="form-control" value="{{ $course->user->name }}" readonly>
+                        <input type="text" class="form-control " value="{{ $course->user->name }}" readonly>
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Trạng thái</label>
-                        <input type="text"
+                        <input type="text "
                             class="form-control 
                         @if ($course->status == 'pending') bg-warning 
                         @elseif($course->status == 'published') bg-success 
