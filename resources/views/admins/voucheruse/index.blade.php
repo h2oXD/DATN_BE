@@ -7,8 +7,8 @@
 @section('content')
 
     <div class="card m-3">
-        <div class="card-header d-flex justify-content-between align-content-center">
-            <h2 class="m-0">Lịch sử phiếu giảm giá đã dùng</h2>
+        <div class="card-header bg-gradient-mix-shade d-flex justify-content-between align-content-center">
+            <h2 class="m-0 text-white ">Lịch sử phiếu giảm giá đã dùng</h2>
         </div>
         <div class="card-body p-0">
 

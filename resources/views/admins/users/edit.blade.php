@@ -6,8 +6,8 @@
 
 @section('content')
     <div class="card m-3">
-        <div class="card-header d-flex justify-content-between align-content-center">
-            <h2>Chỉnh sửa người dùng</h2>
+        <div class="card-header bg-gradient-mix-shade d-flex justify-content-between align-content-center">
+            <h2 class="text-white ">Chỉnh sửa người dùng</h2>
         </div>
         <div class="card-body">
             @if (session()->has('success') && session()->get('success'))

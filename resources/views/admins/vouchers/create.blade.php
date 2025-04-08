@@ -18,8 +18,8 @@
     @endif
 
     <div class="card m-3">
-        <div class="card-header">
-            <h2 class="m-0">Thêm mới phiếu giảm giá</h2>
+        <div class="card-header bg-gradient-mix-shade">
+            <h2 class="m-0 text-white ">Thêm mới phiếu giảm giá</h2>
         </div>
         <div class="card-body">
             <form method="POST" class="row" action="{{ route('admin.vouchers.store') }}" enctype="multipart/form-data">

@@ -87,7 +87,7 @@
                                         </a>
                                         <span class="dropdown-menu">
                                             <span class="dropdown-header">Settings</span>
-                                            <a href="{{ route('admin.users.show', $user->id) }}" class="dropdown-item">
+                                            <a href="{{ route('admin.users.showlecturer', $user->id) }}" class="dropdown-item">
                                                 <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                                     class="size-6">
