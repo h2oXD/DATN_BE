@@ -107,5 +107,58 @@ class TransactionController extends Controller
     }
 
     // Danh sách học viên theo khóa học đã bán
+    public function studentListByCourse(Request $request, $course_id)
+    {
+        try {
+
+            $transactions = Transaction::with('user')
+                ->where('course_id', $course_id)
+                ->where('status', 'success')
+                ->get();
+            
+            $user_id = $request->user()->id;
+            $course = Course::where('id', $course_id)
+                            ->where('user_id', $user_id)
+                            ->first();
+
+            // Kiểm tra khóa học có tồn tại không
+            if (!$course) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Khóa học không tồn tại.'
+                ], Response::HTTP_NOT_FOUND);
+            }
+            // Nếu không có học viên
+            if ($transactions->isEmpty()) {
+                return response()->json([
+                    'status'  => 'success',
+                    'message' => 'Chưa có học viên nào đăng ký khoá học này.'
+                ], Response::HTTP_OK);
+            }
+
+            // Lấy danh sách học viên
+            $students = $transactions->map(function ($transaction) {
+                return [
+                    'ID'                        => $transaction->user->id,
+                    'Tên'                       => $transaction->user->name,
+                    'Email'                     => $transaction->user->email,
+                    'Số tiền thanh toán'        => $transaction->amount,
+                    'Ngày thanh toán'           => $transaction->transaction_date,
+                    'Phương thức thanh toán'    => $transaction->payment_method,
+                ];
+            });
+
+            return response()->json([
+                'status'  => 'success',
+                'students' => $students
+            ], Response::HTTP_OK);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Lỗi server',
+                'error' => $th->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }
