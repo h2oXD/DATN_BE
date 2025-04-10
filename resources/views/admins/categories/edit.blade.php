@@ -41,9 +41,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                            @error('parent_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        
                         </div>
                     @endif
 
