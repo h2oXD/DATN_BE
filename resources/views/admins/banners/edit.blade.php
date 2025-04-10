@@ -2,9 +2,9 @@
 
 @section('content')
     <div class="container mt-3">
-        <div class="card bg-white shadow">
-            <div class="card-header">
-                <h2>Chỉnh sửa Banner</h2>
+        <div class="card bg-white shadow ">
+            <div class="card-header bg-gradient-mix-shade">
+                <h2 class="text-white">Chỉnh sửa Banner</h2>
             </div>
 
             <div class="card-body">

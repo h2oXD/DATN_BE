@@ -7,8 +7,8 @@
 @section('content')
     <div class="container my-5">
         <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-header bg-white py-4 d-flex justify-content-between align-items-center">
-                <h2 class="h4 mb-0 fw-bold text-primary">Danh sách danh mục</h2>
+            <div class="card-header d-flex justify-content-between align-content-center">
+                <h2 class="mb-0">Danh sách danh mục</h2>
 
                 <div>
                     <a href="{{ route('admin.categories.create') }}" class="btn btn-success me-2">

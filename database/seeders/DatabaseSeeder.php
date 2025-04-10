@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder
         //Tạo Học viên
         $student = User::create([
             'name' => 'Trương Thái Tú',
-            'email' => 'hocvien1@gmail.com',
+            'email' => 'thaituaovlpm@gmail.com',
             'password' => Hash::make('123123123'),
             'phone_number' => '0333444555',
 

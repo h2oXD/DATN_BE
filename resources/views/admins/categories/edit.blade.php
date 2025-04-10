@@ -3,9 +3,9 @@
 @section('content')
     <div class="container my-5">
         <div class="card shadow-lg border-0 rounded-4">
-            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center rounded-top-4">
-                <h3 class="mb-0 d-flex align-items-center">
-                    <i class="fe fe-edit me-2"></i> Chỉnh sửa danh mục
+            <div class="card-header bg-gradient-mix-shade d-flex justify-content-between align-items-center rounded-top-4">
+                <h3 class="mb-0 d-flex align-items-center text-white ">
+                    Chỉnh sửa danh mục
                 </h3>
                 <a href="{{ route('admin.categories.index') }}" class="btn btn-light btn-sm">Quay lại
                 </a>

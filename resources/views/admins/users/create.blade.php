@@ -6,8 +6,8 @@
 
 @section('content')
     <div class="card m-3">
-        <div class="card-header">
-            <h2 class="m-0">Thêm mới người dùng</h2>
+        <div class="card-header bg-gradient-mix-shade ">
+            <h2 class="m-0 text-white ">Thêm mới người dùng</h2>
         </div>
         <div class="card-body">
             @if (session()->has('success') && !session()->get('success'))
