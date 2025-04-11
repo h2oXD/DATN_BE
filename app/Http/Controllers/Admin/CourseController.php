@@ -6,11 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\ChatRoom;
 use App\Models\ChatRoomUser;
+use App\Models\Coding;
 use App\Models\Course;
 use App\Models\CourseApprovalHistory;
+use App\Models\Document;
+use App\Models\Enrollment;
 use App\Models\Lecturer;
+use App\Models\Lesson;
+use App\Models\Review;
+use App\Models\Section;
 use App\Models\Tag;
 use App\Models\User;
+use App\Models\Video;
 use App\Notifications\CourseApprove;
 use App\Notifications\CourseReject;
 use Illuminate\Http\Request;
@@ -56,9 +63,61 @@ class CourseController extends Controller
 
     public function show($id)
     {
-        $course = Course::with(['category', 'tags', 'user'])->findOrFail($id);
-        return view(self::PATH_VIEW . 'show', compact('course'));
+        $course = Course::with(['category', 'user'])->findOrFail($id);
+
+        // Tổng số học viên
+        $totalStudents = Enrollment::where('course_id', $id)->count();
+
+        // Doanh thu
+        $totalRevenue = $course->transactions
+        ->where('status', 'success')
+        ->sum('amount');
+
+        // Thống kê review từ bảng review dùng polymorphic
+        $totalReviews = Review::where('reviewable_type', Course::class)
+            ->where('reviewable_id', $id)
+            ->count();
+
+        $averageRating = Review::where('reviewable_type', Course::class)
+            ->where('reviewable_id', $id)
+            ->avg('rating') ?? 0;
+
+        // Tổng số bài học
+        $totalSections = Section::where('course_id', $id)->count();
+
+        $totalLessons = Lesson::whereHas('section', function ($q) use ($id) {
+            $q->where('course_id', $id);
+        })->count();
+
+        $totalVideos = Video::whereHas('lesson.section', function ($q) use ($id) {
+            $q->where('course_id', $id);
+        })->count();
+
+        $totalDocuments = Document::whereHas('lesson.section', function ($q) use ($id) {
+            $q->where('course_id', $id);
+        })->count();
+
+        $totalCodings = Coding::whereHas('lesson.section', function ($q) use ($id) {
+            $q->where('course_id', $id);
+        })->count();
+
+        return view(self::PATH_VIEW . 'show', compact(
+            'course',
+            'totalStudents',
+            'totalRevenue',
+            'totalReviews',
+            'averageRating',
+            'totalSections',
+            'totalLessons',
+            'totalVideos',
+            'totalDocuments',
+            'totalCodings'
+        ));
     }
+
+
+
+
 
     public function approve(Request $request, $id)
     {
@@ -311,12 +370,15 @@ class CourseController extends Controller
                 if ($level) {
                     $query->where('level', $level);
                 }
+                if ($search) {
+                    $query->where('title', 'like', "%$search%");
+                }
             })
             ->when($search, function ($query, $search) {
-                $query->whereHas('user', function ($q) use ($search) {
+                $query->orWhereHas('user', function ($q) use ($search) {
                     $q->where('name', 'like', "%$search%");
                 });
-            }) // Tìm kiếm theo tên user trong bảng CourseApprovalHistory
+            }) // Tìm kiếm theo tên giảng viên trong CourseApprovalHistory
             ->where(function ($query) use ($status) {
                 if ($status) {
                     $query->where('status', $status);
@@ -326,6 +388,7 @@ class CourseController extends Controller
             })
             ->latest('id')
             ->paginate(10);
+
 
 
 

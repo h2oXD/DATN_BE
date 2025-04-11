@@ -23,6 +23,7 @@ return new class extends Migration {
             $table->string('profile_picture')->nullable();
             $table->text('bio')->nullable();
             $table->string('google_id')->nullable();
+            $table->tinyInteger('status')->default(0)->comment('0: hoạt động, 1: khóa giảng viên, 2: khóa cả giảng viên và học viên');
 
             $table->string('country')->nullable();
             $table->string('province')->nullable();

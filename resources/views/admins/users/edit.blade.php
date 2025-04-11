@@ -6,8 +6,8 @@
 
 @section('content')
     <div class="card m-3">
-        <div class="card-header d-flex justify-content-between align-content-center">
-            <h2>Chỉnh sửa người dùng</h2>
+        <div class="card-header bg-gradient-mix-shade d-flex justify-content-between align-content-center">
+            <h2 class="text-white ">Chỉnh sửa người dùng</h2>
         </div>
         <div class="card-body">
             @if (session()->has('success') && session()->get('success'))
@@ -66,6 +66,16 @@
                     <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" />
                 </div>
 
+                <div class="mb-3 col-6">
+                    <label for="status" class="form-label">Trạng thái tài khoản</label>
+                    <select name="status" class="form-select">
+                        <option value="0" {{ $user->status == 0 ? 'selected' : '' }}>Hoạt động</option>
+                        <option value="1" {{ $user->status == 1 ? 'selected' : '' }}>Khóa chức năng giảng viên</option>
+                        <option value="2" {{ $user->status == 2 ? 'selected' : '' }}>Khóa chức năng giảng viên và học
+                            viên</option>
+                    </select>
+                </div>
+
                 <div class="mb-3 col-7 ">
                     <label for="profile_picture" class="form-label">Ảnh đại diện</label>
                     <div class="d-flex align-items-center gap-3">
@@ -75,6 +85,7 @@
                         <input type="file" class="form-control" name="profile_picture" id="profile_picture" />
                     </div>
                 </div>
+
                 <div class="text-end">
                     <a href="{{ url()->previous() }}" class="btn btn-secondary">Quay lại</a>
                     <button type="submit" class="btn btn-primary">Cập nhật</button>

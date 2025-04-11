@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\SectionController;
 use App\Http\Controllers\Api\V1\StudyController;
 use App\Http\Controllers\Api\V1\TagController;
+use App\Http\Controllers\Api\V1\TransactionController;
 use App\Http\Controllers\Api\V1\TransactionWalletController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\VideoController;
@@ -217,6 +218,10 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     // Lấy thông tin thẻ ngân hàng của người dùng
     Route::get('/lecturer/getBank', [UserController::class, 'getBank']);
 
+    // Danh sách khóa học đã bán của giảng viên
+    Route::get('/lecturer/sell-course-list', [TransactionController::class, 'sellList']);
+    // Danh sách học viên đã đăng kí theo khóa học
+    Route::get('/lecturer/sell-course/{course_id}/studentList', [TransactionController::class, 'studentListByCourse']);
 
     // Excel quiz
     Route::post('/lessons/{lessonId}/quizzes/{quiz_id}/upload', [QuizController::class, 'uploadQuizExcel']);
@@ -251,6 +256,10 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     Route::post('/user/wishlist/{course_id}', [WishListController::class, 'store']); // Thêm course vào wish-list
     Route::delete('/user/wishlist/{course_id}', [WishListController::class, 'destroy']); // Xóa course khỏi wish-list
     Route::get('/user/wishlist/check/{course_id}', [WishListController::class, 'check']); // Kiểm tra course
+
+    // Danh sách khóa học đã mua
+    Route::get('/student/course-list', [TransactionController::class, 'courseList']);
+
 });
 
 Route::get('/student/home', [OverviewController::class, 'overview']);

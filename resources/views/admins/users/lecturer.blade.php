@@ -50,6 +50,7 @@
                             <th scope="col">Vai trò</th>
                             <th scope="col">Email</th>
                             <th scope="col">Ngày tham gia</th>
+                            <th scope="col">Trạng thái</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -79,6 +80,13 @@
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->created_at }}</td>
                                 <td>
+                                    @if ($user->status === 0)
+                                        <span class="badge bg-success">Hoạt động</span>
+                                    @elseif (in_array($user->status, [1, 2]))
+                                        <span class="badge bg-danger">Bị khóa</span>
+                                    @endif
+                                </td>
+                                <td>
                                     <span class="dropdown dropstart">
                                         <a class="btn-icon btn btn-ghost btn-sm rounded-circle" href="#"
                                             role="button" data-bs-toggle="dropdown" data-bs-offset="-20,20"
@@ -87,7 +95,7 @@
                                         </a>
                                         <span class="dropdown-menu">
                                             <span class="dropdown-header">Settings</span>
-                                            <a href="{{ route('admin.users.show', $user->id) }}" class="dropdown-item">
+                                            <a href="{{ route('admin.users.showlecturer', $user->id) }}" class="dropdown-item">
                                                 <svg class="w-10 me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                                     class="size-6">

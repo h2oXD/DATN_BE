@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Certificate;
+use App\Models\Course;
+use App\Models\Progress;
 use App\Models\Role;
+use App\Models\Transaction;
+use App\Models\TransactionWallet;
 use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
@@ -133,6 +138,84 @@ class UserController extends Controller
     {
         return view(self::PATH_VIEW . 'show', compact('user'));
     }
+    public function showLecturer($id)
+    {
+        $user = User::with('roles')->findOrFail($id);
+
+        // Lấy tất cả các khóa học đã publish của giảng viên
+        $courses = Course::where('user_id', $id)
+            ->where('status', 'published')
+            ->withCount('enrollments')
+            ->paginate(5);
+
+        $totalCourses = $courses->total();
+        $totalStudents = $courses->sum('enrollments_count');
+
+        // Tính doanh thu, lợi nhuận giảng viên và hệ thống
+        $courseRevenues = $courses->map(function ($course) {
+            $revenue = Transaction::where('course_id', $course->id)
+                ->where('status', 'success')
+                ->sum('amount');
+
+            $adminRate = 0.3; // Mặc định admin nhận 30%
+            $adminEarning = $revenue * $adminRate;
+            $lecturerEarning = $revenue - $adminEarning;
+
+            return [
+                'id' => $course->id,
+                'title' => $course->title,
+                'thumbnail' => $course->thumbnail,
+                'enrollments_count' => $course->enrollments_count,
+                'revenue' => $revenue,
+                'lecturer_earning' => $lecturerEarning,
+                'admin_earning' => $adminEarning,
+            ];
+        });
+
+        // Tổng cộng
+        $totalRevenue = $courseRevenues->sum('revenue');
+        $totalLecturerEarning = $courseRevenues->sum('lecturer_earning');
+        $totalAdminEarning = $courseRevenues->sum('admin_earning');
+
+        return view(self::PATH_VIEW . 'showlecturer', compact(
+            'user',
+            'totalCourses',
+            'totalStudents',
+            'totalRevenue',
+            'totalLecturerEarning',
+            'totalAdminEarning',
+            'courseRevenues',
+            'courses'
+        ));
+    }
+    public function showStudent($id)
+    {
+        $user = User::with('roles')->findOrFail($id);
+
+        // Lấy danh sách chứng chỉ đã được cấp
+        $certificates = Certificate::with('course')
+            ->where('user_id', $id)
+            ->get();
+
+        // Lấy lịch sử học (progress)
+        $progress = Progress::with('course')
+            ->where('user_id', $id)
+            ->get();
+
+        // Khóa học đang học dở (chưa hoàn thành)
+        $inProgressCourses = $progress->where('status', 'in_progress');
+
+        // Khóa học đã hoàn thành
+        $completedCourses = $progress->where('status', 'completed');
+
+        return view(self::PATH_VIEW . 'showstudent', compact(
+            'user',
+            'certificates',
+            'inProgressCourses',
+            'completedCourses'
+        ));
+    }
+
 
     public function edit(User $user)
     {
@@ -147,6 +230,7 @@ class UserController extends Controller
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'phone_number' => 'required|max:20',
             'profile_picture' => 'nullable|image|max:2048',
+            'status' => 'required|in:0,1,2',
         ], [
             'name.required' => 'Vui lòng nhập họ và tên.',
             'name.max' => 'Họ và tên không được vượt quá 255 ký tự.',
