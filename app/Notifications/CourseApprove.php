@@ -7,8 +7,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class CourseApprove extends Notification
+class CourseApprove extends Notification implements ShouldQueue, ShouldBroadcast
 {
     use Queueable;
 

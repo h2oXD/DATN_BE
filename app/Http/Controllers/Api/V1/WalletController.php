@@ -12,10 +12,12 @@ use App\Models\Progress;
 use App\Models\Section;
 use App\Models\Transaction;
 use App\Models\TransactionWallet;
+use App\Models\User;
 use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
@@ -696,7 +698,7 @@ class WalletController extends Controller
             $vnp_TxnRef = $request->user()->id . "_" . time();
             $vnp_OrderInfo = "Thanh toán khóa học";
             $vnp_OrderType = "education";
-            $vnp_Amount = $request->input('amount', 0) * 100; // Số tiền (nhân với 100) để loại bỏ phần thập phân
+            $vnp_Amount = $request->input('amount', 0); // Số tiền (nhân với 100) để loại bỏ phần thập phân
             $vnp_Locale = "vn";
             $vnp_BankCode = $request->input('bank_code', "");
             $vnp_IpAddr = $request->ip();
@@ -1054,5 +1056,204 @@ class WalletController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+    private function execPostRequest($url, $data)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data)
+            )
+        );
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        return $result;
+    }
+    public function momoCreatePayment(Request $request)
+    {
+        $wallet = $request->user()->wallet()->lockForUpdate()->first();
 
+        // Kiểm tra ví có tồn tại hay không
+        if (!$wallet) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Không tìm thấy ví của người dùng này'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // Kiểm tra dữ liệu truyền lên
+        $validator = Validator::make($request->all(), [
+            'amount' => 'required|int',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $endpoint = 'https://test-payment.momo.vn/v2/gateway/api/create';
+        $partnerCode = 'MOMOBKUN20180529';
+        $accessKey = 'klm05TvNBzhg7h7j';
+        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+        $returnUrl = 'http://loraspacebe.test/api/callBackMomo';
+        $ipnUrl = 'https://test-payment.momo.vn/v2/gateway/api/create';
+        $requestType = "payWithCC";
+        $extraData = "";
+
+        // // Tạo các tham số thanh toán
+        // $vnp_TxnRef = $request->user()->id . "_" . time();
+        // $vnp_OrderInfo = "Thanh toán khóa học";
+        // $vnp_OrderType = "education";
+        // $vnp_Amount = $request->input('amount', 0); // Số tiền (nhân với 100) để loại bỏ phần thập phân
+        // $vnp_Locale = "vn";
+        // $vnp_BankCode = $request->input('bank_code', "");
+        // $vnp_IpAddr = $request->ip();
+
+        // // Mảng các tham số gửi lên VNPAY
+        // $inputData = [
+        //     "vnp_Version" => "2.1.0",
+        //     "vnp_TmnCode" => $vnp_TmnCode,
+        //     "vnp_Amount" => $vnp_Amount,
+        //     "vnp_Command" => "pay",
+        //     "vnp_CreateDate" => date('YmdHis'),
+        //     "vnp_CurrCode" => "VND",
+        //     "vnp_IpAddr" => $vnp_IpAddr,
+        //     "vnp_Locale" => $vnp_Locale,
+        //     "vnp_OrderInfo" => $vnp_OrderInfo,
+        //     "vnp_OrderType" => $vnp_OrderType,
+        //     "vnp_ReturnUrl" => $vnp_Returnurl,
+        //     "vnp_TxnRef" => $vnp_TxnRef,
+        // ];
+
+        $orderId = 'ORDER' . time();
+        $requestId = time() . "_" . uniqid();
+
+        $orderInfo = request()->user()->id . '-Thanh-toan-' . $request->input('amount', 0);
+        // $orderInfo = 'Thanh toán khóa học' . '-' . "$request->input('amount', 0)";
+
+        // if (!empty($couponCode)) {
+        //     $orderInfo .= '-' . $couponCode;
+        // }
+
+        $finalAmount = (float) $request->input('amount', 0);
+
+        $rawHash =
+            "accessKey=" . $accessKey .
+            "&amount=" . $finalAmount .
+            "&extraData=" . $extraData .
+            "&ipnUrl=" . $ipnUrl .
+            "&orderId=" . $orderId .
+            "&orderInfo=" . $orderInfo .
+            "&partnerCode=" . $partnerCode .
+            "&redirectUrl=" . $returnUrl .
+            "&requestId=" . $requestId .
+            "&requestType=" . $requestType;
+
+        $signature = hash_hmac("sha256", $rawHash, $secretKey);
+
+        $data = [
+            'partnerCode' => $partnerCode,
+            'requestId' => $requestId,
+            'amount' => $finalAmount,
+            'orderId' => $orderId,
+            'orderInfo' => $orderInfo,
+            'redirectUrl' => $returnUrl,
+            'ipnUrl' => $ipnUrl,
+            'extraData' => $extraData,
+            'requestType' => $requestType,
+            'signature' => $signature,
+        ];
+
+        $result = $this->execPostRequest($endpoint, json_encode($data));
+        $jsonResult = json_decode($result, true);
+
+        if (isset($jsonResult['payUrl'])) {
+            return response()->json($jsonResult['payUrl']);
+        } else {
+            return $this->respondServerError('Ngân hàng tạm thời bảo trì: ' . ($jsonResult['message'] ?? 'Unknown error'));
+        }
+    }
+
+    protected function momoCallback(Request $request)
+    {
+        try {
+            $inputData = $request->all();
+            $frontendUrl = "http://localhost:5173/payment";
+            if (!isset($inputData['signature'])) {
+                return redirect()->away($frontendUrl . "?status=error");
+            }
+
+            if ($inputData['resultCode'] != '0') {
+                // Log::info(2);
+                return redirect()->away($frontendUrl . "?status=failed");
+            }
+
+            DB::beginTransaction();
+
+            if (!isset($inputData['orderInfo'])) {
+                return redirect()->away($frontendUrl . "?status=error");
+            }
+
+            $orderParts = explode('-Thanh-toan-', $inputData['orderInfo']);
+            if (count($orderParts) != 2) {
+                return redirect()->away($frontendUrl . "?status=error");
+            }
+            $userId = filter_var($orderParts[0], FILTER_VALIDATE_INT);
+            $finalAmount = filter_var($orderParts[1], FILTER_VALIDATE_FLOAT);
+
+            $user = User::query()->find($userId);
+            if (!$user) {
+                return redirect()->away($frontendUrl . "/not-found");
+            }
+            Log::info($userId);
+            Log::info($finalAmount);
+
+            // // Kiểm tra giao dịch đã tồn tại chưa
+            // $existingTransaction = TransactionWallet::where('transaction_code', $transactionCode)->first();
+            // if ($existingTransaction) {
+            //     return response()->json([
+            //         'message' => 'Giao dịch đã được xử lý trước đó.'
+            //     ], Response::HTTP_BAD_REQUEST);
+            // }
+
+            $wallet = Wallet::where('user_id', $userId)->first();
+            Log::info($wallet);
+            // Cộng tiền vào ví
+            $wallet->increment('balance', $finalAmount);
+            $wallet->update([
+                'transaction_history' => [
+                    'Loại giao dịch' => 'Nạp tiền vào ví',
+                    'Số tiền thanh toán' => number_format($finalAmount) . ' VND',
+                    'Số dư' => number_format($wallet->balance) . ' VND',
+                    'Ngày giao dịch' => Carbon::now('Asia/Ho_Chi_Minh')
+                ]
+            ]);
+
+            // Tạo lịch sử giao dịch
+            TransactionWallet::create([
+                'wallet_id' => $wallet->id,
+                'transaction_code' => rand(0, 99999),
+                'amount' => $finalAmount,
+                'balance' => $wallet->balance,
+                'type' => 'deposit',
+                'status' => 'success',
+                'transaction_date' => Carbon::now('Asia/Ho_Chi_Minh')
+            ]);
+            DB::commit();
+            return redirect('http://localhost:5173/student/walletStudent?status=success');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::info($e);
+            // $this->logError($e, $request->all());
+
+            return redirect()->away($frontendUrl . "?status=error");
+        }
+    }
 }

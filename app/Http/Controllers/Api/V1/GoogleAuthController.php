@@ -83,6 +83,7 @@ class GoogleAuthController extends Controller
                     'password' => Hash::make(Str::random(16)), // Mật khẩu ngẫu nhiên
                 ]);
                 $user->roles()->attach(1); // Gán role mặc định
+                $user->wallet()->create(['balance' => 0]);
             } else {
                 // Nếu tài khoản đã tồn tại nhưng chưa có google_id, cập nhật nó
                 if (!$user->google_id) {

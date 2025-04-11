@@ -49,7 +49,7 @@ class CourseController extends Controller
                 return $query->where('level', $level);
             })
             ->latest('id')
-            ->paginate(10);
+            ->paginate(5);
 
         return view(self::PATH_VIEW . 'index', compact('courses', 'categories', 'languages', 'levels'));
     }

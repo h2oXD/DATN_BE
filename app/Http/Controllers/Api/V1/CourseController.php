@@ -696,7 +696,7 @@ class CourseController extends Controller
                     'target_students',
                     'learning_outcomes',
                     'prerequisites',
-                    'who_is_this_for',
+                    // 'who_is_this_for',
                     'language',
                     'level',
                     'created_at',
