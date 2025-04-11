@@ -211,72 +211,43 @@ Ngoài công việc giảng dạy, tôi còn tham gia vào các dự án nghiên
             $lecturer->roles()->attach($roles);
         }
 
-        $categories = [
-            // Lĩnh vực Công nghệ thông tin
-            ['id' => 1, 'name' => 'Công nghệ thông tin'],
-            ['id' => 2, 'name' => 'Thiết kế đồ hoạ'],
-            ['id' => 3, 'name' => 'Kinh doanh & Marketing'],
-            ['id' => 4, 'name' => 'Phát triển cá nhân'],
-            ['id' => 5, 'name' => 'Ngôn ngữ & Dịch thuật'],
-
-            // Công nghệ thông tin - Các lĩnh vực con
-            ['name' => 'Laravel', 'parent_id' => 1],
-            ['name' => 'PHP', 'parent_id' => 1],
-            ['name' => 'JavaScript', 'parent_id' => 1],
-            ['name' => 'Node.js', 'parent_id' => 1],
-            ['name' => 'ReactJS', 'parent_id' => 1],
-            ['name' => 'VueJS', 'parent_id' => 1],
-            ['name' => 'Python', 'parent_id' => 1],
-            ['name' => 'Machine Learning', 'parent_id' => 1],
-            ['name' => 'Data Science', 'parent_id' => 1],
-            ['name' => 'Cyber Security', 'parent_id' => 1],
-            ['name' => 'DevOps', 'parent_id' => 1],
-            ['name' => 'Database', 'parent_id' => 1],
-            ['name' => 'SQL', 'parent_id' => 1],
-            ['name' => 'NoSQL', 'parent_id' => 1],
-            ['name' => 'Mobile Development', 'parent_id' => 1],
-            ['name' => 'Android', 'parent_id' => 1],
-            ['name' => 'iOS', 'parent_id' => 1],
-            ['name' => 'Game Development', 'parent_id' => 1],
-
-            // Thiết kế đồ hoạ - Các lĩnh vực con
-            ['name' => 'Photoshop', 'parent_id' => 2],
-            ['name' => 'Premiere', 'parent_id' => 2],
-            ['name' => 'After Effect', 'parent_id' => 2],
-            ['name' => 'Illustrator', 'parent_id' => 2],
-            ['name' => 'UI/UX Design', 'parent_id' => 2],
-            ['name' => '3D Modeling', 'parent_id' => 2],
-            ['name' => 'Blender', 'parent_id' => 2],
-            ['name' => 'Maya', 'parent_id' => 2],
-            ['name' => 'Animation', 'parent_id' => 2],
-            ['name' => 'Motion Graphics', 'parent_id' => 2],
-
-            // Kinh doanh & Marketing - Các lĩnh vực con
-            ['name' => 'Digital Marketing', 'parent_id' => 3],
-            ['name' => 'SEO', 'parent_id' => 3],
-            ['name' => 'Quảng cáo Facebook', 'parent_id' => 3],
-            ['name' => 'Quảng cáo Google', 'parent_id' => 3],
-            ['name' => 'Content Marketing', 'parent_id' => 3],
-            ['name' => 'Bán hàng & Thương mại điện tử', 'parent_id' => 3],
-            ['name' => 'Quản lý thương hiệu', 'parent_id' => 3],
-
-            // Phát triển cá nhân - Các lĩnh vực con
-            ['name' => 'Kỹ năng giao tiếp', 'parent_id' => 4],
-            ['name' => 'Tư duy phản biện', 'parent_id' => 4],
-            ['name' => 'Lãnh đạo & Quản lý', 'parent_id' => 4],
-            ['name' => 'Kỹ năng thuyết trình', 'parent_id' => 4],
-            ['name' => 'Kỹ năng làm việc nhóm', 'parent_id' => 4],
-            ['name' => 'Quản lý thời gian', 'parent_id' => 4],
-
-            // Ngôn ngữ & Dịch thuật - Các lĩnh vực con
-            ['name' => 'Tiếng Anh', 'parent_id' => 5],
-            ['name' => 'Tiếng Trung', 'parent_id' => 5],
-            ['name' => 'Tiếng Nhật', 'parent_id' => 5],
-            ['name' => 'Tiếng Hàn', 'parent_id' => 5],
-            ['name' => 'Phiên dịch & Biên dịch', 'parent_id' => 5],
-            ['name' => 'Luyện thi IELTS', 'parent_id' => 5],
-            ['name' => 'Luyện thi TOEIC', 'parent_id' => 5],
-        ];
+        // $categories = [
+        //     ['id' => 1, 'name' => 'Công nghệ thông tin', 'slug' => 'cong-nghe-thong-tin', 'parent_id' => null],
+        //     ['id' => 2, 'name' => 'Thiết kế đồ hoạ', 'slug' => 'thiet-ke-do-hoa', 'parent_id' => null],
+        //     ['id' => 3, 'name' => 'Kinh doanh & Marketing', 'slug' => 'kinh-doanh-marketing', 'parent_id' => null],
+        //     ['id' => 4, 'name' => 'Phát triển cá nhân', 'slug' => 'phat-trien-ca-nhan', 'parent_id' => null],
+        //     ['id' => 5, 'name' => 'Ngôn ngữ & Dịch thuật', 'slug' => 'ngon-ngu-dich-thuat', 'parent_id' => null],
+            
+        //     ['name' => 'Laravel', 'slug' => 'laravel', 'parent_id' => 1],
+        //     ['name' => 'PHP', 'slug' => 'php', 'parent_id' => 1],
+        //     ['name' => 'JavaScript', 'slug' => 'javascript', 'parent_id' => 1],
+        //     ['name' => 'Node.js', 'slug' => 'node-js', 'parent_id' => 1],
+        //     ['name' => 'ReactJS', 'slug' => 'reactjs', 'parent_id' => 1],
+        //     ['name' => 'VueJS', 'slug' => 'vuejs', 'parent_id' => 1],
+        //     ['name' => 'Python', 'slug' => 'python', 'parent_id' => 1],
+        //     ['name' => 'Machine Learning', 'slug' => 'machine-learning', 'parent_id' => 1],
+        //     ['name' => 'Data Science', 'slug' => 'data-science', 'parent_id' => 1],
+        //     ['name' => 'Cyber Security', 'slug' => 'cyber-security', 'parent_id' => 1],
+        //     ['name' => 'DevOps', 'slug' => 'devops', 'parent_id' => 1],
+        //     ['name' => 'Database', 'slug' => 'database', 'parent_id' => 1],
+        //     ['name' => 'SQL', 'slug' => 'sql', 'parent_id' => 1],
+        //     ['name' => 'NoSQL', 'slug' => 'nosql', 'parent_id' => 1],
+        //     ['name' => 'Mobile Development', 'slug' => 'mobile-development', 'parent_id' => 1],
+        //     ['name' => 'Android', 'slug' => 'android', 'parent_id' => 1],
+        //     ['name' => 'iOS', 'slug' => 'ios', 'parent_id' => 1],
+        //     ['name' => 'Game Development', 'slug' => 'game-development', 'parent_id' => 1],
+            
+        //     ['name' => 'Photoshop', 'slug' => 'photoshop', 'parent_id' => 2],
+        //     ['name' => 'Premiere', 'slug' => 'premiere', 'parent_id' => 2],
+        //     ['name' => 'After Effect', 'slug' => 'after-effect', 'parent_id' => 2],
+        //     ['name' => 'Illustrator', 'slug' => 'illustrator', 'parent_id' => 2],
+        //     ['name' => 'UI/UX Design', 'slug' => 'ui-ux-design', 'parent_id' => 2],
+        //     ['name' => '3D Modeling', 'slug' => '3d-modeling', 'parent_id' => 2],
+        //     ['name' => 'Blender', 'slug' => 'blender', 'parent_id' => 2],
+        //     ['name' => 'Maya', 'slug' => 'maya', 'parent_id' => 2],
+        //     ['name' => 'Animation', 'slug' => 'animation', 'parent_id' => 2],
+        //     ['name' => 'Motion Graphics', 'slug' => 'motion-graphics', 'parent_id' => 2],
+        // ];
 
         // $tags = [
         //     [
@@ -292,9 +263,9 @@ Ngoài công việc giảng dạy, tôi còn tham gia vào các dự án nghiên
         //         'name' => 'reactjs-js'
         //     ],
         // ];
-        foreach ($categories as $category) {
-            Category::create($category);
-        }
+        // foreach ($categories as $category) {
+        //     Category::create($category);
+        // }
         // foreach ($tags as $tag) {
         //     Tag::create($tag);
         // }
@@ -303,7 +274,7 @@ Ngoài công việc giảng dạy, tôi còn tham gia vào các dự án nghiên
         //     'user_id' => 4,
         //     'category_id' => 3,
         //     'price_regular' => 199000,
-        //     'price_sale' => 99000,
+        //     'price_sale' => 99000, 
         //     'title' => 'Khoá học Laravel',
         //     'status' => 'published',
         //     'admin_commission_rate' => 30
