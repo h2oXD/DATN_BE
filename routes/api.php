@@ -52,6 +52,7 @@ use Laravel\Socialite\Facades\Socialite;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::get('/callBackMomo', [WalletController::class, 'momoCallback']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', [AuthController::class, 'getUser']);
@@ -59,6 +60,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('users', UserController::class)->only(['show', 'update']);
     Route::get('/courseNew', [OverviewController::class, 'courseNew']);
 
+    Route::post('/createMomo', [WalletController::class, 'momoCreatePayment']);
 
     Route::put('users', [UserController::class, 'update']);
     Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);

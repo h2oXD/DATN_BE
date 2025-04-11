@@ -25,7 +25,7 @@ class Course extends Model
         'target_students',
         'learning_outcomes',
         'prerequisites',
-        'who_is_this_for',
+        // 'who_is_this_for',
 
         'admin_commission_rate',
         'is_show_home',

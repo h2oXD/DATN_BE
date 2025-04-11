@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="{{env('APP_URL')}}/assets/libs/flatpickr/dist/flatpickr.min.css" />
 
 <!-- Favicon icon-->
-<link rel="shortcut icon" type="image/x-icon" href="{{env('APP_URL')}}assets/images/favicon/favicon.ico" />
+{{-- <link rel="shortcut icon" type="image/x-icon" href="{{env('APP_URL')}}assets/images/favicon/favicon.ico" /> --}}
 
 <!-- darkmode js -->
 <script src="{{env('APP_URL')}}/assets/js/vendors/darkMode.js"></script>

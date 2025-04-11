@@ -56,7 +56,7 @@ class CourseController extends Controller
                 return $query->where('level', $level);
             })
             ->latest('id')
-            ->paginate(10);
+            ->paginate(5);
 
         return view(self::PATH_VIEW . 'index', compact('courses', 'categories', 'languages', 'levels'));
     }
@@ -297,7 +297,9 @@ class CourseController extends Controller
             'sections.lessons.documents',
             'sections.lessons.videos',
             'sections.lessons.codings',
-            'sections.lessons.quizzes'
+            'sections.lessons.quizzes' => function ($query) { // Thêm eager loading cho quizzes
+                $query->with('questions.answers'); // Eager load questions và answers của quiz
+            },
         ])->find($course_id);
 
         if ($course->status != 'pending') {

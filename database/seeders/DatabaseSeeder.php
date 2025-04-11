@@ -26,6 +26,7 @@ use App\Models\Wallet;
 use App\Models\VoucherUse;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -211,6 +212,74 @@ Ngoài công việc giảng dạy, tôi còn tham gia vào các dự án nghiên
             $lecturer->roles()->attach($roles);
         }
 
+
+        $categories = [
+            // Lĩnh vực Công nghệ thông tin
+            ['id' => 1, 'name' => 'Công nghệ thông tin'],
+            ['id' => 2, 'name' => 'Thiết kế đồ hoạ'],
+            ['id' => 3, 'name' => 'Kinh doanh & Marketing'],
+            ['id' => 4, 'name' => 'Phát triển cá nhân'],
+            ['id' => 5, 'name' => 'Ngôn ngữ & Dịch thuật'],
+
+            // Công nghệ thông tin - Các lĩnh vực con
+            // ['name' => 'Laravel', 'parent_id' => 1],
+            // ['name' => 'PHP', 'parent_id' => 1],
+            // ['name' => 'JavaScript', 'parent_id' => 1],
+            // ['name' => 'Node.js', 'parent_id' => 1],
+            // ['name' => 'ReactJS', 'parent_id' => 1],
+            // ['name' => 'VueJS', 'parent_id' => 1],
+            // ['name' => 'Python', 'parent_id' => 1],
+            // ['name' => 'Machine Learning', 'parent_id' => 1],
+            // ['name' => 'Data Science', 'parent_id' => 1],
+            // ['name' => 'Cyber Security', 'parent_id' => 1],
+            // ['name' => 'DevOps', 'parent_id' => 1],
+            // ['name' => 'Database', 'parent_id' => 1],
+            // ['name' => 'SQL', 'parent_id' => 1],
+            // ['name' => 'NoSQL', 'parent_id' => 1],
+            // ['name' => 'Mobile Development', 'parent_id' => 1],
+            // ['name' => 'Android', 'parent_id' => 1],
+            // ['name' => 'iOS', 'parent_id' => 1],
+            // ['name' => 'Game Development', 'parent_id' => 1],
+
+            // // Thiết kế đồ hoạ - Các lĩnh vực con
+            // ['name' => 'Photoshop', 'parent_id' => 2],
+            // ['name' => 'Premiere', 'parent_id' => 2],
+            // ['name' => 'After Effect', 'parent_id' => 2],
+            // ['name' => 'Illustrator', 'parent_id' => 2],
+            // ['name' => 'UI/UX Design', 'parent_id' => 2],
+            // ['name' => '3D Modeling', 'parent_id' => 2],
+            // ['name' => 'Blender', 'parent_id' => 2],
+            // ['name' => 'Maya', 'parent_id' => 2],
+            // ['name' => 'Animation', 'parent_id' => 2],
+            // ['name' => 'Motion Graphics', 'parent_id' => 2],
+
+            // // Kinh doanh & Marketing - Các lĩnh vực con
+            // ['name' => 'Digital Marketing', 'parent_id' => 3],
+            // ['name' => 'SEO', 'parent_id' => 3],
+            // ['name' => 'Quảng cáo Facebook', 'parent_id' => 3],
+            // ['name' => 'Quảng cáo Google', 'parent_id' => 3],
+            // ['name' => 'Content Marketing', 'parent_id' => 3],
+            // ['name' => 'Bán hàng & Thương mại điện tử', 'parent_id' => 3],
+            // ['name' => 'Quản lý thương hiệu', 'parent_id' => 3],
+
+            // // Phát triển cá nhân - Các lĩnh vực con
+            // ['name' => 'Kỹ năng giao tiếp', 'parent_id' => 4],
+            // ['name' => 'Tư duy phản biện', 'parent_id' => 4],
+            // ['name' => 'Lãnh đạo & Quản lý', 'parent_id' => 4],
+            // ['name' => 'Kỹ năng thuyết trình', 'parent_id' => 4],
+            // ['name' => 'Kỹ năng làm việc nhóm', 'parent_id' => 4],
+            // ['name' => 'Quản lý thời gian', 'parent_id' => 4],
+
+            // // Ngôn ngữ & Dịch thuật - Các lĩnh vực con
+            // ['name' => 'Tiếng Anh', 'parent_id' => 5],
+            // ['name' => 'Tiếng Trung', 'parent_id' => 5],
+            // ['name' => 'Tiếng Nhật', 'parent_id' => 5],
+            // ['name' => 'Tiếng Hàn', 'parent_id' => 5],
+            // ['name' => 'Phiên dịch & Biên dịch', 'parent_id' => 5],
+            // ['name' => 'Luyện thi IELTS', 'parent_id' => 5],
+            // ['name' => 'Luyện thi TOEIC', 'parent_id' => 5],
+        ];
+
         // $categories = [
         //     ['id' => 1, 'name' => 'Công nghệ thông tin', 'slug' => 'cong-nghe-thong-tin', 'parent_id' => null],
         //     ['id' => 2, 'name' => 'Thiết kế đồ hoạ', 'slug' => 'thiet-ke-do-hoa', 'parent_id' => null],
@@ -248,6 +317,7 @@ Ngoài công việc giảng dạy, tôi còn tham gia vào các dự án nghiên
         //     ['name' => 'Animation', 'slug' => 'animation', 'parent_id' => 2],
         //     ['name' => 'Motion Graphics', 'slug' => 'motion-graphics', 'parent_id' => 2],
         // ];
+
 
         // $tags = [
         //     [
@@ -850,5 +920,83 @@ Ngoài công việc giảng dạy, tôi còn tham gia vào các dự án nghiên
         //     Course::create($course);
         // }
 
+        // $now = Carbon::now();
+        // $languages = ['Tiếng Anh', 'Tiếng Việt'];
+        // $levels = ['Sơ cấp', 'Trung Cấp', 'Chuyên gia'];
+        // $courseTitle = ['Khoá học Laravel','Khoá học ReactJS','Khoá học NodeJs','Khoá học JavaScript'];
+        // $courseThumbnail = ['seeder\1.png','seeder\2.png','seeder\3.png','seeder\4.png','seeder\5.png'];
+        // $courseDescription = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum";
+        // for ($i = 1; $i <= 5; $i++) {
+        //     $courseId = Str::uuid()->toString();
+
+        //     $priceRegular = rand(100000, 500000);
+        //     // Giảm tối đa 30%
+        //     $minPriceSale = (int) ($priceRegular * 0.7);
+        //     $priceSale = rand($minPriceSale, $priceRegular);
+
+        //     DB::table('courses')->insert([
+        //         'id' => $courseId,
+        //         'user_id' => 4, // Giả sử có user với ID là 1
+        //         'category_id' => 1, // Giả sử có category với ID là 1
+        //         'title' => $courseTitle[$i],
+        //         'description' => $courseDescription,
+        //         'price_regular' => $priceRegular,
+        //         'price_sale' => $priceSale,
+        //         'status' => 'draft',
+        //         'is_free' => false,
+
+        //         'target_students' => json_encode(['Người mới bắt đầu']),
+        //         'learning_outcomes' => json_encode(['Hiểu khái niệm cơ bản', 'Thực hành tốt']),
+        //         'prerequisites' => json_encode(['Không yêu cầu']),
+
+        //         'admin_commission_rate' => 30,
+        //         'is_show_home' => true,
+        //         'thumbnail' => $courseThumbnail[$i],
+        //         'video_preview' => 'seeder\video1.mp4',
+        //         'language' => $languages[array_rand($languages)],
+        //         'level' => $levels[array_rand($levels)],
+        //         'primary_content' => 'Nội dung chính của khóa học',
+
+        //         'created_at' => $now,
+        //         'updated_at' => $now,
+        //         'submited_at' => $now,
+        //         'censored_at' => $now,
+        //         'admin_comment' => null,
+        //     ]);
+
+        //     for ($j = 1; $j <= 3; $j++) {
+        //         $sectionId = Str::uuid()->toString();
+        //         DB::table('sections')->insert([
+        //             'id' => $sectionId,
+        //             'course_id' => $courseId,
+        //             'title' => "Chương $j",
+        //             'description' => "Mô tả chương $j",
+        //             'order' => $j,
+        //             'total_lessons' => 4,
+        //         ]);
+
+        //         for ($k = 1; $k <= 4; $k++) {
+        //             $lessonId = Str::uuid()->toString();
+        //             DB::table('lessons')->insert([
+        //                 'id' => $lessonId,
+        //                 // 'course_id' => $courseId,
+        //                 'section_id' => $sectionId,
+        //                 'title' => "Bài $k trong chương $j",
+        //                 'description' => "Mô tả bài $k",
+        //                 'order' => $k,
+        //                 'type' => 'video',
+        //                 'is_preview' => $k === 1 ? true : false,
+        //             ]);
+
+        //             DB::table('videos')->insert([
+        //                 'lesson_id' => $lessonId,
+        //                 'video_url' => 'seeder/PHP Laravel - Routing và MVC.mp4',
+        //                 'duration' => rand(300, 900),
+        //                 'created_at' => $now,
+        //                 'updated_at' => $now,
+        //             ]);
+        //         }
+        //     }
+        // }
     }
 }
