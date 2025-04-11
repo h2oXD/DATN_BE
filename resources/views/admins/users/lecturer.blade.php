@@ -50,6 +50,7 @@
                             <th scope="col">Vai trò</th>
                             <th scope="col">Email</th>
                             <th scope="col">Ngày tham gia</th>
+                            <th scope="col">Trạng thái</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -78,6 +79,13 @@
                                 </td>
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->created_at }}</td>
+                                <td>
+                                    @if ($user->status === 0)
+                                        <span class="badge bg-success">Hoạt động</span>
+                                    @elseif (in_array($user->status, [1, 2]))
+                                        <span class="badge bg-danger">Bị khóa</span>
+                                    @endif
+                                </td>
                                 <td>
                                     <span class="dropdown dropstart">
                                         <a class="btn-icon btn btn-ghost btn-sm rounded-circle" href="#"
