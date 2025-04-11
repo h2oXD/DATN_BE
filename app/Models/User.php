@@ -25,6 +25,7 @@ class User extends Authenticatable
         'profile_picture',
         'bio',
         'google_id',
+        'status',
         'country',
         'province',
         'birth_date',
