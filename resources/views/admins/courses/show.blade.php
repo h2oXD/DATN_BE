@@ -7,7 +7,7 @@
 @section('content')
 <div class="container my-5">
     <div class="card shadow-lg border-0 rounded-3 overflow-hidden">
-        <div class="card-header bg-primary text-white py-3">
+        <div class="card-header bg-gradient-mix-shade text-white py-3">
             <h3 class="mb-0 fw-bold text-center">Chi tiết khóa học</h3>
         </div>
         <div class="card-body p-4">
