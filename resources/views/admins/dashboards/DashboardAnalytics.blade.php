@@ -201,7 +201,7 @@
         </div>
 
         {{-- Biểu đồ tỷ trọng doanh thu giữa các giảng viên --}}
-        <div class="row gy-4 my-2 mb-4">
+        {{-- <div class="row gy-4 my-2 mb-4">
             <div class="col-lg-6">
                 <div class="card h-100">
                     <div
@@ -214,10 +214,10 @@
                         <div id="instructorRevenueChart" class="apex-charts" style="height: 300px;"></div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             {{-- Biểu đồ doanh thu theo danh mục khóa học --}}
-            <div class="col-lg-6">
+            {{-- <div class="col-lg-6">
                 <div class="card h-100">
                     <div
                         class="card-header align-items-center card-header-height d-flex justify-content-between align-items-center">
@@ -229,7 +229,7 @@
                         <div id="categoryRevenueChart" class="apex-charts" style="height: 300px;"></div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
 
     </section>
