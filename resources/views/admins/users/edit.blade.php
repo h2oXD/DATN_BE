@@ -46,16 +46,6 @@
                     @enderror
                 </div>
 
-                @if ($user->roles->count() === 1 && $user->roles->first()->name === 'student')
-                    <div class="mb-3 col-6">
-                        <label for="role" class="form-label">Vai trò</label>
-                        <select name="role" class="form-control">
-                            <option value="student" selected>Học viên</option>
-                            <option value="lecturer">Giảng viên</option>
-                        </select>
-                    </div>
-                @endif
-
                 <div class="mb-3 col-6">
                     <label for="password" class="form-label">Mật khẩu</label>
                     <input type="password" class="form-control" name="password" id="password" />
@@ -64,6 +54,9 @@
                 <div class="mb-3 col-6">
                     <label for="password_confirmation" class="form-label">Nhập lại mật khẩu</label>
                     <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" />
+                    @error('password')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="mb-3 col-6">
@@ -74,6 +67,101 @@
                         <option value="2" {{ $user->status == 2 ? 'selected' : '' }}>Khóa chức năng giảng viên và học
                             viên</option>
                     </select>
+                    @error('status')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-3 col-6">
+                    <label for="country" class="form-label">Quốc gia</label>
+                    <input type="text" class="form-control" name="country" id="country"
+                        value="{{ old('country', $user->country) }}" />
+                    @error('country')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-3 col-6">
+                    <label for="province" class="form-label">Tỉnh/Thành phố</label>
+                    <input type="text" class="form-control" name="province" id="province"
+                        value="{{ old('province', $user->province) }}" />
+                    @error('province')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-3 col-6">
+                    <label for="birth_date" class="form-label">Ngày sinh</label>
+                    <input type="date" class="form-control" name="birth_date" id="birth_date"
+                        value="{{ old('birth_date', $user->birth_date) }}" />
+                    @error('birth_date')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-3 col-6">
+                    <label for="gender" class="form-label">Giới tính</label>
+                    <select name="gender" class="form-select">
+                        <option value="male" {{ $user->gender == 'male' ? 'selected' : '' }}>Nam</option>
+                        <option value="female" {{ $user->gender == 'female' ? 'selected' : '' }}>Nữ</option>
+                        <option value="other" {{ $user->gender == 'other' ? 'selected' : '' }}>Khác</option>
+                    </select>
+                    @error('gender')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-3 col-6">
+                    <label for="linkedin_url" class="form-label">LinkedIn URL</label>
+                    <input type="text" class="form-control" name="linkedin_url" id="linkedin_url"
+                        value="{{ old('linkedin_url', $user->linkedin_url) }}" />
+                    @error('linkedin_url')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-3 col-6">
+                    <label for="website_url" class="form-label">Website URL</label>
+                    <input type="text" class="form-control" name="website_url" id="website_url"
+                        value="{{ old('website_url', $user->website_url) }}" />
+                    @error('website_url')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-3 col-6">
+                    <label for="certificate_file" class="form-label">Tệp chứng chỉ</label>
+                    <input type="file" class="form-control" name="certificate_file" id="certificate_file" />
+                    @error('certificate_file')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-3 col-6">
+                    <label for="bank_name" class="form-label">Tên ngân hàng</label>
+                    <input type="text" class="form-control" name="bank_name" id="bank_name"
+                        value="{{ old('bank_name', $user->bank_name) }}" />
+                    @error('bank_name')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-3 col-6">
+                    <label for="bank_nameUser" class="form-label">Tên người dùng</label>
+                    <input type="text" class="form-control" name="bank_nameUser" id="bank_nameUser"
+                        value="{{ old('bank_nameUser', $user->bank_nameUser) }}" />
+                    @error('bank_nameUser')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-3 col-6">
+                    <label for="bank_number" class="form-label">Số tài khoản ngân hàng</label>
+                    <input type="text" class="form-control" name="bank_number" id="bank_number"
+                        value="{{ old('bank_number', $user->bank_number) }}" />
+                    @error('bank_number')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="mb-3 col-7 ">
@@ -84,6 +172,9 @@
                             style="width: 50px; height: 50px; object-fit: cover;" />
                         <input type="file" class="form-control" name="profile_picture" id="profile_picture" />
                     </div>
+                    @error('profile_picture')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="text-end">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AccountStatusChanged;
 use App\Models\Certificate;
 use App\Models\Course;
 use App\Models\Progress;
@@ -13,6 +14,7 @@ use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
@@ -73,10 +75,23 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users,email',
-            'phone_number' => 'required|max:20',
-            'profile_picture' => 'required|image|max:2048',
+            'phone_number' => 'nullable|max:20',
+            'profile_picture' => 'nullable|image|max:2048',
             'role' => 'required|in:lecturer,student',
             'password' => 'required|min:8|confirmed',
+            'bio' => 'nullable|string',
+            'google_id' => 'nullable|string',
+            'status' => 'nullable|in:0,1,2',
+            'country' => 'nullable|string',
+            'province' => 'nullable|string',
+            'birth_date' => 'nullable|date',
+            'gender' => 'nullable|in:male,female,other',
+            'linkedin_url' => 'nullable|url',
+            'website_url' => 'nullable|url',
+            'certificate_file' => 'nullable|file',
+            'bank_name' => 'nullable|string',
+            'bank_nameUser' => 'nullable|string',
+            'bank_number' => 'nullable|string',
         ], [
             'name.required' => 'Vui lòng nhập họ và tên.',
             'name.max' => 'Họ và tên không được vượt quá 255 ký tự.',
@@ -85,10 +100,8 @@ class UserController extends Controller
             'email.email' => 'Email không đúng định dạng.',
             'email.unique' => 'Email này đã được sử dụng.',
 
-            'phone_number.required' => 'Vui lòng nhập số điện thoại.',
             'phone_number.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
 
-            'profile_picture.required' => 'Vui lòng thêm ảnh đại diện.',
             'profile_picture.image' => 'Ảnh đại diện phải là một tệp hình ảnh.',
             'profile_picture.max' => 'Ảnh đại diện không được lớn hơn 2MB.',
 
@@ -104,10 +117,16 @@ class UserController extends Controller
                 $data['profile_picture'] = Storage::put('profile_pictures', $request->file('profile_picture'));
             }
 
+            if ($request->hasFile('certificate_file')) {
+                $data['certificate_file'] = Storage::put('certificates', $request->file('certificate_file'));
+            }
+
+            // Mã hóa mật khẩu
             $data['password'] = Hash::make($data['password']);
 
             $user = User::create($data);
 
+            // Tạo ví cho người dùng
             Wallet::create([
                 'user_id' => $user->id,
                 'balance' => 0
@@ -126,13 +145,16 @@ class UserController extends Controller
             return redirect()->route($data['role'] === 'lecturer' ? 'admin.lecturers.index' : 'admin.students.index')
                 ->with('success', 'Tạo user thành công!');
         } catch (\Throwable $th) {
+            // Xóa ảnh nếu có lỗi xảy ra
             if (!empty($data['profile_picture']) && Storage::exists($data['profile_picture'])) {
                 Storage::delete($data['profile_picture']);
+            }
+            if (!empty($data['certificate_file']) && Storage::exists($data['certificate_file'])) {
+                Storage::delete($data['certificate_file']);
             }
             return back()->with('success', false)->with('error', $th->getMessage());
         }
     }
-
 
     public function show(User $user)
     {
@@ -178,7 +200,7 @@ class UserController extends Controller
         $totalAdminEarning = $courseRevenues->sum('admin_earning');
 
         return view(self::PATH_VIEW . 'showlecturer', compact(
-            'user',
+            'user', // Truyền $user vào view
             'totalCourses',
             'totalStudents',
             'totalRevenue',
@@ -188,6 +210,7 @@ class UserController extends Controller
             'courses'
         ));
     }
+
     public function showStudent($id)
     {
         $user = User::with('roles')->findOrFail($id);
@@ -209,12 +232,13 @@ class UserController extends Controller
         $completedCourses = $progress->where('status', 'completed');
 
         return view(self::PATH_VIEW . 'showstudent', compact(
-            'user',
+            'user', // Truyền $user vào view
             'certificates',
             'inProgressCourses',
             'completedCourses'
         ));
     }
+
 
 
     public function edit(User $user)
@@ -225,13 +249,29 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        $oldStatus = $user->status;
+
         $data = $request->validate([
             'name' => 'required|max:255',
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-            'phone_number' => 'required|max:20',
+            'phone_number' => 'nullable|max:20',
             'profile_picture' => 'nullable|image|max:2048',
+            'bio' => 'nullable|string|max:500',
+            'google_id' => 'nullable|string',
             'status' => 'required|in:0,1,2',
+            'password' => 'nullable|confirmed|min:6',
+            'country' => 'nullable|string',
+            'province' => 'nullable|string',
+            'birth_date' => 'nullable|date',
+            'gender' => 'nullable|in:male,female,other',
+            'linkedin_url' => 'nullable|url',
+            'website_url' => 'nullable|url',
+            'certificate_file' => 'nullable|file|mimes:pdf,jpeg,png|max:2048',
+            'bank_name' => 'nullable|string',
+            'bank_nameUser' => 'nullable|string',
+            'bank_number' => 'nullable|string|max:20',
         ], [
+            // Mọi thông báo lỗi tùy chỉnh
             'name.required' => 'Vui lòng nhập họ và tên.',
             'name.max' => 'Họ và tên không được vượt quá 255 ký tự.',
 
@@ -239,32 +279,57 @@ class UserController extends Controller
             'email.email' => 'Email không đúng định dạng.',
             'email.unique' => 'Email này đã được sử dụng.',
 
-            'phone_number.required' => 'Vui lòng nhập số điện thoại.',
             'phone_number.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
 
             'profile_picture.image' => 'Ảnh đại diện phải là một tệp hình ảnh.',
             'profile_picture.max' => 'Ảnh đại diện không được lớn hơn 2MB.',
+
+            'password.confirmed' => 'Mật khẩu xác nhận không khớp.',
+            'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
+            'certificate_file.mimes' => 'Tệp chứng chỉ phải là file PDF, JPEG hoặc PNG.',
         ]);
 
         try {
+            // Xử lý ảnh đại diện nếu có
             if ($request->hasFile('profile_picture')) {
-                // Xóa ảnh cũ nếu có
                 if ($user->profile_picture) {
                     Storage::delete($user->profile_picture);
                 }
 
-                // Lưu ảnh mới
-                $data['profile_picture'] = $request->file('profile_picture')->store('profile_pictures');
+                $data['profile_picture'] = $request->file('profile_picture')->store('profile_pictures', 'public');
             }
 
+            // Xử lý tệp chứng chỉ nếu có
+            if ($request->hasFile('certificate_file')) {
+                if ($user->certificate_file) {
+                    Storage::delete($user->certificate_file);
+                }
+
+                $data['certificate_file'] = $request->file('certificate_file')->store('certificates', 'public');
+            }
+
+            // Nếu có mật khẩu mới thì mã hóa
+            if ($request->filled('password')) {
+                $data['password'] = bcrypt($request->password);
+            } else {
+                unset($data['password']);
+            }
+
+            // Cập nhật user
             $user->update($data);
 
-            return redirect()->route($user->roles->contains('name', 'lecturer') ? 'admin.lecturers.index' : 'admin.students.index')
+            // Gửi mail nếu trạng thái thay đổi
+            if ($oldStatus != $user->status) {
+                Mail::to($user->email)->send(new AccountStatusChanged($user));
+            }
+            return redirect()
+                ->route($user->roles->contains('name', 'lecturer') ? 'admin.lecturers.index' : 'admin.students.index')
                 ->with('success', 'Cập nhật user thành công!');
         } catch (\Throwable $th) {
-            return back()->with('error', $th->getMessage());
+            return back()->with('error', 'Đã xảy ra lỗi: ' . $th->getMessage());
         }
     }
+
 
     public function destroy(User $user)
     {
