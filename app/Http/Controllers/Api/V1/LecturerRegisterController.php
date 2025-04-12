@@ -93,10 +93,9 @@ class LecturerRegisterController extends Controller
         try {
             DB::beginTransaction();
 
-            // Khóa bản ghi của user này trong bảng lecturer_register
+            // Kiểm tra xem đã có yêu cầu chưa (không lock record nữa)
             $existingRequest = LecturerRegister::where('user_id', $user->id)
                 ->whereIn('status', ['pending', 'approved'])
-                ->lockForUpdate()
                 ->first();
 
             if ($existingRequest) {
