@@ -230,6 +230,7 @@ class UserController extends Controller
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'phone_number' => 'required|max:20',
             'profile_picture' => 'nullable|image|max:2048',
+            'status' => 'required|in:0,1,2',
         ], [
             'name.required' => 'Vui lòng nhập họ và tên.',
             'name.max' => 'Họ và tên không được vượt quá 255 ký tự.',
