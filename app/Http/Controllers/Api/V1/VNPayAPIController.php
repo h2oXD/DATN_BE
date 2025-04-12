@@ -294,7 +294,7 @@ class VNPayAPIController extends Controller
                 // Lấy tất cả sections của khóa học
                 $sections = Section::where('course_id', $course_id)->with([
                     'lessons' => function ($query) {
-                        $query->orderBy('order', 'asc');
+                        $query->orderBy('created_at', 'asc');
                     }
                 ])->get();
 
@@ -546,7 +546,7 @@ class VNPayAPIController extends Controller
                 // Lấy tất cả sections của khóa học
                 $sections = Section::where('course_id', $course_id)->with([
                     'lessons' => function ($query) {
-                        $query->orderBy('order', 'asc');
+                        $query->orderBy('created_at', 'asc');
                     }
                 ])->get();
 
@@ -595,4 +595,5 @@ class VNPayAPIController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+    
 }

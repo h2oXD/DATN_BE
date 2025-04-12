@@ -93,11 +93,12 @@
                 <div class="mb-3 col-6">
                     <label for="birth_date" class="form-label">Ngày sinh</label>
                     <input type="date" class="form-control" name="birth_date" id="birth_date"
-                        value="{{ old('birth_date', $user->birth_date) }}" />
+                        value="{{ old('birth_date', optional($user->birth_date)->format('Y-m-d')) }}" />
                     @error('birth_date')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
+                
 
                 <div class="mb-3 col-6">
                     <label for="gender" class="form-label">Giới tính</label>

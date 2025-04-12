@@ -13,7 +13,7 @@ class Lesson extends Model
     protected $keyType = 'string'; // Khóa chính là kiểu string (UUID)
 
     protected $fillable = [
-        'course_id',
+        // 'course_id',
         'section_id',
         'title',
         'description',

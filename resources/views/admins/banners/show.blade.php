@@ -3,8 +3,8 @@
 @section('content')
     <div class="container my-5">
         <div class="card shadow-sm border-0">
-            <div class="card-header bg-gradient-mix-shade text-white d-flex justify-content-between align-items-center">
-                <h2 class="m-0">Chi tiết Banner</h2>
+            <div class="card-header bg-gradient-mix-shade  d-flex justify-content-between align-items-center">
+                <h2 class="m-0 text-white">Chi tiết Banner</h2>
             </div>
             <div class="card-body p-4">
                 <div class="row g-4">

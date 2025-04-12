@@ -84,7 +84,7 @@ class UserController extends Controller
             'status' => 'nullable|in:0,1,2',
             'country' => 'nullable|string',
             'province' => 'nullable|string',
-            'birth_date' => 'nullable|date',
+            'birth_date' => 'nullable|date|before_or_equal:today',
             'gender' => 'nullable|in:male,female,other',
             'linkedin_url' => 'nullable|url',
             'website_url' => 'nullable|url',
@@ -99,9 +99,9 @@ class UserController extends Controller
             'email.required' => 'Vui lòng nhập email.',
             'email.email' => 'Email không đúng định dạng.',
             'email.unique' => 'Email này đã được sử dụng.',
+            'birth_date.before_or_equal' => 'Ngày sinh không được là ngày trong tương lai.',
 
             'phone_number.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
-
             'profile_picture.image' => 'Ảnh đại diện phải là một tệp hình ảnh.',
             'profile_picture.max' => 'Ảnh đại diện không được lớn hơn 2MB.',
 
@@ -259,10 +259,10 @@ class UserController extends Controller
             'bio' => 'nullable|string|max:500',
             'google_id' => 'nullable|string',
             'status' => 'required|in:0,1,2',
-            'password' => 'nullable|confirmed|min:6',
+            'password' => 'nullable|confirmed|min:8',
             'country' => 'nullable|string',
             'province' => 'nullable|string',
-            'birth_date' => 'nullable|date',
+            'birth_date' => 'nullable|date|before_or_equal:today',
             'gender' => 'nullable|in:male,female,other',
             'linkedin_url' => 'nullable|url',
             'website_url' => 'nullable|url',
@@ -280,12 +280,12 @@ class UserController extends Controller
             'email.unique' => 'Email này đã được sử dụng.',
 
             'phone_number.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
-
+            'birth_date.before_or_equal' => 'Ngày sinh không được là ngày trong tương lai.',
             'profile_picture.image' => 'Ảnh đại diện phải là một tệp hình ảnh.',
             'profile_picture.max' => 'Ảnh đại diện không được lớn hơn 2MB.',
 
             'password.confirmed' => 'Mật khẩu xác nhận không khớp.',
-            'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
+            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
             'certificate_file.mimes' => 'Tệp chứng chỉ phải là file PDF, JPEG hoặc PNG.',
         ]);
 
@@ -329,7 +329,6 @@ class UserController extends Controller
             return back()->with('error', 'Đã xảy ra lỗi: ' . $th->getMessage());
         }
     }
-
 
     public function destroy(User $user)
     {

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Enrollment;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class CertificateController extends Controller
@@ -102,13 +103,14 @@ class CertificateController extends Controller
 
             $user = User::find($user_id);
             $course = Course::find($course_id);
-
+            $img = 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1743814633/background_template3_i8nd4m.jpg';
             // Tạo nội dung chứng chỉ, sử dụng view Blade hoặc thư viện PDF.
-            $pdf = Pdf::loadView('certificates.template', compact('user', 'course')); // Bạn cần tạo view 'certificates.template.blade.php'
+            $pdf = Pdf::loadView('certificates.template', compact('user', 'course','img'))->setPaper('A4', 'landscape');; // Bạn cần tạo view 'certificates.template.blade.php'
             // Lưu trữ chứng chỉ vào storage.
             $certificateFileName = 'certificates/' . $user_id . '_' . $course_id . '_' . time() . '.pdf';
             Storage::disk('public')->put($certificateFileName, $pdf->output());
             // Tạo bản ghi chứng chỉ trong database.
+            Log::info('PDF Output: ' . $pdf->output());
             $certificate = Certificate::create([
                 'user_id' => $user_id,
                 'course_id' => $course_id,
