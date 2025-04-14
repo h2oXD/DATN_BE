@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\User;
@@ -441,7 +442,80 @@ class OverviewController extends Controller
     }
     public function guestLecturerInfo($lecturer_id)
     {
-        $lecturers = User::with(['courses','reviews'])->find($lecturer_id);
+        $lecturers = User::with(['courses', 'reviews'])->find($lecturer_id);
         return response()->json($lecturers);
+    }
+
+    public function courseCategory(Request $request)
+    {
+
+        $user = $request->user();
+        $categoryId = $request->query('category_id');
+
+        if ($categoryId && !Category::where('id', $categoryId)->exists()) {
+            return response()->json([
+                'message' => 'Danh mục không tồn tại.'
+            ], 404);
+        }
+
+        $query = Course::with(['user:id,name,email', 'category:id,name'])
+            ->withCount('reviews')
+            ->withAvg('reviews', 'rating')
+            ->where('status', 'published');
+
+        if ($categoryId) {
+            $query->where('category_id', $categoryId);
+        }
+
+        $courses = $query->get();
+
+        foreach ($courses as $course) {
+            $course->setAttribute('is_lecturer', $user && $course->user_id === $user->id);
+            $course->setAttribute('is_enrolled', $user
+                ? Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->exists()
+                : false);
+        }
+
+        return response()->json([
+            'message' => $categoryId ? 'Lọc theo danh mục thành công.' : 'Hiển thị tất cả khóa học.',
+            'data' => $courses
+        ]);
+    }
+
+
+    public function courseCategoryGuest(Request $request)
+    {
+
+        $user = $request->user();
+        $categoryId = $request->query('category_id');
+
+        if ($categoryId && !Category::where('id', $categoryId)->exists()) {
+            return response()->json([
+                'message' => 'Danh mục không tồn tại.'
+            ], 404);
+        }
+
+        $query = Course::with(['user:id,name,email', 'category:id,name'])
+            ->withCount('reviews')
+            ->withAvg('reviews', 'rating')
+            ->where('status', 'published');
+
+        if ($categoryId) {
+            $query->where('category_id', $categoryId);
+        }
+
+        $courses = $query->get();
+
+        foreach ($courses as $course) {
+            $course->setAttribute('is_lecturer', $user && $course->user_id === $user->id);
+            $course->setAttribute('is_enrolled', $user
+                ? Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->exists()
+                : false);
+        }
+
+        return response()->json([
+            'message' => $categoryId ? 'Lọc theo danh mục thành công.' : 'Hiển thị tất cả khóa học.',
+            'data' => $courses
+        ]);
     }
 }

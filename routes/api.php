@@ -258,9 +258,13 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     // Danh sách khóa học đã mua
     Route::get('/student/course-list', [TransactionController::class, 'courseList']);
 
+
+    Route::get('/course-category', [OverviewController::class, 'courseCategory']);
+
 });
 
 Route::get('/student/home', [OverviewController::class, 'overview']);
+Route::get('/course-category-guest', [OverviewController::class, 'courseCategoryGuest']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 //Forgot password
