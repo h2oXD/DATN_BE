@@ -15,6 +15,7 @@ use App\Models\Quiz;
 use App\Models\Section;
 use App\Models\Transaction;
 use App\Models\TransactionWallet;
+use App\Models\User;
 use App\Models\Video;
 use App\Models\Wallet;
 use Carbon\Carbon;
@@ -36,6 +37,86 @@ class LecturerController extends Controller
             'lecturer' => request()->user()
         ], Response::HTTP_CREATED);
     }
+
+    public function show(string $id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Không tìm thấy người dùng'
+            ], 404);
+        }
+
+        // Lấy ID của giảng viên đang đăng nhập
+        $instructorId = auth()->id();
+
+        // Lấy thông tin đăng ký khóa học của người dùng trong các khóa học của giảng viên
+        $enrollments = Enrollment::where('user_id', $id)
+            ->whereIn('course_id', function ($query) use ($instructorId) {
+                $query->select('id')
+                    ->from('courses')
+                    ->where('user_id', $instructorId)
+                    ->where('status', 'published'); // Chỉ lấy các khóa học đã xuất bản
+            })
+            ->with(['course', 'progress']) // Nạp trước thông tin khóa học và tiến độ
+            ->get();
+
+        // Chuẩn bị danh sách các khóa học đang học
+        $currentCourses = $enrollments
+            ->where('status', 'active')
+            ->map(function ($enrollment) {
+                return [
+                    'course_id' => $enrollment->course_id,
+                    'title' => $enrollment->course->title,
+                    'enrolled_at' => $enrollment->enrolled_at, // Trả về mặc định
+                    'progress_percent' => $enrollment->progress ? (float) $enrollment->progress->progress_percent : 0,
+                    'progress_status' => $enrollment->progress ? $enrollment->progress->status : 'in_progress',
+                ];
+            })->values();
+
+        // Chuẩn bị lịch sử khóa học (tất cả các khóa học đã đăng ký)
+        $courseHistory = $enrollments
+            ->where('status', 'completed')
+            ->map(function ($enrollment) {
+                return [
+                    'course_id' => $enrollment->course_id,
+                    'title' => $enrollment->course->title,
+                    'status' => $enrollment->status,
+                    'enrolled_at' => $enrollment->enrolled_at,
+                    'completed_at' => $enrollment->completed_at,
+                    'progress_percent' => $enrollment->progress ? (float) $enrollment->progress->progress_percent : 0,
+                ];
+            })->values();
+
+        return response()->json([
+            'message' => 'Hiển thị thông tin người dùng thành công',
+            'data' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone_number' => $user->phone_number,
+                // 'bio' => $user->bio,
+                'country' => $user->country,
+                'province' => $user->province,
+                'birth_date' => $user->birth_date,
+                'gender' => $user->gender,
+                'linkedin_url' => $user->linkedin_url,
+                'website_url' => $user->website_url,
+                // 'bank_name' => $user->bank_name,
+                // 'bank_nameUser' => $user->bank_nameUser,
+                // 'bank_number' => $user->bank_number,
+                'profile_picture' => $user->profile_picture
+                    ? asset('storage/' . $user->profile_picture)
+                    : null,
+                'created_at' => $user->created_at, // Trả về mặc định
+                'updated_at' => $user->updated_at, // Trả về mặc định
+                'current_courses' => $currentCourses, // Các khóa học mà học viên đang học
+                'course_history' => $courseHistory, // Tất cả các khóa học mà học viên đã đăng ký
+            ]
+        ], 200);
+    }
+
     /**
      * @OA\Get(
      *     path="/lecturer/statistics",
