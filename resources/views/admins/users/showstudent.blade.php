@@ -29,9 +29,9 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Vai trò</label>
-                            <input type="text" class="form-control bg-success text-white text-center" value="Học viên" readonly>
+                            <input type="text" class="form-control bg-success text-white text-center" value="Học viên"
+                                readonly>
                         </div>
-
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Ngày tạo</label>
                             <input type="text" class="form-control" value="{{ $user->created_at->format('d-m-Y H:i') }}"
@@ -42,11 +42,91 @@
                             <input type="text" class="form-control" value="{{ $user->updated_at->format('d-m-Y H:i') }}"
                                 readonly>
                         </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Bio</label>
+                            <textarea class="form-control" rows="3" readonly>{{ $user->bio }}</textarea>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Trạng thái</label>
+                            <input type="text" class="form-control"
+                                value="@switch($user->status)
+                                @case(0) Hoạt động @break
+                                @case(1) Khóa giảng viên @break
+                                @case(2) Khóa cả giảng viên và học viên @break
+                                @default Không rõ
+                            @endswitch"
+                                readonly>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Quốc gia</label>
+                            <input type="text" class="form-control" value="{{ $user->country }}" readonly>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Tỉnh/Thành phố</label>
+                            <input type="text" class="form-control" value="{{ $user->province }}" readonly>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Ngày sinh</label>
+                            <input type="text" class="form-control"
+                                value="{{ $user->birth_date ? $user->birth_date->format('d-m-Y') : '' }}" readonly>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Giới tính</label>
+                            <input type="text" class="form-control"
+                                value="@switch($user->gender)
+                                @case('male') Nam @break
+                                @case('female') Nữ @break
+                                @case('other') Khác @break
+                                @default Không rõ
+                            @endswitch"
+                                readonly>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">LinkedIn</label>
+                            <input type="text" class="form-control" value="{{ $user->linkedin_url }}" readonly>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Website cá nhân</label>
+                            <input type="text" class="form-control" value="{{ $user->website_url }}" readonly>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">File chứng chỉ</label>
+                            @if ($user->certificate_file)
+                                <a href="{{ asset('storage/' . $user->certificate_file) }}" class="btn btn-sm btn-primary"
+                                    target="_blank">Xem file</a>
+                            @else
+                                <input type="text" class="form-control" value="Không có" readonly>
+                            @endif
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Tên ngân hàng</label>
+                            <input type="text" class="form-control" value="{{ $user->bank_name }}" readonly>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Tên chủ tài khoản</label>
+                            <input type="text" class="form-control" value="{{ $user->bank_nameUser }}" readonly>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Số tài khoản</label>
+                            <input type="text" class="form-control" value="{{ $user->bank_number }}" readonly>
+                        </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Ảnh đại diện</label>
                             <div>
                                 <img src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('assets/images/avatar/avatar-3.jpg') }}"
-                                    alt="avatar" class="rounded-circle border border-2 border-primary shadow-sm"
+                                    alt="avatar" class="rounded-circle border border-2 border-warning shadow-sm"
                                     style="width: 60px; height: 60px; object-fit: cover;" />
                             </div>
                         </div>

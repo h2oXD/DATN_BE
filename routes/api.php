@@ -193,6 +193,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', DocumentController::class)->parameters(['documents' => 'document_id']);
     // Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', LessonCodingController::class)->parameters(['codings' => 'coding_id']);
     Route::post('/lecturer/courses/{course_id}/sections/{section_id}/codings', [LessonCodingController::class, 'store']);
+    Route::get('/lecturer/students/progress', [LecturerController::class, 'getAllStudents']);
 
     // Quản lý Quiz trong một bài học (Lesson)
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes', QuizController::class)
@@ -262,9 +263,13 @@ Route::group(['middleware' => ['auth:sanctum', 'role:student']], function () {
     // Danh sách khóa học đã mua
     Route::get('/student/course-list', [TransactionController::class, 'courseList']);
 
+
+    Route::get('/course-category', [OverviewController::class, 'courseCategory']);
+
 });
 
 Route::get('/student/home', [OverviewController::class, 'overview']);
+Route::get('/course-category-guest', [OverviewController::class, 'courseCategoryGuest']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 //Forgot password

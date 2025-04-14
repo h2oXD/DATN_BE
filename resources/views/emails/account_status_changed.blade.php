@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đặt lại mật khẩu</title>
+    <title>Thông báo thay đổi trạng thái tài khoản</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -43,21 +44,11 @@
             clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
         }
 
-        .email-header::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
-            pointer-events: none;
-        }
-
         .email-header h1 {
             font-size: 32px;
             font-weight: 700;
             margin: 0;
+            letter-spacing: 0.5px;
             position: relative;
             z-index: 1;
         }
@@ -80,7 +71,7 @@
         }
 
         .email-body h2::before {
-            content: "🔐";
+            content: "📢";
             margin-right: 10px;
             font-size: 20px;
         }
@@ -92,24 +83,9 @@
             font-weight: 400;
         }
 
-        .cta-button {
-            display: inline-block;
-            padding: 14px 30px;
-            background: linear-gradient(90deg, #754ffe 0%, #5e3fd8 100%);
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 50px;
+        .email-body strong {
             font-weight: 600;
-            font-size: 15px;
-            box-shadow: 0 4px 15px rgba(117, 79, 254, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .cta-button:hover {
-            background: linear-gradient(90deg, #5e3fd8 0%, #754ffe 100%);
-            box-shadow: 0 6px 20px rgba(117, 79, 254, 0.6);
-            transform: translateY(-2px);
-            color: #ffffff;
+            color: #1a1a1a;
         }
 
         .email-footer {
@@ -133,62 +109,46 @@
         .email-footer a:hover {
             color: #754ffe;
         }
-
-        .divider {
-            width: 50px;
-            height: 2px;
-            background: #754ffe;
-            margin: 20px auto;
-            border-radius: 2px;
-        }
-
-        @media only screen and (max-width: 600px) {
-            .email-container {
-                margin: 30px 10px;
-                border-radius: 16px;
-            }
-
-            .email-header {
-                padding: 30px 20px 50px;
-            }
-
-            .email-body {
-                padding: 30px;
-            }
-
-            .email-header h1 {
-                font-size: 26px;
-            }
-
-            .email-body h2 {
-                font-size: 20px;
-            }
-        }
     </style>
 </head>
+
 <body>
     <div class="email-container">
         <div class="email-header">
-            <h1>Yêu cầu đặt lại mật khẩu</h1>
+            <h1>Thông báo thay đổi trạng thái tài khoản</h1>
         </div>
         <div class="email-body">
-            <h2>Xin chào {{ $email }}</h2>
-            <p>Bạn đã gửi yêu cầu đặt lại mật khẩu cho tài khoản của mình.</p>
-            <p>Vui lòng nhấn vào nút bên dưới để đặt lại mật khẩu:</p>
-            <p><a href="{{ $resetUrl }}" class="cta-button">Đặt lại mật khẩu</a></p>
-            <p>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email.</p>
-            <p>Trân trọng,</p>
-            <p><strong>Đội ngũ {{ config('app.name') }}</strong></p>
+            <h2>Kính gửi {{ $user->name }}</h2>
+            <p>Chúng tôi xin thông báo rằng trạng thái tài khoản của bạn đã được cập nhật. Trạng thái hiện tại của tài
+                khoản là:</p>
+            <p><strong>
+                    @switch($user->status)
+                        @case(0)
+                            Đang hoạt động
+                        @break
+
+                        @case(1)
+                            Đã khóa chức năng giảng viên
+                        @break
+
+                        @case(2)
+                            Đã khóa chức năng giảng viên và học viên
+                        @break
+                    @endswitch
+                </strong></p>
+            <p>Trong trường hợp bạn có bất kỳ câu hỏi hay thắc mắc nào, xin vui lòng liên hệ với đội ngũ quản trị viên
+                của chúng tôi để được hỗ trợ.</p>
+            <p>Trân trọng,<br>Đội ngũ quản trị hệ thống</p>
         </div>
         <div class="email-footer">
-            <p>© {{ date('Y') }} {{ config('app.name') }}. Mọi quyền được bảo lưu.</p>
-            <div class="divider"></div>
+            <p>© {{ date('Y') }} {{ config('app.name') }}. Tất cả quyền lợi được bảo lưu.</p>
             <p>
-                <a href="{{ url('/contact') }}">Liên hệ</a> | 
-                <a href="{{ url('/') }}">Website</a> | 
-                <a href="{{ url('/support') }}">Hỗ trợ</a>
+                <a href="{{ url('/contact') }}">Liên hệ với chúng tôi</a> |
+                <a href="{{ url('/') }}">Trang chủ</a> |
+                <a href="{{ url('/support') }}">Trung tâm hỗ trợ</a>
             </p>
         </div>
     </div>
 </body>
+
 </html>

@@ -399,7 +399,7 @@ class CourseController extends Controller
     public function showHistory($id)
     {
         $course = Course::with('approvalHistories.user')->findOrFail($id);
-        $approvalHistories = $course->approvalHistories;
+        $approvalHistories = $course->approvalHistories->first();
 
         return view(self::PATH_VIEW . 'show_history', compact('course', 'approvalHistories'));
     }
