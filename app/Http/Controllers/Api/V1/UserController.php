@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -15,7 +16,7 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        
     }
 
     /**
@@ -211,14 +212,12 @@ class UserController extends Controller
                 'status' => 'success',
                 'message' => 'Thêm thông tin ngân hàng thành công'
             ], Response::HTTP_OK);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi server',
                 'error' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
     }
 
     /**
@@ -304,23 +303,18 @@ class UserController extends Controller
                     'status' => 'success',
                     'infoBank' => $infoBank
                 ], Response::HTTP_OK);
-
             } else {
 
                 return response()->json([
                     'status' => 'success',
                     'infoBank' => 'Không có thông tin'
                 ], Response::HTTP_NO_CONTENT);
-
             }
-
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Lỗi server',
                 'error' => $th->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
     }
-
 }

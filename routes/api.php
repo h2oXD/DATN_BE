@@ -64,6 +64,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/createMomo', [WalletController::class, 'momoCreatePayment']);
 
     Route::put('users', [UserController::class, 'update']);
+    Route::get('/users/{id}', [UserController::class, 'show']);
+
     Route::apiResource('user/wish-list', WishListController::class)->parameters(['wish-list' => 'wish-list_id']);
     Route::post('register/answers', [LecturerRegisterController::class, 'submitAnswers']);
     Route::get('/lecturer-registrations', [LecturerRegisterController::class, 'getLecturerRegistrations']);
@@ -179,6 +181,8 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
 
     // Thống kê giảng viên
     Route::get('/lecturer/statistics', [LecturerController::class, 'statistics']);
+    Route::get('/lecturer/students/{user_id}', [LecturerController::class, 'show']);
+
 
     // Route::post('lecturer/courses/{course_id}/sections/{section_id}/lessonsCreateVideo',[CourseController::class , 'lessonCreateVideo']);
     Route::apiResource('/lecturer/courses', CourseController::class)->parameters(['courses' => 'course_id']);
