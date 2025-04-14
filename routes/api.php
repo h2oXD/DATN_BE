@@ -182,7 +182,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     // Thống kê giảng viên
     Route::get('/lecturer/statistics', [LecturerController::class, 'statistics']);
     Route::get('/lecturer/students/{user_id}', [LecturerController::class, 'show']);
-
+    Route::get('/lecturer/students/getAll', [LecturerController::class, 'getAllStudents']);
 
     // Route::post('lecturer/courses/{course_id}/sections/{section_id}/lessonsCreateVideo',[CourseController::class , 'lessonCreateVideo']);
     Route::apiResource('/lecturer/courses', CourseController::class)->parameters(['courses' => 'course_id']);
@@ -193,7 +193,6 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/documents', DocumentController::class)->parameters(['documents' => 'document_id']);
     // Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/codings', LessonCodingController::class)->parameters(['codings' => 'coding_id']);
     Route::post('/lecturer/courses/{course_id}/sections/{section_id}/codings', [LessonCodingController::class, 'store']);
-    Route::get('/lecturer/students/progress', [LecturerController::class, 'getAllStudents']);
 
     // Quản lý Quiz trong một bài học (Lesson)
     Route::apiResource('/lecturer/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/quizzes', QuizController::class)
