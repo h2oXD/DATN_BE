@@ -944,13 +944,6 @@ class WalletController extends Controller
             $bank_nameUser = $request->input('bank_nameUser');
             $bank_number = $request->input('bank_number');
 
-            // Kiểm tra người dùng có vai trò giảng viên hay không
-            if (!$user->roles()->where('name', 'lecturer')->exists()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Chỉ tài khoản giảng viên mới có thể rút tiền.'
-                ], Response::HTTP_FORBIDDEN);
-            }
             // Kiểm tra ví có tồn tại không
             if (!$wallet) {
                 return response()->json([
@@ -978,7 +971,7 @@ class WalletController extends Controller
                 'amount' => 'required|int',
                 'bank_name' => 'required|string',
                 'bank_nameUser' => 'required|string',
-                'bank_number' => 'required|int',
+                'bank_number' => 'required|string',
                 'qr_image' => 'nullable|image|max:2048',
             ]);
             if ($validator->fails()) {
@@ -1056,6 +1049,8 @@ class WalletController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    // Nạp tiền phương thức Momo
     private function execPostRequest($url, $data)
     {
         $ch = curl_init($url);
@@ -1102,7 +1097,7 @@ class WalletController extends Controller
         $partnerCode = 'MOMOBKUN20180529';
         $accessKey = 'klm05TvNBzhg7h7j';
         $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
-        $returnUrl = 'http://loraspacebe.test/api/callBackMomo';
+        $returnUrl = 'http://localhost:8000/api/callBackMomo';
         $ipnUrl = 'https://test-payment.momo.vn/v2/gateway/api/create';
         $requestType = "payWithCC";
         $extraData = "";

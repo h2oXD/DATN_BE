@@ -188,13 +188,6 @@ class UserController extends Controller
                     'message' => 'Không tìm thấy người dùng'
                 ], Response::HTTP_NOT_FOUND);
             }
-            // Kiểm tra người dùng có vai trò giảng viên hay không
-            if (!$user->roles()->where('name', 'lecturer')->exists()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Chỉ tài khoản giảng viên mới có thể thao tác'
-                ], Response::HTTP_FORBIDDEN);
-            }
 
             // Kiểm tra dữ liệu truyền lên
             $validator = Validator::make($request->all(), [
@@ -297,13 +290,6 @@ class UserController extends Controller
                 return response()->json([
                     'message' => 'Không tìm thấy người dùng'
                 ], Response::HTTP_NOT_FOUND);
-            }
-            // Kiểm tra người dùng có vai trò giảng viên hay không
-            if (!$user->roles()->where('name', 'lecturer')->exists()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Chỉ tài khoản giảng viên mới có thể thao tác'
-                ], Response::HTTP_FORBIDDEN);
             }
 
             $infoBank = [

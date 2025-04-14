@@ -60,6 +60,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('users', UserController::class)->only(['show', 'update']);
     Route::get('/courseNew', [OverviewController::class, 'courseNew']);
 
+    // Nạp tiền vào ví bằng Momo
     Route::post('/createMomo', [WalletController::class, 'momoCreatePayment']);
 
     Route::put('users', [UserController::class, 'update']);
@@ -76,6 +77,25 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     // Pay by wallet
     Route::post('/user/courses/{course_id}/wallet-payment', [WalletController::class, 'payment']);
 
+    // rút tiền ví
+    Route::post('/user/wallets/withdraw', [WalletController::class, 'withdraw']);
+    // Lịch sử rút tiền
+    Route::get('/user/wallet/withdraw-histories', [TransactionWalletController::class, 'withdrawHistory']);
+
+    // Gửi khiếu nại rút tiền
+    Route::post('/user/wallets/withdraws/{transaction_wallet_id}/complain', [ComplainController::class, 'complain']);
+    // Danh sách khiếu nại
+    Route::get('/user/wallet/complain', [ComplainController::class, 'listComplain']);
+    // Xem chi tiết khiếu nại
+    Route::get('/user/wallet/complains/{complain_id}', [ComplainController::class, 'detailComplain']);
+    // Hủy yêu cầu khiếu nại
+    Route::put('/user/wallet/complain/{complain_id}/cancel', [ComplainController::class, 'cancelComplain']);
+
+    // Thêm thẻ ngân hàng vào thông tin người dùng
+    Route::post('/user/insertBank', [UserController::class, 'insertBank']);
+    // Lấy thông tin thẻ ngân hàng của người dùng
+    Route::get('/user/getBank', [UserController::class, 'getBank']);
+
     // Voucher in user 
     Route::get('/user/vouchers', [VoucherController::class, 'index']);
     Route::get('/user/voucher/{voucher_id}', [VoucherController::class, 'show']);
@@ -85,7 +105,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //Study
     Route::get('student/{user_id}/courses/{course_id}', [StudyController::class, 'getCourseInfo']);
     Route::post('student/{user_id}/courses/{course_id}/sections/{section_id}/lessons/{lesson_id}/starts', [StudyController::class, 'startLesson']);
-
     Route::get('student/courses/{course_id}/sections/{section_id}/lessons', [StudyController::class, 'getLessonsBySection']);
 
     // danh sách khóa học đã đăng ký 
@@ -131,13 +150,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //Đổi mật khẩu
     Route::post('/change-password', [ResetPasswordController::class, 'resetPassword'])->name('change.password');
 
-
     //Chat room
     Route::get('/chat-rooms', [ChatRoomController::class, 'index']);
     Route::post('/chat-rooms', [ChatRoomController::class, 'store']);
     Route::get('/chat-rooms/{id}', [ChatRoomController::class, 'show']);
     Route::delete('/chat-rooms/{id}', [ChatRoomController::class, 'destroy']);
-
 
     //Messenger
     Route::get('/chat-rooms/{id}/messages', [ChatMessageController::class, 'index']);
@@ -198,25 +215,6 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     Route::post('/chat-rooms/{id}/add-user', [ChatRoomController::class, 'addUser']);
     Route::post('/chat-rooms/{id}/remove-user', [ChatRoomController::class, 'removeUser']);
     Route::post('/chat-rooms/{id}/mute-user', [ChatRoomController::class, 'muteUser']);
-
-    // rút tiền ví giảng viên
-    Route::post('/lecturer/wallets/withdraw', [WalletController::class, 'withdraw']);
-    // Lịch sử rút tiền
-    Route::get('/lecturer/wallet/withdraw-histories', [TransactionWalletController::class, 'withdrawHistory']);
-
-    // Gửi khiếu nại rút tiền
-    Route::post('/lecturer/wallets/withdraws/{transaction_wallet_id}/complain', [ComplainController::class, 'complain']);
-    // Danh sách khiếu nại
-    Route::get('/lecturer/wallet/complain', [ComplainController::class, 'listComplain']);
-    // Xem chi tiết khiếu nại
-    Route::get('/lecturer/wallet/complains/{complain_id}', [ComplainController::class, 'detailComplain']);
-    // Hủy yêu cầu khiếu nại
-    Route::put('/lecturer/wallet/complain/{complain_id}/cancel', [ComplainController::class, 'cancelComplain']);
-
-    // Thêm thẻ ngân hàng vào thông tin người dùng
-    Route::post('/lecturer/insertBank', [UserController::class, 'insertBank']);
-    // Lấy thông tin thẻ ngân hàng của người dùng
-    Route::get('/lecturer/getBank', [UserController::class, 'getBank']);
 
     // Danh sách khóa học đã bán của giảng viên
     Route::get('/lecturer/sell-course-list', [TransactionController::class, 'sellList']);
