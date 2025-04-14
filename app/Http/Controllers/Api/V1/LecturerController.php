@@ -15,6 +15,7 @@ use App\Models\Quiz;
 use App\Models\Section;
 use App\Models\Transaction;
 use App\Models\TransactionWallet;
+use App\Models\User;
 use App\Models\Video;
 use App\Models\Wallet;
 use Carbon\Carbon;
@@ -163,6 +164,42 @@ class LecturerController extends Controller
             'monthly_students' => $monthlyStudents, // Tổng số học viên đăng kí theo tháng
             'top_selling_courses' => $topCourses, // Top 3 khóa học bán chạy
             'courses_&_students' => $coursesWithStudents, // Khóa học và tổng số học viên trong mỗi khóa
+        ]);
+    }
+    public function getAllStudents(Request $request)
+    {
+        $lecturer = $request->user();
+
+        // Lấy tất cả ID khóa học của giảng viên
+        $courseIds = Course::where('user_id', $lecturer->id)->pluck('id');
+
+        // Nếu không có khóa học nào
+        if ($courseIds->isEmpty()) {
+            return response()->json([
+                'message' => 'Giảng viên chưa có khóa học nào.',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // Lấy danh sách học viên đăng ký học các khóa học 
+        $studentIds = Enrollment::whereIn('course_id', $courseIds)
+            ->distinct()
+            ->pluck('user_id');
+
+        if ($studentIds->isEmpty()) {
+            return response()->json([
+                'message' => 'Chưa có học viên nào đăng ký các khóa học của bạn.',
+            ], Response::HTTP_OK);
+        }
+
+        // Lấy thông tin học viên từ bảng users
+        $students = User::whereIn('id', $studentIds)
+            ->get(['id', 'name', 'email', 'phone_number', 'profile_picture']);
+
+        return response()->json([
+            'lecturer_id' => $lecturer->id,
+            'lecturer_name' => $lecturer->name,
+            'total_students' => $students->count(),
+            'students' => $students,
         ]);
     }
 }
