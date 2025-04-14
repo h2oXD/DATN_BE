@@ -8,7 +8,7 @@
 <div class="container my-5">
     <div class="card shadow-lg border-0 rounded-3 overflow-hidden">
         <div class="card-header bg-gradient-mix-shade text-white py-3">
-            <h3 class="mb-0 fw-bold text-center">Chi tiết khóa học</h3>
+            <h3 class="mb-0 fw-bold text-center text-white">Chi tiết khóa học</h3>
         </div>
         <div class="card-body p-4">
             {{-- Thông tin cơ bản --}}
@@ -84,19 +84,19 @@
             {{-- Thống kê khóa học --}}
             <div class="row g-3 mb-5">
                 <div class="col-md-4 col-sm-6">
-                    <div class="bg-light p-4 rounded-3 shadow-sm text-center h-100 transition-transform hover-scale">
+                    <div class="bg-light p-4 rounded-3 shadow-sm text-center h-70 transition-transform hover-scale">
                         <div class="h5 mb-2 text-muted"><i class="bi bi-people-fill me-2"></i>Học viên</div>
                         <div class="fs-2 fw-bold text-primary">{{ $totalStudents }}</div>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-6">
-                    <div class="bg-light p-4 rounded-3 shadow-sm text-center h-100 transition-transform hover-scale">
+                    <div class="bg-light p-4 rounded-3 shadow-sm text-center h-70 transition-transform hover-scale">
                         <div class="h5 mb-2 text-muted"><i class="bi bi-currency-exchange me-2"></i>Doanh thu</div>
                         <div class="fs-2 fw-bold text-success">{{ number_format($totalRevenue) }} VNĐ</div>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-12">
-                    <div class="bg-light p-4 rounded-3 shadow-sm text-center h-100 transition-transform hover-scale">
+                    <div class="bg-light p-4 rounded-3 shadow-sm text-center h-70 transition-transform hover-scale">
                         <div class="h5 mb-2 text-muted"><i class="bi bi-star-fill me-2"></i>Đánh giá TB</div>
                         <div class="fs-2 fw-bold text-warning">
                             {{ number_format($averageRating, 1) }}/5 

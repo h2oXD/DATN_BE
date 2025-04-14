@@ -333,9 +333,9 @@ Ngoài công việc giảng dạy, tôi còn tham gia vào các dự án nghiên
         //         'name' => 'reactjs-js'
         //     ],
         // ];
-        // foreach ($categories as $category) {
-        //     Category::create($category);
-        // }
+        foreach ($categories as $category) {
+            Category::create($category);
+        }
         // foreach ($tags as $tag) {
         //     Tag::create($tag);
         // }
