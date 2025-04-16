@@ -249,7 +249,6 @@ class LecturerController extends Controller
     public function getAllStudents(Request $request)
     {
         $lecturer = $request->user();
-
         // Lấy tất cả ID khóa học của giảng viên
         $courseIds = Course::where('user_id', $lecturer->id)->pluck('id');
 

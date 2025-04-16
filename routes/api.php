@@ -182,7 +182,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:lecturer']], function () {
     // Thống kê giảng viên
     Route::get('/lecturer/statistics', [LecturerController::class, 'statistics']);
     Route::get('/lecturer/students/{user_id}', [LecturerController::class, 'show']);
-    Route::get('/lecturer/students/getAll', [LecturerController::class, 'getAllStudents']);
+    Route::get('/lecturer/getAll', [LecturerController::class, 'getAllStudents']);
 
     // Route::post('lecturer/courses/{course_id}/sections/{section_id}/lessonsCreateVideo',[CourseController::class , 'lessonCreateVideo']);
     Route::apiResource('/lecturer/courses', CourseController::class)->parameters(['courses' => 'course_id']);
