@@ -116,5 +116,8 @@ class User extends Authenticatable
         return $this->belongsToMany(ChatRoom::class, 'chat_room_users', 'user_id', 'chat_room_id');
     }
 
-
+    public function progress()
+    {
+        return $this->hasMany(Progress::class);
+    }
 }

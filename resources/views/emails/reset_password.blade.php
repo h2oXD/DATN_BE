@@ -109,6 +109,7 @@
             background: linear-gradient(90deg, #5e3fd8 0%, #754ffe 100%);
             box-shadow: 0 6px 20px rgba(117, 79, 254, 0.6);
             transform: translateY(-2px);
+            color: #ffffff;
         }
 
         .email-footer {
