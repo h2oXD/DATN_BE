@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\AdminBaseController;
+use App\Mail\CensorWithdraw;
 use App\Models\TransactionWallet;
+use App\Models\User;
 use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class WalletController extends AdminBaseController
 {
@@ -69,6 +73,7 @@ class WalletController extends AdminBaseController
             $transaction    = TransactionWallet::where('id', $id)->lockForUpdate()->firstOrFail();
             $wallet         = Wallet::where('id', $transaction->wallet_id)->lockForUpdate()->firstOrFail();
             $balance_now    = $wallet->balance;
+            $user           = User::findOrFail($wallet->user_id); // Lấy thông tin người dùng để send mail
 
             // Kiểm tra trạng thái trước khi duyệt
             if ($transaction->status !== 'pending') {
@@ -96,6 +101,12 @@ class WalletController extends AdminBaseController
                 ]
             ]);
 
+            $status         = $transaction->status; // Lấy trạng thái giao dịch
+            $bank_name      = $transaction->bank_name; // Lấy tên ngân hàng
+            $bank_number    = $transaction->bank_number; // Lấy số tài khoản
+            $bank_nameUser  = $transaction->bank_nameUser; // Lấy tên chủ khoản
+            Mail::to($user->email)->send(new CensorWithdraw($user, $status, $bank_name, $bank_number, $bank_nameUser));
+
             DB::commit();
             return redirect()->route($this->routePath)->with('success', 'Giao dịch đã được xác nhận.');
             
@@ -113,6 +124,7 @@ class WalletController extends AdminBaseController
             $transaction    = TransactionWallet::where('id', $id)->lockForUpdate()->firstOrFail();
             $wallet         = Wallet::where('id', $transaction->wallet_id)->lockForUpdate()->firstOrFail();
             $balance_now    = $wallet->balance;
+            $user           = User::findOrFail($wallet->user_id); // Lấy thông tin người dùng để send mail
 
             // Kiểm tra trạng thái trước khi từ chối
             if ($transaction->status !== 'pending') {
@@ -138,9 +150,15 @@ class WalletController extends AdminBaseController
                     'Ngày kiểm duyệt'       => Carbon::now('Asia/Ho_Chi_Minh')
                 ]
             ]);
+        
+            $status         = $transaction->status; // Lấy trạng thái giao dịch
+            $bank_name      = $transaction->bank_name; // Lấy tên ngân hàng
+            $bank_number    = $transaction->bank_number; // Lấy số tài khoản
+            $bank_nameUser  = $transaction->bank_nameUser; // Lấy tên chủ khoản
+            Mail::to($user->email)->send(new CensorWithdraw($user, $status, $bank_name, $bank_number, $bank_nameUser));
 
-        DB::commit();
-        return redirect()->route($this->routePath)->with('success', 'Giao dịch đã được xác nhận.');
+            DB::commit();
+            return redirect()->route($this->routePath)->with('success', 'Giao dịch đã được xác nhận.');
 
         } catch (\Throwable $th) {
             DB::rollBack();

@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\AdminBaseController;
+use App\Mail\ComplainWithdraw;
 use App\Models\Complain;
 use App\Models\TransactionWallet;
+use App\Models\User;
 use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -71,6 +74,7 @@ class ComplainController extends AdminBaseController
             $transaction    = TransactionWallet::where('id', $complain->transaction_wallet_id)->lockForUpdate()->firstOrFail();
             $wallet         = Wallet::where('id', $transaction->wallet_id)->lockForUpdate()->firstOrFail();
             $balance_now    = $wallet->balance;
+            $user           = User::findOrFail($wallet->user_id); // Lấy thông tin người dùng để send mail
 
             $validator = Validator::make($request->all(), [
                 'money_refund'          => 'required|integer|min:1|max:100000000',
@@ -146,6 +150,10 @@ class ComplainController extends AdminBaseController
                 'transaction_date'  => Carbon::now('Asia/Ho_Chi_Minh')
             ]);
 
+            $status     = $complain->status; // Lấy trạng thái khiếu nại
+            $feedback   = $complain->feedback_by_admin; // Lấy feedback của admin
+            Mail::to($user->email)->send(new ComplainWithdraw($user, $status, $feedback));
+
             DB::commit();
             return response()->json([
                 'success' => 'Thao tác kiểm duyệt thành công'
@@ -166,6 +174,8 @@ class ComplainController extends AdminBaseController
             
             $complain       = Complain::where('id', $id)->lockForUpdate()->firstOrFail();
             $transaction    = TransactionWallet::where('id', $complain->transaction_wallet_id)->lockForUpdate()->firstOrFail();
+            $wallet         = Wallet::findOrFail($transaction->wallet_id);
+            $user           = User::findOrFail($wallet->user_id); // Lấy thông tin người dùng để send mail
 
             // Kiểm tra khiếu nại có tồn tại không
             if (!$complain) {
@@ -195,6 +205,10 @@ class ComplainController extends AdminBaseController
             $transaction->update([
                 'complain'                  => 0,
             ]);
+
+            $status     = $complain->status; // Lấy trạng thái khiếu nại
+            $feedback   = $complain->feedback_by_admin; // Lấy feedback của admin
+            Mail::to($user->email)->send(new ComplainWithdraw($user, $status, $feedback));
 
             DB::commit();
             return redirect()->route($this->routePath)->with('success', 'Khiếu nại đã được xác nhận.');
