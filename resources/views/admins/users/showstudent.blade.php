@@ -48,7 +48,7 @@
                             <textarea class="form-control" rows="3" readonly>{{ $user->bio }}</textarea>
                         </div>
 
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <label class="form-label fw-bold">Trạng thái</label>
                             <input type="text" class="form-control"
                                 value="@switch($user->status)
@@ -58,7 +58,7 @@
                                 @default Không rõ
                             @endswitch"
                                 readonly>
-                        </div>
+                        </div> --}}
 
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Quốc gia</label>
@@ -122,6 +122,13 @@
                             <label class="form-label fw-bold">Số tài khoản</label>
                             <input type="text" class="form-control" value="{{ $user->bank_number }}" readonly>
                         </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Số dư ví</label>
+                            <input type="text" class="form-control"
+                                value="{{ number_format($user->wallet->balance ?? 0) }} VND" readonly>
+                        </div>
+                        
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Ảnh đại diện</label>
                             <div>

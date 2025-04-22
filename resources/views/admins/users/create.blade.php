@@ -93,7 +93,7 @@
                     </div>
 
                     <!-- Status -->
-                    <div class="col-lg-4 mb-lg-3 col-12 mb-3">
+                    {{-- <div class="col-lg-4 mb-lg-3 col-12 mb-3">
                         <label for="status" class="form-label">Trạng thái</label>
                         <select name="status" class="form-select text-dark">
                             <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Hoạt động</option>
@@ -104,7 +104,7 @@
                         @error('status')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    </div>
+                    </div> --}}
 
                     <!-- Country -->
                     <div class="col-lg-4 mb-lg-3 col-12 mb-3">
