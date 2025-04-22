@@ -59,7 +59,7 @@
                     @enderror
                 </div>
 
-                <div class="mb-3 col-6">
+                {{-- <div class="mb-3 col-6">
                     <label for="status" class="form-label">Trạng thái tài khoản</label>
                     <select name="status" class="form-select">
                         <option value="0" {{ $user->status == 0 ? 'selected' : '' }}>Hoạt động</option>
@@ -70,7 +70,7 @@
                     @error('status')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
-                </div>
+                </div> --}}
 
                 <div class="mb-3 col-6">
                     <label for="country" class="form-label">Quốc gia</label>
