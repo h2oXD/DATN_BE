@@ -214,7 +214,7 @@
                                             <div class="position-relative">
                                                 <img alt="avatar"
                                                     src="{{ asset('storage/' . $instructor->profile_picture) }}"
-                                                    onerror="this.onerror=null;this.src='{{ asset('assets/images/avatar/avatar-default.jpg') }}';"
+                                                    onerror="this.onerror=null;this.src='{{ asset('assets/avatarDefault.jpg') }}';"
                                                     class="avatar-xl rounded-circle border border-4 border-white"
                                                     style="width: 50px; height: 50px; object-fit: cover;"
                                                     alt="avatar" />
@@ -265,7 +265,11 @@
                                             </a>
                                             <div class="d-flex align-items-center gap-2">
                                                 <img alt="avatar"
-                                                    src="{{ asset('storage/' . $course->user->profile_picture) }}"
+                                                    @if ($course->user->profile_picture)
+                                                        src="{{ asset('storage/' . $course->user->profile_picture) }}"
+                                                    @else
+                                                        src="{{ asset('assets/avatarDefault.jpg') }}"
+                                                    @endif
                                                     class="rounded-circle"
                                                     style="width: 35px; height: 35px; object-fit: cover;" />
                                                 <span class="small text-muted">{{ $course->user->name }}</span>

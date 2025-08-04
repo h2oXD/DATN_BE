@@ -698,7 +698,7 @@ class WalletController extends Controller
             $vnp_TxnRef = $request->user()->id . "_" . time();
             $vnp_OrderInfo = "Thanh toán khóa học";
             $vnp_OrderType = "education";
-            $vnp_Amount = $request->input('amount', 0); // Số tiền (nhân với 100) để loại bỏ phần thập phân
+            $vnp_Amount = $request->input('amount', 0) * 100; // Số tiền (nhân với 100) để loại bỏ phần thập phân
             $vnp_Locale = "vn";
             $vnp_BankCode = $request->input('bank_code', "");
             $vnp_IpAddr = $request->ip();

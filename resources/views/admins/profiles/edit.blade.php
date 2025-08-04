@@ -15,7 +15,12 @@
                             <div class="d-flex align-items-end justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <div class="me-2 position-relative d-flex justify-content-end align-items-end mt-n5">
-                                        <img src="{{ asset($user->profile_picture ?? 'assets/images/avatar/avatar-3.jpg') }}"
+                                        <img 
+                                            @if ($user->profile_picture)
+                                                src="{{ asset($user->profile_picture) }}"
+                                            @else
+                                                src="{{ asset('assets/avatarDefault.jpg') }}"
+                                            @endif
                                             class="avatar-xl rounded-circle border border-4 border-white"
                                             style="width: 100px; height: 100px; object-fit: cover;" alt="avatar" />
                                     </div>
@@ -64,7 +69,12 @@
                             <div class="card-body">
                                 <div class="d-lg-flex align-items-center justify-content-between">
                                     <div class="d-flex align-items-center mb-4 mb-lg-0">
-                                        <img src="{{ asset($user->profile_picture ?? 'assets/images/avatar/avatar-3.jpg') }}"
+                                        <img 
+                                            @if ($user->profile_picture)
+                                                src="{{ asset($user->profile_picture) }}"
+                                            @else
+                                                src="{{ asset('assets/avatarDefault.jpg') }}"
+                                            @endif
                                             class="avatar-xl rounded-circle border border-4 border-white"
                                             style="width: 100px; height: 100px; object-fit: cover;" alt="avatar" />
                                         <div class="ms-3">

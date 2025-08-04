@@ -54,7 +54,7 @@ class DatabaseSeeder extends Seeder
         //Tạo admin
         $admin = User::create([
             'name' => 'Nguyễn Hữu Hào',
-            'email' => 'haonhph45336@fpt.edu.vn',
+            'email' => 'admin@gmail.com',
             'password' => Hash::make('123123123'),
             'profile_picture' => '',
         ]);
@@ -69,7 +69,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Trương Thái Tú',
             'email' => 'thaituaovlpm@gmail.com',
             'password' => Hash::make('123123123'),
-            'phone_number' => '0333444555',
+            'phone_number' => '0332390286',
 
         ]);
         Wallet::create([
@@ -84,9 +84,9 @@ class DatabaseSeeder extends Seeder
 
         User::create([
             'name' => 'Vũ Đức Tài',
-            'email' => 'hocvien2@gmail.com',
+            'email' => 'vutai0122@gmail.com',
             'password' => Hash::make('123123123'),
-            'phone_number' => '0333444555',
+            'phone_number' => '0838444566',
 
         ]);
         Wallet::create([
@@ -101,10 +101,10 @@ class DatabaseSeeder extends Seeder
 
         //Tạo giảng viên
         $lecturer = User::create([
-            'name' => 'Tống Văn Đức',
+            'name' => 'Nguyễn Hữu Hào',
             'email' => 'fixbugandcry@gmail.com',
             'password' => Hash::make('123123123'),
-            'phone_number' => '0888777666',
+            'phone_number' => '0869327694',
             'profile_picture' => '',
             'bio' => 'Là một giảng viên lập trình với hơn 10 năm kinh nghiệm trong ngành công nghệ thông tin, tôi luôn đam mê chia sẻ kiến thức và truyền cảm hứng cho thế hệ lập trình viên tương lai. Tôi tin rằng lập trình không chỉ là một kỹ năng, mà còn là một nghệ thuật, một cách tư duy sáng tạo để giải quyết vấn đề.
 
@@ -114,7 +114,7 @@ Ngoài công việc giảng dạy, tôi cũng thường xuyên tham gia vào cá
         ]);
         Wallet::create([
             'user_id' => $lecturer->id,
-            'balance' => 0
+            'balance' => 999000
         ]);
         $roleLecturer = Role::select('id')->where('name', 'lecturer')->first();
         UserRole::create([
@@ -128,9 +128,9 @@ Ngoài công việc giảng dạy, tôi cũng thường xuyên tham gia vào cá
 
         $lecturer = User::create([
             'name' => 'Nguyễn Văn Thuyết',
-            'email' => 'giangvienb@gmail.com',
+            'email' => 'thiennguyenapk@gmail.com',
             'password' => Hash::make('123123123'),
-            'phone_number' => '0888777666',
+            'phone_number' => '0399198730',
             'profile_picture' => '',
             'bio' => 'Với hơn 8 năm kinh nghiệm trong lĩnh vực phát triển phần mềm, tôi đã chuyển niềm đam mê của mình sang giảng dạy để giúp những lập trình viên tham vọng khám phá tiềm năng của họ. Tôi tin rằng học lập trình không chỉ là việc nắm vững cú pháp, mà còn là việc rèn luyện tư duy logic và khả năng giải quyết vấn đề.
 
@@ -139,14 +139,14 @@ Tôi chuyên về các ngôn ngữ lập trình web như JavaScript, React và N
 Ngoài việc giảng dạy, tôi cũng là một người đóng góp tích cực cho cộng đồng mã nguồn mở. Tôi tin rằng việc chia sẻ kiến thức và kinh nghiệm là chìa khóa để xây dựng một cộng đồng lập trình viên mạnh mẽ và đoàn kết.'
         ]);
 
-        $lecturer->wallet()->create(['balance' => 0]);
+        $lecturer->wallet()->create(['balance' => 999000]);
 
         $roles = Role::whereIn('name', ['student', 'lecturer'])->pluck('id');
         $lecturer->roles()->attach($roles);
 
         $lecturer = User::create([
-            'name' => 'Tôn Nghộ Không',
-            'email' => 'giangvienc@gmail.com',
+            'name' => 'Lê Thu Trang',
+            'email' => 'thutrangk4@gmail.com',
             'password' => Hash::make('123123123'),
             'phone_number' => '0888777666',
             'profile_picture' => '',
@@ -157,7 +157,7 @@ Tôi có chuyên môn sâu về các lĩnh vực như trí tuệ nhân tạo, h�
 Ngoài công việc giảng dạy, tôi còn tham gia vào các dự án nghiên cứu và phát triển các sản phẩm công nghệ đột phá. Tôi mong muốn được chia sẻ những kinh nghiệm và kiến thức của mình để giúp học viên trở thành những lập trình viên xuất sắc và những nhà lãnh đạo công nghệ tương lai.',
         ]);
 
-        $lecturer->wallet()->create(['balance' => 0]);
+        $lecturer->wallet()->create(['balance' => 100000]);
 
         $roles = Role::whereIn('name', ['student', 'lecturer'])->pluck('id');
         $lecturer->roles()->attach($roles);
@@ -165,31 +165,31 @@ Ngoài công việc giảng dạy, tôi còn tham gia vào các dự án nghiên
         $listLecturers = [
             [
                 'name' => 'Nguyễn Ngọc Hiếu',
-                'email' => 'giangvien10@gmail.com',
+                'email' => 'nguyenngochieu2003@gmail.com',
+                'password' => '123123123',
+                'phone_number' => '0375640333',
+                'profile_picture' => '',
+                'bio' => ''
+            ],
+            [
+                'name' => 'Nguyễn Thị Hồng Nhung',
+                'email' => 'hongnhungk4@gmail.com',
                 'password' => '123123123',
                 'phone_number' => '0888777666',
                 'profile_picture' => '',
                 'bio' => ''
             ],
             [
-                'name' => 'Trông Anh Ngược',
-                'email' => 'giangvien11@gmail.com',
+                'name' => 'Tạ Thái Phúc',
+                'email' => 'phucluong@gmail.com',
                 'password' => '123123123',
                 'phone_number' => '0888777666',
                 'profile_picture' => '',
                 'bio' => ''
             ],
             [
-                'name' => 'Giả Hành Tôn',
-                'email' => 'giangvien12@gmail.com',
-                'password' => '123123123',
-                'phone_number' => '0888777666',
-                'profile_picture' => '',
-                'bio' => ''
-            ],
-            [
-                'name' => 'Tôn Hành Giả',
-                'email' => 'giangvien13@gmail.com',
+                'name' => 'Phạm Đức Nghĩa',
+                'email' => 'iamnghia@gmail.com',
                 'password' => '123123123',
                 'phone_number' => '0888777666',
                 'profile_picture' => '',
